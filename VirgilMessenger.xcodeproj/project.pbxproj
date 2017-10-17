@@ -22,6 +22,8 @@
 		429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E21F963DBE00DCECDF /* TwilioHelper.swift */; };
 		429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */; };
 		429228E71F963DCD00DCECDF /* TwilioCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E61F963DCD00DCECDF /* TwilioCredentials.swift */; };
+		429228E91F96401500DCECDF /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E81F96401500DCECDF /* ChatViewController.swift */; };
+		429228EB1F96405800DCECDF /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* Chat.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -55,6 +57,8 @@
 		429228E21F963DBE00DCECDF /* TwilioHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwilioHelper.swift; sourceTree = "<group>"; };
 		429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Delegate.swift"; sourceTree = "<group>"; };
 		429228E61F963DCD00DCECDF /* TwilioCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwilioCredentials.swift; sourceTree = "<group>"; };
+		429228E81F96401500DCECDF /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		429228EA1F96405800DCECDF /* Chat.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Chat.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,9 +102,11 @@
 				429228B51F96261000DCECDF /* AppDelegate.swift */,
 				429228B71F96261000DCECDF /* ViewController.swift */,
 				429228B91F96261000DCECDF /* Main.storyboard */,
+				429228EA1F96405800DCECDF /* Chat.storyboard */,
 				429228BC1F96261000DCECDF /* Assets.xcassets */,
 				429228BE1F96261000DCECDF /* LaunchScreen.storyboard */,
 				429228C11F96261000DCECDF /* Info.plist */,
+				429228E81F96401500DCECDF /* ChatViewController.swift */,
 			);
 			path = VirgilMessenger;
 			sourceTree = "<group>";
@@ -191,6 +197,7 @@
 			files = (
 				429228C01F96261000DCECDF /* LaunchScreen.storyboard in Resources */,
 				429228BD1F96261000DCECDF /* Assets.xcassets in Resources */,
+				429228EB1F96405800DCECDF /* Chat.storyboard in Resources */,
 				429228BB1F96261000DCECDF /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -238,6 +245,7 @@
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				429228DE1F9637A200DCECDF /* Log.swift in Sources */,
+				429228E91F96401500DCECDF /* ChatViewController.swift in Sources */,
 				429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */,
 				429228E71F963DCD00DCECDF /* TwilioCredentials.swift in Sources */,
 				429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */,
