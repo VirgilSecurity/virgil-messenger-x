@@ -12,6 +12,10 @@
 		429228BB1F96261000DCECDF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228B91F96261000DCECDF /* Main.storyboard */; };
 		429228BD1F96261000DCECDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 429228BC1F96261000DCECDF /* Assets.xcassets */; };
 		429228C01F96261000DCECDF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228BE1F96261000DCECDF /* LaunchScreen.storyboard */; };
+		429228CC1F96287B00DCECDF /* ChattoAdditions.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228C81F96287A00DCECDF /* ChattoAdditions.framework */; };
+		429228CD1F96287B00DCECDF /* Chatto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228C91F96287A00DCECDF /* Chatto.framework */; };
+		429228CE1F96287B00DCECDF /* VirgilCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CA1F96287A00DCECDF /* VirgilCrypto.framework */; };
+		429228CF1F96287B00DCECDF /* VirgilSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CB1F96287A00DCECDF /* VirgilSDK.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +26,10 @@
 		429228BC1F96261000DCECDF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		429228BF1F96261000DCECDF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		429228C11F96261000DCECDF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		429228C81F96287A00DCECDF /* ChattoAdditions.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ChattoAdditions.framework; path = Carthage/Build/iOS/ChattoAdditions.framework; sourceTree = "<group>"; };
+		429228C91F96287A00DCECDF /* Chatto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Chatto.framework; path = Carthage/Build/iOS/Chatto.framework; sourceTree = "<group>"; };
+		429228CA1F96287A00DCECDF /* VirgilCrypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCrypto.framework; path = Carthage/Build/iOS/VirgilCrypto.framework; sourceTree = "<group>"; };
+		429228CB1F96287A00DCECDF /* VirgilSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilSDK.framework; path = Carthage/Build/iOS/VirgilSDK.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +37,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				429228CC1F96287B00DCECDF /* ChattoAdditions.framework in Frameworks */,
+				429228CD1F96287B00DCECDF /* Chatto.framework in Frameworks */,
+				429228CE1F96287B00DCECDF /* VirgilCrypto.framework in Frameworks */,
+				429228CF1F96287B00DCECDF /* VirgilSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +52,7 @@
 			children = (
 				429228B41F96261000DCECDF /* VirgilMessenger */,
 				429228B31F96261000DCECDF /* Products */,
+				429228C71F96287A00DCECDF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -64,6 +77,17 @@
 			path = VirgilMessenger;
 			sourceTree = "<group>";
 		};
+		429228C71F96287A00DCECDF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				429228C91F96287A00DCECDF /* Chatto.framework */,
+				429228C81F96287A00DCECDF /* ChattoAdditions.framework */,
+				429228CA1F96287A00DCECDF /* VirgilCrypto.framework */,
+				429228CB1F96287A00DCECDF /* VirgilSDK.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -74,6 +98,7 @@
 				429228AE1F96261000DCECDF /* Sources */,
 				429228AF1F96261000DCECDF /* Frameworks */,
 				429228B01F96261000DCECDF /* Resources */,
+				429228D01F96287E00DCECDF /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -130,6 +155,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		429228D01F96287E00DCECDF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/VirgilSDK.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/VirgilCrypto.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Chatto.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/ChattoAdditions.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		429228AE1F96261000DCECDF /* Sources */ = {
@@ -276,6 +321,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A59V7K656Y;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgilsecurity.VirgilMessenger;
@@ -291,6 +340,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A59V7K656Y;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgilsecurity.VirgilMessenger;
