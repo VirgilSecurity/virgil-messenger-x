@@ -7,3 +7,21 @@
 //
 
 import Foundation
+import TwilioChatClient
+
+extension TwilioHelper: TwilioChatClientDelegate {
+    func chatClient(_ client: TwilioChatClient, connectionStateUpdated state: TCHClientConnectionState) {
+        let stateStr = { () -> String in
+            switch state {
+            case .unknown:       return "unknown"
+            case .disconnected:  return "disconnected"
+            case .connected:     return "connected"
+            case .connecting:    return "connecting"
+            case .denied:        return "denied"
+            case .error:         return "error"
+            }
+        }()
+        
+        Log.debug("\(stateStr)")
+    }
+}

@@ -9,7 +9,7 @@
 import Foundation
 import TwilioChatClient
 
-class TwilioHelper: NSObject, TwilioChatClientDelegate {
+class TwilioHelper: NSObject {
     static let sharedInstance = TwilioHelper()
     
     private override init() {
