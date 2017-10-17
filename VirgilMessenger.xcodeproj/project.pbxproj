@@ -18,6 +18,10 @@
 		429228CF1F96287B00DCECDF /* VirgilSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CB1F96287A00DCECDF /* VirgilSDK.framework */; };
 		429228D71F96334E00DCECDF /* TwilioChatClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228D11F96324B00DCECDF /* TwilioChatClient.framework */; };
 		429228D81F96334E00DCECDF /* TwilioChatClient.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 429228D11F96324B00DCECDF /* TwilioChatClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		429228DE1F9637A200DCECDF /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
+		429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E21F963DBE00DCECDF /* TwilioHelper.swift */; };
+		429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */; };
+		429228E71F963DCD00DCECDF /* TwilioCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E61F963DCD00DCECDF /* TwilioCredentials.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -47,6 +51,10 @@
 		429228CA1F96287A00DCECDF /* VirgilCrypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCrypto.framework; path = Carthage/Build/iOS/VirgilCrypto.framework; sourceTree = "<group>"; };
 		429228CB1F96287A00DCECDF /* VirgilSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilSDK.framework; path = Carthage/Build/iOS/VirgilSDK.framework; sourceTree = "<group>"; };
 		429228D11F96324B00DCECDF /* TwilioChatClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwilioChatClient.framework; path = Frameworks/TwilioChatClient.framework; sourceTree = "<group>"; };
+		429228DD1F9637A200DCECDF /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		429228E21F963DBE00DCECDF /* TwilioHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwilioHelper.swift; sourceTree = "<group>"; };
+		429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Delegate.swift"; sourceTree = "<group>"; };
+		429228E61F963DCD00DCECDF /* TwilioCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwilioCredentials.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +93,8 @@
 		429228B41F96261000DCECDF /* VirgilMessenger */ = {
 			isa = PBXGroup;
 			children = (
+				429228E11F963DB300DCECDF /* Twilio */,
+				429228DD1F9637A200DCECDF /* Log.swift */,
 				429228B51F96261000DCECDF /* AppDelegate.swift */,
 				429228B71F96261000DCECDF /* ViewController.swift */,
 				429228B91F96261000DCECDF /* Main.storyboard */,
@@ -105,6 +115,16 @@
 				429228CB1F96287A00DCECDF /* VirgilSDK.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		429228E11F963DB300DCECDF /* Twilio */ = {
+			isa = PBXGroup;
+			children = (
+				429228E61F963DCD00DCECDF /* TwilioCredentials.swift */,
+				429228E21F963DBE00DCECDF /* TwilioHelper.swift */,
+				429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */,
+			);
+			path = Twilio;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,7 +158,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0900;
 				LastUpgradeCheck = 0900;
-				ORGANIZATIONNAME = "Oleksandr Deundiak";
+				ORGANIZATIONNAME = VirgilSecurity;
 				TargetAttributes = {
 					429228B11F96261000DCECDF = {
 						CreatedOnToolsVersion = 9.0;
@@ -217,6 +237,10 @@
 			files = (
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
+				429228DE1F9637A200DCECDF /* Log.swift in Sources */,
+				429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */,
+				429228E71F963DCD00DCECDF /* TwilioCredentials.swift in Sources */,
+				429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
