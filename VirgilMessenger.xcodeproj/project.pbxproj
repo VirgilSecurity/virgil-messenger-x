@@ -16,7 +16,23 @@
 		429228CD1F96287B00DCECDF /* Chatto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228C91F96287A00DCECDF /* Chatto.framework */; };
 		429228CE1F96287B00DCECDF /* VirgilCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CA1F96287A00DCECDF /* VirgilCrypto.framework */; };
 		429228CF1F96287B00DCECDF /* VirgilSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CB1F96287A00DCECDF /* VirgilSDK.framework */; };
+		429228D71F96334E00DCECDF /* TwilioChatClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228D11F96324B00DCECDF /* TwilioChatClient.framework */; };
+		429228D81F96334E00DCECDF /* TwilioChatClient.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 429228D11F96324B00DCECDF /* TwilioChatClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		429228D91F96334E00DCECDF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				429228D81F96334E00DCECDF /* TwilioChatClient.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		429228B21F96261000DCECDF /* VirgilMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirgilMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -30,6 +46,7 @@
 		429228C91F96287A00DCECDF /* Chatto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Chatto.framework; path = Carthage/Build/iOS/Chatto.framework; sourceTree = "<group>"; };
 		429228CA1F96287A00DCECDF /* VirgilCrypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCrypto.framework; path = Carthage/Build/iOS/VirgilCrypto.framework; sourceTree = "<group>"; };
 		429228CB1F96287A00DCECDF /* VirgilSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilSDK.framework; path = Carthage/Build/iOS/VirgilSDK.framework; sourceTree = "<group>"; };
+		429228D11F96324B00DCECDF /* TwilioChatClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwilioChatClient.framework; path = Frameworks/TwilioChatClient.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +57,7 @@
 				429228CC1F96287B00DCECDF /* ChattoAdditions.framework in Frameworks */,
 				429228CD1F96287B00DCECDF /* Chatto.framework in Frameworks */,
 				429228CE1F96287B00DCECDF /* VirgilCrypto.framework in Frameworks */,
+				429228D71F96334E00DCECDF /* TwilioChatClient.framework in Frameworks */,
 				429228CF1F96287B00DCECDF /* VirgilSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -80,6 +98,7 @@
 		429228C71F96287A00DCECDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				429228D11F96324B00DCECDF /* TwilioChatClient.framework */,
 				429228C91F96287A00DCECDF /* Chatto.framework */,
 				429228C81F96287A00DCECDF /* ChattoAdditions.framework */,
 				429228CA1F96287A00DCECDF /* VirgilCrypto.framework */,
@@ -99,6 +118,8 @@
 				429228AF1F96261000DCECDF /* Frameworks */,
 				429228B01F96261000DCECDF /* Resources */,
 				429228D01F96287E00DCECDF /* ShellScript */,
+				429228D91F96334E00DCECDF /* Embed Frameworks */,
+				429228DA1F96339900DCECDF /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -173,6 +194,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+		429228DA1F96339900DCECDF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "bash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/TwilioChatClient.framework/remove_archs\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -324,6 +358,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -343,6 +378,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
