@@ -51,7 +51,7 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="tableView" destination="OLu-Yi-HTK" id="p1B-2j-laF"/>
-                        <segue destination="tSb-ds-G5u" kind="push" identifier="goToChat" id="k0o-G8-ncf"/>
+                        <segue destination="tSb-ds-G5u" kind="show" identifier="goToChat" id="28z-YN-Bk9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DDd-4J-wX9" userLabel="First Responder" sceneMemberID="firstResponder"/>

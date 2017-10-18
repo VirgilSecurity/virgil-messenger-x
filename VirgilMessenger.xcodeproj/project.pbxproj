@@ -11,6 +11,10 @@
 		423BDA7A1F97600A00C3EE9B /* ChatList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 423BDA781F97600A00C3EE9B /* ChatList.storyboard */; };
 		423BDA7C1F97601700C3EE9B /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA7B1F97601700C3EE9B /* ChatListViewController.swift */; };
 		423BDA7E1F97602F00C3EE9B /* ChatListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA7D1F97602F00C3EE9B /* ChatListCell.swift */; };
+		423BDA841F97774F00C3EE9B /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA801F97774F00C3EE9B /* Connection.swift */; };
+		423BDA851F97774F00C3EE9B /* ServiceConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA811F97774F00C3EE9B /* ServiceConnection.swift */; };
+		423BDA861F97774F00C3EE9B /* ServiceRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA821F97774F00C3EE9B /* ServiceRequest.swift */; };
+		423BDA871F97774F00C3EE9B /* ServiceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA831F97774F00C3EE9B /* ServiceResponse.swift */; };
 		427D1E541F965569002F2CF3 /* FakeDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D1E521F965568002F2CF3 /* FakeDataSource.swift */; };
 		427D1E551F965569002F2CF3 /* SlidingDatasSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D1E531F965569002F2CF3 /* SlidingDatasSource.swift */; };
 		427D1E571F9656BB002F2CF3 /* DemoTextMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D1E561F9656BB002F2CF3 /* DemoTextMessageViewModel.swift */; };
@@ -41,7 +45,6 @@
 		429228DE1F9637A200DCECDF /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
 		429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E21F963DBE00DCECDF /* TwilioHelper.swift */; };
 		429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */; };
-		429228E71F963DCD00DCECDF /* TwilioCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E61F963DCD00DCECDF /* TwilioCredentials.swift */; };
 		429228EB1F96405800DCECDF /* DemoChat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* DemoChat.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +67,10 @@
 		423BDA781F97600A00C3EE9B /* ChatList.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ChatList.storyboard; sourceTree = "<group>"; };
 		423BDA7B1F97601700C3EE9B /* ChatListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
 		423BDA7D1F97602F00C3EE9B /* ChatListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListCell.swift; sourceTree = "<group>"; };
+		423BDA801F97774F00C3EE9B /* Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
+		423BDA811F97774F00C3EE9B /* ServiceConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceConnection.swift; sourceTree = "<group>"; };
+		423BDA821F97774F00C3EE9B /* ServiceRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceRequest.swift; sourceTree = "<group>"; };
+		423BDA831F97774F00C3EE9B /* ServiceResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceResponse.swift; sourceTree = "<group>"; };
 		427D1E521F965568002F2CF3 /* FakeDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDataSource.swift; sourceTree = "<group>"; };
 		427D1E531F965569002F2CF3 /* SlidingDatasSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlidingDatasSource.swift; sourceTree = "<group>"; };
 		427D1E561F9656BB002F2CF3 /* DemoTextMessageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoTextMessageViewModel.swift; sourceTree = "<group>"; };
@@ -95,7 +102,6 @@
 		429228DD1F9637A200DCECDF /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		429228E21F963DBE00DCECDF /* TwilioHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwilioHelper.swift; sourceTree = "<group>"; };
 		429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Delegate.swift"; sourceTree = "<group>"; };
-		429228E61F963DCD00DCECDF /* TwilioCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwilioCredentials.swift; sourceTree = "<group>"; };
 		429228EA1F96405800DCECDF /* DemoChat.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DemoChat.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -124,6 +130,17 @@
 				423BDA7D1F97602F00C3EE9B /* ChatListCell.swift */,
 			);
 			path = ChatList;
+			sourceTree = "<group>";
+		};
+		423BDA7F1F97774F00C3EE9B /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				423BDA801F97774F00C3EE9B /* Connection.swift */,
+				423BDA811F97774F00C3EE9B /* ServiceConnection.swift */,
+				423BDA821F97774F00C3EE9B /* ServiceRequest.swift */,
+				423BDA831F97774F00C3EE9B /* ServiceResponse.swift */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		4280C0D01F97341300075B3A /* Sending status */ = {
@@ -166,6 +183,7 @@
 		429228B41F96261000DCECDF /* VirgilMessenger */ = {
 			isa = PBXGroup;
 			children = (
+				423BDA7F1F97774F00C3EE9B /* Networking */,
 				423BDA761F97600A00C3EE9B /* ChatList */,
 				4280C0DB1F9734DD00075B3A /* Time Separator */,
 				4280C0D01F97341300075B3A /* Sending status */,
@@ -205,7 +223,6 @@
 		429228E11F963DB300DCECDF /* Twilio */ = {
 			isa = PBXGroup;
 			children = (
-				429228E61F963DCD00DCECDF /* TwilioCredentials.swift */,
 				429228E21F963DBE00DCECDF /* TwilioHelper.swift */,
 				429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */,
 			);
@@ -335,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
+				423BDA851F97774F00C3EE9B /* ServiceConnection.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* FakeMessageSender.swift in Sources */,
 				4280C0DA1F97341A00075B3A /* DemoTextMessageModel.swift in Sources */,
@@ -344,17 +362,19 @@
 				4280C0E11F9734DD00075B3A /* TimeSeparatorCollectionViewCell.swift in Sources */,
 				4280C0CE1F97340B00075B3A /* BaseMessageHandler.swift in Sources */,
 				4280C0DF1F9734DD00075B3A /* TimeSeparatorModel.swift in Sources */,
+				423BDA861F97774F00C3EE9B /* ServiceRequest.swift in Sources */,
 				429228DE1F9637A200DCECDF /* Log.swift in Sources */,
 				4280C0E01F9734DD00075B3A /* TimeSeparatorPresenter.swift in Sources */,
 				427D1E571F9656BB002F2CF3 /* DemoTextMessageViewModel.swift in Sources */,
+				423BDA871F97774F00C3EE9B /* ServiceResponse.swift in Sources */,
 				427D1E541F965569002F2CF3 /* FakeDataSource.swift in Sources */,
 				4280C0D91F97341A00075B3A /* DemoTextMessageHandler.swift in Sources */,
 				423BDA7E1F97602F00C3EE9B /* ChatListCell.swift in Sources */,
 				4280C0D51F97341300075B3A /* SendingStatusCollectionViewCell.swift in Sources */,
 				4280C0E31F97364F00075B3A /* DemoChatViewController.swift in Sources */,
 				429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */,
+				423BDA841F97774F00C3EE9B /* Connection.swift in Sources */,
 				4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */,
-				429228E71F963DCD00DCECDF /* TwilioCredentials.swift in Sources */,
 				429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */,
 				4280C0D41F97341300075B3A /* SendingStatusPresenter.swift in Sources */,
 			);
