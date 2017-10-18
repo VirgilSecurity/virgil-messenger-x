@@ -13,6 +13,8 @@ import ChattoAdditions
 class ChatViewController: BaseChatViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.chatDataSource = FakeDataSource(messages: [TextMessageItem(textMessage: TextMessage(text: "Test1"))], pageSize: 5)
     }
     
     var chatInputPresenter: BasicChatInputBarPresenter!
@@ -38,5 +40,13 @@ class ChatViewController: BaseChatViewController {
             // Your handling logic
         }
         return item
+    }
+    
+    override func createPresenterBuilders() -> [ChatItemType: [ChatItemPresenterBuilderProtocol]] {
+        let textMessagePresenter = TextMessagePresenterBuilder()
+        
+        return [
+            "text": [textMessagePresenter],
+        ]
     }
 }
