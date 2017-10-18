@@ -47,7 +47,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="CA9-Ie-zsH"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Chats" id="08I-p8-ei3"/>
+                    <navigationItem key="navigationItem" title="Chats" id="08I-p8-ei3">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="oan-Wf-XKV">
+                            <connections>
+                                <action selector="didTapAdd:" destination="zCn-H6-sIC" id="VOu-x5-Ohi"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="tableView" destination="OLu-Yi-HTK" id="p1B-2j-laF"/>

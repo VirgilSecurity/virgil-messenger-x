@@ -15,6 +15,37 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         self.goToChat(withUsername: username)
     }
     
+    @IBAction func didTapAdd(_ sender: Any) {
+        let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
+        
+        alertController.addTextField(configurationHandler: {
+            $0.placeholder = "Username"
+        })
+        
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            guard let username = alertController.textFields?.first?.text else {
+                return
+            }
+            
+            self.addChat(withUsername: username)
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in }))
+        
+        self.present(alertController, animated: true)
+    }
+    
+    private func addChat(withUsername username: String) {
+        TwilioHelper.sharedInstance.createChannel(withUsername: username) { error in
+            let title = error == nil ? "Success" : "Error"
+            
+            let alert = UIAlertController(title: title, message: "", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            
+            self.present(alert, animated: true)
+        }
+    }
+    
     private func goToChat(withUsername username: String) {
         self.performSegue(withIdentifier: "goToChat", sender: self)
     }

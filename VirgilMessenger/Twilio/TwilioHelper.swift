@@ -89,4 +89,30 @@ class TwilioHelper: NSObject {
             }
         }
     }
+    
+    func createChannel(withUsername username: String, completion: @escaping (Error?)->()) {
+        TwilioHelper.sharedInstance.channels.createChannel(options: [
+            TCHChannelOptionType: TCHChannelType.private,
+            TCHChannelOptionAttributes: [
+                "initiator": self.username,
+                "responder": username
+            ]
+        ]) { (result, channel) in
+            guard let channel = channel, result.isSuccessful() else {
+                Log.error("Error while creating chat with \(username): \(result.error?.localizedDescription ?? "")")
+                completion(result.error ?? NSError())
+                return
+            }
+            
+            channel.members?.invite(byIdentity: username) { (result) in
+                guard result.isSuccessful() else {
+                    Log.error("Error while inviting member \(username): \(result.error?.localizedDescription ?? "")")
+                    completion(result.error ?? NSError())
+                    return
+                }
+                
+                completion(nil)
+            }
+        }
+    }
 }
