@@ -46,6 +46,7 @@
 		429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E21F963DBE00DCECDF /* TwilioHelper.swift */; };
 		429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */; };
 		429228EB1F96405800DCECDF /* DemoChat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* DemoChat.storyboard */; };
+		42E8F8741F978A51007CB39F /* PKHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42E8F8731F978A51007CB39F /* PKHUD.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -103,6 +104,7 @@
 		429228E21F963DBE00DCECDF /* TwilioHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwilioHelper.swift; sourceTree = "<group>"; };
 		429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Delegate.swift"; sourceTree = "<group>"; };
 		429228EA1F96405800DCECDF /* DemoChat.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DemoChat.storyboard; sourceTree = "<group>"; };
+		42E8F8731F978A51007CB39F /* PKHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PKHUD.framework; path = Carthage/Build/iOS/PKHUD.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42E8F8741F978A51007CB39F /* PKHUD.framework in Frameworks */,
 				429228CC1F96287B00DCECDF /* ChattoAdditions.framework in Frameworks */,
 				429228CD1F96287B00DCECDF /* Chatto.framework in Frameworks */,
 				429228CE1F96287B00DCECDF /* VirgilCrypto.framework in Frameworks */,
@@ -211,6 +214,7 @@
 		429228C71F96287A00DCECDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				42E8F8731F978A51007CB39F /* PKHUD.framework */,
 				429228D11F96324B00DCECDF /* TwilioChatClient.framework */,
 				429228C91F96287A00DCECDF /* Chatto.framework */,
 				429228C81F96287A00DCECDF /* ChattoAdditions.framework */,
@@ -324,6 +328,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCrypto.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Chatto.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/ChattoAdditions.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PKHUD.framework",
 			);
 			outputPaths = (
 			);

@@ -1,2 +1,3 @@
 github "VirgilSecurity/virgil-sdk-x" ~> 4.7.0
 github "badoo/Chatto"
+github "pkluz/PKHUD"
