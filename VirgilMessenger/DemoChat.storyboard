@@ -12,7 +12,7 @@
         <!--Demo Chat View Controller-->
         <scene sceneID="FVg-D0-4Ys">
             <objects>
-                <viewController id="XsE-hb-Si4" customClass="DemoChatViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DemoChatViewController" id="XsE-hb-Si4" customClass="DemoChatViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="oyi-Ji-t0r">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
