@@ -69,7 +69,6 @@ class DemoChatViewController: BaseChatViewController {
             viewModelBuilder: DemoTextMessageViewModelBuilder(),
             interactionHandler: DemoTextMessageHandler(baseHandler: self.baseMessageHandler)
         )
-        textMessagePresenter.baseMessageStyle = BaseMessageCollectionViewCellAvatarStyle()
 
         return [
             DemoTextMessageModel.chatItemType: [
