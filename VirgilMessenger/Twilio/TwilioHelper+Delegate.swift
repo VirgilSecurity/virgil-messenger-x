@@ -10,18 +10,56 @@ import Foundation
 import TwilioChatClient
 
 extension TwilioHelper: TwilioChatClientDelegate {
-    func chatClient(_ client: TwilioChatClient, connectionStateUpdated state: TCHClientConnectionState) {
-        let stateStr = { () -> String in
-            switch state {
-            case .unknown:       return "unknown"
-            case .disconnected:  return "disconnected"
-            case .connected:     return "connected"
-            case .connecting:    return "connecting"
-            case .denied:        return "denied"
-            case .error:         return "error"
-            }
-        }()
+    enum Notifications: String {
+        case ConnectionStateUpdated = "TwilioHelper.Notifications.ConnectionStateUpdated"
+        case MessageAdded           = "TwilioHelper.Notifications.MessageAdded"
+    }
+    
+    enum NotificationKeys: String {
+        case NewState = "TwilioHelper.NotificationKeys.NewState"
+        case Message  = "TwilioHelper.NotificationKeys.Message"
+    }
+    
+    enum ConnectionState: String {
+        case unknown       = "unknown"
+        case disconnected  = "disconnected"
+        case connected     = "connected"
+        case connecting    = "connecting"
+        case denied        = "denied"
+        case error         = "error"
         
+        init(state: TCHClientConnectionState) {
+            switch state {
+            case .unknown:       self = .unknown
+            case .disconnected:  self = .disconnected
+            case .connected:     self = .connected
+            case .connecting:    self = .connecting
+            case .denied:        self = .denied
+            case .error:         self = .error
+            }
+        }
+    }
+    
+    func chatClient(_ client: TwilioChatClient, connectionStateUpdated state: TCHClientConnectionState) {
+        let connectionState = ConnectionState(state: state)
+        
+        let stateStr = connectionState.rawValue
         Log.debug("\(stateStr)")
+        
+        NotificationCenter.default.post(
+            name: Notification.Name(rawValue: TwilioHelper.Notifications.ConnectionStateUpdated.rawValue),
+            object: self,
+            userInfo: [
+                TwilioHelper.NotificationKeys.NewState.rawValue: connectionState
+            ])
+    }
+    
+    func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
+        NotificationCenter.default.post(
+            name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+            object: self,
+            userInfo: [
+                TwilioHelper.NotificationKeys.Message.rawValue: message
+            ])
     }
 }

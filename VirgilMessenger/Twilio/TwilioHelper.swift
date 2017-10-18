@@ -16,7 +16,8 @@ class TwilioHelper: NSObject {
         super.init()
     }
     
-    private var client: TwilioChatClient!
+    private(set) var client: TwilioChatClient!
+    private(set) var channels: TCHChannels!
     
     func initialize() {
         let token = TwilioCredentials.token
@@ -28,8 +29,14 @@ class TwilioHelper: NSObject {
                 return
             }
             
+            guard let channels = client.channelsList() else {
+                Log.error("Error while initializing Twilio channels")
+                return
+            }
+            
             Log.debug("Successfully initialized Twilio")
             self.client = client
+            self.channels = channels
         }
     }
 }
