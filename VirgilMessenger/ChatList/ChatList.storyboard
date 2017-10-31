@@ -64,10 +64,10 @@
             </objects>
             <point key="canvasLocation" x="324" y="-503"/>
         </scene>
-        <!--DemoChat-->
+        <!--Chat-->
         <scene sceneID="MfS-mj-Fmn">
             <objects>
-                <viewControllerPlaceholder storyboardName="DemoChat" id="tSb-ds-G5u" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="Chat" id="tSb-ds-G5u" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="oYS-SJ-ocV"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="re4-ce-Aav" userLabel="First Responder" sceneMemberID="firstResponder"/>

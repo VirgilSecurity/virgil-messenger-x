@@ -25,25 +25,40 @@
 import Foundation
 import Chatto
 
-class FakeDataSource: ChatDataSourceProtocol {
+class DataSource: ChatDataSourceProtocol {
     var nextMessageId: Int = 0
     let preferredMaxWindowSize = 500
-
+    
     var slidingWindow: SlidingDataSource<ChatItemProtocol>!
-    init(count: Int, pageSize: Int) {
-        self.slidingWindow = SlidingDataSource(count: count, pageSize: pageSize) { [weak self] () -> ChatItemProtocol in
-            guard let sSelf = self else { return FakeMessageFactory.createChatItem("") }
-            defer { sSelf.nextMessageId += 1 }
-            return FakeMessageFactory.createChatItem("\(sSelf.nextMessageId)")
+    init(pageSize: Int) {
+        
+        self.slidingWindow = SlidingDataSource(pageSize: pageSize)
+        
+        //FIXME
+        NotificationCenter.default.addObserver(forName:Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+                    object:nil, queue:nil) {
+                        notification in
+                        TwilioHelper.sharedInstance.getLastMessages(count: 1) { messages in
+                            for message in messages {
+                                self.slidingWindow.insertItem(message!, position: .bottom)
+                                self.nextMessageId += 1
+                            }
+                            self.delegate?.chatDataSourceDidUpdate(self, updateType: .pagination)
+                        }
+        }
+        
+        
+        TwilioHelper.sharedInstance.getLastMessages(count: pageSize) { messages in
+            for message in messages {
+                self.slidingWindow.insertItem(message!, position: .bottom)
+                self.nextMessageId += 1
+            }
+            self.delegate?.chatDataSourceDidUpdate(self, updateType: .reload)
         }
     }
 
-    init(messages: [ChatItemProtocol], pageSize: Int) {
-        self.slidingWindow = SlidingDataSource(items: messages, pageSize: pageSize)
-    }
-
-    lazy var messageSender: FakeMessageSender = {
-        let sender = FakeMessageSender()
+    lazy var messageSender: MessageSender = {
+        let sender = MessageSender()
         sender.onMessageChanged = { [weak self] (message) in
             guard let sSelf = self else { return }
             sSelf.delegate?.chatDataSourceDidUpdate(sSelf)
@@ -80,15 +95,8 @@ class FakeDataSource: ChatDataSourceProtocol {
     func addTextMessage(_ text: String) {
         let uid = "\(self.nextMessageId)"
         self.nextMessageId += 1
-        let message = createTextMessageModel(uid, text: text, isIncoming: false)
+        let message = createTextMessageModel(uid, text: text, isIncoming: false, status: .sending)
         self.messageSender.sendMessage(message)
-        self.slidingWindow.insertItem(message, position: .bottom)
-        self.delegate?.chatDataSourceDidUpdate(self)
-    }
-
-    func addRandomIncomingMessage() {
-        let message = FakeMessageFactory.createChatItem("\(self.nextMessageId)", isIncoming: true)
-        self.nextMessageId += 1
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
     }

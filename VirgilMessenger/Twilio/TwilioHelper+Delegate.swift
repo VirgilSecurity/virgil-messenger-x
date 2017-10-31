@@ -55,11 +55,14 @@ extension TwilioHelper: TwilioChatClientDelegate {
     }
     
     func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
-        NotificationCenter.default.post(
-            name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
-            object: self,
-            userInfo: [
-                TwilioHelper.NotificationKeys.Message.rawValue: message
-            ])
+        
+        if (channel == self.channels.subscribedChannels()[self.selectedChannel] && message.author != self.username) {
+            NotificationCenter.default.post(
+                name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+                object: self,
+                userInfo: [
+                    TwilioHelper.NotificationKeys.Message.rawValue: message
+                ])
+        }
     }
 }

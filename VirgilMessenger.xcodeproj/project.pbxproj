@@ -15,13 +15,13 @@
 		423BDA851F97774F00C3EE9B /* ServiceConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA811F97774F00C3EE9B /* ServiceConnection.swift */; };
 		423BDA861F97774F00C3EE9B /* ServiceRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA821F97774F00C3EE9B /* ServiceRequest.swift */; };
 		423BDA871F97774F00C3EE9B /* ServiceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA831F97774F00C3EE9B /* ServiceResponse.swift */; };
-		427D1E541F965569002F2CF3 /* FakeDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D1E521F965568002F2CF3 /* FakeDataSource.swift */; };
+		427D1E541F965569002F2CF3 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D1E521F965568002F2CF3 /* DataSource.swift */; };
 		427D1E551F965569002F2CF3 /* SlidingDatasSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D1E531F965569002F2CF3 /* SlidingDatasSource.swift */; };
 		427D1E571F9656BB002F2CF3 /* DemoTextMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D1E561F9656BB002F2CF3 /* DemoTextMessageViewModel.swift */; };
-		4280C0CC1F97340B00075B3A /* FakeMessageFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0C81F97340A00075B3A /* FakeMessageFactory.swift */; };
+		4280C0CC1F97340B00075B3A /* MessageFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0C81F97340A00075B3A /* MessageFactory.swift */; };
 		4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0C91F97340B00075B3A /* ChatItemsDemoDecorator.swift */; };
 		4280C0CE1F97340B00075B3A /* BaseMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0CA1F97340B00075B3A /* BaseMessageHandler.swift */; };
-		4280C0CF1F97340B00075B3A /* FakeMessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0CB1F97340B00075B3A /* FakeMessageSender.swift */; };
+		4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0CB1F97340B00075B3A /* MessageSender.swift */; };
 		4280C0D41F97341300075B3A /* SendingStatusPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0D11F97341300075B3A /* SendingStatusPresenter.swift */; };
 		4280C0D51F97341300075B3A /* SendingStatusCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0D21F97341300075B3A /* SendingStatusCollectionViewCell.swift */; };
 		4280C0D61F97341300075B3A /* SendingStatusCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4280C0D31F97341300075B3A /* SendingStatusCollectionViewCell.xib */; };
@@ -30,7 +30,7 @@
 		4280C0DF1F9734DD00075B3A /* TimeSeparatorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0DC1F9734DD00075B3A /* TimeSeparatorModel.swift */; };
 		4280C0E01F9734DD00075B3A /* TimeSeparatorPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0DD1F9734DD00075B3A /* TimeSeparatorPresenter.swift */; };
 		4280C0E11F9734DD00075B3A /* TimeSeparatorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0DE1F9734DD00075B3A /* TimeSeparatorCollectionViewCell.swift */; };
-		4280C0E31F97364F00075B3A /* DemoChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0E21F97364F00075B3A /* DemoChatViewController.swift */; };
+		4280C0E31F97364F00075B3A /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0E21F97364F00075B3A /* ChatViewController.swift */; };
 		429228B61F96261000DCECDF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228B51F96261000DCECDF /* AppDelegate.swift */; };
 		429228B81F96261000DCECDF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228B71F96261000DCECDF /* ViewController.swift */; };
 		429228BB1F96261000DCECDF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228B91F96261000DCECDF /* Main.storyboard */; };
@@ -45,7 +45,7 @@
 		429228DE1F9637A200DCECDF /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
 		429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E21F963DBE00DCECDF /* TwilioHelper.swift */; };
 		429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */; };
-		429228EB1F96405800DCECDF /* DemoChat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* DemoChat.storyboard */; };
+		429228EB1F96405800DCECDF /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* Chat.storyboard */; };
 		42E8F8741F978A51007CB39F /* PKHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42E8F8731F978A51007CB39F /* PKHUD.framework */; };
 /* End PBXBuildFile section */
 
@@ -72,13 +72,13 @@
 		423BDA811F97774F00C3EE9B /* ServiceConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceConnection.swift; sourceTree = "<group>"; };
 		423BDA821F97774F00C3EE9B /* ServiceRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceRequest.swift; sourceTree = "<group>"; };
 		423BDA831F97774F00C3EE9B /* ServiceResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceResponse.swift; sourceTree = "<group>"; };
-		427D1E521F965568002F2CF3 /* FakeDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeDataSource.swift; sourceTree = "<group>"; };
+		427D1E521F965568002F2CF3 /* DataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		427D1E531F965569002F2CF3 /* SlidingDatasSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlidingDatasSource.swift; sourceTree = "<group>"; };
 		427D1E561F9656BB002F2CF3 /* DemoTextMessageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoTextMessageViewModel.swift; sourceTree = "<group>"; };
-		4280C0C81F97340A00075B3A /* FakeMessageFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeMessageFactory.swift; sourceTree = "<group>"; };
+		4280C0C81F97340A00075B3A /* MessageFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageFactory.swift; sourceTree = "<group>"; };
 		4280C0C91F97340B00075B3A /* ChatItemsDemoDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatItemsDemoDecorator.swift; sourceTree = "<group>"; };
 		4280C0CA1F97340B00075B3A /* BaseMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseMessageHandler.swift; sourceTree = "<group>"; };
-		4280C0CB1F97340B00075B3A /* FakeMessageSender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeMessageSender.swift; sourceTree = "<group>"; };
+		4280C0CB1F97340B00075B3A /* MessageSender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageSender.swift; sourceTree = "<group>"; };
 		4280C0D11F97341300075B3A /* SendingStatusPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendingStatusPresenter.swift; sourceTree = "<group>"; };
 		4280C0D21F97341300075B3A /* SendingStatusCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendingStatusCollectionViewCell.swift; sourceTree = "<group>"; };
 		4280C0D31F97341300075B3A /* SendingStatusCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SendingStatusCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -87,7 +87,7 @@
 		4280C0DC1F9734DD00075B3A /* TimeSeparatorModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeSeparatorModel.swift; sourceTree = "<group>"; };
 		4280C0DD1F9734DD00075B3A /* TimeSeparatorPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeSeparatorPresenter.swift; sourceTree = "<group>"; };
 		4280C0DE1F9734DD00075B3A /* TimeSeparatorCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeSeparatorCollectionViewCell.swift; sourceTree = "<group>"; };
-		4280C0E21F97364F00075B3A /* DemoChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoChatViewController.swift; sourceTree = "<group>"; };
+		4280C0E21F97364F00075B3A /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		429228B21F96261000DCECDF /* VirgilMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirgilMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		429228B51F96261000DCECDF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		429228B71F96261000DCECDF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -103,7 +103,7 @@
 		429228DD1F9637A200DCECDF /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		429228E21F963DBE00DCECDF /* TwilioHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwilioHelper.swift; sourceTree = "<group>"; };
 		429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Delegate.swift"; sourceTree = "<group>"; };
-		429228EA1F96405800DCECDF /* DemoChat.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DemoChat.storyboard; sourceTree = "<group>"; };
+		429228EA1F96405800DCECDF /* Chat.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Chat.storyboard; sourceTree = "<group>"; };
 		42E8F8731F978A51007CB39F /* PKHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PKHUD.framework; path = Carthage/Build/iOS/PKHUD.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -124,6 +124,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		16E22D871FA896BE008D32D9 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				16E22D881FA8ACAB008D32D9 /* Decorations */,
+				429228EE1F96454400DCECDF /* TextMessage */,
+				4280C0E21F97364F00075B3A /* ChatViewController.swift */,
+				4280C0CA1F97340B00075B3A /* BaseMessageHandler.swift */,
+				4280C0CB1F97340B00075B3A /* MessageSender.swift */,
+				427D1E521F965568002F2CF3 /* DataSource.swift */,
+				427D1E531F965569002F2CF3 /* SlidingDatasSource.swift */,
+				429228EA1F96405800DCECDF /* Chat.storyboard */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
+		16E22D881FA8ACAB008D32D9 /* Decorations */ = {
+			isa = PBXGroup;
+			children = (
+				4280C0DB1F9734DD00075B3A /* Time Separator */,
+				4280C0D01F97341300075B3A /* Sending status */,
+				4280C0C91F97340B00075B3A /* ChatItemsDemoDecorator.swift */,
+			);
+			path = Decorations;
+			sourceTree = "<group>";
+		};
 		423BDA761F97600A00C3EE9B /* ChatList */ = {
 			isa = PBXGroup;
 			children = (
@@ -188,22 +213,12 @@
 			children = (
 				423BDA7F1F97774F00C3EE9B /* Networking */,
 				423BDA761F97600A00C3EE9B /* ChatList */,
-				4280C0DB1F9734DD00075B3A /* Time Separator */,
-				4280C0D01F97341300075B3A /* Sending status */,
-				429228EE1F96454400DCECDF /* TextMessage */,
+				16E22D871FA896BE008D32D9 /* Chat */,
 				429228E11F963DB300DCECDF /* Twilio */,
-				4280C0E21F97364F00075B3A /* DemoChatViewController.swift */,
-				4280C0CA1F97340B00075B3A /* BaseMessageHandler.swift */,
-				4280C0C91F97340B00075B3A /* ChatItemsDemoDecorator.swift */,
-				4280C0C81F97340A00075B3A /* FakeMessageFactory.swift */,
-				4280C0CB1F97340B00075B3A /* FakeMessageSender.swift */,
-				427D1E521F965568002F2CF3 /* FakeDataSource.swift */,
-				427D1E531F965569002F2CF3 /* SlidingDatasSource.swift */,
 				429228DD1F9637A200DCECDF /* Log.swift */,
 				429228B51F96261000DCECDF /* AppDelegate.swift */,
 				429228B71F96261000DCECDF /* ViewController.swift */,
 				429228B91F96261000DCECDF /* Main.storyboard */,
-				429228EA1F96405800DCECDF /* DemoChat.storyboard */,
 				429228BC1F96261000DCECDF /* Assets.xcassets */,
 				429228BE1F96261000DCECDF /* LaunchScreen.storyboard */,
 				429228C11F96261000DCECDF /* Info.plist */,
@@ -239,6 +254,7 @@
 				4280C0D71F97341A00075B3A /* DemoTextMessageHandler.swift */,
 				4280C0D81F97341A00075B3A /* DemoTextMessageModel.swift */,
 				427D1E561F9656BB002F2CF3 /* DemoTextMessageViewModel.swift */,
+				4280C0C81F97340A00075B3A /* MessageFactory.swift */,
 			);
 			path = TextMessage;
 			sourceTree = "<group>";
@@ -309,7 +325,7 @@
 				429228C01F96261000DCECDF /* LaunchScreen.storyboard in Resources */,
 				429228BD1F96261000DCECDF /* Assets.xcassets in Resources */,
 				4280C0D61F97341300075B3A /* SendingStatusCollectionViewCell.xib in Resources */,
-				429228EB1F96405800DCECDF /* DemoChat.storyboard in Resources */,
+				429228EB1F96405800DCECDF /* Chat.storyboard in Resources */,
 				423BDA791F97600A00C3EE9B /* ChatListCell.xib in Resources */,
 				429228BB1F96261000DCECDF /* Main.storyboard in Resources */,
 			);
@@ -359,10 +375,10 @@
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
 				423BDA851F97774F00C3EE9B /* ServiceConnection.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
-				4280C0CF1F97340B00075B3A /* FakeMessageSender.swift in Sources */,
+				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
 				4280C0DA1F97341A00075B3A /* DemoTextMessageModel.swift in Sources */,
 				423BDA7C1F97601700C3EE9B /* ChatListViewController.swift in Sources */,
-				4280C0CC1F97340B00075B3A /* FakeMessageFactory.swift in Sources */,
+				4280C0CC1F97340B00075B3A /* MessageFactory.swift in Sources */,
 				427D1E551F965569002F2CF3 /* SlidingDatasSource.swift in Sources */,
 				4280C0E11F9734DD00075B3A /* TimeSeparatorCollectionViewCell.swift in Sources */,
 				4280C0CE1F97340B00075B3A /* BaseMessageHandler.swift in Sources */,
@@ -372,11 +388,11 @@
 				4280C0E01F9734DD00075B3A /* TimeSeparatorPresenter.swift in Sources */,
 				427D1E571F9656BB002F2CF3 /* DemoTextMessageViewModel.swift in Sources */,
 				423BDA871F97774F00C3EE9B /* ServiceResponse.swift in Sources */,
-				427D1E541F965569002F2CF3 /* FakeDataSource.swift in Sources */,
+				427D1E541F965569002F2CF3 /* DataSource.swift in Sources */,
 				4280C0D91F97341A00075B3A /* DemoTextMessageHandler.swift in Sources */,
 				423BDA7E1F97602F00C3EE9B /* ChatListCell.swift in Sources */,
 				4280C0D51F97341300075B3A /* SendingStatusCollectionViewCell.swift in Sources */,
-				4280C0E31F97364F00075B3A /* DemoChatViewController.swift in Sources */,
+				4280C0E31F97364F00075B3A /* ChatViewController.swift in Sources */,
 				429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */,
 				423BDA841F97774F00C3EE9B /* Connection.swift in Sources */,
 				4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */,
@@ -518,17 +534,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A59V7K656Y;
+				DEVELOPMENT_TEAM = MS3LY2W55D;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgilsecurity.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -538,17 +557,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A59V7K656Y;
+				DEVELOPMENT_TEAM = MS3LY2W55D;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgilsecurity.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

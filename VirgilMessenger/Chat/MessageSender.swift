@@ -25,12 +25,13 @@
 import Foundation
 import Chatto
 import ChattoAdditions
+import TwilioChatClient
 
 public protocol DemoMessageModelProtocol: MessageModelProtocol {
     var status: MessageStatus { get set }
 }
 
-public class FakeMessageSender {
+public class MessageSender {
 
     public var onMessageChanged: ((_ message: DemoMessageModelProtocol) -> Void)?
 
@@ -52,20 +53,29 @@ public class FakeMessageSender {
             self.updateMessage(message, status: .sending)
             self.fakeMessageStatus(message)
         case .sending:
-            switch arc4random_uniform(100) % 5 {
-            case 0:
-                if arc4random_uniform(100) % 2 == 0 {
-                    self.updateMessage(message, status: .failed)
-                } else {
-                    self.updateMessage(message, status: .success)
+            //FIXME
+            let msg = message as! DemoTextMessageModel
+            if let messages = TwilioHelper.sharedInstance.channels.subscribedChannels()[TwilioHelper.sharedInstance.selectedChannel].messages {
+                let options = TCHMessageOptions().withBody(msg.body)
+                messages.sendMessage(with: options) { result, msg in
+                    if result.isSuccessful() {
+                        self.updateMessage(message, status: .success)
+                        return
+                    } else {
+                        self.updateMessage(message, status: .failed)
+                        return
+                    }
                 }
-            default:
-                let delaySeconds: Double = Double(arc4random_uniform(1200)) / 1000.0
+                /*
+                let delaySeconds: Double = 5
                 let delayTime = DispatchTime.now() + Double(Int64(delaySeconds * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
                 DispatchQueue.main.asyncAfter(deadline: delayTime) {
-                    self.fakeMessageStatus(message)
-                }
+                    if (message.status != .success) {
+                        self.updateMessage(message, status: .failed)
+                    }
+                }*/
             }
+             
         }
     }
 

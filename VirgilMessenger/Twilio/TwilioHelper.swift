@@ -10,9 +10,8 @@ import Foundation
 import TwilioChatClient
 
 class TwilioHelper: NSObject {
-    static func initialize(username: String, device: String) {
+    static func authorize(username: String, device: String) {
         self.sharedInstance = TwilioHelper(username: username, device: device)
-        self.sharedInstance.initialize()
     }
     
     private(set) static var sharedInstance: TwilioHelper!
@@ -25,14 +24,15 @@ class TwilioHelper: NSObject {
     }
     
     private let queue = DispatchQueue(label: "TwilioHelper")
-    private let username: String
+    let username: String
     private let device: String
     private let connection = ServiceConnection()
     private(set) var client: TwilioChatClient!
     private(set) var channels: TCHChannels!
     private(set) var users: TCHUsers!
+    var selectedChannel:Int!
     
-    func initialize() {
+    func initialize(completion: @escaping ()->()) {
         Log.debug("Initializing Twilio")
         
         self.queue.async {
@@ -76,7 +76,7 @@ class TwilioHelper: NSObject {
                     Log.error("Error while initializing Twilio channels")
                     return
                 }
-                
+
                 guard let users = client.users() else {
                     Log.error("Error while initializing Twilio users")
                     return
@@ -86,12 +86,15 @@ class TwilioHelper: NSObject {
                 self.client = client
                 self.channels = channels
                 self.users = users
+                
+                completion()
             }
         }
     }
     
     func createChannel(withUsername username: String, completion: @escaping (Error?)->()) {
         TwilioHelper.sharedInstance.channels.createChannel(options: [
+            TCHChannelOptionFriendlyName: username,
             TCHChannelOptionType: TCHChannelType.private,
             TCHChannelOptionAttributes: [
                 "initiator": self.username,
@@ -114,5 +117,27 @@ class TwilioHelper: NSObject {
                 completion(nil)
             }
         }
+    }
+    
+    func getLastMessages(count: Int, completion: @escaping ([DemoTextMessageModel?])->()) {
+        self.channels.subscribedChannels()[self.selectedChannel].messages?.getLastWithCount(UInt(count), completion: { (result, messages) in
+            var ret = [DemoTextMessageModel]()
+            for message in messages! {
+                let isIncoming = message.author == self.username ? false : true
+                ret.append(createTextMessageModel("\(ret.count)", text: message.body!, isIncoming: isIncoming, status: .success))
+            }
+            completion(ret)
+        })
+    }
+ 
+    func getMessages(before: Int, withCount: Int, completion: @escaping ([DemoTextMessageModel?])->()) {
+        self.channels.subscribedChannels()[self.selectedChannel].messages?.getBefore(UInt(before), withCount: UInt(withCount), completion: { (result, messages) in
+            var ret = [DemoTextMessageModel]()
+            for message in messages! {
+                let isIncoming = message.author == self.username ? false : true
+                ret.append(createTextMessageModel("\(ret.count)", text: message.body!, isIncoming: isIncoming, status: .success))
+            }
+            completion(ret)
+        })
     }
 }

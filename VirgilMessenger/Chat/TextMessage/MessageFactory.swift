@@ -23,19 +23,27 @@
 */
 
 import Foundation
+import Chatto
 import ChattoAdditions
 
-public class DemoTextMessageModel: TextMessageModel<MessageModel>, DemoMessageModelProtocol {
-    public override init(messageModel: MessageModel, text: String) {
-        super.init(messageModel: messageModel, text: text)
-    }
+func createTextMessageModel(_ uid: String, text: String, isIncoming: Bool, status: MessageStatus) -> DemoTextMessageModel {
+    let messageModel = createMessageModel(uid, isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: status)
+    let textMessageModel = DemoTextMessageModel(messageModel: messageModel, text: text)
+    return textMessageModel
+}
 
-    public var status: MessageStatus {
-        get {
-            return self._messageModel.status
-        }
-        set {
-            self._messageModel.status = newValue
-        }
+func createMessageModel(_ uid: String, isIncoming: Bool, type: String, status: MessageStatus) -> MessageModel {
+    let senderId = isIncoming ? "1" : "2"
+    let messageStatus = status
+    let messageModel = MessageModel(uid: uid, senderId: senderId, type: type, isIncoming: isIncoming, date: Date(), status: messageStatus)
+    return messageModel
+}
+
+extension TextMessageModel {
+    static var chatItemType: ChatItemType {
+        return "text"
     }
 }
+
+
+

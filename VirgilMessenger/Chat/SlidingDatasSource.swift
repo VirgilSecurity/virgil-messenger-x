@@ -42,30 +42,11 @@ public class SlidingDataSource<Element> {
         return Array(items[offset..<offset+self.windowCount])
     }
 
-    public init(count: Int, pageSize: Int, itemGenerator: (() -> Element)?) {
-        self.windowOffset = count
-        self.itemsOffset = count
+    init(pageSize: Int) {
+        self.windowOffset = 0
+        self.itemsOffset = 0
         self.windowCount = 0
         self.pageSize = pageSize
-        self.itemGenerator = itemGenerator
-        self.generateItems(min(pageSize, count), position: .top)
-    }
-
-    public convenience init(items: [Element], pageSize: Int) {
-        self.init(count: 0, pageSize: pageSize, itemGenerator: nil)
-        for item in items {
-            self.insertItem(item, position: .bottom)
-        }
-    }
-
-    private func generateItems(_ count: Int, position: InsertPosition) {
-        guard count > 0 else { return }
-        guard let itemGenerator = self.itemGenerator else {
-            fatalError("Can't create messages without a generator")
-        }
-        for _ in 0..<count {
-            self.insertItem(itemGenerator(), position: .top)
-        }
     }
 
     public func insertItem(_ item: Element, position: InsertPosition) {
@@ -98,10 +79,10 @@ public class SlidingDataSource<Element> {
         let previousWindowOffset = self.windowOffset
         let previousWindowCount = self.windowCount
         let nextWindowOffset = max(0, self.windowOffset - self.pageSize)
-        let messagesNeeded = self.itemsOffset - nextWindowOffset
-        if messagesNeeded > 0 {
-            self.generateItems(messagesNeeded, position: .top)
-        }
+        _ = self.itemsOffset - nextWindowOffset
+        
+        //TODO loading 50 more messages
+        
         let newItemsCount = previousWindowOffset - nextWindowOffset
         self.windowOffset = nextWindowOffset
         self.windowCount = previousWindowCount + newItemsCount

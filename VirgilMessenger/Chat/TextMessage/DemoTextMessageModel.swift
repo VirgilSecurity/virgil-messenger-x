@@ -23,37 +23,22 @@
 */
 
 import Foundation
-import Chatto
 import ChattoAdditions
 
-public protocol DemoMessageViewModelProtocol {
-    var messageModel: DemoMessageModelProtocol { get }
-}
-
-class BaseMessageHandler {
-
-    private let messageSender: FakeMessageSender
-    init (messageSender: FakeMessageSender) {
-        self.messageSender = messageSender
-    }
-    func userDidTapOnFailIcon(viewModel: DemoMessageViewModelProtocol) {
-        print("userDidTapOnFailIcon")
-        self.messageSender.sendMessage(viewModel.messageModel)
+public class DemoTextMessageModel: TextMessageModel<MessageModel>, DemoMessageModelProtocol {
+    public override init(messageModel: MessageModel, text: String) {
+        self.body = text
+        super.init(messageModel: messageModel, text: text)
     }
 
-    func userDidTapOnAvatar(viewModel: MessageViewModelProtocol) {
-        print("userDidTapOnAvatar")
-    }
-
-    func userDidTapOnBubble(viewModel: DemoMessageViewModelProtocol) {
-        print("userDidTapOnBubble")
-    }
-
-    func userDidBeginLongPressOnBubble(viewModel: DemoMessageViewModelProtocol) {
-        print("userDidBeginLongPressOnBubble")
-    }
-
-    func userDidEndLongPressOnBubble(viewModel: DemoMessageViewModelProtocol) {
-        print("userDidEndLongPressOnBubble")
+    private(set) var body: String
+    
+    public var status: MessageStatus {
+        get {
+            return self._messageModel.status
+        }
+        set {
+            self._messageModel.status = newValue
+        }
     }
 }

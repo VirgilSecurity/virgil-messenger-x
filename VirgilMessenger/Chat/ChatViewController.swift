@@ -26,10 +26,10 @@ import UIKit
 import Chatto
 import ChattoAdditions
 
-class DemoChatViewController: BaseChatViewController {
-    var messageSender: FakeMessageSender!
+class ChatViewController: BaseChatViewController {
+    var messageSender: MessageSender!
     
-    var dataSource: FakeDataSource! {
+    var dataSource: DataSource! {
         didSet {
             self.chatDataSource = self.dataSource
         }
@@ -42,15 +42,7 @@ class DemoChatViewController: BaseChatViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let image = UIImage(named: "bubble-incoming-tail-border", in: Bundle(for: DemoChatViewController.self), compatibleWith: nil)?.bma_tintWithColor(.blue)
         super.chatItemsDecorator = ChatItemsDemoDecorator()
-        let addIncomingMessageButton = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(DemoChatViewController.addRandomIncomingMessage))
-        self.navigationItem.rightBarButtonItem = addIncomingMessageButton
-    }
-
-    @objc
-    private func addRandomIncomingMessage() {
-        self.dataSource.addRandomIncomingMessage()
     }
 
     var chatInputPresenter: BasicChatInputBarPresenter!
