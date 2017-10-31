@@ -38,11 +38,12 @@ class ChatViewController: BaseChatViewController {
     lazy private var baseMessageHandler: BaseMessageHandler! = {
         return BaseMessageHandler(messageSender: self.messageSender)
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         super.chatItemsDecorator = ChatItemsDemoDecorator()
+        
+        self.navigationItem.title = self.title
     }
 
     var chatInputPresenter: BasicChatInputBarPresenter!

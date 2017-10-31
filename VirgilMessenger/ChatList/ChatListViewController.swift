@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PKHUD
 
 class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDelegate {
     
@@ -38,25 +39,35 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     }
     
     private func addChat(withUsername username: String) {
-        TwilioHelper.sharedInstance.createChannel(withUsername: username) { error in
-            let title = error == nil ? "Success" : "Error"
-            
-            let alert = UIAlertController(title: title, message: "", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            
-            self.present(alert, animated: true)
-            
-            self.tableView.reloadData()
+       
+        if (TwilioHelper.sharedInstance.channels.subscribedChannels().contains {$0.friendlyName == username}) {
+            self.alert(withTitle: "You already have that channel")
         }
+        else {
+            TwilioHelper.sharedInstance.createChannel(withUsername: username) { error in
+                let title = error == nil ? "Success" : "Error"
+                
+                self.alert(withTitle: title)
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+    private func alert(withTitle: String) {
+        let alert = UIAlertController(title: title, message: "", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        
+        self.present(alert, animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         
         if let chatController = segue.destination as? ChatViewController {
-            let pageSize = 10
+            let pageSize = 10000
             
             let dataSource = DataSource(pageSize: pageSize)
+            chatController.title = TwilioHelper.sharedInstance.channels.subscribedChannels()[TwilioHelper.sharedInstance.selectedChannel].friendlyName
             chatController.dataSource = dataSource
             chatController.messageSender = dataSource.messageSender
         }
@@ -70,9 +81,11 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         super.viewDidLoad()
         
         TwilioHelper.authorize(username: "test", device: "iPhone")
+        HUD.show(.progress)
         TwilioHelper.sharedInstance.initialize() {
             sleep(1)
             self.tableView.reloadData()
+            HUD.hide(animated: true)
         }
      
         self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main), forCellReuseIdentifier: ChatListCell.name)
