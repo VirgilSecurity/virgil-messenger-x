@@ -18,6 +18,11 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         self.performSegue(withIdentifier: "goToChat", sender: self)
     }
     
+    @IBAction func didTapLogOut(_ sender: Any) {
+        self.navigationController?.isNavigationBarHidden = true
+        self.performSegue(withIdentifier: "goToAuth", sender: self)
+    }
+    
     @IBAction func didTapAdd(_ sender: Any) {
         let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
         
@@ -81,6 +86,7 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         super.viewDidLoad()
         
         TwilioHelper.authorize(username: "test", device: "iPhone")
+        
         HUD.show(.progress)
         TwilioHelper.sharedInstance.initialize() {
             sleep(1)

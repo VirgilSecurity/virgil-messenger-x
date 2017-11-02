@@ -48,6 +48,18 @@
                         <viewLayoutGuide key="safeArea" id="CA9-Ie-zsH"/>
                     </view>
                     <navigationItem key="navigationItem" title="Chats" id="08I-p8-ei3">
+                        <barButtonItem key="leftBarButtonItem" title="Item" style="plain" id="GyV-fo-NjE">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="399-ID-Rwb">
+                                <rect key="frame" x="16" y="7" width="66" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="LOG OUT">
+                                    <color key="titleColor" red="0.63186123699999996" green="0.029410006190000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="didTapLogOut:" destination="zCn-H6-sIC" eventType="touchUpInside" id="ezN-wE-ucL"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="oan-Wf-XKV">
                             <connections>
                                 <action selector="didTapAdd:" destination="zCn-H6-sIC" id="VOu-x5-Ohi"/>
@@ -58,6 +70,7 @@
                     <connections>
                         <outlet property="tableView" destination="OLu-Yi-HTK" id="p1B-2j-laF"/>
                         <segue destination="tSb-ds-G5u" kind="show" identifier="goToChat" id="28z-YN-Bk9"/>
+                        <segue destination="QOb-P9-HDf" kind="show" identifier="goToAuth" animates="NO" id="Vl9-hp-JHi"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DDd-4J-wX9" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -73,6 +86,14 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="re4-ce-Aav" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1086" y="-516"/>
+        </scene>
+        <!--Authentication-->
+        <scene sceneID="8qy-SU-Wwb">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Authentication" id="QOb-P9-HDf" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VMt-P4-f7j" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1018" y="-415"/>
         </scene>
     </scenes>
 </document>

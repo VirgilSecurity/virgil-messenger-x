@@ -12,6 +12,7 @@ public class ServiceRequest: NSObject, HTTPRequest {
     let url: URL
     let method: Method
     let params: Any?
+    let headers: [String:String]?
     
     @objc public static let DefaultTimeout: TimeInterval = 45
     
@@ -22,10 +23,11 @@ public class ServiceRequest: NSObject, HTTPRequest {
         case delete = "DELETE"
     }
     
-    public init(url: URL, method: Method, params: Any? = nil) throws {
+    public init(url: URL, method: Method, headers: [String:String]? = nil, params: Any? = nil) throws {
         self.url = url
         self.method = method
         self.params = params
+        self.headers = headers
         
         super.init()
     }
@@ -59,6 +61,8 @@ public class ServiceRequest: NSObject, HTTPRequest {
             
         case .post, .put, .delete:
             request = URLRequest(url: self.url)
+            
+            request.allHTTPHeaderFields =  self.headers == nil ? [:] : self.headers
             
             let httpBody: Data?
             if let params = self.params {

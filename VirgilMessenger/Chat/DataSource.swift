@@ -47,7 +47,6 @@ class DataSource: ChatDataSourceProtocol {
                         }
         }
         
-        
         TwilioHelper.sharedInstance.getLastMessages(count: pageSize) { messages in
             for message in messages {
                 self.slidingWindow.insertItem(message!, position: .bottom)

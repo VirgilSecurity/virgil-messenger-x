@@ -14,7 +14,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        UIApplication.shared.delegate?.window??.rootViewController = UIStoryboard(name: ChatListViewController.name, bundle: Bundle.main).instantiateInitialViewController()!
+        UIApplication.shared.delegate?.window??.rootViewController = UIStoryboard(name: RegistrationViewController.name, bundle: Bundle.main).instantiateInitialViewController()!
     }
 
     override func didReceiveMemoryWarning() {

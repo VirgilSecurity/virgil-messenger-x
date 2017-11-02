@@ -81,7 +81,7 @@ public class SlidingDataSource<Element> {
         let nextWindowOffset = max(0, self.windowOffset - self.pageSize)
         _ = self.itemsOffset - nextWindowOffset
         
-        //TODO loading 50 more messages
+        //TODO loading more messages
         
         let newItemsCount = previousWindowOffset - nextWindowOffset
         self.windowOffset = nextWindowOffset
