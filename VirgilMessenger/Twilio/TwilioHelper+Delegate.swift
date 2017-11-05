@@ -13,11 +13,13 @@ extension TwilioHelper: TwilioChatClientDelegate {
     enum Notifications: String {
         case ConnectionStateUpdated = "TwilioHelper.Notifications.ConnectionStateUpdated"
         case MessageAdded           = "TwilioHelper.Notifications.MessageAdded"
+        case ChannelAdded           = "TwilioHelper.Notifications.ChannelAdded"
     }
     
     enum NotificationKeys: String {
         case NewState = "TwilioHelper.NotificationKeys.NewState"
         case Message  = "TwilioHelper.NotificationKeys.Message"
+        case Channel  = "TwilioHelper.NotificationKeys.Channel"
     }
     
     enum ConnectionState: String {
@@ -63,6 +65,23 @@ extension TwilioHelper: TwilioChatClientDelegate {
                 userInfo: [
                     TwilioHelper.NotificationKeys.Message.rawValue: message
                 ])
+        }
+    }
+    
+    func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
+        Log.debug("Channel added")
+        if(channel.status == TCHChannelStatus.invited) {
+            channel.join() { channelResult in
+                if channelResult.isSuccessful() {
+                    print("Successfully accepted invite.");
+                    NotificationCenter.default.post(
+                        name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                        object: self,
+                        userInfo: [:])
+                } else {
+                    print("Failed to accept invite.");
+                }
+            }
         }
     }
 }

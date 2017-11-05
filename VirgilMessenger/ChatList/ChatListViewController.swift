@@ -45,7 +45,10 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     
     private func addChat(withUsername username: String) {
        
-        if (TwilioHelper.sharedInstance.channels.subscribedChannels().contains {$0.friendlyName == username}) {
+        if (TwilioHelper.sharedInstance.channels.subscribedChannels().contains {($0.attributes()?.values.contains { (value) -> Bool in
+            value as! String == username
+            })!
+        }) {
             self.alert(withTitle: "You already have that channel")
         }
         else {
@@ -59,7 +62,7 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     }
     
     private func alert(withTitle: String) {
-        let alert = UIAlertController(title: title, message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: title, message: withTitle, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         
         self.present(alert, animated: true)
@@ -84,29 +87,40 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        TwilioHelper.authorize(username: "test", device: "iPhone")
-        
-        HUD.show(.progress)
-        TwilioHelper.sharedInstance.initialize() {
-            sleep(1)
-            self.tableView.reloadData()
-            HUD.hide(animated: true)
-        }
      
         self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main), forCellReuseIdentifier: ChatListCell.name)
         self.tableView.rowHeight = 45
         self.tableView.tableFooterView = UIView(frame: .zero)
         
         self.tableView.dataSource = self
+        
+        NotificationCenter.default.addObserver(forName:Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                                               object:nil, queue:nil) {
+                                                notification in
+                                                    self.tableView.reloadData()
+                                                }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
-        
-        cell.usernameLabel.text = TwilioHelper.sharedInstance.channels.subscribedChannels()[indexPath.row].friendlyName
         cell.tag = indexPath.row
         cell.delegate = self
+        
+        let channel = TwilioHelper.sharedInstance.channels.subscribedChannels()[indexPath.row]
+
+        guard let initiator = channel.attributes()!["initiator"] as? String,
+              let responder = channel.attributes()!["responder"] as? String
+        else {
+            Log.error("Error: Didn't find channel attributes")
+            cell.usernameLabel.text = "Error name"
+            return cell
+        }
+
+        cell.usernameLabel.text = initiator == TwilioHelper.sharedInstance.username ? responder : initiator
         
         return cell
     }

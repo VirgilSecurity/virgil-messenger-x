@@ -60,36 +60,56 @@ class RegistrationViewController: UIViewController {
     }
     
     @IBAction func signinButtonPressed(_ sender: Any) {
-        self.goToMainUi()
+        
+        guard let username = self.usernameTextField.text?.lowercased(), !username.isEmpty else {
+            return
+        }
+        
+        PKHUD.sharedHUD.contentView = PKHUDProgressView()
+        PKHUD.sharedHUD.show()
+        
+        VirgilHelper.sharedInstance.signIn(identity: username) { error in
+            guard error == nil else {
+                PKHUD.sharedHUD.hide() { _ in
+                    let controller = UIAlertController(title: "Error", message: "Error while signing in", preferredStyle: .alert)
+                    controller.addAction(UIAlertAction(title: "OK", style: .default))
+                    
+                    self.present(controller, animated: true)
+                }
+                return
+            }
+            
+            UserDefaults.standard.set(username, forKey: "last_username")
+            PKHUD.sharedHUD.hide() { _ in
+                self.goToMainUi()
+            }
+        }
     }
     
     @IBAction func signupButtonPressed(_ sender: Any) {
+        guard let username = self.usernameTextField.text?.lowercased(), !username.isEmpty else {
+            return
+        }
         
-        let crypto = VSSCrypto()
-        let keyPair = crypto.generateKeyPair()
-        let exportedPublicKey = crypto.export(keyPair.publicKey)
+        PKHUD.sharedHUD.contentView = PKHUDProgressView()
+        PKHUD.sharedHUD.show()
         
-        let identity = "unique1291234142"
-        let identityType = "name"
-        
-        let csr = VSSCreateUserCardRequest(identity: identity, identityType: identityType, publicKeyData: exportedPublicKey, data: ["deviceId": "testDevice123"])
-        
-        let signer = VSSRequestSigner(crypto: crypto)
-        try! signer.selfSign(csr, with: keyPair.privateKey)
-        
-        let exportedCSR = csr.exportData()
-        
-        print(exportedCSR)
-        
-        let request = try! ServiceRequest(url: URL(string: "https://twilio.virgilsecurity.com/v1/users")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["csr" : exportedCSR])
-        
-        let connection = ServiceConnection()
-        
-        
-        
-        //let response = try! connection.send(request)
-        
-
+        VirgilHelper.sharedInstance.signUp(identity: username) { error in
+            guard error == nil else {
+                PKHUD.sharedHUD.hide() { _ in
+                    let controller = UIAlertController(title: "Error", message: "Error while signing in", preferredStyle: .alert)
+                    controller.addAction(UIAlertAction(title: "OK", style: .default))
+                    
+                    self.present(controller, animated: true)
+                }
+                return
+            }
+            
+            UserDefaults.standard.set(username, forKey: "last_username")
+            PKHUD.sharedHUD.hide() { _ in
+                self.goToMainUi()
+            }
+        }
     }
     
     private func goToMainUi() {

@@ -32,53 +32,26 @@ class TwilioHelper: NSObject {
     private(set) var users: TCHUsers!
     var selectedChannel:Int!
     
-    func initialize(completion: @escaping ()->()) {
+    func initialize(token: String, completion: @escaping (Error?)->()) {
         Log.debug("Initializing Twilio")
-        
+
         self.queue.async {
-            let token: String
-            do {
-                let tokenRequest = try ServiceRequest(
-                    url: URL(string: "https://demo-ip-messaging.virgilsecurity.com/auth/twilio-token")!,
-                    method: .get,
-                    params: [
-                        "identity": self.username,
-                        "device": self.device
-                    ])
-                
-                let response = try self.connection.send(tokenRequest)
-                
-                guard let data = response.body else {
-                    throw NSError(domain: "TwilioHelper", code: -1, userInfo: [NSLocalizedDescriptionKey: "Empty data"])
-                }
-                
-                let resp = try JSONSerialization.jsonObject(with: data, options: [])
-                
-                guard let dict = resp as? [String : Any],
-                    let t = dict["twilio_token"] as? String else {
-                        throw NSError(domain: "TwilioHelper", code: -1, userInfo: [NSLocalizedDescriptionKey: "No token"])
-                }
-                
-                token = t
-            }
-            catch {
-                Log.error("Error while getting token: \(error.localizedDescription)")
-                return
-            }
-            
             TwilioChatClient.chatClient(withToken: token, properties: nil, delegate: self) { (result, client) in
                 guard let client = client, result.isSuccessful() else {
                     Log.error("Error while initializing Twilio: \(result.error?.localizedDescription ?? "")")
+                    completion(NSError())
                     return
                 }
                 
                 guard let channels = client.channelsList() else {
                     Log.error("Error while initializing Twilio channels")
+                    completion(NSError())
                     return
                 }
 
                 guard let users = client.users() else {
                     Log.error("Error while initializing Twilio users")
+                    completion(NSError())
                     return
                 }
                 
@@ -87,15 +60,14 @@ class TwilioHelper: NSObject {
                 self.channels = channels
                 self.users = users
                 
-                completion()
+                completion(nil)
             }
         }
     }
     
     func createChannel(withUsername username: String, completion: @escaping (Error?)->()) {
         TwilioHelper.sharedInstance.channels.createChannel(options: [
-            TCHChannelOptionFriendlyName: username,
-            TCHChannelOptionType: TCHChannelType.private,
+            TCHChannelOptionType: TCHChannelType.private.rawValue,
             TCHChannelOptionAttributes: [
                 "initiator": self.username,
                 "responder": username
@@ -106,6 +78,14 @@ class TwilioHelper: NSObject {
                 completion(result.error ?? NSError())
                 return
             }
+            
+            channel.join(completion: { channelResult in
+                if channelResult.isSuccessful() {
+                    print("Channel joined.")
+                } else {
+                    print("Channel NOT joined.")
+                }
+            })
             
             channel.members?.invite(byIdentity: username) { (result) in
                 guard result.isSuccessful() else {

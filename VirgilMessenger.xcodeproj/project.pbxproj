@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		167C68451FADDB7800E6E448 /* VirgilHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167C68441FADDB7800E6E448 /* VirgilHelper.swift */; };
 		16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
 		16F6FC721FAA235400158615 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F6FC711FAA235300158615 /* RegistrationViewController.swift */; };
 		16F8BC871FAA06040020094B /* TwilioChatClient.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 429228D11F96324B00DCECDF /* TwilioChatClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -75,6 +76,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		167C68441FADDB7800E6E448 /* VirgilHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirgilHelper.swift; sourceTree = "<group>"; };
 		16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
 		16F6FC711FAA235300158615 /* RegistrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		423BDA771F97600A00C3EE9B /* ChatListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChatListCell.xib; sourceTree = "<group>"; };
@@ -137,6 +139,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		167C68461FADDBB300E6E448 /* Virgil */ = {
+			isa = PBXGroup;
+			children = (
+				167C68441FADDB7800E6E448 /* VirgilHelper.swift */,
+			);
+			path = Virgil;
+			sourceTree = "<group>";
+		};
 		16B69E061FA9D2CA00FE8A8D /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
@@ -233,6 +243,7 @@
 		429228B41F96261000DCECDF /* VirgilMessenger */ = {
 			isa = PBXGroup;
 			children = (
+				167C68461FADDBB300E6E448 /* Virgil */,
 				16B69E061FA9D2CA00FE8A8D /* Authentication */,
 				423BDA7F1F97774F00C3EE9B /* Networking */,
 				423BDA761F97600A00C3EE9B /* ChatList */,
@@ -403,6 +414,7 @@
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
 				4280C0DA1F97341A00075B3A /* DemoTextMessageModel.swift in Sources */,
 				423BDA7C1F97601700C3EE9B /* ChatListViewController.swift in Sources */,
+				167C68451FADDB7800E6E448 /* VirgilHelper.swift in Sources */,
 				4280C0CC1F97340B00075B3A /* MessageFactory.swift in Sources */,
 				427D1E551F965569002F2CF3 /* SlidingDatasSource.swift in Sources */,
 				4280C0E11F9734DD00075B3A /* TimeSeparatorCollectionViewCell.swift in Sources */,
@@ -570,7 +582,7 @@
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgilsecurity.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -594,7 +606,7 @@
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgilsecurity.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -104,4 +104,8 @@ class DataSource: ChatDataSourceProtocol {
         let didAdjust = self.slidingWindow.adjustWindow(focusPosition: focusPosition, maxWindowSize: preferredMaxCount ?? self.preferredMaxWindowSize)
         completion(didAdjust)
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }

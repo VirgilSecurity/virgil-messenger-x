@@ -41,7 +41,7 @@ public class ServiceRequest: NSObject, HTTPRequest {
                 guard let p = p as? [String : String] else {
                     throw NSError()
                 }
-            
+                
                 var components = URLComponents(string: self.url.absoluteString)
                 components?.queryItems = p.map({
                     URLQueryItem(name: $0.key, value: $0.value)
@@ -58,6 +58,7 @@ public class ServiceRequest: NSObject, HTTPRequest {
             }
             
             request = URLRequest(url: url)
+            request.allHTTPHeaderFields =  self.headers == nil ? [:] : self.headers
             
         case .post, .put, .delete:
             request = URLRequest(url: self.url)

@@ -53,10 +53,10 @@ public class MessageSender {
             self.updateMessage(message, status: .sending)
             self.fakeMessageStatus(message)
         case .sending:
-            //FIXME
             let msg = message as! DemoTextMessageModel
             if let messages = TwilioHelper.sharedInstance.channels.subscribedChannels()[TwilioHelper.sharedInstance.selectedChannel].messages {
                 let options = TCHMessageOptions().withBody(msg.body)
+                Log.debug("sending \(msg.body)")
                 messages.sendMessage(with: options) { result, msg in
                     if result.isSuccessful() {
                         self.updateMessage(message, status: .success)
@@ -66,14 +66,9 @@ public class MessageSender {
                         return
                     }
                 }
-                /*
-                let delaySeconds: Double = 5
-                let delayTime = DispatchTime.now() + Double(Int64(delaySeconds * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
-                DispatchQueue.main.asyncAfter(deadline: delayTime) {
-                    if (message.status != .success) {
-                        self.updateMessage(message, status: .failed)
-                    }
-                }*/
+            }
+            else {
+                Log.error("can't get channel messages")
             }
              
         }
