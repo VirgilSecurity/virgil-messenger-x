@@ -28,7 +28,7 @@ class VirgilHelper {
         self.connection = ServiceConnection()
     }
     
-    private func initializePFS(withIdentity: String, privateKey: VSSPrivateKey, VirgilToken: String) {
+    private func initializePFS(withIdentity: String, privateKey: VSSPrivateKey) {
         let serviceConfig = VSSServiceConfig(token: self.VirgilAccessToken)
         serviceConfig.cardsServiceURL = URL(string: "https://cards.virgilsecurity.com/v4/")!
         serviceConfig.cardsServiceROURL = URL(string: "https://cards-ro.virgilsecurity.com/v4/")!
@@ -47,18 +47,19 @@ class VirgilHelper {
                 return
             }
             
-            self.initializePFS(withIdentity: withIdentity, card: cards![0], privateKey: privateKey, VirgilToken: VirgilToken)
+            self.initializePFS(withIdentity: withIdentity, card: cards![0], privateKey: privateKey)
         }
     }
     
-    private func initializePFS(withIdentity: String, card: VSSCard, privateKey: VSSPrivateKey, VirgilToken: String) {
+    private func initializePFS(withIdentity: String, card: VSSCard, privateKey: VSSPrivateKey) {
         do {
             let secureChatPreferences = try! SecureChatPreferences (
                 crypto: self.crypto,
                 identityPrivateKey: privateKey,
                 identityCard: card,
-                accessToken: VirgilToken)
-                
+                accessToken: VirgilAccessToken)
+            
+            secureChatPreferences.pfsUrl = URL(string: "https://pfs.virgilsecurity.com/v1/")
             self.secureChat = SecureChat(preferences: secureChatPreferences)
                 
             try self.secureChat?.initialize()
@@ -68,6 +69,7 @@ class VirgilHelper {
                     Log.error("Rotating keys: \(error!.localizedDescription)")
                     return
                 }
+                Log.debug("Successfully initialized PFS")
             }
         } catch {
             Log.error("Error while initializing PFS")
@@ -140,7 +142,7 @@ class VirgilHelper {
                 do {
                     let entry = try self.keyStorage.loadKeyEntry(withName: identity)
                     let key = self.crypto.importPrivateKey(from: entry.value)
-                    self.initializePFS(withIdentity: identity, card: cards![0], privateKey: key!, VirgilToken: VirgilToken)
+                    self.initializePFS(withIdentity: identity, card: cards![0], privateKey: key!)
                 } catch {
                     Log.error("Error while signing in: key not found")
                     completion(NSError())
@@ -199,7 +201,7 @@ class VirgilHelper {
                         }
                     }
                 }
-                self.initializePFS(withIdentity: identity, privateKey: keyPair.privateKey, VirgilToken: VirgilToken)
+                self.initializePFS(withIdentity: identity, privateKey: keyPair.privateKey)
                 
             } catch {
                 Log.error("Error while signing up")
