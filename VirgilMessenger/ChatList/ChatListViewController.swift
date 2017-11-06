@@ -109,18 +109,8 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
         cell.tag = indexPath.row
         cell.delegate = self
-        
-        let channel = TwilioHelper.sharedInstance.channels.subscribedChannels()[indexPath.row]
 
-        guard let initiator = channel.attributes()!["initiator"] as? String,
-              let responder = channel.attributes()!["responder"] as? String
-        else {
-            Log.error("Error: Didn't find channel attributes")
-            cell.usernameLabel.text = "Error name"
-            return cell
-        }
-
-        cell.usernameLabel.text = initiator == TwilioHelper.sharedInstance.username ? responder : initiator
+        cell.usernameLabel.text = TwilioHelper.sharedInstance.getCompanion(ofChannel: indexPath.row)
         
         return cell
     }

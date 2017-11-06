@@ -73,13 +73,21 @@ extension TwilioHelper: TwilioChatClientDelegate {
         if(channel.status == TCHChannelStatus.invited) {
             channel.join() { channelResult in
                 if channelResult.isSuccessful() {
-                    print("Successfully accepted invite.");
+                    Log.debug("Successfully accepted invite.");
+                    let identity = self.getCompanion(ofChannel: self.channels.subscribedChannels().count - 1)
+                    VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
+                        guard let card = card, error == nil else {
+                            Log.error("failed to add new channel card")
+                            return
+                        }
+                        VirgilHelper.sharedInstance.channelsCards.append(card)
+                    }
                     NotificationCenter.default.post(
                         name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
                         object: self,
                         userInfo: [:])
                 } else {
-                    print("Failed to accept invite.");
+                    Log.error("Failed to accept invite.");
                 }
             }
         }

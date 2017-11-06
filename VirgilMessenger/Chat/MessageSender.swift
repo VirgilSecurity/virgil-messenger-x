@@ -53,7 +53,12 @@ public class MessageSender {
             }
         let receiver = initiator == TwilioHelper.sharedInstance.username ? responder : initiator
         
-        VirgilHelper.sharedInstance.getCard(withIdentity: receiver) { card in
+        VirgilHelper.sharedInstance.getCard(withIdentity: receiver) { card, error in
+            guard let card = card, error == nil else {
+                Log.error("getting card failed")
+                return
+            }
+            
             guard let session = VirgilHelper.sharedInstance.secureChat?.activeSession(
                 withParticipantWithCardId: card.identifier) else {
                     VirgilHelper.sharedInstance.secureChat?.startNewSession(
