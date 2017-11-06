@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		167C68451FADDB7800E6E448 /* VirgilHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167C68441FADDB7800E6E448 /* VirgilHelper.swift */; };
+		168D21F21FAFC8B400C946B2 /* VirgilSDKPFS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 168D21F11FAFC8B400C946B2 /* VirgilSDKPFS.framework */; };
 		16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
 		16F6FC721FAA235400158615 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F6FC711FAA235300158615 /* RegistrationViewController.swift */; };
 		16F8BC871FAA06040020094B /* TwilioChatClient.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 429228D11F96324B00DCECDF /* TwilioChatClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -77,6 +78,7 @@
 
 /* Begin PBXFileReference section */
 		167C68441FADDB7800E6E448 /* VirgilHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirgilHelper.swift; sourceTree = "<group>"; };
+		168D21F11FAFC8B400C946B2 /* VirgilSDKPFS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilSDKPFS.framework; path = Carthage/Build/iOS/VirgilSDKPFS.framework; sourceTree = "<group>"; };
 		16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
 		16F6FC711FAA235300158615 /* RegistrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		423BDA771F97600A00C3EE9B /* ChatListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChatListCell.xib; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				168D21F21FAFC8B400C946B2 /* VirgilSDKPFS.framework in Frameworks */,
 				42E8F8741F978A51007CB39F /* PKHUD.framework in Frameworks */,
 				429228CC1F96287B00DCECDF /* ChattoAdditions.framework in Frameworks */,
 				429228CD1F96287B00DCECDF /* Chatto.framework in Frameworks */,
@@ -263,6 +266,7 @@
 		429228C71F96287A00DCECDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				168D21F11FAFC8B400C946B2 /* VirgilSDKPFS.framework */,
 				42E8F8731F978A51007CB39F /* PKHUD.framework */,
 				429228D11F96324B00DCECDF /* TwilioChatClient.framework */,
 				429228C91F96287A00DCECDF /* Chatto.framework */,
@@ -381,6 +385,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Chatto.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/ChattoAdditions.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PKHUD.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/VirgilSDKPFS.framework",
 			);
 			outputPaths = (
 			);

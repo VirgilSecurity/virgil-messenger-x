@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import VirgilSDK
+import VirgilSDKPFS
 
 class VirgilHelper {
     
@@ -16,6 +16,7 @@ class VirgilHelper {
     private let keyStorage: VSSKeyStorage
     private let queue: DispatchQueue
     private let connection: ServiceConnection
+    private var secureChat: SecureChat?
     
     private let VirgilAccessToken = "AT.6968c649d331798cbbb757c2cfcae6475416ef958b41d3feddd103dee22a970b"
     private let AuthPublicKey = "MCowBQYDK2VwAyEAHQe7Uf+sUQASm3eGqaqMIfrbHKU9gKUnDg7AuVzf0Z0="
@@ -25,6 +26,52 @@ class VirgilHelper {
         self.keyStorage = VSSKeyStorage()
         self.queue = DispatchQueue(label: "virgil-help-queue")
         self.connection = ServiceConnection()
+    }
+    
+    private func initializePFS(withIdentity: String, privateKey: VSSPrivateKey, VirgilToken: String) {
+        let serviceConfig = VSSServiceConfig(token: self.VirgilAccessToken)
+        serviceConfig.cardsServiceURL = URL(string: "https://cards.virgilsecurity.com/v4/")!
+        serviceConfig.cardsServiceROURL = URL(string: "https://cards-ro.virgilsecurity.com/v4/")!
+        
+        let client = VSSClient(serviceConfig: serviceConfig)
+        
+        let criteria = VSSSearchCardsCriteria(identity: withIdentity)
+        
+        client.searchCards(using: criteria) { (cards, error) in
+            guard error == nil else {
+                Log.error("Error: searching cards error")
+                return
+            }
+            guard cards != nil else {
+                Log.error("Error: no Virgil card found")
+                return
+            }
+            
+            self.initializePFS(withIdentity: withIdentity, card: cards![0], privateKey: privateKey, VirgilToken: VirgilToken)
+        }
+    }
+    
+    private func initializePFS(withIdentity: String, card: VSSCard, privateKey: VSSPrivateKey, VirgilToken: String) {
+        do {
+            let secureChatPreferences = try! SecureChatPreferences (
+                crypto: self.crypto,
+                identityPrivateKey: privateKey,
+                identityCard: card,
+                accessToken: VirgilToken)
+                
+            self.secureChat = SecureChat(preferences: secureChatPreferences)
+                
+            try self.secureChat?.initialize()
+                
+            self.secureChat?.rotateKeys(desiredNumberOfCards: 100) { error in
+                guard error == nil else {
+                    Log.error("Error while initializing PFS")
+                    return
+                }
+            }
+        } catch {
+            Log.error("Error while initializing PFS")
+        }
     }
     
     func signIn(identity: String, completion: @escaping (Error?) -> ()) {
@@ -51,7 +98,8 @@ class VirgilHelper {
                     return
                 }
                 
-                self.getTwilioToken(withCardId: cards![0].identifier, identity: identity) { token, error in
+                let VirgilToken = self.getVirgilToken(withCardId: cards![0].identifier, identity: identity)
+                self.getTwilioToken(VirgilToken: VirgilToken) { token, error in
                     if error != nil {
                         completion(error)
                     }
@@ -65,6 +113,14 @@ class VirgilHelper {
                             completion(nil)
                         }
                     }
+                }
+                do {
+                    let entry = try self.keyStorage.loadKeyEntry(withName: identity)
+                    let key = self.crypto.importPrivateKey(from: entry.value)
+                    self.initializePFS(withIdentity: identity, card: cards![0], privateKey: key!, VirgilToken: VirgilToken)
+                } catch {
+                    Log.error("Error while signing in: key not found")
+                    completion(NSError())
                 }
             })
         }
@@ -101,7 +157,8 @@ class VirgilHelper {
                 }
                 try self.keyStorage.store(keyEntry)
                 
-                self.getTwilioToken(withCardId: cardId, identity: identity) { token, error in
+                let VirgilToken = self.getVirgilToken(withCardId: cardId, identity: identity)
+                self.getTwilioToken(VirgilToken: VirgilToken) { token, error in
                     if error != nil {
                         completion(error)
                     }
@@ -116,6 +173,7 @@ class VirgilHelper {
                         }
                     }
                 }
+                self.initializePFS(withIdentity: identity, privateKey: keyPair.privateKey, VirgilToken: VirgilToken)
                 
             } catch {
                 Log.error("Error while signing up: \(error.localizedDescription)")
@@ -124,26 +182,22 @@ class VirgilHelper {
         }
     }
     
-    private func getTwilioToken(withCardId: String, identity: String, completion: @escaping (String?, Error?) -> ()) {
-        do {
-            let VirgilToken = getVirgilToken(withCardId: withCardId, identity: identity)
-            
-            guard VirgilToken != "" else {
-                throw NSError()
+    private func getTwilioToken(VirgilToken: String, completion: @escaping (String?, Error?) -> ()) {
+        self.queue.async {
+            do {
+                let requestForTwilioToken = try ServiceRequest(url: URL(string: "https://twilio.virgilsecurity.com/v1/tokens/twilio")!, method: ServiceRequest.Method.get, headers: ["Authorization": VirgilToken])
+                let responseWithTwilioToken = try self.connection.send(requestForTwilioToken)
+                
+                let twilioTokenJson = try! JSONSerialization.jsonObject(with: responseWithTwilioToken.body!, options: []) as? [String: Any]
+                
+                let twilioToken = twilioTokenJson?["twilioToken"] as? String
+                
+                completion(twilioToken, nil)
+                
+            } catch {
+                Log.error("Error while getting twilio token")
+                completion(nil, error)
             }
-            
-            let requestForTwilioToken = try ServiceRequest(url: URL(string: "https://twilio.virgilsecurity.com/v1/tokens/twilio")!, method: ServiceRequest.Method.get, headers: ["Authorization": VirgilToken])
-            let responseWithTwilioToken = try connection.send(requestForTwilioToken)
-            
-            let twilioTokenJson = try! JSONSerialization.jsonObject(with: responseWithTwilioToken.body!, options: []) as? [String: Any]
-            
-            let twilioToken = twilioTokenJson?["twilioToken"] as? String
-            
-            completion(twilioToken, nil)
-            
-        } catch {
-            Log.error("Error while getting twilio token")
-            completion(nil, error)
         }
     }
     

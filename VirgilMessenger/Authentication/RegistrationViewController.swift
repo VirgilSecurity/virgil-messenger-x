@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import VirgilSDK
 import PKHUD
 
 class RegistrationViewController: UIViewController {
