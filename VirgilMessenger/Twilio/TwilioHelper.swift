@@ -79,23 +79,43 @@ class TwilioHelper: NSObject {
                 return
             }
             
-            channel.join(completion: { channelResult in
-                if channelResult.isSuccessful() {
-                    print("Channel joined.")
-                } else {
-                    print("Channel NOT joined.")
-                }
-            })
-            
             channel.members?.invite(byIdentity: username) { (result) in
                 guard result.isSuccessful() else {
                     Log.error("Error while inviting member \(username): \(result.error?.localizedDescription ?? "")")
                     completion(result.error ?? NSError())
+                    channel.destroy { result in
+                        guard result.isSuccessful() else {
+                            Log.error("can't destroy channel")
+                            return
+                        }
+                    }
                     return
                 }
+            }
+                
+                VirgilHelper.sharedInstance.getCard(withIdentity: username) { card, error in
+                    guard let card = card, error == nil else {
+                        Log.error("failed to add new channel card")
+                        channel.destroy { result in
+                            guard result.isSuccessful() else {
+                                Log.error("can't destroy channel")
+                                return
+                            }
+                        }
+                        return
+                    }
+                    VirgilHelper.sharedInstance.channelsCards.append(card)
+                }
+                
+                channel.join(completion: { channelResult in
+                    if channelResult.isSuccessful() {
+                        Log.debug("Channel joined.")
+                    } else {
+                        Log.error("Channel NOT joined.")
+                    }
+                })
                 
                 completion(nil)
-            }
         }
     }
     

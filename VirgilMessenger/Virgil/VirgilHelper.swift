@@ -214,6 +214,7 @@ class VirgilHelper {
                         }
                     }
                 }
+                
                 self.getCard(withIdentity: identity) { card, error in
                     guard let card = card, error == nil else {
                         DispatchQueue.main.async {

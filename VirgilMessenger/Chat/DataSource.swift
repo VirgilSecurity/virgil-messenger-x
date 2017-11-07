@@ -38,6 +38,7 @@ class DataSource: ChatDataSourceProtocol {
         NotificationCenter.default.addObserver(forName:Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
                     object:nil, queue:nil) {
                         notification in
+                        Log.debug("processing message")
                         TwilioHelper.sharedInstance.getLastMessages(count: 1) { messages in
                             let card = VirgilHelper.sharedInstance.channelsCards[TwilioHelper.sharedInstance.selectedChannel]
                             for message in messages {
@@ -58,13 +59,18 @@ class DataSource: ChatDataSourceProtocol {
                         }
                 }
         }
-        
+
         TwilioHelper.sharedInstance.getLastMessages(count: pageSize) { messages in
+            guard VirgilHelper.sharedInstance.channelsCards.count > TwilioHelper.sharedInstance.selectedChannel else {
+                Log.error("channel card does not exist")
+                return
+            }
             let card = VirgilHelper.sharedInstance.channelsCards[TwilioHelper.sharedInstance.selectedChannel]
             for message in messages {
                 do {
                     let session = try VirgilHelper.sharedInstance.secureChat?.loadUpSession(
                             withParticipantWithCard: card, message: message!.body)
+                    
                     Log.debug("session loaded")
                     let plaintext = try session?.decrypt(message!.body)
                         
@@ -73,7 +79,7 @@ class DataSource: ChatDataSourceProtocol {
                     self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
                     self.nextMessageId += 1
                 } catch {
-                    Log.error("decryption process failed")
+                    Log.error("decryption process failed: \(error.localizedDescription)\nMessage: \(message!.body)")
                 }
             }
             self.delegate?.chatDataSourceDidUpdate(self, updateType: .reload)

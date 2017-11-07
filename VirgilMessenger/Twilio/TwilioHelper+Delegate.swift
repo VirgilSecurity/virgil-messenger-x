@@ -57,15 +57,31 @@ extension TwilioHelper: TwilioChatClientDelegate {
     }
     
     func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
+        Log.debug("message added")
         
-        if (channel == self.channels.subscribedChannels()[self.selectedChannel] && message.author != self.username) {
-            NotificationCenter.default.post(
-                name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
-                object: self,
-                userInfo: [
-                    TwilioHelper.NotificationKeys.Message.rawValue: message
-                ])
+        let myChannel = channel.attributes()?.contains { (key, value) -> Bool in
+            value as? String == self.username
+        } ?? false
+        
+        if (myChannel) {
+            Log.debug("it's my channel")
+            if (message.author != self.username) {
+                Log.debug("author is not me")
+                NotificationCenter.default.post(
+                    name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+                    object: self,
+                    userInfo: [
+                        TwilioHelper.NotificationKeys.Message.rawValue: message
+                    ])
+            }
         }
+    }
+    
+    func chatClient(_ client: TwilioChatClient, channelDeleted channel: TCHChannel) {
+        NotificationCenter.default.post(
+            name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+            object: self,
+            userInfo: [:])
     }
     
     func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
@@ -75,6 +91,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                 if channelResult.isSuccessful() {
                     Log.debug("Successfully accepted invite.");
                     let identity = self.getCompanion(ofChannel: self.channels.subscribedChannels().count - 1)
+                    Log.debug("identity: \(identity)")
                     VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
                         guard let card = card, error == nil else {
                             Log.error("failed to add new channel card")

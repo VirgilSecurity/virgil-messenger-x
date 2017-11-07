@@ -52,9 +52,11 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
             self.alert(withTitle: "You already have that channel")
         }
         else {
+            PKHUD.sharedHUD.contentView = PKHUDProgressView()
+            PKHUD.sharedHUD.show()
             TwilioHelper.sharedInstance.createChannel(withUsername: username) { error in
                 let title = error == nil ? "Success" : "Error"
-                
+                PKHUD.sharedHUD.hide()
                 self.alert(withTitle: title)
                 self.tableView.reloadData()
             }
@@ -75,7 +77,7 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
             let pageSize = 10000
             
             let dataSource = DataSource(pageSize: pageSize)
-            chatController.title = TwilioHelper.sharedInstance.channels.subscribedChannels()[TwilioHelper.sharedInstance.selectedChannel].friendlyName
+            chatController.title = TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)
             chatController.dataSource = dataSource
             chatController.messageSender = dataSource.messageSender
         }
@@ -89,7 +91,7 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         super.viewDidLoad()
      
         self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main), forCellReuseIdentifier: ChatListCell.name)
-        self.tableView.rowHeight = 45
+        self.tableView.rowHeight = 80
         self.tableView.tableFooterView = UIView(frame: .zero)
         
         self.tableView.dataSource = self

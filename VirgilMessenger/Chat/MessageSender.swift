@@ -43,38 +43,29 @@ public class MessageSender {
     }
 
     public func sendMessage(_ message: DemoMessageModelProtocol) {
-        let channel = TwilioHelper.sharedInstance.channels.subscribedChannels()[TwilioHelper.sharedInstance.selectedChannel]
-        
-        guard let initiator = channel.attributes()!["initiator"] as? String,
-            let responder = channel.attributes()!["responder"] as? String
-            else {
-                Log.error("Error sending: Didn't find channel attributes")
-                return
-            }
-        let receiver = initiator == TwilioHelper.sharedInstance.username ? responder : initiator
-        
-        VirgilHelper.sharedInstance.getCard(withIdentity: receiver) { card, error in
-            guard let card = card, error == nil else {
-                Log.error("getting card failed")
-                return
-            }
-            
-            guard let session = VirgilHelper.sharedInstance.secureChat?.activeSession(
-                withParticipantWithCardId: card.identifier) else {
-                    VirgilHelper.sharedInstance.secureChat?.startNewSession(
-                        withRecipientWithCard: card) { session, error in
-                            
-                        guard error == nil, let session = session else {
-                            Log.error("creating session failed")
-                            return
-                        }
-                        
-                        self.sendMessage(usingSession: session, message: message)
-                    }
-                    return
-                }
-            self.sendMessage(usingSession: session, message: message)
+        guard VirgilHelper.sharedInstance.channelsCards.count > TwilioHelper.sharedInstance.selectedChannel else {
+            Log.error("channel card does not exist")
+             self.updateMessage(message, status: .failed)
+            return
         }
+        let card = VirgilHelper.sharedInstance.channelsCards[TwilioHelper.sharedInstance.selectedChannel]
+            
+        guard let session = VirgilHelper.sharedInstance.secureChat?.activeSession(
+            withParticipantWithCardId: card.identifier) else {
+                VirgilHelper.sharedInstance.secureChat?.startNewSession(
+                    withRecipientWithCard: card) { session, error in
+                            
+                    guard error == nil, let session = session else {
+                        Log.error("creating session failed")
+                         self.updateMessage(message, status: .failed)
+                        return
+                    }
+                        
+                    self.sendMessage(usingSession: session, message: message)
+                }
+                return
+            }
+        self.sendMessage(usingSession: session, message: message)
     }
     
     private func sendMessage(usingSession session: SecureSession, message: DemoMessageModelProtocol) {
@@ -85,6 +76,7 @@ public class MessageSender {
         }
         catch {
             Log.error("Error trying to encrypt message")
+             self.updateMessage(message, status: .failed)
             return
         }
     }
