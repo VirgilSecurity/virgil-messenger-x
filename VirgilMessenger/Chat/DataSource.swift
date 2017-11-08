@@ -40,7 +40,11 @@ class DataSource: ChatDataSourceProtocol {
                         notification in
                         Log.debug("processing message")
                         TwilioHelper.sharedInstance.getLastMessages(count: 1) { messages in
-                            let card = VirgilHelper.sharedInstance.channelsCards[TwilioHelper.sharedInstance.selectedChannel]
+                            let cards = VirgilHelper.sharedInstance.channelsCards.filter { $0.identity == TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel) }
+                            guard let card = cards.first else {
+                                Log.error("channel card not found")
+                                return
+                            }
                             for message in messages {
                                 do {
                                     let session = try VirgilHelper.sharedInstance.secureChat?.loadUpSession(
@@ -65,15 +69,27 @@ class DataSource: ChatDataSourceProtocol {
                 Log.error("channel card does not exist")
                 return
             }
-            let card = VirgilHelper.sharedInstance.channelsCards[TwilioHelper.sharedInstance.selectedChannel]
+            let cards = VirgilHelper.sharedInstance.channelsCards.filter { $0.identity == TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel) }
+            guard let card = cards.first else {
+                Log.error("channel card not found")
+                return
+            }
+            Log.debug("channel card id: \(card.identity)")
+            Log.debug("selected channel: \(TwilioHelper.sharedInstance.channels.subscribedChannels()[TwilioHelper.sharedInstance.selectedChannel].attributes())")
+            //let session = VirgilHelper.sharedInstance.secureChat?.activeSession(
+            //    withParticipantWithCardId: card.identifier)
+            //Log.debug("session loaded")
             for message in messages {
                 do {
+                    
                     let session = try VirgilHelper.sharedInstance.secureChat?.loadUpSession(
                             withParticipantWithCard: card, message: message!.body)
                     
+                    
                     Log.debug("session loaded")
                     let plaintext = try session?.decrypt(message!.body)
-                        
+                    
+                    Log.debug("encrypted")
                     let model = createMessageModel("\(self.nextMessageId)", isIncoming: message!.isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success)
                     let decryptedMessage = DemoTextMessageModel(messageModel: model, text: plaintext!)
                     self.slidingWindow.insertItem(decryptedMessage, position: .bottom)

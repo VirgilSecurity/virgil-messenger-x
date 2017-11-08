@@ -20,7 +20,9 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     
     @IBAction func didTapLogOut(_ sender: Any) {
         self.navigationController?.isNavigationBarHidden = true
-        self.performSegue(withIdentifier: "goToAuth", sender: self)
+        NotificationCenter.default.removeObserver(self)
+        self.dismiss(animated: true, completion: nil)
+        //self.performSegue(withIdentifier: "goToAuth", sender: self)
     }
     
     @IBAction func didTapAdd(_ sender: Any) {
@@ -103,10 +105,6 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
                                                 }
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
         cell.tag = indexPath.row
@@ -124,5 +122,9 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+       NotificationCenter.default.removeObserver(self)
     }
 }

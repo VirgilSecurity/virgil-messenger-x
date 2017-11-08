@@ -48,8 +48,11 @@ public class MessageSender {
              self.updateMessage(message, status: .failed)
             return
         }
-        let card = VirgilHelper.sharedInstance.channelsCards[TwilioHelper.sharedInstance.selectedChannel]
-            
+        let cards = VirgilHelper.sharedInstance.channelsCards.filter { $0.identity == TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel) }
+        guard let card = cards.first else {
+            Log.error("channel card not found")
+            return
+        }
         guard let session = VirgilHelper.sharedInstance.secureChat?.activeSession(
             withParticipantWithCardId: card.identifier) else {
                 VirgilHelper.sharedInstance.secureChat?.startNewSession(
