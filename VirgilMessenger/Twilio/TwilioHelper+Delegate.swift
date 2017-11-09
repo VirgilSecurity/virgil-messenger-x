@@ -6,6 +6,9 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
+
+import UIKit
+import CoreData
 import Foundation
 import TwilioChatClient
 
@@ -99,6 +102,9 @@ extension TwilioHelper: TwilioChatClientDelegate {
                         }
                         VirgilHelper.sharedInstance.channelsCards.append(card)
                     }
+                    
+                    CoreDataHelper.sharedInstance.createChannel(withName: identity)
+                    
                     NotificationCenter.default.post(
                         name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
                         object: self,

@@ -59,7 +59,7 @@ public class MessageSender {
                     withRecipientWithCard: card) { session, error in
                             
                     guard error == nil, let session = session else {
-                        Log.error("creating session failed")
+                        Log.error("creating session failed: " + error!.localizedDescription)
                          self.updateMessage(message, status: .failed)
                         return
                     }
@@ -97,6 +97,10 @@ public class MessageSender {
                 Log.debug("sending \(ciphertext)")
                 messages.sendMessage(with: options) { result, msg in
                     if result.isSuccessful() {
+                        let msg = message as! DemoTextMessageModel
+                        
+                        CoreDataHelper.sharedInstance.createMessage(withBody: msg.body, isIncoming: false)
+                        
                         self.updateMessage(message, status: .success)
                         return
                     } else {

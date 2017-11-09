@@ -77,6 +77,10 @@ class ChatViewController: BaseChatViewController {
         items.append(self.createTextInputItem())
         return items
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 
     private func createTextInputItem() -> TextChatInputItem {
         let item = TextChatInputItem()

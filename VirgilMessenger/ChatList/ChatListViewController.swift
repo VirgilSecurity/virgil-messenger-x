@@ -22,7 +22,6 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         self.navigationController?.isNavigationBarHidden = true
         NotificationCenter.default.removeObserver(self)
         self.dismiss(animated: true, completion: nil)
-        //self.performSegue(withIdentifier: "goToAuth", sender: self)
     }
     
     @IBAction func didTapAdd(_ sender: Any) {
@@ -61,6 +60,11 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
                 PKHUD.sharedHUD.hide()
                 self.alert(withTitle: title)
                 self.tableView.reloadData()
+                
+                if error == nil {
+                    CoreDataHelper.sharedInstance.createChannel(withName: username)
+                }
+                
             }
         }
     }
@@ -78,6 +82,9 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         if let chatController = segue.destination as? ChatViewController {
             let pageSize = 10000
             
+    
+           CoreDataHelper.sharedInstance.loadChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel))
+            
             let dataSource = DataSource(pageSize: pageSize)
             chatController.title = TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)
             chatController.dataSource = dataSource
@@ -91,7 +98,7 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-     
+        
         self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main), forCellReuseIdentifier: ChatListCell.name)
         self.tableView.rowHeight = 80
         self.tableView.tableFooterView = UIView(frame: .zero)

@@ -143,6 +143,10 @@ class VirgilHelper {
         }
     }
     
+    private func createCard() {
+        
+    }
+    
     func signUp(identity: String, identityType: String = "name", completion: @escaping (Error?) -> ()) {
             Log.debug("Signing up")
             do {
@@ -167,11 +171,21 @@ class VirgilHelper {
                     throw NSError()
                 }
                 
+                /*
+                let jsonData =  try JSONSerialization.data(withJSONObject: json, options: JSONSerialization.WritingOptions.prettyPrinted) // first of all convert json to the data
+                let cardResponse = String(data: jsonData, encoding: .utf8) // the data will be converted to the string
+                //let cardResponse = try JSONSerialization.jsonObject(with: response.body!, options: []) as! String
+                
+                let cardd = VSSCard(data: cardResponse!)
+                Log.debug("card id : " + cardd!.identifier)*/
+                
                 let keyEntry = VSSKeyEntry(name: identity, value: self.crypto.export(keyPair.privateKey, withPassword: nil))
                 if self.keyStorage.existsKeyEntry(withName: identity) {
                     try self.keyStorage.deleteKeyEntry(withName: identity)
                 }
                 try self.keyStorage.store(keyEntry)
+                
+                CoreDataHelper.sharedInstance.createAccount(withIdentity: identity)
                 
                 self.getVirgilToken(withCardId: cardId, identity: identity) { VirgilToken, error in
                     guard let VirgilToken = VirgilToken, error == nil else {

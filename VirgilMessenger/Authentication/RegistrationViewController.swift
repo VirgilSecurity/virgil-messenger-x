@@ -59,7 +59,6 @@ class RegistrationViewController: UIViewController {
     }
     
     @IBAction func signinButtonPressed(_ sender: Any) {
-        
         guard let username = self.usernameTextField.text?.lowercased(), !username.isEmpty else {
             return
         }
@@ -77,10 +76,11 @@ class RegistrationViewController: UIViewController {
                 }
                 return
             }
-            
+            CoreDataHelper.sharedInstance.signIn(withIdentity: username)
+
             UserDefaults.standard.set(username, forKey: "last_username")
             PKHUD.sharedHUD.hide() { _ in
-                self.goToMainUi()
+                self.goToChatList()
             }
         }
     }
@@ -106,14 +106,15 @@ class RegistrationViewController: UIViewController {
             
             UserDefaults.standard.set(username, forKey: "last_username")
             PKHUD.sharedHUD.hide() { _ in
-                self.goToMainUi()
+                self.goToChatList()
             }
         }
     }
     
-    private func goToMainUi() {
+    private func goToChatList() {
         self.performSegue(withIdentifier: "goToChatList", sender: self)
     }
+    
 }
 
 

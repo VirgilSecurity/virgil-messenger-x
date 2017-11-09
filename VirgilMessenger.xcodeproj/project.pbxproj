@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld */; };
+		166D3E5E1FB495F90032BAAD /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166D3E5D1FB495F90032BAAD /* CoreDataHelper.swift */; };
 		167C68451FADDB7800E6E448 /* VirgilHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167C68441FADDB7800E6E448 /* VirgilHelper.swift */; };
 		168D21F21FAFC8B400C946B2 /* VirgilSDKPFS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 168D21F11FAFC8B400C946B2 /* VirgilSDKPFS.framework */; };
 		16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
@@ -77,6 +79,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirgilMessenger.xcdatamodel; sourceTree = "<group>"; };
+		166D3E5D1FB495F90032BAAD /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
 		167C68441FADDB7800E6E448 /* VirgilHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirgilHelper.swift; sourceTree = "<group>"; };
 		168D21F11FAFC8B400C946B2 /* VirgilSDKPFS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilSDKPFS.framework; path = Carthage/Build/iOS/VirgilSDKPFS.framework; sourceTree = "<group>"; };
 		16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
@@ -142,6 +146,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		166D3E5C1FB495DA0032BAAD /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				1621B8471FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld */,
+				166D3E5D1FB495F90032BAAD /* CoreDataHelper.swift */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
 		167C68461FADDBB300E6E448 /* Virgil */ = {
 			isa = PBXGroup;
 			children = (
@@ -246,6 +259,7 @@
 		429228B41F96261000DCECDF /* VirgilMessenger */ = {
 			isa = PBXGroup;
 			children = (
+				166D3E5C1FB495DA0032BAAD /* CoreData */,
 				167C68461FADDBB300E6E448 /* Virgil */,
 				16B69E061FA9D2CA00FE8A8D /* Authentication */,
 				423BDA7F1F97774F00C3EE9B /* Networking */,
@@ -413,10 +427,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				166D3E5E1FB495F90032BAAD /* CoreDataHelper.swift in Sources */,
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
 				423BDA851F97774F00C3EE9B /* ServiceConnection.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
+				1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */,
 				4280C0DA1F97341A00075B3A /* DemoTextMessageModel.swift in Sources */,
 				423BDA7C1F97601700C3EE9B /* ChatListViewController.swift in Sources */,
 				167C68451FADDB7800E6E448 /* VirgilHelper.swift in Sources */,
@@ -587,7 +603,7 @@
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgilsecurity.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -611,7 +627,7 @@
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgilsecurity.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -643,6 +659,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		1621B8471FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */,
+			);
+			currentVersion = 1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */;
+			path = VirgilMessenger.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 429228AA1F96261000DCECDF /* Project object */;
 }
