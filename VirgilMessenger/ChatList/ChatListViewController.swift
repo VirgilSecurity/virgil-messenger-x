@@ -105,11 +105,15 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         
         self.tableView.dataSource = self
         
-        NotificationCenter.default.addObserver(forName:Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-                                               object:nil, queue:nil) {
-                                                notification in
-                                                    self.tableView.reloadData()
-                                                }
+        NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue), object: nil)
+    }
+    
+    @objc private func reloadTableView(notification: Notification) {
+        self.tableView.reloadData()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

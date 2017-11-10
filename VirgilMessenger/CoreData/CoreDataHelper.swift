@@ -12,13 +12,13 @@ import CoreData
 
 class CoreDataHelper {
     
-    static private(set) var sharedInstance = CoreDataHelper()
+    static private(set) var sharedInstance: CoreDataHelper!
     
     private let queue: DispatchQueue
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    let managedContext: NSManagedObjectContext
-    private(set) var accounts: [Account] = []
-    private(set) var myAccount: Account?
+    private let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    private let managedContext: NSManagedObjectContext
+    private var accounts: [Account] = []
+    private var myAccount: Account?
     private(set) var selectedChannel: Channel?
     
     enum Entities: String {
@@ -45,12 +45,19 @@ class CoreDataHelper {
     private init() {
         managedContext = self.appDelegate.persistentContainer.viewContext
         self.queue = DispatchQueue(label: "core-data-help-queue")
-        queue.async {
+        // CoreData weird crash when running at not main thread
+//        queue.async {
             self.accounts = self.fetch()
-        }
+            Log.debug("Core Data: accounts fetched. Count: \(self.accounts.count)")
+            for account in self.accounts {
+                let identity = account.identity ?? "not found"
+                Log.debug(identity)
+            }
+//        }
     }
     
     func signIn(withIdentity username: String) {
+        Log.debug("Core Data: Search for " + username)
         var identity: String?
         for account in CoreDataHelper.sharedInstance.accounts {
             identity = account.identity
@@ -58,9 +65,10 @@ class CoreDataHelper {
                 self.myAccount = account
                 Log.debug("found account in core data: \(identity!)")
                 let channels = account.channel
-                Log.debug("it has" + String(describing: channels?.count) + "channels")
+                Log.debug("it has " + String(describing: channels?.count) + " channels")
             }
         }
+         Log.debug("Core Data: Searching for account ended")
     }
     
     func createAccount(withIdentity identity: String) {
@@ -135,6 +143,29 @@ class CoreDataHelper {
             if name == username {
                 Log.debug("Core Data: found channel in core data: " + name)
                 self.selectedChannel = channel
+            }
+        }
+    }
+    
+    func deleteChannel(withName username: String) {
+        guard let account = self.myAccount else {
+            Log.error("nil account core data")
+            return
+        }
+        let channels = account.channel!
+        
+        var name: String
+        for channel in channels {
+            guard let channel = channel as? Channel else {
+                Log.error("Core Data: can't get account channels")
+                return
+            }
+            name = channel.name!
+            Log.debug("name: " + name)
+            if name == username {
+                Log.debug("Core Data: found channel in core data: " + name)
+                managedContext.delete(channel)
+                Log.debug("Core Data: channel deleted")
             }
         }
     }

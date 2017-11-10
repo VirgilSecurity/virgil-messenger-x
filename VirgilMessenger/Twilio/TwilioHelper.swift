@@ -88,6 +88,7 @@ class TwilioHelper: NSObject {
                             Log.error("can't destroy channel")
                             return
                         }
+                        CoreDataHelper.sharedInstance.deleteChannel(withName: username)
                     }
                     return
                 }
@@ -143,6 +144,19 @@ class TwilioHelper: NSObject {
     
     func getCompanion(ofChannel: Int) -> String {
         let channel = TwilioHelper.sharedInstance.channels.subscribedChannels()[ofChannel]
+        guard let attributes = channel.attributes(),
+            let initiator = attributes["initiator"] as? String,
+            let responder = attributes["responder"] as? String
+            else {
+                Log.error("Error: Didn't find channel attributes")
+                return "Error name"
+        }
+        
+        let result =  initiator == self.username ? responder : initiator
+        return result
+    }
+    
+    func getCompanion(ofChannel channel: TCHChannel) -> String {
         guard let attributes = channel.attributes(),
             let initiator = attributes["initiator"] as? String,
             let responder = attributes["responder"] as? String

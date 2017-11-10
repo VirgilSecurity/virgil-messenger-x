@@ -35,11 +35,7 @@ class DataSource: ChatDataSourceProtocol {
     init(pageSize: Int) {
         self.slidingWindow = SlidingDataSource(pageSize: pageSize)
         self.pageSize = pageSize
-        NotificationCenter.default.addObserver(forName:Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
-                    object:nil, queue:nil) {
-                        notification in
-                        self.processMessage()
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(DataSource.processMessage(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue), object: nil)
         
         self.getLastMessages()
     }
@@ -102,15 +98,22 @@ class DataSource: ChatDataSourceProtocol {
                 }
             }
             
-            for i in tmp_messages.count..<new_tmp_messages.count {
-                self.slidingWindow.insertItem(new_tmp_messages[i], position: .bottom)
-                self.nextMessageId += 1
+            if (tmp_messages.count > new_tmp_messages.count) {
+                Log.error("saved messages count > loaded: \(tmp_messages.count) > \(new_tmp_messages.count)")
+            } else {
+                for i in tmp_messages.count..<new_tmp_messages.count {
+                    
+                    CoreDataHelper.sharedInstance.createMessage(withBody: new_tmp_messages[i].body, isIncoming: new_tmp_messages[i].isIncoming)
+                    
+                    self.slidingWindow.insertItem(new_tmp_messages[i], position: .bottom)
+                    self.nextMessageId += 1
+                }
             }
             self.delegate?.chatDataSourceDidUpdate(self, updateType: .reload)
         }
     }
     
-    private func processMessage() {
+    @objc private func processMessage(notification: Notification) {
         Log.debug("processing message")
         TwilioHelper.sharedInstance.getLastMessages(count: 1) { messages in
             guard let message = messages.first else {

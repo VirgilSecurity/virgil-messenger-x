@@ -93,7 +93,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
             channel.join() { channelResult in
                 if channelResult.isSuccessful() {
                     Log.debug("Successfully accepted invite.");
-                    let identity = self.getCompanion(ofChannel: self.channels.subscribedChannels().count - 1)
+                    let identity = self.getCompanion(ofChannel: channel)
                     Log.debug("identity: \(identity)")
                     VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
                         guard let card = card, error == nil else {
@@ -101,6 +101,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                             return
                         }
                         VirgilHelper.sharedInstance.channelsCards.append(card)
+                        Log.debug("new card added")
                     }
                     
                     CoreDataHelper.sharedInstance.createChannel(withName: identity)
