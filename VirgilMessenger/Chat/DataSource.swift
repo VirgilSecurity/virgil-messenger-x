@@ -73,7 +73,7 @@ class DataSource: ChatDataSourceProtocol {
         }
         
         Log.debug("channel card id: \(card.identity)")
-        Log.debug("selected channel with attributes: \(TwilioHelper.sharedInstance.channels.subscribedChannels()[TwilioHelper.sharedInstance.selectedChannel].attributes()!)")
+        Log.debug("selected channel with attributes: \(TwilioHelper.sharedInstance.selectedChannel.attributes()!)")
         
         TwilioHelper.sharedInstance.getLastMessages(count: pageSize) { messages in
             for message in messages {

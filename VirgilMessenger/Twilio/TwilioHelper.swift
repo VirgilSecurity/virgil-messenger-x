@@ -30,7 +30,7 @@ class TwilioHelper: NSObject {
     private(set) var client: TwilioChatClient!
     private(set) var channels: TCHChannels!
     private(set) var users: TCHUsers!
-    var selectedChannel:Int!
+    var selectedChannel: TCHChannel!
     
     func initialize(token: String, completion: @escaping (Error?)->()) {
         Log.debug("Initializing Twilio")
@@ -61,6 +61,15 @@ class TwilioHelper: NSObject {
                 self.users = users
                 
                 completion(nil)
+            }
+        }
+    }
+    
+    func setChannel(withUsername username: String) {
+        for channel in channels.subscribedChannels() {
+            if getCompanion(ofChannel: channel) == username {
+                self.selectedChannel = channel
+                return
             }
         }
     }
@@ -121,7 +130,7 @@ class TwilioHelper: NSObject {
     }
     
     func getLastMessages(count: Int, completion: @escaping ([DemoTextMessageModel?])->()) {
-        self.channels.subscribedChannels()[self.selectedChannel].messages?.getLastWithCount(UInt(count), completion: { (result, messages) in
+        self.selectedChannel.messages?.getLastWithCount(UInt(count), completion: { (result, messages) in
             var ret = [DemoTextMessageModel]()
             for message in messages! {
                 let isIncoming = message.author == self.username ? false : true
@@ -132,7 +141,7 @@ class TwilioHelper: NSObject {
     }
  
     func getMessages(before: Int, withCount: Int, completion: @escaping ([DemoTextMessageModel?])->()) {
-        self.channels.subscribedChannels()[self.selectedChannel].messages?.getBefore(UInt(before), withCount: UInt(withCount), completion: { (result, messages) in
+        self.selectedChannel.messages?.getBefore(UInt(before), withCount: UInt(withCount), completion: { (result, messages) in
             var ret = [DemoTextMessageModel]()
             for message in messages! {
                 let isIncoming = message.author == self.username ? false : true

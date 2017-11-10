@@ -63,9 +63,9 @@ class CoreDataHelper {
             identity = account.identity
             if identity == username {
                 self.myAccount = account
-                Log.debug("found account in core data: \(identity!)")
+                Log.debug("Core Data: found account: \(identity!)")
                 let channels = account.channel
-                Log.debug("it has " + String(describing: channels?.count) + " channels")
+                Log.debug("Core Data: it has " + String(describing: channels?.count) + " channels")
             }
         }
          Log.debug("Core Data: Searching for account ended")
@@ -125,10 +125,10 @@ class CoreDataHelper {
         }
     }
     
-    func loadChannel(withName username: String) {
+    func loadChannel(withName username: String) -> Bool {
         guard let account = self.myAccount else {
             Log.error("nil account core data")
-            return
+            return false
         }
         let channels = account.channel!
         
@@ -136,20 +136,23 @@ class CoreDataHelper {
         for channel in channels {
             guard let channel = channel as? Channel else {
                 Log.error("Core Data: can't get account channels")
-                return
+                return false
             }
             name = channel.name!
-            Log.debug("name: " + name)
+            Log.debug("Core Data name: " + name)
             if name == username {
                 Log.debug("Core Data: found channel in core data: " + name)
                 self.selectedChannel = channel
+                return true
             }
         }
+        Log.error("Core Data: channel not found")
+        return false
     }
     
     func deleteChannel(withName username: String) {
         guard let account = self.myAccount else {
-            Log.error("nil account core data")
+            Log.error("Core Data: nil account")
             return
         }
         let channels = account.channel!
@@ -161,13 +164,15 @@ class CoreDataHelper {
                 return
             }
             name = channel.name!
-            Log.debug("name: " + name)
+            Log.debug("Core Data name: " + name)
             if name == username {
                 Log.debug("Core Data: found channel in core data: " + name)
                 managedContext.delete(channel)
                 Log.debug("Core Data: channel deleted")
+                return
             }
         }
+        Log.error("Core Data: channel not found")
     }
     
     private func fetch() -> [Account] {

@@ -124,9 +124,14 @@ class VirgilHelper {
                                     return
                                 }
                                 self.channelsCards.append(card)
+                                if i == TwilioHelper.sharedInstance.channels.subscribedChannels().count - 1 {
+                                    Log.debug("found all channel cards")
+                                    for card in self.channelsCards {
+                                        Log.debug(card.identity)
+                                    }
+                                }
                             }
                         }
-                        Log.debug("found all channel cards")
                     }
                 }
             }
@@ -222,9 +227,15 @@ class VirgilHelper {
                                         return
                                     }
                                     self.channelsCards.append(card)
+                                    if i == TwilioHelper.sharedInstance.channels.subscribedChannels().count - 1 {
+                                        Log.debug("found all channel cards")
+                                        for card in self.channelsCards {
+                                            Log.debug(card.identity)
+                                        }
+                                    }
+
                                 }
                             }
-                            Log.debug("found all channel cards")
                         }
                     }
                 }

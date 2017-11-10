@@ -13,7 +13,7 @@ import PKHUD
 class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDelegate {
     
     func didTapOn(_ cell: UITableViewCell) {
-        TwilioHelper.sharedInstance.selectedChannel = cell.tag
+        TwilioHelper.sharedInstance.setChannel(withUsername: (cell as! ChatListCell).usernameLabel.text!)
 
         self.performSegue(withIdentifier: "goToChat", sender: self)
     }
@@ -82,8 +82,10 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         if let chatController = segue.destination as? ChatViewController {
             let pageSize = 10000
             
-    
-           CoreDataHelper.sharedInstance.loadChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel))
+            
+            if CoreDataHelper.sharedInstance.loadChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)) == false {
+                CoreDataHelper.sharedInstance.createChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel))
+            }
             
             let dataSource = DataSource(pageSize: pageSize)
             chatController.title = TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)

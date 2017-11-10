@@ -43,16 +43,13 @@ public class MessageSender {
     }
 
     public func sendMessage(_ message: DemoMessageModelProtocol) {
-        guard VirgilHelper.sharedInstance.channelsCards.count > TwilioHelper.sharedInstance.selectedChannel else {
-            Log.error("channel card does not exist")
-             self.updateMessage(message, status: .failed)
-            return
-        }
         let cards = VirgilHelper.sharedInstance.channelsCards.filter { $0.identity == TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel) }
         guard let card = cards.first else {
             Log.error("channel card not found")
+            self.updateMessage(message, status: .failed)
             return
         }
+        Log.debug("sending to " + card.identity)
         guard let session = VirgilHelper.sharedInstance.secureChat?.activeSession(
             withParticipantWithCardId: card.identifier) else {
                 VirgilHelper.sharedInstance.secureChat?.startNewSession(
@@ -92,7 +89,7 @@ public class MessageSender {
             self.updateMessage(message, status: .sending)
             self.MessageStatus(ciphertext: ciphertext, message: message)
         case .sending:
-            if let messages = TwilioHelper.sharedInstance.channels.subscribedChannels()[TwilioHelper.sharedInstance.selectedChannel].messages {
+            if let messages = TwilioHelper.sharedInstance.selectedChannel.messages {
                 let options = TCHMessageOptions().withBody(ciphertext)
                 Log.debug("sending \(ciphertext)")
                 messages.sendMessage(with: options) { result, msg in
@@ -104,6 +101,7 @@ public class MessageSender {
                         self.updateMessage(message, status: .success)
                         return
                     } else {
+                        Log.error("error sending: Twilio cause")
                         self.updateMessage(message, status: .failed)
                         return
                     }
