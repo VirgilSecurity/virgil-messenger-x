@@ -20,7 +20,6 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     
     @IBAction func didTapLogOut(_ sender: Any) {
         self.navigationController?.isNavigationBarHidden = true
-        NotificationCenter.default.removeObserver(self)
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -135,9 +134,5 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-       NotificationCenter.default.removeObserver(self)
     }
 }
