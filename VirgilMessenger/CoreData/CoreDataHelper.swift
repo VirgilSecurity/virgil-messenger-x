@@ -104,7 +104,7 @@ class CoreDataHelper {
         }
     }
     
-    func createMessage(withBody body: String, isIncoming: Bool) {
+    func createMessage(withBody body: String, isIncoming: Bool, date: Date) {
         self.queue.async {
             guard let channel = self.selectedChannel else {
                 Log.error("Core Data: nil selected channel")
@@ -117,6 +117,7 @@ class CoreDataHelper {
             
             message.body = body
             message.isIncoming = isIncoming
+            message.date = date
             
             let messages = channel.mutableOrderedSetValue(forKey: Keys.message.rawValue)
             messages.add(message)

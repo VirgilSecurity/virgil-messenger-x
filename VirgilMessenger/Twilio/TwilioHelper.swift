@@ -163,7 +163,7 @@ class TwilioHelper: NSObject {
             var ret = [DemoTextMessageModel]()
             for message in messages! {
                 let isIncoming = message.author == self.username ? false : true
-                ret.append(createTextMessageModel("\(ret.count)", text: message.body!, isIncoming: isIncoming, status: .success))
+                ret.append(createTextMessageModel("\(ret.count)", text: message.body!, isIncoming: isIncoming, status: .success, date: message.dateUpdatedAsDate!))
             }
             completion(ret)
         })
@@ -174,7 +174,7 @@ class TwilioHelper: NSObject {
             var ret = [DemoTextMessageModel]()
             for message in messages! {
                 let isIncoming = message.author == self.username ? false : true
-                ret.append(createTextMessageModel("\(ret.count)", text: message.body!, isIncoming: isIncoming, status: .success))
+                ret.append(createTextMessageModel("\(ret.count)", text: message.body!, isIncoming: isIncoming, status: .success, date: message.dateUpdatedAsDate!))
             }
             completion(ret)
         })

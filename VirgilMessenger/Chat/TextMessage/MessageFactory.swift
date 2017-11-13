@@ -26,16 +26,16 @@ import Foundation
 import Chatto
 import ChattoAdditions
 
-func createTextMessageModel(_ uid: String, text: String, isIncoming: Bool, status: MessageStatus) -> DemoTextMessageModel {
-    let messageModel = createMessageModel(uid, isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: status)
+func createTextMessageModel(_ uid: String, text: String, isIncoming: Bool, status: MessageStatus, date: Date) -> DemoTextMessageModel {
+    let messageModel = createMessageModel(uid, isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: status, date: date)
     let textMessageModel = DemoTextMessageModel(messageModel: messageModel, text: text)
     return textMessageModel
 }
 
-func createMessageModel(_ uid: String, isIncoming: Bool, type: String, status: MessageStatus) -> MessageModel {
+func createMessageModel(_ uid: String, isIncoming: Bool, type: String, status: MessageStatus, date: Date) -> MessageModel {
     let senderId = isIncoming ? "1" : "2"
     let messageStatus = status
-    let messageModel = MessageModel(uid: uid, senderId: senderId, type: type, isIncoming: isIncoming, date: Date(), status: messageStatus)
+    let messageModel = MessageModel(uid: uid, senderId: senderId, type: type, isIncoming: isIncoming, date: date, status: messageStatus)
     return messageModel
 }
 

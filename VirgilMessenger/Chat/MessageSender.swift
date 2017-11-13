@@ -96,7 +96,7 @@ public class MessageSender {
                     if result.isSuccessful() {
                         let msg = message as! DemoTextMessageModel
                         
-                        CoreDataHelper.sharedInstance.createMessage(withBody: msg.body, isIncoming: false)
+                        CoreDataHelper.sharedInstance.createMessage(withBody: msg.body, isIncoming: false, date: message.date)
                         
                         self.updateMessage(message, status: .success)
                         return

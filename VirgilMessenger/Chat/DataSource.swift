@@ -52,7 +52,7 @@ class DataSource: ChatDataSourceProtocol {
             let message = message as! Message
             let isIncoming = message.isIncoming
             
-            let model = createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success)
+            let model = createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message.date!)
             let decryptedMessage = DemoTextMessageModel(messageModel: model, text: message.body!)
             
             self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
@@ -89,7 +89,7 @@ class DataSource: ChatDataSourceProtocol {
                     let plaintext = try session?.decrypt(message!.body)
                     Log.debug("encrypted")
                     
-                    let model = createMessageModel("\(self.nextMessageId)", isIncoming: message!.isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success)
+                    let model = createMessageModel("\(self.nextMessageId)", isIncoming: message!.isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message!.date)
                     let decryptedMessage = DemoTextMessageModel(messageModel: model, text: plaintext!)
                     
                     new_tmp_messages.append(decryptedMessage)
@@ -103,7 +103,7 @@ class DataSource: ChatDataSourceProtocol {
             } else {
                 for i in tmp_messages.count..<new_tmp_messages.count {
                     
-                    CoreDataHelper.sharedInstance.createMessage(withBody: new_tmp_messages[i].body, isIncoming: new_tmp_messages[i].isIncoming)
+                    CoreDataHelper.sharedInstance.createMessage(withBody: new_tmp_messages[i].body, isIncoming: new_tmp_messages[i].isIncoming, date: new_tmp_messages[i].date)
                     
                     self.slidingWindow.insertItem(new_tmp_messages[i], position: .bottom)
                     self.nextMessageId += 1
@@ -132,10 +132,10 @@ class DataSource: ChatDataSourceProtocol {
                 let plaintext = try session?.decrypt(message!.body)
                 Log.debug("Receiving " + plaintext!)
                 
-                let model = createMessageModel("\(self.nextMessageId)", isIncoming: true, type: TextMessageModel<MessageModel>.chatItemType, status: .success)
+                let model = createMessageModel("\(self.nextMessageId)", isIncoming: true, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message!.date)
                 let decryptedMessage = DemoTextMessageModel(messageModel: model, text: plaintext!)
                 
-                CoreDataHelper.sharedInstance.createMessage(withBody: decryptedMessage.body, isIncoming: true)
+                CoreDataHelper.sharedInstance.createMessage(withBody: decryptedMessage.body, isIncoming: true, date: message!.date)
                 
                 self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
                 self.nextMessageId += 1
@@ -184,7 +184,7 @@ class DataSource: ChatDataSourceProtocol {
     func addTextMessage(_ text: String) {
         let uid = "\(self.nextMessageId)"
         self.nextMessageId += 1
-        let message = createTextMessageModel(uid, text: text, isIncoming: false, status: .sending)
+        let message = createTextMessageModel(uid, text: text, isIncoming: false, status: .sending, date: Date())
         self.messageSender.sendMessage(message)
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
