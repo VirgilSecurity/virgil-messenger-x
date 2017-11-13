@@ -20,6 +20,7 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     
     @IBAction func didTapLogOut(_ sender: Any) {
         self.navigationController?.isNavigationBarHidden = true
+        VirgilHelper.sharedInstance.channelsCards = []
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -107,6 +108,10 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         self.tableView.dataSource = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue), object: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        TwilioHelper.sharedInstance.selectedChannel = nil
     }
     
     @objc private func reloadTableView(notification: Notification) {

@@ -61,6 +61,35 @@ class TwilioHelper: NSObject {
                 self.users = users
                 
                 completion(nil)
+                
+                for channel in channels.subscribedChannels() {
+                    if channel.status == TCHChannelStatus.invited {
+                        channel.join() { channelResult in
+                            if channelResult.isSuccessful() {
+                                Log.debug("Successfully accepted invite.");
+                                let identity = self.getCompanion(ofChannel: channel)
+                                Log.debug("identity: \(identity)")
+                                VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
+                                    guard let card = card, error == nil else {
+                                        Log.error("failed to add new channel card")
+                                        return
+                                    }
+                                    VirgilHelper.sharedInstance.channelsCards.append(card)
+                                    Log.debug("new card added")
+                                }
+                                
+                                CoreDataHelper.sharedInstance.createChannel(withName: identity)
+                                
+                                NotificationCenter.default.post(
+                                    name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                                    object: self,
+                                    userInfo: [:])
+                            } else {
+                                Log.error("Failed to accept invite.");
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -120,12 +149,12 @@ class TwilioHelper: NSObject {
                 channel.join(completion: { channelResult in
                     if channelResult.isSuccessful() {
                         Log.debug("Channel joined.")
+                        completion(nil)
                     } else {
                         Log.error("Channel NOT joined.")
+                        completion(NSError())
                     }
                 })
-                
-                completion(nil)
         }
     }
     

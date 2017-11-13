@@ -61,13 +61,11 @@ extension TwilioHelper: TwilioChatClientDelegate {
     
     func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
         Log.debug("message added")
-        
-        let myChannel = channel.attributes()?.contains { (key, value) -> Bool in
-            value as? String == self.username
-        } ?? false
-        
-        if (myChannel) {
-            Log.debug("it's my channel")
+        guard self.selectedChannel != nil else {
+            return
+        }
+        if (getCompanion(ofChannel: channel) == getCompanion(ofChannel: self.selectedChannel)) {
+            Log.debug("it's from selected channel")
             if (message.author != self.username) {
                 Log.debug("author is not me")
                 NotificationCenter.default.post(

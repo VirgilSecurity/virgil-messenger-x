@@ -63,6 +63,8 @@ class RegistrationViewController: UIViewController {
             return
         }
         
+        self.view.endEditing(true)
+        
         PKHUD.sharedHUD.contentView = PKHUDProgressView()
         PKHUD.sharedHUD.show()
         
@@ -90,6 +92,8 @@ class RegistrationViewController: UIViewController {
             return
         }
         
+        self.view.endEditing(true)
+        
         PKHUD.sharedHUD.contentView = PKHUDProgressView()
         PKHUD.sharedHUD.show()
         
@@ -112,6 +116,7 @@ class RegistrationViewController: UIViewController {
     }
     
     private func goToChatList() {
+        NotificationCenter.default.removeObserver(self)
         self.performSegue(withIdentifier: "goToChatList", sender: self)
     }
     
