@@ -52,6 +52,8 @@
 		429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E21F963DBE00DCECDF /* TwilioHelper.swift */; };
 		429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */; };
 		429228EB1F96405800DCECDF /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* Chat.storyboard */; };
+		42B4163B1FBAFC7D00AFDF80 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B416391FBAFC7D00AFDF80 /* Fabric.framework */; };
+		42B4163C1FBAFC7D00AFDF80 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B4163A1FBAFC7D00AFDF80 /* Crashlytics.framework */; };
 		42E8F8741F978A51007CB39F /* PKHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42E8F8731F978A51007CB39F /* PKHUD.framework */; };
 /* End PBXBuildFile section */
 
@@ -125,6 +127,8 @@
 		429228E21F963DBE00DCECDF /* TwilioHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwilioHelper.swift; sourceTree = "<group>"; };
 		429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Delegate.swift"; sourceTree = "<group>"; };
 		429228EA1F96405800DCECDF /* Chat.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Chat.storyboard; sourceTree = "<group>"; };
+		42B416391FBAFC7D00AFDF80 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		42B4163A1FBAFC7D00AFDF80 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		42E8F8731F978A51007CB39F /* PKHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PKHUD.framework; path = Carthage/Build/iOS/PKHUD.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -134,8 +138,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				168D21F21FAFC8B400C946B2 /* VirgilSDKPFS.framework in Frameworks */,
+				42B4163C1FBAFC7D00AFDF80 /* Crashlytics.framework in Frameworks */,
 				42E8F8741F978A51007CB39F /* PKHUD.framework in Frameworks */,
 				429228CC1F96287B00DCECDF /* ChattoAdditions.framework in Frameworks */,
+				42B4163B1FBAFC7D00AFDF80 /* Fabric.framework in Frameworks */,
 				429228CD1F96287B00DCECDF /* Chatto.framework in Frameworks */,
 				429228CE1F96287B00DCECDF /* VirgilCrypto.framework in Frameworks */,
 				429228D71F96334E00DCECDF /* TwilioChatClient.framework in Frameworks */,
@@ -280,6 +286,8 @@
 		429228C71F96287A00DCECDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				42B4163A1FBAFC7D00AFDF80 /* Crashlytics.framework */,
+				42B416391FBAFC7D00AFDF80 /* Fabric.framework */,
 				168D21F11FAFC8B400C946B2 /* VirgilSDKPFS.framework */,
 				42E8F8731F978A51007CB39F /* PKHUD.framework */,
 				429228D11F96324B00DCECDF /* TwilioChatClient.framework */,
@@ -325,6 +333,7 @@
 				429228D91F96334E00DCECDF /* Embed Frameworks */,
 				16F8BC861FAA05E70020094B /* CopyFiles */,
 				429228DA1F96339900DCECDF /* ShellScript */,
+				42B416381FBAFBDF00AFDF80 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -419,6 +428,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#bash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/TwilioChatClient.framework/remove_archs\"";
+		};
+		42B416381FBAFBDF00AFDF80 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -601,6 +623,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 					"$(PROJECT_DIR)/Frameworks",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -625,6 +648,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 					"$(PROJECT_DIR)/Frameworks",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
