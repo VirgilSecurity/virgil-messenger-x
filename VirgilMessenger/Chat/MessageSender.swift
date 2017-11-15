@@ -43,8 +43,7 @@ public class MessageSender {
     }
 
     public func sendMessage(_ message: DemoMessageModelProtocol) {
-        let cards = VirgilHelper.sharedInstance.channelsCards.filter { $0.identity == TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel) }
-        guard let card = cards.first else {
+        guard let card = VirgilHelper.sharedInstance.channelsCards[TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)] else {
             Log.error("channel card not found")
             self.updateMessage(message, status: .failed)
             return
@@ -94,11 +93,10 @@ public class MessageSender {
                 Log.debug("sending \(ciphertext)")
                 messages.sendMessage(with: options) { result, msg in
                     if result.isSuccessful() {
+                        self.updateMessage(message, status: .success)
                         let msg = message as! DemoTextMessageModel
                         
                         CoreDataHelper.sharedInstance.createMessage(withBody: msg.body, isIncoming: false, date: message.date)
-                        
-                        self.updateMessage(message, status: .success)
                         return
                     } else {
                         Log.error("error sending: Twilio cause")

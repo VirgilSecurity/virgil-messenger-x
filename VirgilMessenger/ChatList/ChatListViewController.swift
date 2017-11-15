@@ -12,6 +12,8 @@ import PKHUD
 
 class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDelegate {
     
+    @IBOutlet weak var ZeroChatsLabel: UILabel!
+    
     func didTapOn(_ cell: UITableViewCell) {
         TwilioHelper.sharedInstance.setChannel(withUsername: (cell as! ChatListCell).usernameLabel.text!)
 
@@ -20,7 +22,7 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     
     @IBAction func didTapLogOut(_ sender: Any) {
         self.navigationController?.isNavigationBarHidden = true
-        VirgilHelper.sharedInstance.channelsCards = []
+        VirgilHelper.sharedInstance.channelsCards = [:]
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -62,7 +64,7 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
                 self.tableView.reloadData()
                 
                 if error == nil {
-                    CoreDataHelper.sharedInstance.createChannel(withName: username)
+                    self.ZeroChatsLabel.isHidden = true
                 }
                 
             }
@@ -84,7 +86,7 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
             
             
             if CoreDataHelper.sharedInstance.loadChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)) == false {
-                CoreDataHelper.sharedInstance.createChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel))
+                //CoreDataHelper.sharedInstance.createChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel))
             }
             
             let dataSource = DataSource(pageSize: pageSize)
@@ -112,10 +114,12 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     
     override func viewWillAppear(_ animated: Bool) {
         TwilioHelper.sharedInstance.selectedChannel = nil
+        ZeroChatsLabel.isHidden =  TwilioHelper.sharedInstance.channels.subscribedChannels().count == 0 ? false : true
     }
     
     @objc private func reloadTableView(notification: Notification) {
         self.tableView.reloadData()
+        ZeroChatsLabel.isHidden = true
     }
     
     deinit {

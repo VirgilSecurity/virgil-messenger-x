@@ -78,7 +78,6 @@ class RegistrationViewController: UIViewController {
                 }
                 return
             }
-            CoreDataHelper.sharedInstance.signIn(withIdentity: username)
 
             UserDefaults.standard.set(username, forKey: "last_username")
             PKHUD.sharedHUD.hide() { _ in

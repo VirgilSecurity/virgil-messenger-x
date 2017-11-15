@@ -17,7 +17,7 @@ class VirgilHelper {
     private let queue: DispatchQueue
     private let connection: ServiceConnection
     private(set) var secureChat: SecureChat?
-    var channelsCards: [VSSCard] = []
+    var channelsCards: [String:VSSCard] = [:]
     
     private let VirgilAccessToken = "AT.6968c649d331798cbbb757c2cfcae6475416ef958b41d3feddd103dee22a970b"
     private let AuthPublicKey = "MCowBQYDK2VwAyEAHQe7Uf+sUQASm3eGqaqMIfrbHKU9gKUnDg7AuVzf0Z0="
@@ -88,13 +88,10 @@ class VirgilHelper {
             return
         }
         
-        getCard(withIdentity: identity) { card, error in
-            guard error == nil, let card = card else {
-                DispatchQueue.main.async {
-                    completion(error)
-                }
-                return
-            }
+        CoreDataHelper.sharedInstance.loadAccount(withIdentity: identity)
+        let exportedCard = CoreDataHelper.sharedInstance.getCard()
+        let card = VSSCard(data: exportedCard)!
+        
             self.initializeAccount(withCardId: card.identifier, identity: identity) { error in
                 DispatchQueue.main.async {
                     completion(error)
@@ -110,7 +107,6 @@ class VirgilHelper {
                     completion(error)
                 }
             }
-        }
     }
     
     func signUp(identity: String, identityType: String = "name", completion: @escaping (Error?) -> ()) {
@@ -161,8 +157,6 @@ class VirgilHelper {
                 }
                 try self.keyStorage.store(keyEntry)
                 
-                CoreDataHelper.sharedInstance.createAccount(withIdentity: identity)
-                
                 self.initializeAccount(withCardId: cardId, identity: identity) { error in
                     DispatchQueue.main.async {
                         completion(error)
@@ -176,6 +170,7 @@ class VirgilHelper {
                         }
                         return
                     }
+                    CoreDataHelper.sharedInstance.createAccount(withIdentity: identity, exportedCard: card.exportData())
                     self.initializePFS(withIdentity: identity, card: card, privateKey: keyPair.privateKey)
                 }
             } catch {
@@ -215,11 +210,11 @@ class VirgilHelper {
                                 Log.error("can't get channel cards")
                                 return
                             }
-                            self.channelsCards.append(card)
+                            VirgilHelper.sharedInstance.channelsCards[identity] = card
                             if i == TwilioHelper.sharedInstance.channels.subscribedChannels().count - 1 {
                                 Log.debug("found all channel cards")
                                 for card in self.channelsCards {
-                                    Log.debug(card.identity)
+                                    Log.debug(card.key)
                                 }
                             }
                         }

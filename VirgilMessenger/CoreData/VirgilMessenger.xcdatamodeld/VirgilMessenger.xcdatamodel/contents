@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13533" systemVersion="17B48" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES" codeGenerationType="class">
+        <attribute name="card" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="identity" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="channel" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Channel" inverseName="account" inverseEntity="Channel" syncable="YES"/>
     </entity>
     <entity name="Channel" representedClassName="Channel" syncable="YES" codeGenerationType="class">
+        <attribute name="card" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="channel" inverseEntity="Account" syncable="YES"/>
         <relationship name="message" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Message" inverseName="channel" inverseEntity="Message" syncable="YES"/>
@@ -16,8 +18,8 @@
         <relationship name="channel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Channel" inverseName="message" inverseEntity="Channel" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Account" positionX="-171" positionY="45" width="128" height="75"/>
-        <element name="Channel" positionX="-63" positionY="-18" width="128" height="90"/>
+        <element name="Account" positionX="-171" positionY="45" width="128" height="90"/>
+        <element name="Channel" positionX="-63" positionY="-18" width="128" height="105"/>
         <element name="Message" positionX="-272" positionY="45" width="128" height="105"/>
     </elements>
 </model>

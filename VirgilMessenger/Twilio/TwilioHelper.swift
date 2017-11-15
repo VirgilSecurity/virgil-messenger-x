@@ -74,11 +74,10 @@ class TwilioHelper: NSObject {
                                         Log.error("failed to add new channel card")
                                         return
                                     }
-                                    VirgilHelper.sharedInstance.channelsCards.append(card)
+                                    CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
+                                    VirgilHelper.sharedInstance.channelsCards[identity] = card
                                     Log.debug("new card added")
                                 }
-                                
-                                CoreDataHelper.sharedInstance.createChannel(withName: identity)
                                 
                                 NotificationCenter.default.post(
                                     name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
@@ -143,7 +142,8 @@ class TwilioHelper: NSObject {
                         }
                         return
                     }
-                    VirgilHelper.sharedInstance.channelsCards.append(card)
+                    CoreDataHelper.sharedInstance.createChannel(withName: username, card: card.exportData())
+                    VirgilHelper.sharedInstance.channelsCards[username] = card
                 }
                 
                 channel.join(completion: { channelResult in

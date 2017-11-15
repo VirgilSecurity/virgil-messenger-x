@@ -56,7 +56,7 @@ class CoreDataHelper {
 //        }
     }
     
-    func signIn(withIdentity username: String) {
+    func loadAccount(withIdentity username: String) {
         Log.debug("Core Data: Search for " + username)
         var identity: String?
         for account in CoreDataHelper.sharedInstance.accounts {
@@ -71,20 +71,34 @@ class CoreDataHelper {
          Log.debug("Core Data: Searching for account ended")
     }
     
-    func createAccount(withIdentity identity: String) {
+    func createAccount(withIdentity identity: String, exportedCard: String) {
         self.queue.async {
             let entity = NSEntityDescription.entity(forEntityName: Entities.Account.rawValue, in: self.managedContext)!
             
             let account = Account(entity: entity, insertInto: self.managedContext)
             
             account.identity = identity
+            account.card = exportedCard
             
             self.accounts.append(account)
             self.myAccount = account
+            
+            Log.debug("Core Data: account created")
+            
         }
     }
     
-    func createChannel(withName name: String) {
+    func getCard() -> String {
+        if let account = myAccount {
+            return account.card!
+        }
+        else {
+            Log.error("Core Data: nil account found")
+            return String()
+        }
+    }
+    
+    func createChannel(withName name: String, card: String) {
         self.queue.async {
             guard let account = self.myAccount else {
                 Log.error("Core Data: nil account")
@@ -96,6 +110,7 @@ class CoreDataHelper {
             let channel = Channel(entity: entity, insertInto: self.managedContext)
             
             channel.name = name
+            channel.card = card
             
             let channels = account.mutableSetValue(forKey: Keys.channel.rawValue)
             channels.add(channel)
