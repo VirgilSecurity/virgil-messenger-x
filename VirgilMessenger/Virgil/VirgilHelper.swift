@@ -114,70 +114,75 @@ class VirgilHelper {
     }
     
     func signUp(identity: String, identityType: String = "name", completion: @escaping (Error?) -> ()) {
-        Log.debug("Signing up")
-        if (keyStorage.existsKeyEntry(withName: identity)) {
-            Log.debug("Key already stored for this identity")
-            completion(NSError())
-            return
-        }
-        do {
-            let keyPair = self.crypto.generateKeyPair()
-            let exportedPublicKey = self.crypto.export(keyPair.publicKey)
+        self.queue.async {
+            Log.debug("Signing up")
             
-            let csr = VSSCreateUserCardRequest(identity: identity, identityType: identityType, publicKeyData: exportedPublicKey, data: ["deviceId": "testDevice123"])
-            
-            let signer = VSSRequestSigner(crypto: self.crypto)
-            try signer.selfSign(csr, with: keyPair.privateKey)
-            
-            let exportedCSR = csr.exportData()
-            
-            let request = try ServiceRequest(url: URL(string: "https://twilio.virgilsecurity.com/v1/users")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["csr" : exportedCSR])
-            
-            let response = try self.connection.send(request)
-            
-            let json = try JSONSerialization.jsonObject(with: response.body!, options: []) as? [String: Any]
-            
-            guard let cardId = json?["id"] as? String else {
-                Log.error("Error while signing up: server didn't return card")
-                throw NSError()
-            }
-            
-            /*
-             var exportedCard = String(data: response.body!, encoding: .utf8)
-             exportedCard = exportedCard! + "}}}"
-             
-             Log.debug("card: " + exportedCard! + " - end")
-             let str = "asdasd"
-             let tr_card = VSSCard(data: str)
-             Log.debug("card id : " + tr_card!.identifier)*/
-            
-            let keyEntry = VSSKeyEntry(name: identity, value: self.crypto.export(keyPair.privateKey, withPassword: nil))
-            if self.keyStorage.existsKeyEntry(withName: identity) {
-                try self.keyStorage.deleteKeyEntry(withName: identity)
-            }
-            try self.keyStorage.store(keyEntry)
-            
-            CoreDataHelper.sharedInstance.createAccount(withIdentity: identity)
-            
-            self.initializeAccount(withCardId: cardId, identity: identity) { error in
+            if (self.keyStorage.existsKeyEntry(withName: identity)) {
+                Log.debug("Key already stored for this identity")
                 DispatchQueue.main.async {
-                    completion(error)
+                    completion(NSError())
                 }
+                return
             }
-            
-            self.getCard(withIdentity: identity) { card, error in
-                guard let card = card, error == nil else {
+            do {
+                let keyPair = self.crypto.generateKeyPair()
+                let exportedPublicKey = self.crypto.export(keyPair.publicKey)
+                
+                let csr = VSSCreateUserCardRequest(identity: identity, identityType: identityType, publicKeyData: exportedPublicKey, data: ["deviceId": "testDevice123"])
+                
+                let signer = VSSRequestSigner(crypto: self.crypto)
+                try signer.selfSign(csr, with: keyPair.privateKey)
+                
+                let exportedCSR = csr.exportData()
+                
+                let request = try ServiceRequest(url: URL(string: "https://twilio.virgilsecurity.com/v1/users")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["csr" : exportedCSR])
+                
+                let response = try self.connection.send(request)
+                
+                let json = try JSONSerialization.jsonObject(with: response.body!, options: []) as? [String: Any]
+                
+                guard let cardId = json?["id"] as? String else {
+                    Log.error("Error while signing up: server didn't return card")
+                    throw NSError()
+                }
+                
+                /*
+                 var exportedCard = String(data: response.body!, encoding: .utf8)
+                 exportedCard = exportedCard! + "}}}"
+                 
+                 Log.debug("card: " + exportedCard! + " - end")
+                 let str = "asdasd"
+                 let tr_card = VSSCard(data: str)
+                 Log.debug("card id : " + tr_card!.identifier)*/
+                
+                let keyEntry = VSSKeyEntry(name: identity, value: self.crypto.export(keyPair.privateKey, withPassword: nil))
+                if self.keyStorage.existsKeyEntry(withName: identity) {
+                    try self.keyStorage.deleteKeyEntry(withName: identity)
+                }
+                try self.keyStorage.store(keyEntry)
+                
+                CoreDataHelper.sharedInstance.createAccount(withIdentity: identity)
+                
+                self.initializeAccount(withCardId: cardId, identity: identity) { error in
                     DispatchQueue.main.async {
                         completion(error)
                     }
-                    return
                 }
-                self.initializePFS(withIdentity: identity, card: card, privateKey: keyPair.privateKey)
-            }
-        } catch {
-            Log.error("Error while signing up")
-            DispatchQueue.main.async {
-                completion(error)
+                
+                self.getCard(withIdentity: identity) { card, error in
+                    guard let card = card, error == nil else {
+                        DispatchQueue.main.async {
+                            completion(error)
+                        }
+                        return
+                    }
+                    self.initializePFS(withIdentity: identity, card: card, privateKey: keyPair.privateKey)
+                }
+            } catch {
+                Log.error("Error while signing up")
+                DispatchQueue.main.async {
+                    completion(error)
+                }
             }
         }
     }

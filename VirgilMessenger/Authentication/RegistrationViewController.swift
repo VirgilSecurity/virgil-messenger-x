@@ -100,7 +100,7 @@ class RegistrationViewController: UIViewController {
         VirgilHelper.sharedInstance.signUp(identity: username) { error in
             guard error == nil else {
                 PKHUD.sharedHUD.hide() { _ in
-                    let controller = UIAlertController(title: "Error", message: "Error while signing in", preferredStyle: .alert)
+                    let controller = UIAlertController(title: "Error", message: "Error while signing up", preferredStyle: .alert)
                     controller.addAction(UIAlertAction(title: "OK", style: .default))
                     
                     self.present(controller, animated: true)

@@ -139,7 +139,7 @@ class DataSource: ChatDataSourceProtocol {
                 
                 self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
                 self.nextMessageId += 1
-                self.delegate?.chatDataSourceDidUpdate(self, updateType: .pagination)
+                self.delegate?.chatDataSourceDidUpdate(self)
             } catch {
                 Log.error("decryption process failed")
             }
