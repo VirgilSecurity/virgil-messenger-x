@@ -65,16 +65,15 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
             self.alert(withTitle: "You already have that channel")
         }
         else {
-            PKHUD.sharedHUD.contentView = PKHUDProgressView()
-            PKHUD.sharedHUD.show()
+            HUD.show(.progress)
             TwilioHelper.sharedInstance.createChannel(withUsername: username) { error in
-                let title = error == nil ? "Success" : "Error"
-                PKHUD.sharedHUD.hide()
-                self.alert(withTitle: title)
-                self.tableView.reloadData()
-                
+                HUD.flash(.success)
                 if error == nil {
                     self.ZeroChatsLabel.isHidden = true
+                    self.tableView.reloadData()
+                    HUD.flash(.success)
+                } else {
+                    HUD.flash(.error)
                 }
                 
             }

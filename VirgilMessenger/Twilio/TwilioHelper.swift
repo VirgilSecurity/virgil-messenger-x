@@ -62,30 +62,34 @@ class TwilioHelper: NSObject {
                 
                 completion(nil)
                 
-                for channel in channels.subscribedChannels() {
-                    if channel.status == TCHChannelStatus.invited {
-                        channel.join() { channelResult in
-                            if channelResult.isSuccessful() {
-                                Log.debug("Successfully accepted invite.");
-                                let identity = self.getCompanion(ofChannel: channel)
-                                Log.debug("identity: \(identity)")
-                                VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
-                                    guard let card = card, error == nil else {
-                                        Log.error("failed to add new channel card")
-                                        return
-                                    }
-                                    CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
-                                    Log.debug("new card added")
-                                }
-                                
-                                NotificationCenter.default.post(
-                                    name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-                                    object: self,
-                                    userInfo: [:])
-                            } else {
-                                Log.error("Failed to accept invite.");
+                self.joinChannels(channels)
+            }
+        }
+    }
+    
+    private func joinChannels(_ channels: TCHChannels) {
+        for channel in channels.subscribedChannels() {
+            if channel.status == TCHChannelStatus.invited {
+                channel.join() { channelResult in
+                    if channelResult.isSuccessful() {
+                        Log.debug("Successfully accepted invite.");
+                        let identity = self.getCompanion(ofChannel: channel)
+                        Log.debug("identity: \(identity)")
+                        VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
+                            guard let card = card, error == nil else {
+                                Log.error("failed to add new channel card")
+                                return
                             }
+                            CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
+                            Log.debug("new card added")
                         }
+                        
+                        NotificationCenter.default.post(
+                            name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                            object: self,
+                            userInfo: [:])
+                    } else {
+                        Log.error("Failed to accept invite.");
                     }
                 }
             }
@@ -102,57 +106,64 @@ class TwilioHelper: NSObject {
     }
     
     func createChannel(withUsername username: String, completion: @escaping (Error?)->()) {
-        TwilioHelper.sharedInstance.channels.createChannel(options: [
-            TCHChannelOptionType: TCHChannelType.private.rawValue,
-            TCHChannelOptionAttributes: [
-                "initiator": self.username,
-                "responder": username
-            ]
-        ]) { (result, channel) in
-            guard let channel = channel, result.isSuccessful() else {
-                Log.error("Error while creating chat with \(username): \(result.error?.localizedDescription ?? "")")
-                completion(result.error ?? NSError())
+        VirgilHelper.sharedInstance.getCard(withIdentity: username) { card, error in
+            guard let card = card, error == nil else {
+                Log.error("failed to add new channel card")
+                DispatchQueue.main.async {
+                    completion(error)
+                }
                 return
             }
+            CoreDataHelper.sharedInstance.createChannel(withName: username, card: card.exportData())
             
-            channel.members?.invite(byIdentity: username) { (result) in
-                guard result.isSuccessful() else {
-                    Log.error("Error while inviting member \(username): \(result.error?.localizedDescription ?? "")")
-                    completion(result.error ?? NSError())
-                    channel.destroy { result in
-                        guard result.isSuccessful() else {
-                            Log.error("can't destroy channel")
-                            return
-                        }
-                        CoreDataHelper.sharedInstance.deleteChannel(withName: username)
+            TwilioHelper.sharedInstance.channels.createChannel(options: [
+                TCHChannelOptionType: TCHChannelType.private.rawValue,
+                TCHChannelOptionAttributes: [
+                    "initiator": self.username,
+                    "responder": username
+                ]
+            ]) { (result, channel) in
+                guard let channel = channel, result.isSuccessful() else {
+                    Log.error("Error while creating chat with \(username): \(result.error?.localizedDescription ?? "")")
+                    DispatchQueue.main.async {
+                        completion(result.error ?? NSError())
                     }
+                    CoreDataHelper.sharedInstance.deleteChannel(withName: username)
                     return
                 }
-            }
                 
-                VirgilHelper.sharedInstance.getCard(withIdentity: username) { card, error in
-                    guard let card = card, error == nil else {
-                        Log.error("failed to add new channel card")
+                channel.members?.invite(byIdentity: username) { (result) in
+                    guard result.isSuccessful() else {
+                        Log.error("Error while inviting member \(username): \(result.error?.localizedDescription ?? "")")
+                        DispatchQueue.main.async {
+                            completion(result.error ?? NSError())
+                        }
                         channel.destroy { result in
                             guard result.isSuccessful() else {
                                 Log.error("can't destroy channel")
+                                CoreDataHelper.sharedInstance.deleteChannel(withName: username)
                                 return
                             }
+                            CoreDataHelper.sharedInstance.deleteChannel(withName: username)
                         }
                         return
                     }
-                    CoreDataHelper.sharedInstance.createChannel(withName: username, card: card.exportData())
                 }
                 
                 channel.join(completion: { channelResult in
                     if channelResult.isSuccessful() {
                         Log.debug("Channel joined.")
-                        completion(nil)
+                        DispatchQueue.main.async {
+                            completion(nil)
+                        }
                     } else {
                         Log.error("Channel NOT joined.")
-                        completion(NSError())
+                        DispatchQueue.main.async {
+                            completion(NSError())
+                        }
                     }
                 })
+            }
         }
     }
     

@@ -67,7 +67,7 @@ class RegistrationViewController: UIViewController {
         
         PKHUD.sharedHUD.contentView = PKHUDProgressView()
         PKHUD.sharedHUD.show()
-        
+
         VirgilHelper.sharedInstance.signIn(identity: username) { error in
             guard error == nil else {
                 PKHUD.sharedHUD.hide() { _ in
@@ -80,7 +80,7 @@ class RegistrationViewController: UIViewController {
             }
 
             UserDefaults.standard.set(username, forKey: "last_username")
-            PKHUD.sharedHUD.hide() { _ in
+            PKHUD.sharedHUD.hide(true) { _ in
                 self.goToChatList()
             }
         }
@@ -108,7 +108,7 @@ class RegistrationViewController: UIViewController {
             }
             
             UserDefaults.standard.set(username, forKey: "last_username")
-            PKHUD.sharedHUD.hide() { _ in
+            PKHUD.sharedHUD.hide(true) { _ in
                 self.goToChatList()
             }
         }
