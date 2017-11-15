@@ -85,6 +85,7 @@ class CoreDataHelper {
             
             Log.debug("Core Data: account created")
             
+            self.appDelegate.saveContext()
         }
     }
     
@@ -116,6 +117,7 @@ class CoreDataHelper {
             channels.add(channel)
             
             Log.debug("Core Data: new channel added. Count: \(channels.count)")
+            self.appDelegate.saveContext()
         }
     }
     
@@ -138,6 +140,7 @@ class CoreDataHelper {
             messages.add(message)
             
             Log.debug("Core Data: new message added. Count: \(messages.count)")
+            self.appDelegate.saveContext()
         }
     }
     
@@ -189,6 +192,7 @@ class CoreDataHelper {
             }
         }
         Log.error("Core Data: channel not found")
+        self.appDelegate.saveContext()
     }
     
     private func fetch() -> [Account] {
