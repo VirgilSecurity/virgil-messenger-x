@@ -89,7 +89,7 @@ class CoreDataHelper {
         }
     }
     
-    func getCard() -> String {
+    func getAccountCard() -> String {
         if let account = myAccount {
             return account.card!
         }

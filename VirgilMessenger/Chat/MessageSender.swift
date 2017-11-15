@@ -43,7 +43,7 @@ public class MessageSender {
     }
 
     public func sendMessage(_ message: DemoMessageModelProtocol) {
-        guard let card = VirgilHelper.sharedInstance.channelsCards[TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)] else {
+        guard let card = VirgilHelper.sharedInstance.channelCard else {
             Log.error("channel card not found")
             self.updateMessage(message, status: .failed)
             return

@@ -99,7 +99,6 @@ extension TwilioHelper: TwilioChatClientDelegate {
                             return
                         }
                         CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
-                        VirgilHelper.sharedInstance.channelsCards[identity] = card
                         Log.debug("new card added")
                     }
                     

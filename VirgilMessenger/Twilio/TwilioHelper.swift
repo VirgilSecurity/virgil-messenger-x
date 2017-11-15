@@ -75,7 +75,6 @@ class TwilioHelper: NSObject {
                                         return
                                     }
                                     CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
-                                    VirgilHelper.sharedInstance.channelsCards[identity] = card
                                     Log.debug("new card added")
                                 }
                                 
@@ -143,7 +142,6 @@ class TwilioHelper: NSObject {
                         return
                     }
                     CoreDataHelper.sharedInstance.createChannel(withName: username, card: card.exportData())
-                    VirgilHelper.sharedInstance.channelsCards[username] = card
                 }
                 
                 channel.join(completion: { channelResult in

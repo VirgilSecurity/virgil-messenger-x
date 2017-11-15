@@ -66,7 +66,7 @@ class DataSource: ChatDataSourceProtocol {
         
         var new_tmp_messages: [DemoTextMessageModel] = []
         
-        guard let card = VirgilHelper.sharedInstance.channelsCards[TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)]  else {
+        guard let card = VirgilHelper.sharedInstance.channelCard  else {
             Log.error("channel card not found")
             return
         }
@@ -120,7 +120,7 @@ class DataSource: ChatDataSourceProtocol {
                 return
             }
             
-             guard let card = VirgilHelper.sharedInstance.channelsCards[TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)]  else {
+             guard let card = VirgilHelper.sharedInstance.channelCard  else {
                 Log.error("channel card not found")
                 return
             }

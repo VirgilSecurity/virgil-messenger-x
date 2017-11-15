@@ -15,14 +15,24 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     @IBOutlet weak var ZeroChatsLabel: UILabel!
     
     func didTapOn(_ cell: UITableViewCell) {
-        TwilioHelper.sharedInstance.setChannel(withUsername: (cell as! ChatListCell).usernameLabel.text!)
-
-        self.performSegue(withIdentifier: "goToChat", sender: self)
+        if let username = (cell as! ChatListCell).usernameLabel.text {
+            TwilioHelper.sharedInstance.setChannel(withUsername: (username))
+            
+            if CoreDataHelper.sharedInstance.loadChannel(withName: username) == false {
+                //CoreDataHelper.sharedInstance.createChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel))
+                return
+            }
+            
+            let channel = CoreDataHelper.sharedInstance.selectedChannel!
+            let exportedCard = channel.card!
+            VirgilHelper.sharedInstance.setChannelCard(exportedCard)
+            
+            self.performSegue(withIdentifier: "goToChat", sender: self)
+        }
     }
     
     @IBAction func didTapLogOut(_ sender: Any) {
         self.navigationController?.isNavigationBarHidden = true
-        VirgilHelper.sharedInstance.channelsCards = [:]
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -84,11 +94,6 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         if let chatController = segue.destination as? ChatViewController {
             let pageSize = 10000
             
-            
-            if CoreDataHelper.sharedInstance.loadChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)) == false {
-                //CoreDataHelper.sharedInstance.createChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel))
-            }
-            
             let dataSource = DataSource(pageSize: pageSize)
             chatController.title = TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)
             chatController.dataSource = dataSource
@@ -115,6 +120,7 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     override func viewWillAppear(_ animated: Bool) {
         TwilioHelper.sharedInstance.selectedChannel = nil
         ZeroChatsLabel.isHidden =  TwilioHelper.sharedInstance.channels.subscribedChannels().count == 0 ? false : true
+        VirgilHelper.sharedInstance.channelCard = nil
     }
     
     @objc private func reloadTableView(notification: Notification) {
