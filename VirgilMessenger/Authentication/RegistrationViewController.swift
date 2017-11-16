@@ -9,13 +9,15 @@
 import UIKit
 import PKHUD
 
-class RegistrationViewController: UIViewController {
+class RegistrationViewController: UIViewController{
     
     @IBOutlet weak var usernameTextField: UITextField!
-
+    private let limitLength = 32
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     static let name = "Authentication"
-    
+
+    let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -60,6 +62,7 @@ class RegistrationViewController: UIViewController {
     
     @IBAction func signinButtonPressed(_ sender: Any) {
         guard let username = self.usernameTextField.text?.lowercased(), !username.isEmpty else {
+            self.usernameTextField.becomeFirstResponder()
             return
         }
         
@@ -67,15 +70,17 @@ class RegistrationViewController: UIViewController {
         
         PKHUD.sharedHUD.contentView = PKHUDProgressView()
         PKHUD.sharedHUD.show()
-
-        VirgilHelper.sharedInstance.signIn(identity: username) { error in
+        
+        VirgilHelper.sharedInstance.signIn(identity: username) { error, message in
             guard error == nil else {
+                let message = message == nil ? "unknown error" : message
                 PKHUD.sharedHUD.hide() { _ in
-                    let controller = UIAlertController(title: "Error", message: "Error while signing in", preferredStyle: .alert)
+                    let controller = UIAlertController(title: self.title, message: message, preferredStyle: .alert)
                     controller.addAction(UIAlertAction(title: "OK", style: .default))
                     
                     self.present(controller, animated: true)
                 }
+                
                 return
             }
 
@@ -88,6 +93,7 @@ class RegistrationViewController: UIViewController {
     
     @IBAction func signupButtonPressed(_ sender: Any) {
         guard let username = self.usernameTextField.text?.lowercased(), !username.isEmpty else {
+            self.usernameTextField.becomeFirstResponder()
             return
         }
         
@@ -96,19 +102,19 @@ class RegistrationViewController: UIViewController {
         PKHUD.sharedHUD.contentView = PKHUDProgressView()
         PKHUD.sharedHUD.show()
         
-        VirgilHelper.sharedInstance.signUp(identity: username) { error in
+        VirgilHelper.sharedInstance.signUp(identity: username) { error, message in
             guard error == nil else {
+                let message = message == nil ? "unknown error" : message
                 PKHUD.sharedHUD.hide() { _ in
-                    let controller = UIAlertController(title: "Error", message: "Error while signing up", preferredStyle: .alert)
+                    let controller = UIAlertController(title: self.title, message: message, preferredStyle: .alert)
                     controller.addAction(UIAlertAction(title: "OK", style: .default))
                     
                     self.present(controller, animated: true)
                 }
                 return
             }
-            
             UserDefaults.standard.set(username, forKey: "last_username")
-            PKHUD.sharedHUD.hide(true) { _ in
+           PKHUD.sharedHUD.hide(true) { _ in
                 self.goToChatList()
             }
         }
@@ -119,6 +125,17 @@ class RegistrationViewController: UIViewController {
         self.performSegue(withIdentifier: "goToChatList", sender: self)
     }
     
+    @IBAction func logoTapped(_ sender: Any) {
+        Log.debug("Logo tapped")
+        openUrl(urlStr: "https://virgilsecurity.com")
+    }
+    
+    private func openUrl(urlStr: String!) {
+        if let url = NSURL(string:urlStr) {
+            UIApplication.shared.open(url as URL, options: [:], completionHandler: nil)
+        }
+    }
+    
 }
 
 
@@ -127,5 +144,15 @@ extension RegistrationViewController: UITextFieldDelegate {
         self.signinButtonPressed(self)
         
         return false
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let text = textField.text else { return true }
+        if string.rangeOfCharacter(from: characterset.inverted) != nil {
+            Log.debug("string contains special characters")
+            return false
+        }
+        let newLength = text.count + string.count - range.length
+        return newLength <= limitLength
     }
 }

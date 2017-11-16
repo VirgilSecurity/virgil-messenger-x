@@ -115,12 +115,16 @@
                                             <constraint firstAttribute="trailing" secondItem="drO-kP-tuG" secondAttribute="trailing" id="hY3-4N-5nD"/>
                                         </constraints>
                                     </view>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="Hyw-7C-uUn">
+                                    <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="Hyw-7C-uUn">
                                         <rect key="frame" x="123" y="115" width="128" height="128"/>
+                                        <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="128" id="77B-K5-R0k"/>
                                             <constraint firstAttribute="width" secondItem="Hyw-7C-uUn" secondAttribute="height" id="dtX-Ap-JaW"/>
                                         </constraints>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="Z9Y-LY-uuM" appends="YES" id="WWF-Qb-c5d"/>
+                                        </connections>
                                     </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -170,6 +174,11 @@
                         <action selector="signinButtonPressed:" destination="5xh-zn-CV3" id="8Af-b1-BRL"/>
                     </connections>
                 </tapGestureRecognizer>
+                <tapGestureRecognizer id="Z9Y-LY-uuM">
+                    <connections>
+                        <action selector="logoTapped:" destination="5xh-zn-CV3" id="Voj-a3-DEn"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1422" y="-9"/>
         </scene>
@@ -179,7 +188,7 @@
                 <viewControllerPlaceholder storyboardName="ChatList" id="ep6-Jc-qAC" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NUU-uc-IZ6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2022" y="-10"/>
+            <point key="canvasLocation" x="2150" y="-10"/>
         </scene>
     </scenes>
     <resources>

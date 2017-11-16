@@ -13,6 +13,8 @@ import PKHUD
 class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDelegate {
     
     @IBOutlet weak var ZeroChatsLabel: UILabel!
+    private let limitLength = 32
+      let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
     
     func didTapOn(_ cell: UITableViewCell) {
         if let username = (cell as! ChatListCell).usernameLabel.text {
@@ -41,6 +43,7 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         
         alertController.addTextField(configurationHandler: {
             $0.placeholder = "Username"
+            $0.delegate = self
         })
         
         alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
@@ -57,12 +60,18 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     }
     
     private func addChat(withUsername username: String) {
-       
+        let username = username.lowercased()
+    
+        guard (username != TwilioHelper.sharedInstance.username) else {
+            self.alert(withTitle: "You need communication with other people :)")
+            return
+        }
+        
         if (TwilioHelper.sharedInstance.channels.subscribedChannels().contains {($0.attributes()?.values.contains { (value) -> Bool in
             value as! String == username
             })!
         }) {
-            self.alert(withTitle: "You already have that channel")
+            self.alert(withTitle: "You already have this channel")
         }
         else {
             HUD.show(.progress)
@@ -148,5 +157,17 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
+    }
+}
+
+extension ChatListViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let text = textField.text else { return true }
+        if string.rangeOfCharacter(from: characterset.inverted) != nil {
+            Log.debug("string contains special characters")
+            return false
+        }
+        let newLength = text.count + string.count - range.length
+        return newLength <= limitLength
     }
 }

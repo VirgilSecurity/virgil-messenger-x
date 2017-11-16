@@ -29,6 +29,14 @@ class VirgilHelper {
         self.connection = ServiceConnection()
     }
     
+    enum VirgilHelperError: String, Error {
+        case noKey                    =  "no key found"
+        case keyAlreadyStored         =  "name is already in use"
+        case gettingVirgilTokenFailed =  "Getting Virgil Token Failed"
+        case getCardFailed            =  "getting Virgil Card Failed"
+        case usernameAlreadyUsed      =  "Username is already in use"
+    }
+    
     private func initializePFS(withIdentity: String, card: VSSCard, privateKey: VSSPrivateKey) {
         do {
             let secureChatPreferences = try! SecureChatPreferences (
@@ -70,12 +78,12 @@ class VirgilHelper {
         client.searchCards(using: criteria) { (cards, error) in
             guard error == nil else {
                 Log.error("Error: searching cards error")
-                completion(nil, NSError())
+                completion(nil, VirgilHelperError.getCardFailed)
                 return
             }
             guard cards != nil else {
                 Log.error("Error: no Virgil card found")
-                completion(nil, NSError())
+                completion(nil, VirgilHelperError.getCardFailed)
                 return
             }
             
@@ -83,22 +91,25 @@ class VirgilHelper {
         }
     }
     
-    func signIn(identity: String, completion: @escaping (Error?) -> ()) {
+    func signIn(identity: String, completion: @escaping (Error?, String?) -> ()) {
         Log.debug("Signing in")
         
         if (!keyStorage.existsKeyEntry(withName: identity)) {
-            completion(NSError())
+            DispatchQueue.main.async {
+                completion(VirgilHelperError.noKey, VirgilHelperError.noKey.rawValue)
+            }
             Log.debug("Key not found")
             return
         }
         
         CoreDataHelper.sharedInstance.loadAccount(withIdentity: identity)
         let exportedCard = CoreDataHelper.sharedInstance.getAccountCard()
-        let card = VSSCard(data: exportedCard)!
         
+        if let exportedCard = exportedCard {
+            let card = VSSCard(data: exportedCard)!
             self.initializeAccount(withCardId: card.identifier, identity: identity) { error in
                 DispatchQueue.main.async {
-                    completion(error)
+                    completion(error, nil)
                 }
             }
             do {
@@ -108,19 +119,46 @@ class VirgilHelper {
             } catch {
                 Log.error("Signing in: key not found")
                 DispatchQueue.main.async {
-                    completion(error)
+                    completion(error, nil)
                 }
             }
+        } else {
+            getCard(withIdentity: identity) { card, error in
+                guard error == nil, let card = card else {
+                    Log.error("Signing in: can't get virgil card")
+                    DispatchQueue.main.async {
+                        completion(error, nil)
+                    }
+                    return
+                }
+                
+                self.initializeAccount(withCardId: card.identifier, identity: identity) { error in
+                    DispatchQueue.main.async {
+                        completion(error, nil)
+                    }
+                }
+                do {
+                    let entry = try self.keyStorage.loadKeyEntry(withName: identity)
+                    let key = self.crypto.importPrivateKey(from: entry.value)
+                    self.initializePFS(withIdentity: identity, card: card, privateKey: key!)
+                } catch {
+                    Log.error("Signing in: key not found")
+                    DispatchQueue.main.async {
+                        completion(error, nil)
+                    }
+                }
+            }
+        }
     }
     
-    func signUp(identity: String, identityType: String = "name", completion: @escaping (Error?) -> ()) {
+    func signUp(identity: String, identityType: String = "name", completion: @escaping (Error?, String?) -> ()) {
         self.queue.async {
             Log.debug("Signing up")
-            
+        
             if (self.keyStorage.existsKeyEntry(withName: identity)) {
                 Log.debug("Key already stored for this identity")
                 DispatchQueue.main.async {
-                    completion(NSError())
+                    completion(VirgilHelperError.keyAlreadyStored, VirgilHelperError.keyAlreadyStored.rawValue)
                 }
                 return
             }
@@ -143,7 +181,10 @@ class VirgilHelper {
                 
                 guard let cardId = json?["id"] as? String else {
                     Log.error("Error while signing up: server didn't return card")
-                    throw NSError()
+                    DispatchQueue.main.async {
+                        completion(VirgilHelperError.usernameAlreadyUsed, VirgilHelperError.usernameAlreadyUsed.rawValue)
+                    }
+                    return
                 }
                 
                 /*
@@ -164,14 +205,14 @@ class VirgilHelper {
                 self.getCard(withIdentity: identity) { card, error in
                     guard let card = card, error == nil else {
                         DispatchQueue.main.async {
-                            completion(error)
+                            completion(error, nil)
                         }
                         return
                     }
                     CoreDataHelper.sharedInstance.createAccount(withIdentity: identity, exportedCard: card.exportData())
                     self.initializeAccount(withCardId: cardId, identity: identity) { error in
                         DispatchQueue.main.async {
-                            completion(error)
+                            completion(error, nil)
                         }
                     }
                     self.initializePFS(withIdentity: identity, card: card, privateKey: keyPair.privateKey)
@@ -179,7 +220,7 @@ class VirgilHelper {
             } catch {
                 Log.error("Error while signing up")
                 DispatchQueue.main.async {
-                    completion(error)
+                    completion(error, nil)
                 }
             }
         }
@@ -189,7 +230,7 @@ class VirgilHelper {
         self.queue.async {
             let VirgilToken = self.getVirgilToken(withCardId: cardId, identity: identity)
             guard VirgilToken != "" else {
-                completion(NSError())
+                completion(VirgilHelperError.gettingVirgilTokenFailed)
                 return
             }
             self.getTwilioToken(VirgilToken: VirgilToken) { token, error in

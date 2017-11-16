@@ -16,6 +16,11 @@ public class ServiceRequest: NSObject, HTTPRequest {
     
     @objc public static let DefaultTimeout: TimeInterval = 45
     
+    enum RequestErrors: Int, Error {
+        case selfParamsFailed
+        case urlComponentsFailed
+    }
+    
     public enum Method: String {
         case get    = "GET"
         case post   = "POST"
@@ -39,7 +44,7 @@ public class ServiceRequest: NSObject, HTTPRequest {
             let url: URL
             if let p = self.params {
                 guard let p = p as? [String : String] else {
-                    throw NSError()
+                    throw RequestErrors.selfParamsFailed
                 }
                 
                 var components = URLComponents(string: self.url.absoluteString)
@@ -48,7 +53,7 @@ public class ServiceRequest: NSObject, HTTPRequest {
                 })
                 
                 guard let u = components?.url else {
-                    throw NSError()
+                    throw RequestErrors.urlComponentsFailed
                 }
                 
                 url = u

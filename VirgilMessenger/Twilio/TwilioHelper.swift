@@ -14,6 +14,13 @@ class TwilioHelper: NSObject {
         self.sharedInstance = TwilioHelper(username: username, device: device)
     }
     
+    enum TwilioHelperError: Int, Error {
+        case initFailed
+        case initChannelsFailed
+        case initUsersFailed
+        case joiningFailed
+    }
+    
     private(set) static var sharedInstance: TwilioHelper!
     
     private init(username: String, device: String) {
@@ -39,19 +46,19 @@ class TwilioHelper: NSObject {
             TwilioChatClient.chatClient(withToken: token, properties: nil, delegate: self) { (result, client) in
                 guard let client = client, result.isSuccessful() else {
                     Log.error("Error while initializing Twilio: \(result.error?.localizedDescription ?? "")")
-                    completion(NSError())
+                    completion(TwilioHelperError.initFailed)
                     return
                 }
                 
                 guard let channels = client.channelsList() else {
                     Log.error("Error while initializing Twilio channels")
-                    completion(NSError())
+                    completion(TwilioHelperError.initChannelsFailed)
                     return
                 }
 
                 guard let users = client.users() else {
                     Log.error("Error while initializing Twilio users")
-                    completion(NSError())
+                    completion(TwilioHelperError.initUsersFailed)
                     return
                 }
                 
@@ -126,7 +133,7 @@ class TwilioHelper: NSObject {
                 guard let channel = channel, result.isSuccessful() else {
                     Log.error("Error while creating chat with \(username): \(result.error?.localizedDescription ?? "")")
                     DispatchQueue.main.async {
-                        completion(result.error ?? NSError())
+                        completion(result.error)
                     }
                     CoreDataHelper.sharedInstance.deleteChannel(withName: username)
                     return
@@ -136,15 +143,14 @@ class TwilioHelper: NSObject {
                     guard result.isSuccessful() else {
                         Log.error("Error while inviting member \(username): \(result.error?.localizedDescription ?? "")")
                         DispatchQueue.main.async {
-                            completion(result.error ?? NSError())
+                            completion(result.error)
                         }
                         channel.destroy { result in
+                            CoreDataHelper.sharedInstance.deleteChannel(withName: username)
                             guard result.isSuccessful() else {
                                 Log.error("can't destroy channel")
-                                CoreDataHelper.sharedInstance.deleteChannel(withName: username)
                                 return
                             }
-                            CoreDataHelper.sharedInstance.deleteChannel(withName: username)
                         }
                         return
                     }
@@ -159,7 +165,7 @@ class TwilioHelper: NSObject {
                     } else {
                         Log.error("Channel NOT joined.")
                         DispatchQueue.main.async {
-                            completion(NSError())
+                            completion(TwilioHelperError.joiningFailed)
                         }
                     }
                 })

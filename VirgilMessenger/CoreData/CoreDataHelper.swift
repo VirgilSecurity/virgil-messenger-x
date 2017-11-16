@@ -89,13 +89,13 @@ class CoreDataHelper {
         }
     }
     
-    func getAccountCard() -> String {
+    func getAccountCard() -> String? {
         if let account = myAccount {
             return account.card!
         }
         else {
             Log.error("Core Data: nil account found")
-            return String()
+            return nil
         }
     }
     
