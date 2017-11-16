@@ -4,7 +4,7 @@
 
 ## Getting Started
 
-Start with clonning repository to your PC. Open *terminal*, go to folder you want to locate application and execute
+Start with cloning repository to your PC. Open *terminal*, navigate to the folder where you want to store the application and execute
 ```bash
 $ git clone -b develop https://github.com/VirgilSecurity/virgil-demo-messenger.git
 
@@ -12,7 +12,7 @@ $ cd virgil-demo-messenger
 ```
 
 ## Prerequisites
-**Virgil Messenger** uses several modules, including **Virgil PFS SDK**. These packages are distributed via Carthage and CocoaPods. Since Carthage is RECOMMENDED way to integrate those packeges into project, this application's dependencies is managed by it. Carthage integration is easy, convenient and you can simultaniously use CocoaPods to manage all other dependencies.
+**Virgil Messenger** uses several modules, including **Virgil PFS SDK**. These packages are distributed via Carthage and CocoaPods. Since Carthage is a RECOMMENDED way to integrate those packages into the project, these application's dependencies are managed by it. Carthage integration is easy, convenient and you can simultaneously use CocoaPods to manage all other dependencies.
 
 ### Carthage
 
@@ -26,7 +26,7 @@ $ brew install carthage
 ```
 
 #### Updating dependencies
-This example already have Carthage file with all required dependencies. All you need to do is to go to the project folder and update those dependencies.
+This example already has Carthage file with all required dependencies. All you need to do is to go to the project folder and update these dependencies.
 
 ```bash 
 $ cd PathToProjectFolder/virgil-demo-messenger
@@ -36,10 +36,10 @@ $ carthage update
 The project should now be built without errors.
 
 ## Creating your Virgil + Twilio Application
-Messenger uses [virgil-demo-twilio](https://github.com/VirgilSecurity/virgil-demo-twilio/tree/v2-backend) as a server to obtain **Twilio Token** and make new Virgil and Twilio accounts. You can make your own server. To do that you'll need to:
+The messenger uses [virgil-demo-twilio](https://github.com/VirgilSecurity/virgil-demo-twilio/tree/v2-backend) as a server to obtain **Twilio Token** and make new Virgil and Twilio accounts. You can make your own server. To do this you'll need to:
 - Create your own account in [Dashboard](https://developer.virgilsecurity.com/account/signin) to get **Virgil Access Token** and *App Private key*.
-- Set up your server to provide [creating Twilio Tokens](https://www.twilio.com/docs/api/chat/guides/create-tokens) and registering new users using [Virgil SDK](https://developer.virgilsecurity.com/docs/swift/get-started/encrypted-communication) and [Passwordless authentication](https://developer.virgilsecurity.com/docs/ruby/get-started/passwordless-authentication#setup-your-server)
-- Change server endpoints and **Virgil Access Token** in client messenger app . All that you can find in `VirgilHelper` class.
+- Set up your server to provide [Twilio Tokens creation](https://www.twilio.com/docs/api/chat/guides/create-tokens), new users registration using [Virgil SDK](https://developer.virgilsecurity.com/docs/swift/get-started/encrypted-communication) and [Passwordless authentication](https://developer.virgilsecurity.com/docs/ruby/get-started/passwordless-authentication#setup-your-server)
+- Change server endpoints and **Virgil Access Token** in client messenger app. All of these you can find in the `VirgilHelper` class.
 
 ## Documentation
 
