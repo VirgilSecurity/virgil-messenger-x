@@ -68,7 +68,7 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
         let username = username.lowercased()
     
         guard (username != TwilioHelper.sharedInstance.username) else {
-            self.alert(withTitle: "You need communication with other people :)")
+            self.alert(withTitle: "You need to communicate with other people :)")
             return
         }
         

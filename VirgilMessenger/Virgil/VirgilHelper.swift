@@ -16,6 +16,7 @@ class VirgilHelper {
     private let keyStorage: VSSKeyStorage
     private let queue: DispatchQueue
     private let connection: ServiceConnection
+    private let validator: VSSCardValidator
     private(set) var secureChat: SecureChat?
     var channelCard: VSSCard?
     
@@ -33,6 +34,14 @@ class VirgilHelper {
         self.queue = DispatchQueue(label: "virgil-help-queue")
         self.connection = ServiceConnection()
         
+        self.validator = VSSCardValidator(crypto: crypto)
+        // FIXME
+        self.validator.useVirgilServiceVerifiers = false
+        guard let appPublicKeyData = Data(base64Encoded: self.appPublicKey) else {
+            Log.error("error converting appPublicKey to data")
+            return
+        }
+        self.validator.addVerifier(withId: appCardId, publicKeyData: appPublicKeyData)
     }
     
     enum VirgilHelperError: String, Error {
@@ -45,6 +54,7 @@ class VirgilHelper {
         case importingKeyFailed
         case jsonFailed
         case dataFromString
+        case validatingError
     }
     
     private func initializePFS(withIdentity: String, card: VSSCard, privateKey: VSSPrivateKey) {
@@ -80,14 +90,8 @@ class VirgilHelper {
     
     func getCard(withIdentity: String, completion: @escaping (VSSCard?, Error?) -> ()) {
         let serviceConfig = VSSServiceConfig(token: self.virgilAccessToken)
-        let validator = VSSCardValidator.init(crypto: self.crypto)
-        guard let appPublicKeyData = Data(base64Encoded: self.appPublicKey) else {
-            Log.error("error converting appPublicKey to data")
-            completion(nil, VirgilHelperError.getCardFailed)
-            return
-        }
-        validator.addVerifier(withId: appCardId, publicKeyData: appPublicKeyData)
-        serviceConfig.cardValidator = validator
+    
+        serviceConfig.cardValidator = self.validator
         serviceConfig.cardsServiceURL = URL(string: "https://cards.virgilsecurity.com/v4/")!
         serviceConfig.cardsServiceROURL = URL(string: "https://cards-ro.virgilsecurity.com/v4/")!
         
@@ -212,12 +216,11 @@ class VirgilHelper {
                     throw VirgilHelperError.buildCardFailed
                 }
                 
-                let validator = VSSCardValidator(crypto: self.crypto)
-                guard let appPublicKeyData = Data(base64Encoded: self.appPublicKey) else {
-                    Log.error("error converting appPublicKey to data")
-                    throw VirgilHelperError.dataFromString
+                guard self.validator.validate(card.cardResponse) else {
+                    Log.error("validating card failed")
+                    throw VirgilHelperError.validatingError
                 }
-                validator.addVerifier(withId: self.appCardId, publicKeyData: appPublicKeyData)
+                
                 
                 let keyEntry = VSSKeyEntry(name: identity, value: self.crypto.export(keyPair.privateKey, withPassword: nil))
                 
