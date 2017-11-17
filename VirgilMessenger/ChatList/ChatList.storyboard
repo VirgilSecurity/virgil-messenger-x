@@ -59,7 +59,7 @@
                         <viewLayoutGuide key="safeArea" id="CA9-Ie-zsH"/>
                     </view>
                     <navigationItem key="navigationItem" title="Chats" id="08I-p8-ei3">
-                        <barButtonItem key="leftBarButtonItem" title="Item" style="plain" id="GyV-fo-NjE">
+                        <barButtonItem key="leftBarButtonItem" title="Item" id="GyV-fo-NjE">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="399-ID-Rwb">
                                 <rect key="frame" x="16" y="7" width="66" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
