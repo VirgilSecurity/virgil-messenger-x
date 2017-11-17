@@ -25,8 +25,13 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
                 return
             }
             
-            let channel = CoreDataHelper.sharedInstance.selectedChannel!
-            let exportedCard = channel.card!
+            guard let channel = CoreDataHelper.sharedInstance.selectedChannel,
+                  let exportedCard = channel.card
+            else {
+                Log.error("can't find selected channel in Core Data")
+                return
+            }
+            
             VirgilHelper.sharedInstance.setChannelCard(exportedCard)
             
             self.performSegue(withIdentifier: "goToChat", sender: self)
@@ -67,8 +72,9 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
             return
         }
         
-        if (TwilioHelper.sharedInstance.channels.subscribedChannels().contains {($0.attributes()?.values.contains { (value) -> Bool in
-            value as! String == username
+        if (TwilioHelper.sharedInstance.channels.subscribedChannels().contains {
+            ($0.attributes()?.values.contains { (value) -> Bool in
+                value as! String == username
             })!
         }) {
             self.alert(withTitle: "You already have this channel")

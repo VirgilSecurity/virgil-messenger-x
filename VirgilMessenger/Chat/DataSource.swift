@@ -41,19 +41,25 @@ class DataSource: ChatDataSourceProtocol {
     }
     
     private func getLastMessages() {
-        guard let channel = CoreDataHelper.sharedInstance.selectedChannel else {
+        guard let channel = CoreDataHelper.sharedInstance.selectedChannel, let messages = channel.message else {
             Log.error("Can't get last messages: channel not found in Core Data")
             return
         }
-        let messages = channel.message!
         var tmp_messages: [DemoTextMessageModel] = []
         
         for message in messages {
-            let message = message as! Message
+            guard let message = message as? Message,
+                  let messageBody = message.body,
+                  let messageDate = message.date
+            else {
+                Log.error("retriving message from Core Data failed")
+                return
+            }
+            
             let isIncoming = message.isIncoming
             
-            let model = createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message.date!)
-            let decryptedMessage = DemoTextMessageModel(messageModel: model, text: message.body!)
+            let model = createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: messageDate)
+            let decryptedMessage = DemoTextMessageModel(messageModel: model, text: messageBody)
             
             self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
             self.nextMessageId += 1
@@ -72,28 +78,37 @@ class DataSource: ChatDataSourceProtocol {
         }
         
         Log.debug("channel card id: \(card.identity)")
-        Log.debug("selected channel with attributes: \(TwilioHelper.sharedInstance.selectedChannel.attributes()!)")
+        Log.debug("selected channel with attributes: \(TwilioHelper.sharedInstance.selectedChannel.attributes() ?? ["no attributes" : ""])")
         
         TwilioHelper.sharedInstance.getLastMessages(count: pageSize) { messages in
             for message in messages {
-                if message?.isIncoming == false {
+                guard let message = message
+                else {
+                    Log.error("retriving messages from Twilio failed")
+                    return
+                }
+                if message.isIncoming == false {
                     new_tmp_messages = []
                     continue
                 }
                 do {
-                    let session = try VirgilHelper.sharedInstance.secureChat?.loadUpSession(
-                        withParticipantWithCard: card, message: message!.body)
+                    guard let session = try VirgilHelper.sharedInstance.secureChat?.loadUpSession(withParticipantWithCard: card, message: message.body)
+                    else {
+                        Log.error("nil session loaded")
+                        return
+                    }
+    
                     Log.debug("session loaded")
                     
-                    let plaintext = try session?.decrypt(message!.body)
+                    let plaintext = try session.decrypt(message.body)
                     Log.debug("encrypted")
                     
-                    let model = createMessageModel("\(self.nextMessageId)", isIncoming: message!.isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message!.date)
-                    let decryptedMessage = DemoTextMessageModel(messageModel: model, text: plaintext!)
+                    let model = createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message.date)
+                    let decryptedMessage = DemoTextMessageModel(messageModel: model, text: plaintext)
                     
                     new_tmp_messages.append(decryptedMessage)
                 } catch {
-                    Log.error("decryption process failed: \(error.localizedDescription)\nMessage: \(message!.body)")
+                    Log.error("decryption process failed: \(error.localizedDescription)\nMessage: \(message.body)")
                 }
             }
             
@@ -115,25 +130,30 @@ class DataSource: ChatDataSourceProtocol {
     @objc private func processMessage(notification: Notification) {
         Log.debug("processing message")
         TwilioHelper.sharedInstance.getLastMessages(count: 1) { messages in
-            guard let message = messages.first else {
+            guard  let firstMessage = messages.first, let message = firstMessage else {
                 Log.error("Twilio gave no message")
                 return
             }
             
-             guard let card = VirgilHelper.sharedInstance.channelCard  else {
+            guard let card = VirgilHelper.sharedInstance.channelCard  else {
                 Log.error("channel card not found")
                 return
             }
+            
+            guard let secureChat = VirgilHelper.sharedInstance.secureChat else {
+                Log.error("nil secure Chat")
+                return
+            }
             do {
-                let session = try VirgilHelper.sharedInstance.secureChat?.loadUpSession(
-                    withParticipantWithCard: card, message: message!.body)
-                let plaintext = try session?.decrypt(message!.body)
-                Log.debug("Receiving " + plaintext!)
+                let session = try secureChat.loadUpSession(
+                    withParticipantWithCard: card, message: message.body)
+                let plaintext = try session.decrypt(message.body)
+                Log.debug("Receiving " + plaintext)
                 
-                let model = createMessageModel("\(self.nextMessageId)", isIncoming: true, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message!.date)
-                let decryptedMessage = DemoTextMessageModel(messageModel: model, text: plaintext!)
+                let model = createMessageModel("\(self.nextMessageId)", isIncoming: true, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message.date)
+                let decryptedMessage = DemoTextMessageModel(messageModel: model, text: plaintext)
                 
-                CoreDataHelper.sharedInstance.createMessage(withBody: decryptedMessage.body, isIncoming: true, date: message!.date)
+                CoreDataHelper.sharedInstance.createMessage(withBody: decryptedMessage.body, isIncoming: true, date: message.date)
                 
                 self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
                 self.nextMessageId += 1

@@ -49,21 +49,23 @@ public class MessageSender {
             return
         }
         Log.debug("sending to " + card.identity)
-        guard let session = VirgilHelper.sharedInstance.secureChat?.activeSession(
-            withParticipantWithCardId: card.identifier) else {
-                VirgilHelper.sharedInstance.secureChat?.startNewSession(
-                    withRecipientWithCard: card) { session, error in
-                            
-                    guard error == nil, let session = session else {
-                        Log.error("creating session failed: " + error!.localizedDescription)
-                         self.updateMessage(message, status: .failed)
-                        return
-                    }
-                        
-                    self.sendMessage(usingSession: session, message: message)
+        guard let secureChat = VirgilHelper.sharedInstance.secureChat else {
+            Log.error("nil Secure Chat")
+            return
+        }
+        guard let session = secureChat.activeSession(withParticipantWithCardId: card.identifier)
+        else {
+            secureChat.startNewSession(withRecipientWithCard: card) { session, error in
+                guard error == nil, let session = session else {
+                    let errorMessage = error == nil ? "unknown error" : error!.localizedDescription
+                    Log.error("creating session failed: " + errorMessage)
+                    self.updateMessage(message, status: .failed)
+                    return
                 }
-                return
+                self.sendMessage(usingSession: session, message: message)
             }
+            return
+        }
         self.sendMessage(usingSession: session, message: message)
     }
     
@@ -71,7 +73,7 @@ public class MessageSender {
         let msg = message as! DemoTextMessageModel
         do {
             let ciphertext = try session.encrypt(msg.body)
-            self.MessageStatus(ciphertext: ciphertext, message: message)
+            self.messageStatus(ciphertext: ciphertext, message: message)
         }
         catch {
             Log.error("Error trying to encrypt message")
@@ -80,13 +82,13 @@ public class MessageSender {
         }
     }
 
-    private func MessageStatus(ciphertext: String, message: DemoMessageModelProtocol) {
+    private func messageStatus(ciphertext: String, message: DemoMessageModelProtocol) {
         switch message.status {
         case .success:
             break
         case .failed:
             self.updateMessage(message, status: .sending)
-            self.MessageStatus(ciphertext: ciphertext, message: message)
+            self.messageStatus(ciphertext: ciphertext, message: message)
         case .sending:
             if let messages = TwilioHelper.sharedInstance.selectedChannel.messages {
                 let options = TCHMessageOptions().withBody(ciphertext)

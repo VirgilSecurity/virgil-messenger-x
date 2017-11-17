@@ -130,7 +130,7 @@ class RegistrationViewController: UIViewController{
         openUrl(urlStr: "https://virgilsecurity.com")
     }
     
-    private func openUrl(urlStr: String!) {
+    private func openUrl(urlStr: String) {
         if let url = NSURL(string:urlStr) {
             UIApplication.shared.open(url as URL, options: [:], completionHandler: nil)
         }

@@ -45,25 +45,24 @@ class CoreDataHelper {
     private init() {
         managedContext = self.appDelegate.persistentContainer.viewContext
         self.queue = DispatchQueue(label: "core-data-help-queue")
-        // CoreData weird crash when running at not main thread
-//        queue.async {
-            self.accounts = self.fetch()
-            Log.debug("Core Data: accounts fetched. Count: \(self.accounts.count)")
-            for account in self.accounts {
-                let identity = account.identity ?? "not found"
-                Log.debug(identity)
-            }
-//        }
+        guard let accounts = self.fetch() else {
+            Log.error("Core Data: fetch error")
+            return
+        }
+        self.accounts = accounts
+        Log.debug("Core Data: accounts fetched. Count: \(self.accounts.count)")
+        for account in self.accounts {
+            let identity = account.identity ?? "not found"
+            Log.debug(identity)
+        }
     }
     
     func loadAccount(withIdentity username: String) {
         Log.debug("Core Data: Search for " + username)
-        var identity: String?
         for account in CoreDataHelper.sharedInstance.accounts {
-            identity = account.identity
-            if identity == username {
+            if let identity = account.identity, identity == username {
                 self.myAccount = account
-                Log.debug("Core Data: found account: \(identity!)")
+                Log.debug("Core Data: found account: " + identity)
                 let channels = account.channel
                 Log.debug("Core Data: it has " + String(describing: channels?.count) + " channels")
             }
@@ -73,7 +72,10 @@ class CoreDataHelper {
     
     func createAccount(withIdentity identity: String, exportedCard: String) {
         self.queue.async {
-            let entity = NSEntityDescription.entity(forEntityName: Entities.Account.rawValue, in: self.managedContext)!
+            guard let entity = NSEntityDescription.entity(forEntityName: Entities.Account.rawValue, in: self.managedContext) else {
+                Log.error("Core Data: entity not found: " + Entities.Account.rawValue)
+                return
+            }
             
             let account = Account(entity: entity, insertInto: self.managedContext)
             
@@ -90,8 +92,8 @@ class CoreDataHelper {
     }
     
     func getAccountCard() -> String? {
-        if let account = myAccount {
-            return account.card!
+        if let account = myAccount, let card = account.card {
+            return card
         }
         else {
             Log.error("Core Data: nil account found")
@@ -106,7 +108,10 @@ class CoreDataHelper {
                 return
             }
             
-            let entity = NSEntityDescription.entity(forEntityName: Entities.Channel.rawValue, in: self.managedContext)!
+            guard let entity = NSEntityDescription.entity(forEntityName: Entities.Channel.rawValue, in: self.managedContext) else {
+                Log.error("Core Data: entity not found: " + Entities.Channel.rawValue)
+                return
+            }
             
             let channel = Channel(entity: entity, insertInto: self.managedContext)
             
@@ -128,7 +133,10 @@ class CoreDataHelper {
                 return
             }
             
-            let entity = NSEntityDescription.entity(forEntityName: Entities.Message.rawValue, in: self.managedContext)!
+            guard let entity = NSEntityDescription.entity(forEntityName: Entities.Message.rawValue, in: self.managedContext) else {
+                Log.error("Core Data: entity not found: " + Entities.Message.rawValue)
+                return
+            }
             
             let message = Message(entity: entity, insertInto: self.managedContext)
             
@@ -145,19 +153,16 @@ class CoreDataHelper {
     }
     
     func loadChannel(withName username: String) -> Bool {
-        guard let account = self.myAccount else {
-            Log.error("nil account core data")
+        guard let account = self.myAccount, let channels = account.channel else {
+            Log.error("Core Data: nil account core data")
             return false
         }
-        let channels = account.channel!
         
-        var name: String
         for channel in channels {
-            guard let channel = channel as? Channel else {
-                Log.error("Core Data: can't get account channels")
+            guard let channel = channel as? Channel, let name = channel.name  else {
+                Log.error("Core Data: can't get account channel")
                 return false
             }
-            name = channel.name!
             Log.debug("Core Data name: " + name)
             if name == username {
                 Log.debug("Core Data: found channel in core data: " + name)
@@ -170,19 +175,17 @@ class CoreDataHelper {
     }
     
     func deleteChannel(withName username: String) {
-        guard let account = self.myAccount else {
+        guard let account = self.myAccount, let channels = account.channel else {
             Log.error("Core Data: nil account")
             return
         }
-        let channels = account.channel!
         
-        var name: String
         for channel in channels {
-            guard let channel = channel as? Channel else {
+            guard let channel = channel as? Channel, let name = channel.name else {
                 Log.error("Core Data: can't get account channels")
                 return
             }
-            name = channel.name!
+            
             Log.debug("Core Data name: " + name)
             if name == username {
                 Log.debug("Core Data: found channel in core data: " + name)
@@ -195,16 +198,16 @@ class CoreDataHelper {
         self.appDelegate.saveContext()
     }
     
-    private func fetch() -> [Account] {
+    private func fetch() -> [Account]? {
         let fetchRequest =
             NSFetchRequest<NSManagedObject>(entityName: Entities.Account.rawValue)
 
         do {
-            let accounts = try managedContext.fetch(fetchRequest) as! [Account]
+            let accounts = try managedContext.fetch(fetchRequest) as? [Account]
             return accounts
         } catch let error as NSError {
             Log.error("Could not fetch. \(error), \(error.userInfo)")
-            return []
+            return nil
         }
     }
 }

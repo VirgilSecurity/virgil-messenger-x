@@ -174,22 +174,56 @@ class TwilioHelper: NSObject {
     }
     
     func getLastMessages(count: Int, completion: @escaping ([DemoTextMessageModel?])->()) {
-        self.selectedChannel.messages?.getLastWithCount(UInt(count), completion: { (result, messages) in
-            var ret = [DemoTextMessageModel]()
-            for message in messages! {
+        var ret = [DemoTextMessageModel]()
+        guard let messages = self.selectedChannel.messages else {
+            Log.error("nil messages in selected channel")
+            completion(ret)
+            return
+        }
+        messages.getLastWithCount(UInt(count), completion: { (result, messages) in
+            guard let messages = messages else {
+                Log.error("Twilio can't get last messages")
+                completion(ret)
+                return
+            }
+            for message in messages {
+                guard let messageBody = message.body,
+                      let messageDate = message.dateUpdatedAsDate
+                else {
+                    Log.error("wrong message atributes")
+                    completion(ret)
+                    return
+                }
                 let isIncoming = message.author == self.username ? false : true
-                ret.append(createTextMessageModel("\(ret.count)", text: message.body!, isIncoming: isIncoming, status: .success, date: message.dateUpdatedAsDate!))
+                ret.append(createTextMessageModel("\(ret.count)", text: messageBody, isIncoming: isIncoming, status: .success, date: messageDate))
             }
             completion(ret)
         })
     }
  
     func getMessages(before: Int, withCount: Int, completion: @escaping ([DemoTextMessageModel?])->()) {
-        self.selectedChannel.messages?.getBefore(UInt(before), withCount: UInt(withCount), completion: { (result, messages) in
-            var ret = [DemoTextMessageModel]()
-            for message in messages! {
+        var ret = [DemoTextMessageModel]()
+        guard let messages = self.selectedChannel.messages else {
+            Log.error("nil messages in selected channel")
+            completion(ret)
+            return
+        }
+        messages.getBefore(UInt(before), withCount: UInt(withCount), completion: { (result, messages) in
+            guard let messages = messages else {
+                Log.error("Twilio can't get last messages")
+                completion(ret)
+                return
+            }
+            for message in messages {
+                guard let messageBody = message.body,
+                    let messageDate = message.dateUpdatedAsDate
+                    else {
+                        Log.error("wrong message atributes")
+                        completion(ret)
+                        return
+                }
                 let isIncoming = message.author == self.username ? false : true
-                ret.append(createTextMessageModel("\(ret.count)", text: message.body!, isIncoming: isIncoming, status: .success, date: message.dateUpdatedAsDate!))
+                ret.append(createTextMessageModel("\(ret.count)", text: messageBody, isIncoming: isIncoming, status: .success, date: messageDate))
             }
             completion(ret)
         })
