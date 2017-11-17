@@ -6,7 +6,7 @@
 
 Start with cloning repository to your PC. Open *terminal*, navigate to the folder where you want to store the application and execute
 ```bash
-$ git clone -b develop https://github.com/VirgilSecurity/virgil-demo-messenger.git
+$ git clone https://github.com/VirgilSecurity/virgil-demo-messenger.git
 
 $ cd virgil-demo-messenger
 ```
@@ -30,7 +30,7 @@ This example already has Carthage file with all required dependencies. All you n
 
 ```bash 
 $ cd PathToProjectFolder/virgil-demo-messenger
-$ carthage update
+$ carthage update --platform iOS --no-use-binaries
 ```
 
 The project should now be built without errors.
