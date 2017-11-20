@@ -20,14 +20,17 @@ class VirgilHelper {
     private(set) var secureChat: SecureChat?
     var channelCard: VSSCard?
     
-    private let virgilAccessToken = "AT.6968c649d331798cbbb757c2cfcae6475416ef958b41d3feddd103dee22a970b"
+    private let virgilAccessToken = "AT.cc7d17184199dc67b29edf6d57aa0a4db5a704590353d34cae0766f781eac03c"
     
-    private let authId        = "55df5506b01bdd9b900d3f4b86226802ffb0b104842e856c07c395499ede34b6"
-    private let authPublicKey = "MCowBQYDK2VwAyEAHQe7Uf+sUQASm3eGqaqMIfrbHKU9gKUnDg7AuVzf0Z0="
+    private let authId        = "1deb193fba41419083b655649e7f9bf8286c561feb5e34507d0bf99fed795eff"
+    private let authPublicKey = "MCowBQYDK2VwAyEAk6RKNpA/dTCyZcMmwPErkRG0cYBVM4mcNZvRYE7+VL0="
     
-    private let appCardId    = "da6b2739f4539078751e33c06e69a00b3a01f4aa43896b41390f406b2afdf4f5"
-    private let appPublicKey = "MCowBQYDK2VwAyEAZHus2khaCR4QJaBspfkfTUPvLQO1/wrkU6QgvoXdhRU="
+    private let appCardId    = "4051f428fc7796fa8e736518ed7102ad21aac04aeec833feeeaf7e48b542900f"
+    private let appPublicKey = "MCowBQYDK2VwAyEAf0HhVxDvT0wfgj986JkWYfTERCep5X0k4Ve28k+MO1w="
 
+    private let twilioServer = "https://twilio.virgilsecurity.com/"
+    private let authServer   = "https://auth-twilio.virgilsecurity.com/"
+    
     private init() {
         self.crypto = VSSCrypto()
         self.keyStorage = VSSKeyStorage()
@@ -35,8 +38,7 @@ class VirgilHelper {
         self.connection = ServiceConnection()
         
         self.validator = VSSCardValidator(crypto: crypto)
-        // FIXME
-        self.validator.useVirgilServiceVerifiers = false
+
         guard let appPublicKeyData = Data(base64Encoded: self.appPublicKey) else {
             Log.error("error converting appPublicKey to data")
             return
@@ -65,7 +67,6 @@ class VirgilHelper {
                 identityCard: card,
                 accessToken: virgilAccessToken)
             
-            secureChatPreferences.pfsUrl = URL(string: "https://pfs.virgilsecurity.com/v1/")
             let secureChat = SecureChat(preferences: secureChatPreferences)
                 
             try secureChat.initialize()
@@ -92,8 +93,6 @@ class VirgilHelper {
         let serviceConfig = VSSServiceConfig(token: self.virgilAccessToken)
     
         serviceConfig.cardValidator = self.validator
-        serviceConfig.cardsServiceURL = URL(string: "https://cards.virgilsecurity.com/v4/")!
-        serviceConfig.cardsServiceROURL = URL(string: "https://cards-ro.virgilsecurity.com/v4/")!
         
         let client = VSSClient(serviceConfig: serviceConfig)
         
@@ -192,7 +191,7 @@ class VirgilHelper {
                 
                 let exportedCSR = csr.exportData()
                 
-                let request = try ServiceRequest(url: URL(string: "https://twilio.virgilsecurity.com/v1/users")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["csr" : exportedCSR])
+                let request = try ServiceRequest(url: URL(string: self.twilioServer + "v1/users")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["csr" : exportedCSR])
                 
                 let response = try self.connection.send(request)
                 
@@ -210,7 +209,6 @@ class VirgilHelper {
                      }
                      return
                  }
-                
                 guard let card = VSSCard(data: exportedCard) else {
                     Log.error("Can't build card")
                     throw VirgilHelperError.buildCardFailed
@@ -273,7 +271,7 @@ class VirgilHelper {
         self.queue.async {
             do {
                 let VirgilToken = "bearer " + VirgilToken
-                let requestForTwilioToken = try ServiceRequest(url: URL(string: "https://twilio.virgilsecurity.com/v1/tokens/twilio")!, method: ServiceRequest.Method.get, headers: ["Authorization": VirgilToken])
+                let requestForTwilioToken = try ServiceRequest(url: URL(string: self.twilioServer + "v1/tokens/twilio")!, method: ServiceRequest.Method.get, headers: ["Authorization": VirgilToken])
                 let responseWithTwilioToken = try self.connection.send(requestForTwilioToken)
                 
                 guard let responseWithTwilioTokenBody = responseWithTwilioToken.body,
@@ -292,7 +290,7 @@ class VirgilHelper {
     }
     
     private func getVirgilToken(withCardId: String, identity: String) throws -> String {
-        let requestForGrantId = try ServiceRequest(url: URL(string: "https://auth-twilio.virgilsecurity.com/v4/authorization-grant/actions/get-challenge-message")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["resource_owner_virgil_card_id" : withCardId])
+        let requestForGrantId = try ServiceRequest(url: URL(string: self.authServer + "v4/authorization-grant/actions/get-challenge-message")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["resource_owner_virgil_card_id" : withCardId])
         
         let responseWithGrantId =  try self.connection.send(requestForGrantId)
 
@@ -315,7 +313,7 @@ class VirgilHelper {
         let newEncryptedMessage = try self.crypto.encrypt(decodedMessage, for: [importedPublicKey])
         let message = newEncryptedMessage.base64EncodedString()
         
-        let requestForCode = try ServiceRequest(url: URL(string: "https://auth.virgilsecurity.com/v4/authorization-grant/" + authGrantId + "/actions/acknowledge")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["encrypted_message": message])
+        let requestForCode = try ServiceRequest(url: URL(string: self.authServer + "v4/authorization-grant/" + authGrantId + "/actions/acknowledge")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["encrypted_message": message])
         
         let responseWithCode = try self.connection.send(requestForCode)
         
@@ -326,7 +324,7 @@ class VirgilHelper {
             throw VirgilHelperError.gettingVirgilTokenFailed
         }
         
-        let requestForVirgilToken = try ServiceRequest(url: URL(string: "https://auth.virgilsecurity.com/v4/authorization/actions/obtain-access-token")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["grant_type": "access_code", "code": code])
+        let requestForVirgilToken = try ServiceRequest(url: URL(string: self.authServer + "v4/authorization/actions/obtain-access-token")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["grant_type": "access_code", "code": code])
         
         let responseWithVirgilToken = try self.connection.send(requestForVirgilToken)
         
