@@ -41,6 +41,15 @@ The messenger uses [virgil-demo-twilio](https://github.com/VirgilSecurity/virgil
 - Set up your server to provide [Twilio Tokens creation](https://www.twilio.com/docs/api/chat/guides/create-tokens), new users registration using [Virgil SDK](https://developer.virgilsecurity.com/docs/swift/get-started/encrypted-communication) and [Passwordless authentication](https://developer.virgilsecurity.com/docs/ruby/get-started/passwordless-authentication#setup-your-server)
 - Change server endpoints and **Virgil Access Token** in client messenger app. All of these you can find in the `VirgilHelper` class.
 
+## Credentials
+
+To build this sample were used next third-party frameworks
+
+* [Twilio Programmable Chat](https://www.twilio.com/chat) - transmitting messages and handling channel events.
+* [Chatto](https://github.com/badoo/Chatto) - representing UI of chatting. 
+* [Virgil PFS SDK](https://github.com/VirgilSecurity/virgil-sdk-pfs-x) - encrypting, decrypting messages and passwordless authentication.
+* [PKHUD](https://github.com/pkluz/PKHUD) - reimplementing Apple's HUD.
+
 ## Documentation
 
 Virgil Security has a powerful set of APIs, and the documentation is there to get you started today.
