@@ -30,7 +30,7 @@ This example already has Carthage file with all required dependencies. All you n
 
 ```bash 
 $ cd PathToProjectFolder/virgil-demo-messenger
-$ carthage update --platform iOS --no-use-binaries
+$ carthage bootstrap --platform iOS --no-use-binaries
 ```
 
 The project should now be built without errors.
