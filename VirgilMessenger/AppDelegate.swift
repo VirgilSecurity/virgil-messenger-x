@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 import Fabric
 import Crashlytics
+import VirgilSDKPFS
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,6 +19,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        if UserDefaults.standard.string(forKey: "first_launch")?.isEmpty ?? true {
+            let context = persistentContainer.viewContext
+            let fetchRequest =
+                NSFetchRequest<NSManagedObject>(entityName: CoreDataHelper.Entities.Account.rawValue)
+            if let result = try? context.fetch(fetchRequest) {
+                for object in result {
+                    context.delete(object)
+                }
+            }
+            try! VSSKeyStorage().reset()
+            UserDefaults.standard.set("happened", forKey: "first_launch")
+            UserDefaults.standard.synchronize()
+        }
         
         CoreDataHelper.initialize()
         Fabric.with([Crashlytics.self])

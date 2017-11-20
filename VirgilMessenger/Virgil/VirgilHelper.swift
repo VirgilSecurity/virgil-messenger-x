@@ -69,10 +69,10 @@ class VirgilHelper {
             let secureChat = SecureChat(preferences: secureChatPreferences)
                 
             try secureChat.initialize()
-                
+            
             secureChat.rotateKeys(desiredNumberOfCards: 100) { error in
                 guard error == nil else {
-                    Log.error("Rotating keys: \(error!.localizedDescription)")
+                    Log.error("Rotating keys: \(error!.localizedDescription). Error code: \((error! as NSError).code)")
                     return
                 }
                 Log.debug("Successfully initialized PFS")
