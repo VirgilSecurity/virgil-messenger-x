@@ -37,6 +37,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         CoreDataHelper.initialize()
         Fabric.with([Crashlytics.self])
         
+        UIApplication.shared.delegate?.window??.rootViewController = UIStoryboard(name: StartViewController.name, bundle: Bundle.main).instantiateInitialViewController()!
+        
         return true
     }
 

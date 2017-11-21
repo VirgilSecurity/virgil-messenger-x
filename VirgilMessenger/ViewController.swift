@@ -11,15 +11,20 @@ import CoreData
 
 class ViewController: UIViewController {
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        UIApplication.shared.delegate?.window??.rootViewController = UIStoryboard(name: RegistrationViewController.name, bundle: Bundle.main).instantiateInitialViewController()!
+    deinit {
+        Log.debug(self.description)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func switchNavigationStack(to navigationController: UINavigationController) {
+        let window = UIApplication.shared.keyWindow!
+        
+        UIView.transition(with: window, duration: UIConstants.TransitionAnimationDuration, options: .transitionCrossDissolve, animations: {
+            window.rootViewController = navigationController
+        })
+    }
+    
+    var isRootViewController: Bool {
+        return self.navigationController?.viewControllers.count ?? 1 == 1
     }
 }
 

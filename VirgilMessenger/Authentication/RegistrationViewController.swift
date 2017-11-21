@@ -9,12 +9,11 @@
 import UIKit
 import PKHUD
 
-class RegistrationViewController: UIViewController{
+class RegistrationViewController: ViewController {
     
     @IBOutlet weak var usernameTextField: UITextField!
     private let limitLength = 32
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    static let name = "Authentication"
 
     let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
    
@@ -122,7 +121,9 @@ class RegistrationViewController: UIViewController{
     
     private func goToChatList() {
         NotificationCenter.default.removeObserver(self)
-        self.performSegue(withIdentifier: "goToChatList", sender: self)
+        
+        let vc = UIStoryboard(name: "ChatList", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
+        self.switchNavigationStack(to: vc)
     }
     
     @IBAction func logoTapped(_ sender: Any) {

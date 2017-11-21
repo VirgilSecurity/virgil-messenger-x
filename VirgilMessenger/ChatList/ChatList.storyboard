@@ -82,6 +82,7 @@
                         <outlet property="ZeroChatsLabel" destination="8HH-cq-uuI" id="juG-nD-PTL"/>
                         <outlet property="tableView" destination="OLu-Yi-HTK" id="p1B-2j-laF"/>
                         <segue destination="tSb-ds-G5u" kind="show" identifier="goToChat" id="28z-YN-Bk9"/>
+                        <segue destination="cdC-mY-49V" kind="show" identifier="goToAuth" animates="NO" id="TfX-du-Bf4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DDd-4J-wX9" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -96,7 +97,15 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="re4-ce-Aav" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1086" y="-516"/>
+            <point key="canvasLocation" x="1025" y="-590"/>
+        </scene>
+        <!--Authentication-->
+        <scene sceneID="dV1-zg-E74">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Authentication" id="cdC-mY-49V" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Nmc-ZR-b88" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1044" y="-411"/>
         </scene>
     </scenes>
 </document>

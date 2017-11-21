@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="89X-0N-mFL">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="qXJ-6W-XcO">
+            <objects>
+                <navigationController navigationBarHidden="YES" id="89X-0N-mFL" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="9eD-FG-qe5">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="nsB-Mm-3kG" kind="relationship" relationship="rootViewController" id="3ju-gs-H5o"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="L5t-Os-eNc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1959" y="1324"/>
+        </scene>
+        <!--Start View Controller-->
+        <scene sceneID="5FH-QT-Rjj">
+            <objects>
+                <viewController id="nsB-Mm-3kG" customClass="StartViewController" customModule="VirgilSigner" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="hfv-kk-jJI"/>
+                        <viewControllerLayoutGuide type="bottom" id="gop-K3-9Zo"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="tsx-hB-I0D">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="6cP-3m-q6d">
+                                <rect key="frame" x="67.5" y="213.5" width="240" height="240"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="6cP-3m-q6d" firstAttribute="centerX" secondItem="tsx-hB-I0D" secondAttribute="centerX" id="WAL-MI-5Zu"/>
+                            <constraint firstItem="6cP-3m-q6d" firstAttribute="centerY" secondItem="tsx-hB-I0D" secondAttribute="centerY" id="zRW-n3-W6N"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="tpw-wp-Htl"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="bGD-EV-S4d"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dBJ-UZ-1eP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-911" y="1324"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Logo" width="240" height="240"/>
+    </resources>
+</document>

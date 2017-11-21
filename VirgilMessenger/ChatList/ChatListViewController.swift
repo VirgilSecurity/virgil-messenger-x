@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import PKHUD
 
-class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDelegate {
+class ChatListViewController: ViewController, UITableViewDataSource, CellTapDelegate {
     
     @IBOutlet weak var ZeroChatsLabel: UILabel!
     private let limitLength = 32
@@ -39,8 +39,19 @@ class ChatListViewController: UIViewController, UITableViewDataSource, CellTapDe
     }
     
     @IBAction func didTapLogOut(_ sender: Any) {
-        self.navigationController?.isNavigationBarHidden = true
-        self.dismiss(animated: true, completion: nil)
+        
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Logout", style: .destructive) { _ in
+            UserDefaults.standard.set(nil, forKey: "last_username")
+            
+            let vc = UIStoryboard(name: "Authentication", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
+            
+            self.switchNavigationStack(to: vc)
+        })
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        self.present(alert, animated: true)
     }
     
     @IBAction func didTapAdd(_ sender: Any) {

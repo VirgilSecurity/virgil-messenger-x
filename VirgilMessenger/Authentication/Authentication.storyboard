@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5xh-zn-CV3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hsW-2l-ZfL">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -11,6 +11,22 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="IhI-1a-iKr">
+            <objects>
+                <navigationController navigationBarHidden="YES" id="hsW-2l-ZfL" sceneMemberID="viewController">
+                    <nil key="simulatedTopBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="wVO-n3-bqC">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="5xh-zn-CV3" kind="relationship" relationship="rootViewController" id="Eoc-zr-qSw"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rkh-Yl-2qf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="578" y="-10"/>
+        </scene>
         <!--Registration View Controller-->
         <scene sceneID="1nw-w0-XJx">
             <objects>
@@ -155,7 +171,6 @@
                     <connections>
                         <outlet property="bottomConstraint" destination="hw0-wi-IaM" id="JIk-kj-d5h"/>
                         <outlet property="usernameTextField" destination="drO-kP-tuG" id="AzB-Bo-KYV"/>
-                        <segue destination="ep6-Jc-qAC" kind="show" identifier="goToChatList" animates="NO" id="gE4-ci-rC5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JiO-4y-JTX" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -181,14 +196,6 @@
                 </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1422" y="-9"/>
-        </scene>
-        <!--ChatList-->
-        <scene sceneID="BQc-ZE-BuV">
-            <objects>
-                <viewControllerPlaceholder storyboardName="ChatList" id="ep6-Jc-qAC" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="NUU-uc-IZ6" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2150" y="-10"/>
         </scene>
     </scenes>
     <resources>
