@@ -140,7 +140,8 @@ class CoreDataHelper {
             
             let message = Message(entity: entity, insertInto: self.managedContext)
             
-            message.body = body
+            let encryptedBody =  try? VirgilHelper.sharedInstance.encrypt(text: body)
+            message.body = encryptedBody ?? "Error encrypting message"
             message.isIncoming = isIncoming
             message.date = date
             

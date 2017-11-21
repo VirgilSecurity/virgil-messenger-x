@@ -18,6 +18,8 @@ class VirgilHelper {
     private let connection: ServiceConnection
     private let validator: VSSCardValidator
     private(set) var secureChat: SecureChat?
+    private var publicKey: VSSPublicKey?
+    private var privateKey: VSSPrivateKey?
     var channelCard: VSSCard?
     
     private let virgilAccessToken = "AT.cc7d17184199dc67b29edf6d57aa0a4db5a704590353d34cae0766f781eac03c"
@@ -57,6 +59,7 @@ class VirgilHelper {
         case jsonFailed
         case dataFromString
         case validatingError
+        case coreDataEncDecFailed
     }
     
     private func initializePFS(withIdentity: String, card: VSSCard, privateKey: VSSPrivateKey) {
@@ -110,6 +113,7 @@ class VirgilHelper {
     }
     
     private func signInHelper(card: VSSCard, identity: String, completion: @escaping (Error?) -> ()) {
+        self.publicKey = self.crypto.importPublicKey(from: card.publicKeyData)
         self.initializeAccount(withCardId: card.identifier, identity: identity) { error in
             DispatchQueue.main.async {
                 completion(error)
@@ -120,6 +124,7 @@ class VirgilHelper {
             guard let key = self.crypto.importPrivateKey(from: entry.value) else {
                 throw VirgilHelperError.importingKeyFailed
             }
+            self.privateKey = key
             
             self.initializePFS(withIdentity: identity, card: card, privateKey: key)
         } catch {
@@ -169,6 +174,36 @@ class VirgilHelper {
         }
     }
     
+    func decrypt(encrypted: String) throws -> String {
+        guard let privateKey = self.privateKey,
+              let data = Data(base64Encoded: encrypted)
+        else {
+                Log.error("decrypting for Core Data failed")
+                throw VirgilHelperError.coreDataEncDecFailed
+        }
+        
+        let decryptedData = try self.crypto.decrypt(data, with: privateKey)
+        
+        guard let decrypted = String(data: decryptedData, encoding: .utf8) else {
+            Log.error("building string from data failed")
+            throw VirgilHelperError.coreDataEncDecFailed
+        }
+        
+        return decrypted
+    }
+    
+    func encrypt(text: String) throws -> String {
+        guard let publicKey = self.publicKey,
+              let data = text.data(using: .utf8)
+        else {
+            Log.error("encrypting for Core Data failed")
+            throw VirgilHelperError.coreDataEncDecFailed
+        }
+        
+        let encrypted = try self.crypto.encrypt(data, for: [publicKey])
+        return encrypted.base64EncodedString()
+    }
+    
     func signUp(identity: String, identityType: String = "name", completion: @escaping (Error?, String?) -> ()) {
         self.queue.async {
             Log.debug("Signing up")
@@ -182,6 +217,8 @@ class VirgilHelper {
             }
             do {
                 let keyPair = self.crypto.generateKeyPair()
+                self.publicKey = keyPair.publicKey
+                self.privateKey = keyPair.privateKey
                 let exportedPublicKey = self.crypto.export(keyPair.publicKey)
                 
                 let csr = VSSCreateUserCardRequest(identity: identity, identityType: identityType, publicKeyData: exportedPublicKey, data: ["deviceId": "testDevice123"])

@@ -56,10 +56,12 @@ class DataSource: ChatDataSourceProtocol {
                 return
             }
             
+            let decryptedMessageBody = try? VirgilHelper.sharedInstance.decrypt(encrypted: messageBody)
+            
             let isIncoming = message.isIncoming
             
             let model = createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: messageDate)
-            let decryptedMessage = DemoTextMessageModel(messageModel: model, text: messageBody)
+            let decryptedMessage = DemoTextMessageModel(messageModel: model, text: decryptedMessageBody ?? "Error decrypting message")
             
             self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
             self.nextMessageId += 1
