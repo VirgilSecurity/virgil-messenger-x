@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Io8-bt-M97">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="fMA-Sn-e2k">
+            <objects>
+                <navigationController id="Io8-bt-M97" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Ak8-6V-fFz">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Y8Y-lc-sZ3" kind="relationship" relationship="rootViewController" id="cA1-02-nR8"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pce-sY-tbS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1087" y="71"/>
+        </scene>
+        <!--Login View Controller-->
+        <scene sceneID="M7Q-da-p2y">
+            <objects>
+                <viewController id="Y8Y-lc-sZ3" customClass="LoginViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Grh-UF-ENh">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nM6-gK-djD">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="nM6-gK-djD" firstAttribute="top" secondItem="Qrh-BX-QVf" secondAttribute="top" id="Lx8-Cr-v4S"/>
+                            <constraint firstItem="nM6-gK-djD" firstAttribute="bottom" secondItem="Qrh-BX-QVf" secondAttribute="bottom" id="TAl-lv-WXr"/>
+                            <constraint firstItem="nM6-gK-djD" firstAttribute="trailing" secondItem="Qrh-BX-QVf" secondAttribute="trailing" id="dl2-Bv-sTn"/>
+                            <constraint firstItem="nM6-gK-djD" firstAttribute="leading" secondItem="Qrh-BX-QVf" secondAttribute="leading" id="qoV-KH-I6I"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Qrh-BX-QVf"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="liA-MP-yCi">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="OX4-SR-zxl">
+                            <connections>
+                                <action selector="cancelTapped:" destination="Y8Y-lc-sZ3" id="d7b-10-PZ2"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="tableView" destination="nM6-gK-djD" id="xLo-8M-l6x"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Yha-ts-MID" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-212" y="70.614692653673174"/>
+        </scene>
+    </scenes>
+</document>

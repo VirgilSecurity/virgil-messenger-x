@@ -43,7 +43,7 @@ extension ProfileViewController: UITableViewDelegate {
             self.present(alert, animated: true)
         } else if indexPath.section == 2 {
             let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            alert.addAction(UIAlertAction(title: "Are you sure?", style: .destructive) { _ in
+            alert.addAction(UIAlertAction(title: "Delete account", style: .destructive) { _ in
                 UserDefaults.standard.set(nil, forKey: "last_username")
                 
                 CoreDataHelper.sharedInstance.deleteAccount()

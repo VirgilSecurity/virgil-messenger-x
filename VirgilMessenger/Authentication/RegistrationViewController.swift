@@ -29,11 +29,9 @@ class RegistrationViewController: ViewController {
         
         pickerView.dataSource = self
         pickerView.delegate = self
-        
-        pickerView.backgroundColor = .white
             
         self.usernameTextField.delegate = self
-        self.usernameTextField.inputView = self.pickerView
+        //self.usernameTextField.inputView = self.pickerView
         
     }
     
@@ -50,8 +48,6 @@ class RegistrationViewController: ViewController {
     }
     
     @objc func keyboardWillHide(notification: Notification) {
-        self.usernameTextField.isHidden = true
-        self.usernameTextField.text = nil
         guard let time = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue else {
                 return
         }
@@ -68,40 +64,6 @@ class RegistrationViewController: ViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
-    }
-    
-    @IBAction func signinButtonPressed(_ sender: Any) {
-        self.usernameTextField.inputView = self.pickerView
-        guard let username = self.usernameTextField.text?.lowercased(), !username.isEmpty else {
-            self.usernameTextField.isHidden = false
-            self.usernameTextField.inputView = self.pickerView
-            self.usernameTextField.becomeFirstResponder()
-            return
-        }
-        
-        self.view.endEditing(true)
-        
-        PKHUD.sharedHUD.contentView = PKHUDProgressView()
-        PKHUD.sharedHUD.show()
-        
-        VirgilHelper.sharedInstance.signIn(identity: username) { error, message in
-            guard error == nil else {
-                let message = message == nil ? "unknown error" : message
-                PKHUD.sharedHUD.hide() { _ in
-                    let controller = UIAlertController(title: self.title, message: message, preferredStyle: .alert)
-                    controller.addAction(UIAlertAction(title: "OK", style: .default))
-                    
-                    self.present(controller, animated: true)
-                }
-                
-                return
-            }
-
-            UserDefaults.standard.set(username, forKey: "last_username")
-            PKHUD.sharedHUD.hide(true) { _ in
-                self.goToChatList()
-            }
-        }
     }
     
     @IBAction func signupButtonPressed(_ sender: Any) {
@@ -159,7 +121,7 @@ class RegistrationViewController: ViewController {
 
 extension RegistrationViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.signinButtonPressed(self)
+        self.signupButtonPressed(self)
         
         return false
     }
