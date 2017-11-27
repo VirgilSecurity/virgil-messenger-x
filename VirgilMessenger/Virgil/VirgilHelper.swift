@@ -60,6 +60,7 @@ class VirgilHelper {
         case dataFromString
         case validatingError
         case coreDataEncDecFailed
+        case coreDataAccountFailed
     }
     
     private func initializePFS(withIdentity: String, card: VSSCard, privateKey: VSSPrivateKey) {
@@ -146,7 +147,13 @@ class VirgilHelper {
             return
         }
         
-        CoreDataHelper.sharedInstance.loadAccount(withIdentity: identity)
+        guard CoreDataHelper.sharedInstance.loadAccount(withIdentity: identity) else {
+            DispatchQueue.main.async {
+                completion(VirgilHelperError.coreDataAccountFailed, VirgilHelperError.noKey.rawValue)
+            }
+            return
+        }
+        
         let exportedCard = CoreDataHelper.sharedInstance.getAccountCard()
         
         if let exportedCard = exportedCard, let card = VSSCard(data: exportedCard) {

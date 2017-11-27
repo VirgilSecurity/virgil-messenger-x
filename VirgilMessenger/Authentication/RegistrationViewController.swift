@@ -15,6 +15,8 @@ class RegistrationViewController: ViewController {
     private let limitLength = 32
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
 
+    let pickerView = UIPickerView()
+    
     let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
    
     override func viewDidLoad() {
@@ -25,7 +27,12 @@ class RegistrationViewController: ViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(RegistrationViewController.keyboardWillHide(notification:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
         
+        pickerView.dataSource = self
+        pickerView.delegate = self
+        
         self.usernameTextField.delegate = self
+        self.usernameTextField.inputView = self.pickerView
+        
     }
     
     @objc func keyboardWillShow(notification: Notification) {
@@ -60,7 +67,10 @@ class RegistrationViewController: ViewController {
     }
     
     @IBAction func signinButtonPressed(_ sender: Any) {
+        self.usernameTextField.inputView = self.pickerView
         guard let username = self.usernameTextField.text?.lowercased(), !username.isEmpty else {
+            self.usernameTextField.isHidden = false
+            self.usernameTextField.inputView = self.pickerView
             self.usernameTextField.becomeFirstResponder()
             return
         }
@@ -91,7 +101,10 @@ class RegistrationViewController: ViewController {
     }
     
     @IBAction func signupButtonPressed(_ sender: Any) {
+        self.usernameTextField.inputView = nil
+        self.usernameTextField.reloadInputViews()
         guard let username = self.usernameTextField.text?.lowercased(), !username.isEmpty else {
+            self.usernameTextField.isHidden = false
             self.usernameTextField.becomeFirstResponder()
             return
         }
@@ -155,5 +168,23 @@ extension RegistrationViewController: UITextFieldDelegate {
         }
         let newLength = text.count + string.count - range.length
         return newLength <= limitLength
+    }
+}
+
+extension RegistrationViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return CoreDataHelper.sharedInstance.accounts.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return CoreDataHelper.sharedInstance.accounts[row].identity!
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        self.usernameTextField.text = CoreDataHelper.sharedInstance.accounts[row].identity ?? "Error name"
     }
 }

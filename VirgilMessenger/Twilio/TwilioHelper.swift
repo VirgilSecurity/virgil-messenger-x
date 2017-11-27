@@ -229,8 +229,19 @@ class TwilioHelper: NSObject {
         })
     }
     
+    func destroyChannel(_ number: Int, completion: @escaping () -> ()) {
+        let channel = self.channels.subscribedChannels()[number]
+        channel.destroy { result in
+            completion()
+            guard result.isSuccessful() else {
+                Log.error("can't destroy channel")
+                return
+            }
+        }
+    }
+    
     func getCompanion(ofChannel: Int) -> String {
-        let channel = TwilioHelper.sharedInstance.channels.subscribedChannels()[ofChannel]
+        let channel = self.channels.subscribedChannels()[ofChannel]
         guard let attributes = channel.attributes(),
             let initiator = attributes["initiator"] as? String,
             let responder = attributes["responder"] as? String

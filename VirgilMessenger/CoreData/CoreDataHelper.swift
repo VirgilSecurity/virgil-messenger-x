@@ -17,7 +17,7 @@ class CoreDataHelper {
     private let queue: DispatchQueue
     private let appDelegate = UIApplication.shared.delegate as! AppDelegate
     private let managedContext: NSManagedObjectContext
-    private var accounts: [Account] = []
+    private(set) var accounts: [Account] = []
     private var myAccount: Account?
     private(set) var selectedChannel: Channel?
     
@@ -57,7 +57,7 @@ class CoreDataHelper {
         }
     }
     
-    func loadAccount(withIdentity username: String) {
+    func loadAccount(withIdentity username: String) -> Bool {
         Log.debug("Core Data: Search for " + username)
         for account in CoreDataHelper.sharedInstance.accounts {
             if let identity = account.identity, identity == username {
@@ -65,9 +65,11 @@ class CoreDataHelper {
                 Log.debug("Core Data: found account: " + identity)
                 let channels = account.channel
                 Log.debug("Core Data: it has " + String(describing: channels?.count) + " channels")
+                return true
             }
         }
          Log.debug("Core Data: Searching for account ended")
+        return false
     }
     
     func createAccount(withIdentity identity: String, exportedCard: String) {
@@ -175,28 +177,42 @@ class CoreDataHelper {
         return false
     }
     
-    func deleteChannel(withName username: String) {
-        guard let account = self.myAccount, let channels = account.channel else {
+    func deleteAccount() {
+        guard let account = self.myAccount else {
             Log.error("Core Data: nil account")
             return
         }
-        
-        for channel in channels {
-            guard let channel = channel as? Channel, let name = channel.name else {
-                Log.error("Core Data: can't get account channels")
+
+        self.managedContext.delete(account)
+        Log.debug("Core Data: account deleted")
+    
+        self.appDelegate.saveContext()
+    }
+    
+    func deleteChannel(withName username: String) {
+        self.queue.async {
+            guard let account = self.myAccount, let channels = account.channel else {
+                Log.error("Core Data: nil account")
                 return
             }
             
-            Log.debug("Core Data name: " + name)
-            if name == username {
-                Log.debug("Core Data: found channel in core data: " + name)
-                managedContext.delete(channel)
-                Log.debug("Core Data: channel deleted")
-                return
+            for channel in channels {
+                guard let channel = channel as? Channel, let name = channel.name else {
+                    Log.error("Core Data: can't get account channels")
+                    return
+                }
+                
+                Log.debug("Core Data name: " + name)
+                if name == username {
+                    Log.debug("Core Data: found channel in core data: " + name)
+                    self.managedContext.delete(channel)
+                    Log.debug("Core Data: channel deleted")
+                    return
+                }
             }
+            Log.error("Core Data: channel not found")
+            self.appDelegate.saveContext()
         }
-        Log.error("Core Data: channel not found")
-        self.appDelegate.saveContext()
     }
     
     private func fetch() -> [Account]? {

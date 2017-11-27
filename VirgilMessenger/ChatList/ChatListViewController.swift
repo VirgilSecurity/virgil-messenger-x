@@ -10,49 +10,11 @@ import Foundation
 import UIKit
 import PKHUD
 
-class ChatListViewController: ViewController, UITableViewDataSource, CellTapDelegate {
+class ChatListViewController: ViewController {
     
     @IBOutlet weak var ZeroChatsLabel: UILabel!
     private let limitLength = 32
-      let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
-    
-    func didTapOn(_ cell: UITableViewCell) {
-        if let username = (cell as! ChatListCell).usernameLabel.text {
-            TwilioHelper.sharedInstance.setChannel(withUsername: (username))
-            
-            if CoreDataHelper.sharedInstance.loadChannel(withName: username) == false {
-                //CoreDataHelper.sharedInstance.createChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel))
-                return
-            }
-            
-            guard let channel = CoreDataHelper.sharedInstance.selectedChannel,
-                  let exportedCard = channel.card
-            else {
-                Log.error("can't find selected channel in Core Data")
-                return
-            }
-            
-            VirgilHelper.sharedInstance.setChannelCard(exportedCard)
-            
-            self.performSegue(withIdentifier: "goToChat", sender: self)
-        }
-    }
-    
-    @IBAction func didTapLogOut(_ sender: Any) {
-        
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Logout", style: .destructive) { _ in
-            UserDefaults.standard.set(nil, forKey: "last_username")
-            
-            let vc = UIStoryboard(name: "Authentication", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
-            
-            self.switchNavigationStack(to: vc)
-        })
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
-        self.present(alert, animated: true)
-    }
+    let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
     
     @IBAction func didTapAdd(_ sender: Any) {
         let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
@@ -113,19 +75,6 @@ class ChatListViewController: ViewController, UITableViewDataSource, CellTapDele
         self.present(alert, animated: true)
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-        
-        if let chatController = segue.destination as? ChatViewController {
-            let pageSize = 10000
-            
-            let dataSource = DataSource(pageSize: pageSize)
-            chatController.title = TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)
-            chatController.dataSource = dataSource
-            chatController.messageSender = dataSource.messageSender
-        }
-    }
-    
     static let name = "ChatList"
     
     @IBOutlet weak var tableView: UITableView!
@@ -156,12 +105,14 @@ class ChatListViewController: ViewController, UITableViewDataSource, CellTapDele
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
+}
+
+extension ChatListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
         cell.tag = indexPath.row
         cell.delegate = self
-
+        
         cell.usernameLabel.text = TwilioHelper.sharedInstance.getCompanion(ofChannel: indexPath.row)
         
         return cell
@@ -174,6 +125,43 @@ class ChatListViewController: ViewController, UITableViewDataSource, CellTapDele
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
+    }
+}
+
+extension ChatListViewController: CellTapDelegate {
+    func didTapOn(_ cell: UITableViewCell) {
+        if let username = (cell as! ChatListCell).usernameLabel.text {
+            TwilioHelper.sharedInstance.setChannel(withUsername: (username))
+            
+            if CoreDataHelper.sharedInstance.loadChannel(withName: username) == false {
+                //CoreDataHelper.sharedInstance.createChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel))
+                return
+            }
+            
+            guard let channel = CoreDataHelper.sharedInstance.selectedChannel,
+                let exportedCard = channel.card
+                else {
+                    Log.error("can't find selected channel in Core Data")
+                    return
+            }
+            
+            VirgilHelper.sharedInstance.setChannelCard(exportedCard)
+            
+            self.performSegue(withIdentifier: "goToChat", sender: self)
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        
+        if let chatController = segue.destination as? ChatViewController {
+            let pageSize = 10000
+            
+            let dataSource = DataSource(pageSize: pageSize)
+            chatController.title = TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)
+            chatController.dataSource = dataSource
+            chatController.messageSender = dataSource.messageSender
+        }
     }
 }
 
