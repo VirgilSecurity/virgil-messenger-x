@@ -30,6 +30,8 @@ class RegistrationViewController: ViewController {
         pickerView.dataSource = self
         pickerView.delegate = self
         
+        pickerView.backgroundColor = .white
+            
         self.usernameTextField.delegate = self
         self.usernameTextField.inputView = self.pickerView
         
@@ -48,6 +50,8 @@ class RegistrationViewController: ViewController {
     }
     
     @objc func keyboardWillHide(notification: Notification) {
+        self.usernameTextField.isHidden = true
+        self.usernameTextField.text = nil
         guard let time = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue else {
                 return
         }
