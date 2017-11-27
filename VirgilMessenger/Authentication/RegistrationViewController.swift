@@ -181,7 +181,7 @@ extension RegistrationViewController: UIPickerViewDelegate, UIPickerViewDataSour
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return CoreDataHelper.sharedInstance.accounts[row].identity!
+        return CoreDataHelper.sharedInstance.accounts[row].identity ?? nil
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

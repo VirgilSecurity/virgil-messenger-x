@@ -126,6 +126,16 @@ extension ChatListViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
+    
+    /*
+     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+         if editingStyle == .delete {
+             CoreDataHelper.sharedInstance.deleteChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: indexPath.row))
+             TwilioHelper.sharedInstance.destroyChannel(indexPath.row) {
+             self.tableView.reloadData()
+             }
+         }
+     }*/
 }
 
 extension ChatListViewController: CellTapDelegate {

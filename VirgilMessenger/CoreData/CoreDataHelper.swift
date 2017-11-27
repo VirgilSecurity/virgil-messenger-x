@@ -57,6 +57,14 @@ class CoreDataHelper {
         }
     }
     
+    private func reloadData() {
+        guard let accounts = self.fetch() else {
+            Log.error("Core Data: fetch error")
+            return
+        }
+        self.accounts = accounts
+    }
+    
     func loadAccount(withIdentity username: String) -> Bool {
         Log.debug("Core Data: Search for " + username)
         for account in CoreDataHelper.sharedInstance.accounts {
@@ -187,6 +195,8 @@ class CoreDataHelper {
         Log.debug("Core Data: account deleted")
     
         self.appDelegate.saveContext()
+        
+        self.reloadData()
     }
     
     func deleteChannel(withName username: String) {
