@@ -26,7 +26,7 @@
             </objects>
             <point key="canvasLocation" x="-1087" y="71"/>
         </scene>
-        <!--Login View Controller-->
+        <!--Accounts on device-->
         <scene sceneID="M7Q-da-p2y">
             <objects>
                 <viewController id="Y8Y-lc-sZ3" customClass="LoginViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
@@ -48,7 +48,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Qrh-BX-QVf"/>
                     </view>
-                    <navigationItem key="navigationItem" id="liA-MP-yCi">
+                    <navigationItem key="navigationItem" title="Accounts on device" id="liA-MP-yCi">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="OX4-SR-zxl">
                             <connections>
                                 <action selector="cancelTapped:" destination="Y8Y-lc-sZ3" id="d7b-10-PZ2"/>

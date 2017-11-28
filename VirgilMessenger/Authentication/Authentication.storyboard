@@ -64,6 +64,7 @@
                                                 <color key="backgroundColor" red="0.56470588239999997" green="0.0078431372550000003" blue="0.015686274510000001" alpha="1" colorSpace="calibratedRGB"/>
                                                 <gestureRecognizers/>
                                                 <constraints>
+                                                    <constraint firstAttribute="width" constant="167" id="USK-Zx-vW1"/>
                                                     <constraint firstItem="maw-6p-OAZ" firstAttribute="centerY" secondItem="Vxa-Yy-3fi" secondAttribute="centerY" id="vk6-ee-LQc"/>
                                                     <constraint firstItem="maw-6p-OAZ" firstAttribute="centerX" secondItem="Vxa-Yy-3fi" secondAttribute="centerX" id="yDW-kw-00s"/>
                                                 </constraints>
@@ -80,12 +81,12 @@
                                             <constraint firstAttribute="height" constant="92" id="e2Z-oH-TRl"/>
                                             <constraint firstItem="Vxa-Yy-3fi" firstAttribute="top" secondItem="uK3-K8-r85" secondAttribute="top" constant="50" id="fi7-Cl-l3W"/>
                                             <constraint firstAttribute="trailing" secondItem="drO-kP-tuG" secondAttribute="trailing" id="hY3-4N-5nD"/>
-                                            <constraint firstItem="Vxa-Yy-3fi" firstAttribute="leading" secondItem="uK3-K8-r85" secondAttribute="leading" constant="84" id="szV-0I-TF5"/>
                                             <constraint firstItem="Vxa-Yy-3fi" firstAttribute="centerX" secondItem="drO-kP-tuG" secondAttribute="centerX" id="wc4-ka-0mD"/>
+                                            <constraint firstItem="Vxa-Yy-3fi" firstAttribute="centerX" secondItem="uK3-K8-r85" secondAttribute="centerX" id="ztP-o8-wIy"/>
                                         </constraints>
                                     </view>
                                     <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="Hyw-7C-uUn">
-                                        <rect key="frame" x="123" y="115" width="128" height="128"/>
+                                        <rect key="frame" x="124" y="115" width="128" height="128"/>
                                         <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="128" id="77B-K5-R0k"/>
@@ -95,9 +96,8 @@
                                             <outletCollection property="gestureRecognizers" destination="Z9Y-LY-uuM" appends="YES" id="WWF-Qb-c5d"/>
                                         </connections>
                                     </imageView>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9ke-ch-VdG">
-                                        <rect key="frame" x="32" y="620" width="311" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9ke-ch-VdG">
+                                        <rect key="frame" x="32" y="616" width="311" height="34"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <state key="normal" title="Use existing account">
                                             <color key="titleColor" red="0.63186123699999996" green="0.029410006190000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -109,10 +109,13 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="9ke-ch-VdG" secondAttribute="trailing" constant="32" id="1aJ-04-Bwh"/>
                                     <constraint firstAttribute="trailing" secondItem="uK3-K8-r85" secondAttribute="trailing" constant="20" id="AJM-Lh-nO0"/>
                                     <constraint firstItem="uK3-K8-r85" firstAttribute="leading" secondItem="vag-wW-rU2" secondAttribute="leading" constant="20" id="HuJ-LH-e5B"/>
                                     <constraint firstItem="uK3-K8-r85" firstAttribute="centerY" secondItem="vag-wW-rU2" secondAttribute="centerY" id="Uxm-LA-EyC"/>
+                                    <constraint firstAttribute="bottom" secondItem="9ke-ch-VdG" secondAttribute="bottom" constant="17" id="Z4s-8U-TJk"/>
                                     <constraint firstItem="uK3-K8-r85" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Hyw-7C-uUn" secondAttribute="bottom" constant="20" id="c3q-rd-Kun"/>
+                                    <constraint firstItem="9ke-ch-VdG" firstAttribute="leading" secondItem="vag-wW-rU2" secondAttribute="leading" constant="32" id="dhL-vx-qHb"/>
                                     <constraint firstItem="Hyw-7C-uUn" firstAttribute="centerX" secondItem="uK3-K8-r85" secondAttribute="centerX" id="e4N-B4-ipX"/>
                                     <constraint firstItem="Hyw-7C-uUn" firstAttribute="top" secondItem="vag-wW-rU2" secondAttribute="top" priority="999" constant="115" id="qe5-13-ewg"/>
                                     <constraint firstItem="uK3-K8-r85" firstAttribute="centerX" secondItem="vag-wW-rU2" secondAttribute="centerX" id="ywO-q9-6Tx"/>

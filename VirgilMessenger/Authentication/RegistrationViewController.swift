@@ -14,8 +14,6 @@ class RegistrationViewController: ViewController {
     @IBOutlet weak var usernameTextField: UITextField!
     private let limitLength = 32
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-
-    let pickerView = UIPickerView()
     
     let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
    
@@ -26,13 +24,8 @@ class RegistrationViewController: ViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(RegistrationViewController.keyboardWillShow(notification:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(RegistrationViewController.keyboardWillHide(notification:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
-        
-        pickerView.dataSource = self
-        pickerView.delegate = self
             
         self.usernameTextField.delegate = self
-        //self.usernameTextField.inputView = self.pickerView
-        
     }
     
     @objc func keyboardWillShow(notification: Notification) {
@@ -134,23 +127,5 @@ extension RegistrationViewController: UITextFieldDelegate {
         }
         let newLength = text.count + string.count - range.length
         return newLength <= limitLength
-    }
-}
-
-extension RegistrationViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return CoreDataHelper.sharedInstance.accounts.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return CoreDataHelper.sharedInstance.accounts[row].identity ?? nil
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        self.usernameTextField.text = CoreDataHelper.sharedInstance.accounts[row].identity ?? "Error name"
     }
 }
