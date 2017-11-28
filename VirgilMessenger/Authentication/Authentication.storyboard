@@ -103,7 +103,6 @@
                                             <color key="titleColor" red="0.63186123699999996" green="0.029410006190000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
-                                            <action selector="signinButtonPressed:" destination="5xh-zn-CV3" eventType="touchUpInside" id="cNx-cR-0Gy"/>
                                             <segue destination="Vxq-p3-EDZ" kind="show" id="SPF-E8-vsz"/>
                                         </connections>
                                     </button>
@@ -149,11 +148,6 @@
                 <tapGestureRecognizer id="jr3-o0-lRH">
                     <connections>
                         <action selector="signupButtonPressed:" destination="5xh-zn-CV3" id="H8u-PM-pbY"/>
-                    </connections>
-                </tapGestureRecognizer>
-                <tapGestureRecognizer id="6Fo-vC-V3Y">
-                    <connections>
-                        <action selector="signinButtonPressed:" destination="5xh-zn-CV3" id="8Af-b1-BRL"/>
                     </connections>
                 </tapGestureRecognizer>
                 <tapGestureRecognizer id="Z9Y-LY-uuM">
