@@ -89,6 +89,14 @@ class VirgilHelper {
         }
     }
     
+    func deleteStorageEntry(entry: String) {
+        do {
+            try self.keyStorage.deleteKeyEntry(withName: entry)
+        } catch {
+            Log.error("can't delete from key storage")
+        }
+    }
+    
     func setChannelCard(_ exportedCard: String) {
         self.channelCard = VSSCard(data: exportedCard)
     }

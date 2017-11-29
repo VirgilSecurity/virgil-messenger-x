@@ -77,6 +77,7 @@ extension ProfileViewController: UITableViewDelegate {
                 UserDefaults.standard.set(nil, forKey: "last_username")
                 
                 CoreDataHelper.sharedInstance.deleteAccount()
+                VirgilHelper.sharedInstance.deleteStorageEntry(entry: TwilioHelper.sharedInstance.username)
                 
                 let vc = UIStoryboard(name: "Authentication", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
                 
