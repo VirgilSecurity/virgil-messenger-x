@@ -122,6 +122,8 @@ public class MessageSender {
     }
 
     private func notifyMessageChanged(_ message: DemoMessageModelProtocol) {
-        self.onMessageChanged?(message)
+        DispatchQueue.main.async {
+             self.onMessageChanged?(message)
+        }
     }
 }
