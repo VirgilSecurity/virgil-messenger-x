@@ -83,7 +83,7 @@ class ChatListViewController: ViewController {
         super.viewDidLoad()
         
         self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main), forCellReuseIdentifier: ChatListCell.name)
-        self.tableView.rowHeight = 80
+        self.tableView.rowHeight = 94
         self.tableView.tableFooterView = UIView(frame: .zero)
         
         self.tableView.dataSource = self
