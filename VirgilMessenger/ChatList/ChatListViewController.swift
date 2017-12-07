@@ -87,6 +87,7 @@ class ChatListViewController: ViewController {
         self.tableView.tableFooterView = UIView(frame: .zero)
         
         self.tableView.dataSource = self
+        self.tableView.backgroundColor = UIColor(rgb: 0x2B303B)
         
         NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue), object: nil)
     }
@@ -125,6 +126,10 @@ extension ChatListViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.backgroundColor = UIColor(rgb: 0x2B303B)
     }
     
     /*

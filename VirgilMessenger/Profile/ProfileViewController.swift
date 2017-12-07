@@ -15,6 +15,7 @@ class ProfileViewController: ViewController {
     private var eggCounter = 0
     private var player: AVAudioPlayer?
     
+    @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +25,11 @@ class ProfileViewController: ViewController {
         self.tableView.tableFooterView = UIView(frame: .zero)
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        
+        self.tableView.backgroundColor = UIColor(rgb: 0x2B303B)
+        self.view.backgroundColor = UIColor(rgb: 0x2B303B)
+        
+        self.usernameLabel.text = TwilioHelper.sharedInstance.username
     }
 }
 
@@ -32,33 +38,6 @@ extension ProfileViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         
         if indexPath.section == 0 {
-            self.eggCounter += 1
-            
-            if self.eggCounter == 20 {
-                self.eggCounter = 0
-                
-                guard let url = Bundle.main.url(forResource: "woody-woodpecker-laugh", withExtension: "mp3") else { return }
-                
-                do {
-                    try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-                    try AVAudioSession.sharedInstance().setActive(true)
-                    
-                    
-                    /* The following line is required for the player to work on iOS 11. Change the file type accordingly*/
-                    player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
-                    
-                    /* iOS 10 and earlier require the following line:
-                     player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileTypeMPEGLayer3) */
-                    
-                    guard let player = player else { return }
-                    
-                    player.play()
-                    
-                } catch let error {
-                    print(error.localizedDescription)
-                }
-            }
-        } else if indexPath.section == 1 {
             let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "Logout", style: .destructive) { _ in
                 UserDefaults.standard.set(nil, forKey: "last_username")
@@ -71,7 +50,7 @@ extension ProfileViewController: UITableViewDelegate {
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             
             self.present(alert, animated: true)
-        } else if indexPath.section == 2 {
+        } else if indexPath.section == 1 {
             let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "Delete account", style: .destructive) { _ in
                 UserDefaults.standard.set(nil, forKey: "last_username")
@@ -89,6 +68,10 @@ extension ProfileViewController: UITableViewDelegate {
             self.present(alert, animated: true)
         }
     }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.backgroundColor = UIColor(rgb: 0x20232B)
+    }
 }
 
 
@@ -101,17 +84,12 @@ extension ProfileViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
         if indexPath.section == 0 {
-            cell.textLabel?.text = TwilioHelper.sharedInstance.username
-            cell.textLabel?.textColor = .black
-            cell.accessoryType = .none
-        }
-        else if indexPath.section == 1 {
             cell.textLabel?.text = "Logout"
-            cell.textLabel?.textColor = .red
+            cell.textLabel?.textColor = UIColor(rgb: 0x9E3621)
             cell.accessoryType = .none
-        } else if indexPath.section == 2 {
+        } else if indexPath.section == 1 {
             cell.textLabel?.text = "Delete account"
-            cell.textLabel?.textColor = .red
+            cell.textLabel?.textColor = UIColor(rgb: 0x9E3621)
             cell.accessoryType = .none
         }
         
@@ -119,6 +97,6 @@ extension ProfileViewController: UITableViewDataSource {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 2
     }
 }

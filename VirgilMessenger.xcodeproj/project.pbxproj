@@ -10,7 +10,7 @@
 		1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld */; };
 		16243B631FCC83D400F7DBD9 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16243B621FCC83D400F7DBD9 /* Login.storyboard */; };
 		16243B651FCC83EB00F7DBD9 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16243B641FCC83EB00F7DBD9 /* LoginViewController.swift */; };
-		16243B671FCD72AF00F7DBD9 /* woody-woodpecker-laugh.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 16243B661FCD72AF00F7DBD9 /* woody-woodpecker-laugh.mp3 */; };
+		1658BA181FD97497005EF9C1 /* UIColorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1658BA171FD97497005EF9C1 /* UIColorUtils.swift */; };
 		166D3E5E1FB495F90032BAAD /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166D3E5D1FB495F90032BAAD /* CoreDataHelper.swift */; };
 		167C68451FADDB7800E6E448 /* VirgilHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167C68441FADDB7800E6E448 /* VirgilHelper.swift */; };
 		168D21F21FAFC8B400C946B2 /* VirgilSDKPFS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 168D21F11FAFC8B400C946B2 /* VirgilSDKPFS.framework */; };
@@ -93,7 +93,7 @@
 		1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirgilMessenger.xcdatamodel; sourceTree = "<group>"; };
 		16243B621FCC83D400F7DBD9 /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		16243B641FCC83EB00F7DBD9 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		16243B661FCD72AF00F7DBD9 /* woody-woodpecker-laugh.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "woody-woodpecker-laugh.mp3"; sourceTree = "<group>"; };
+		1658BA171FD97497005EF9C1 /* UIColorUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorUtils.swift; sourceTree = "<group>"; };
 		166D3E5D1FB495F90032BAAD /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
 		167C68441FADDB7800E6E448 /* VirgilHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirgilHelper.swift; sourceTree = "<group>"; };
 		168D21F11FAFC8B400C946B2 /* VirgilSDKPFS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilSDKPFS.framework; path = Carthage/Build/iOS/VirgilSDKPFS.framework; sourceTree = "<group>"; };
@@ -212,7 +212,6 @@
 			children = (
 				16CA510F1FC5D9960042AF9D /* Profile.storyboard */,
 				16CA51121FC5DA3B0042AF9D /* ProfileViewController.swift */,
-				16243B661FCD72AF00F7DBD9 /* woody-woodpecker-laugh.mp3 */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -314,6 +313,7 @@
 				16E22D871FA896BE008D32D9 /* Chat */,
 				429228E11F963DB300DCECDF /* Twilio */,
 				429228DD1F9637A200DCECDF /* Log.swift */,
+				1658BA171FD97497005EF9C1 /* UIColorUtils.swift */,
 				429228B51F96261000DCECDF /* AppDelegate.swift */,
 				429228B71F96261000DCECDF /* ViewController.swift */,
 				16CA51051FC468370042AF9D /* UIConstants.swift */,
@@ -435,7 +435,6 @@
 				429228BD1F96261000DCECDF /* Assets.xcassets in Resources */,
 				4280C0D61F97341300075B3A /* SendingStatusCollectionViewCell.xib in Resources */,
 				16243B631FCC83D400F7DBD9 /* Login.storyboard in Resources */,
-				16243B671FCD72AF00F7DBD9 /* woody-woodpecker-laugh.mp3 in Resources */,
 				429228EB1F96405800DCECDF /* Chat.storyboard in Resources */,
 				423BDA791F97600A00C3EE9B /* ChatListCell.xib in Resources */,
 				429228BB1F96261000DCECDF /* Main.storyboard in Resources */,
@@ -518,6 +517,7 @@
 				4280C0E01F9734DD00075B3A /* TimeSeparatorPresenter.swift in Sources */,
 				427D1E571F9656BB002F2CF3 /* DemoTextMessageViewModel.swift in Sources */,
 				423BDA871F97774F00C3EE9B /* ServiceResponse.swift in Sources */,
+				1658BA181FD97497005EF9C1 /* UIColorUtils.swift in Sources */,
 				427D1E541F965569002F2CF3 /* DataSource.swift in Sources */,
 				16F6FC721FAA235400158615 /* RegistrationViewController.swift in Sources */,
 				4280C0D91F97341A00075B3A /* DemoTextMessageHandler.swift in Sources */,

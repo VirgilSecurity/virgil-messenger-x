@@ -39,6 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UIApplication.shared.delegate?.window??.rootViewController = UIStoryboard(name: StartViewController.name, bundle: Bundle.main).instantiateInitialViewController()!
         
+        UIApplication.shared.statusBarStyle = .lightContent
+        
         return true
     }
 
