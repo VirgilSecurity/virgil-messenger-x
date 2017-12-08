@@ -52,6 +52,7 @@ public class SendingStatusPresenterBuilder: ChatItemPresenterBuilderProtocol {
 
     public func createPresenterWithChatItem(_ chatItem: ChatItemProtocol) -> ChatItemPresenterProtocol {
         assert(self.canHandleChatItem(chatItem))
+
         return SendingStatusPresenter(
             statusModel: chatItem as! SendingStatusModel
         )
@@ -86,7 +87,7 @@ class SendingStatusPresenter: ChatItemPresenterProtocol {
 
         let attrs = [
             NSAttributedStringKey.font: UIFont.systemFont(ofSize: 10.0),
-            NSAttributedStringKey.foregroundColor: self.statusModel.status == .failed ? UIColor.red : UIColor.black
+            NSAttributedStringKey.foregroundColor: self.statusModel.status == .failed ? UIColor.red : UIColor.white
         ]
         statusCell.text = NSAttributedString(
             string: self.statusText(),

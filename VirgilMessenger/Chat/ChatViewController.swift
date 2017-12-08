@@ -44,25 +44,53 @@ class ChatViewController: BaseChatViewController {
         super.chatItemsDecorator = ChatItemsDemoDecorator()
         
         self.navigationItem.title = self.title
+        self.navigationController?.navigationBar.tintColor = .white
+        
+        self.view.backgroundColor = UIColor(rgb: 0x2B303B)
     }
 
     var chatInputPresenter: BasicChatInputBarPresenter!
     override func createChatInputView() -> UIView {
-        let chatInputView = ChatInputBar.loadNib()
+        let chatInputView = InputBar.loadNib()
         var appearance = ChatInputBarAppearance()
+        appearance.textInputAppearance.textColor = .white
+        appearance.sendButtonAppearance.titleColors = [UIControlStateWrapper(state: UIControlState.disabled) : UIColor(rgb: 0x585A60)]
+        
         appearance.sendButtonAppearance.title = NSLocalizedString("Send", comment: "")
-        appearance.textInputAppearance.placeholderText = NSLocalizedString("Type a message", comment: "")
+        appearance.textInputAppearance.placeholderText = NSLocalizedString("Message...", comment: "")
         self.chatInputPresenter = BasicChatInputBarPresenter(chatInputBar: chatInputView, chatInputItems: self.createChatInputItems(), chatInputBarAppearance: appearance)
         chatInputView.maxCharactersCount = 1000
         return chatInputView
     }
 
     override func createPresenterBuilders() -> [ChatItemType: [ChatItemPresenterBuilderProtocol]] {
+        let chatColor = BaseMessageCollectionViewCellDefaultStyle.Colors(
+            incoming: UIColor(rgb: 0x20232B), // background
+            outgoing: UIColor(rgb: 0x4A4E58)
+        )
+        
+        // used for base message background + text background
+        let baseMessageStyle = BaseMessageCollectionViewCellDefaultStyle(colors: chatColor)
+        
+        let textStyle = TextMessageCollectionViewCellDefaultStyle.TextStyle(
+            font: UIFont.systemFont(ofSize: 15),
+            incomingColor: UIColor(rgb: 0xE4E4E4),
+            outgoingColor: UIColor.white, //for outgoing
+            incomingInsets: UIEdgeInsets(top: 10, left: 19, bottom: 10, right: 15),
+            outgoingInsets: UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 19)
+        )
+        
+        let textCellStyle: TextMessageCollectionViewCellDefaultStyle = TextMessageCollectionViewCellDefaultStyle(
+            textStyle: textStyle,
+            baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
+        
         let textMessagePresenter = TextMessagePresenterBuilder(
             viewModelBuilder: DemoTextMessageViewModelBuilder(),
             interactionHandler: DemoTextMessageHandler(baseHandler: self.baseMessageHandler)
         )
-
+        textMessagePresenter.baseMessageStyle = baseMessageStyle
+        textMessagePresenter.textCellStyle = textCellStyle
+        
         return [
             DemoTextMessageModel.chatItemType: [
                 textMessagePresenter
@@ -87,6 +115,7 @@ class ChatViewController: BaseChatViewController {
         item.textInputHandler = { [weak self] text in
             self?.dataSource.addTextMessage(text)
         }
+        //item.tabView.isHidden = true
         return item
     }
 }
