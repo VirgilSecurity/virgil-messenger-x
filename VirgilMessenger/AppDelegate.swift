@@ -41,6 +41,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UIApplication.shared.statusBarStyle = .lightContent
         
+        //defining selection color for tableViews
+        let colorView = UIView()
+        colorView.backgroundColor = UIColor(rgb: 0x2B303B)
+        
+        UITableViewCell.appearance().selectedBackgroundView = colorView
+        
         return true
     }
 
