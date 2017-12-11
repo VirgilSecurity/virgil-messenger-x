@@ -17,6 +17,11 @@ class RegistrationViewController: ViewController {
     
     let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.viewDidAppear(animated)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -29,12 +34,12 @@ class RegistrationViewController: ViewController {
     }
     
     @objc func keyboardWillShow(notification: Notification) {
-        guard let frame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+        guard let _ = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
             let time = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue else {
                 return
         }
         
-        self.bottomConstraint.constant = frame.height
+        self.bottomConstraint.constant = self.bottomConstraint.constant + 80
         UIView.animate(withDuration: time) {
             self.view.layoutIfNeeded()
         }
@@ -45,7 +50,7 @@ class RegistrationViewController: ViewController {
                 return
         }
         
-        self.bottomConstraint.constant = 0
+        self.bottomConstraint.constant = self.bottomConstraint.constant - 80
         UIView.animate(withDuration: time) {
             self.view.layoutIfNeeded()
         }
