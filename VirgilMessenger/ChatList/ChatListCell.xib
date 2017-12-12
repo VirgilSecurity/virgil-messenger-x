@@ -12,10 +12,10 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="89" id="emh-p5-heA" customClass="ChatListCell" customModule="VirgilMessenger" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="89"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="94"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="emh-p5-heA" id="sVl-7U-iHI">
-                <rect key="frame" x="0.0" y="0.0" width="375" height="88.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="93.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b6L-BF-qcX">
@@ -23,12 +23,12 @@
                         <constraints>
                             <constraint firstAttribute="width" constant="204" id="KfX-jA-Y3j"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="iXI-d1-Eyp">
-                        <rect key="frame" x="18" y="16" width="62" height="56.5"/>
+                        <rect key="frame" x="18" y="16" width="62" height="61.5"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="62" id="MrE-77-VN8"/>
                         </constraints>
@@ -39,9 +39,15 @@
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </imageView>
-                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" alpha="0.59830000000000005" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ugV-4J-qng">
-                        <rect key="frame" x="88" y="39" width="272" height="30.5"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.59830000000000005" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last message" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ugV-4J-qng">
+                        <rect key="frame" x="88" y="39" width="225" height="38.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.59999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qzb-rE-Xzj">
+                        <rect key="frame" x="333" y="21" width="27" height="16"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -49,20 +55,24 @@
                 <color key="backgroundColor" red="0.1678793728351593" green="0.1874183714389801" blue="0.23309910297393799" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 <constraints>
                     <constraint firstItem="ugV-4J-qng" firstAttribute="leading" secondItem="sVl-7U-iHI" secondAttribute="leading" constant="88" id="0cW-9d-KVk"/>
+                    <constraint firstItem="qzb-rE-Xzj" firstAttribute="top" secondItem="sVl-7U-iHI" secondAttribute="top" constant="21" id="Cpt-x8-bRr"/>
                     <constraint firstItem="b6L-BF-qcX" firstAttribute="top" secondItem="sVl-7U-iHI" secondAttribute="top" constant="18" id="Mu0-iW-WFC"/>
                     <constraint firstAttribute="bottom" secondItem="iXI-d1-Eyp" secondAttribute="bottom" constant="16" id="PDt-9E-yY8"/>
+                    <constraint firstAttribute="trailing" secondItem="qzb-rE-Xzj" secondAttribute="trailing" constant="15" id="QEI-zU-pvz"/>
                     <constraint firstItem="ugV-4J-qng" firstAttribute="top" secondItem="sVl-7U-iHI" secondAttribute="top" constant="39" id="X0K-5N-sai"/>
                     <constraint firstItem="iXI-d1-Eyp" firstAttribute="leading" secondItem="sVl-7U-iHI" secondAttribute="leading" constant="18" id="aOT-EC-3HL"/>
                     <constraint firstItem="b6L-BF-qcX" firstAttribute="leading" secondItem="sVl-7U-iHI" secondAttribute="leading" constant="88" id="gh7-FH-ald"/>
-                    <constraint firstAttribute="bottom" secondItem="ugV-4J-qng" secondAttribute="bottom" constant="19" id="lSN-FA-bP9"/>
+                    <constraint firstAttribute="bottom" secondItem="ugV-4J-qng" secondAttribute="bottom" constant="16" id="lSN-FA-bP9"/>
                     <constraint firstItem="iXI-d1-Eyp" firstAttribute="top" secondItem="sVl-7U-iHI" secondAttribute="top" constant="16" id="oGY-97-alG"/>
-                    <constraint firstAttribute="trailing" secondItem="ugV-4J-qng" secondAttribute="trailing" constant="15" id="uIR-PB-0vb"/>
+                    <constraint firstAttribute="trailing" secondItem="ugV-4J-qng" secondAttribute="trailing" constant="62" id="uIR-PB-0vb"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="lastMessageDateLabel" destination="qzb-rE-Xzj" id="pRc-o6-iuR"/>
+                <outlet property="lastMessageLabel" destination="ugV-4J-qng" id="UAa-hb-r5E"/>
                 <outlet property="usernameLabel" destination="b6L-BF-qcX" id="4Xc-ab-Bni"/>
             </connections>
-            <point key="canvasLocation" x="80.5" y="-175.5"/>
+            <point key="canvasLocation" x="75.5" y="-208.5"/>
         </tableViewCell>
     </objects>
     <resources>

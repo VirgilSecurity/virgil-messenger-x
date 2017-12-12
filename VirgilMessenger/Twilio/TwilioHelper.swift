@@ -180,6 +180,7 @@ class TwilioHelper: NSObject {
             completion(ret)
             return
         }
+
         messages.getLastWithCount(UInt(count), completion: { (result, messages) in
             guard let messages = messages else {
                 Log.error("Twilio can't get last messages")

@@ -137,12 +137,16 @@ class CoreDataHelper {
     }
     
     func createMessage(withBody body: String, isIncoming: Bool, date: Date) {
+        guard let channel = self.selectedChannel else {
+            Log.error("Core Data: nil selected channel")
+            return
+        }
+    
+        self.createMessage(forChannel: channel, withBody: body, isIncoming: isIncoming, date: date)
+    }
+    
+    func createMessage(forChannel channel: Channel, withBody body: String, isIncoming: Bool, date: Date) {
         self.queue.async {
-            guard let channel = self.selectedChannel else {
-                Log.error("Core Data: nil selected channel")
-                return
-            }
-            
             guard let entity = NSEntityDescription.entity(forEntityName: Entities.Message.rawValue, in: self.managedContext) else {
                 Log.error("Core Data: entity not found: " + Entities.Message.rawValue)
                 return
@@ -164,25 +168,32 @@ class CoreDataHelper {
     }
     
     func loadChannel(withName username: String) -> Bool {
+        if let channel = self.getChannel(withName: username) {
+            self.selectedChannel = channel
+            return true
+        }
+        return false
+    }
+    
+    func getChannel(withName username: String) -> Channel? {
         guard let account = self.myAccount, let channels = account.channel else {
             Log.error("Core Data: nil account core data")
-            return false
+            return nil
         }
         
         for channel in channels {
             guard let channel = channel as? Channel, let name = channel.name  else {
                 Log.error("Core Data: can't get account channel")
-                return false
+                return nil
             }
             Log.debug("Core Data name: " + name)
             if name == username {
                 Log.debug("Core Data: found channel in core data: " + name)
-                self.selectedChannel = channel
-                return true
+                return channel
             }
         }
         Log.error("Core Data: channel not found")
-        return false
+        return nil
     }
     
     func deleteAccount() {

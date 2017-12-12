@@ -41,14 +41,14 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="powered by" translatesAutoresizingMaskIntoConstraints="NO" id="lXU-ee-Sqv">
-                                <rect key="frame" x="100" y="618" width="175" height="15"/>
+                                <rect key="frame" x="100.5" y="618" width="175" height="15"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="15" id="0Sj-Dd-nsK"/>
                                     <constraint firstAttribute="width" constant="175" id="4Rn-WB-SXq"/>
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-app-userscreen" translatesAutoresizingMaskIntoConstraints="NO" id="g17-d3-DLz">
-                                <rect key="frame" x="145" y="298" width="84" height="72"/>
+                                <rect key="frame" x="145.5" y="298" width="84" height="72"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="84" id="5My-fL-6pp"/>
                                     <constraint firstAttribute="height" constant="72" id="IUl-NH-tdG"/>

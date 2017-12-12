@@ -16,6 +16,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
     enum Notifications: String {
         case ConnectionStateUpdated = "TwilioHelper.Notifications.ConnectionStateUpdated"
         case MessageAdded           = "TwilioHelper.Notifications.MessageAdded"
+        case MessageAddedToSelectedChannel           = "TwilioHelper.Notifications.MessageAddedToSelectedChannel"
         case ChannelAdded           = "TwilioHelper.Notifications.ChannelAdded"
     }
     
@@ -62,6 +63,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
     func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
         Log.debug("message added")
         guard self.selectedChannel != nil else {
+            self.processMessage(channel: channel, message: message)
             return
         }
         if (getCompanion(ofChannel: channel) == getCompanion(ofChannel: self.selectedChannel)) {
@@ -69,13 +71,55 @@ extension TwilioHelper: TwilioChatClientDelegate {
             if (message.author != self.username) {
                 Log.debug("author is not me")
                 NotificationCenter.default.post(
-                    name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+                    name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue),
                     object: self,
                     userInfo: [
                         TwilioHelper.NotificationKeys.Message.rawValue: message
                     ])
             }
         }
+        else {
+            self.processMessage(channel: channel, message: message)
+        }
+    }
+    
+    private func processMessage(channel: TCHChannel, message: TCHMessage) {
+        
+        guard let messageBody = message.body,
+              let messageDate = message.dateUpdatedAsDate else
+        {
+            Log.error("got corrapted message")
+            return
+        }
+        
+        guard let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: self.getCompanion(ofChannel: channel)),
+              let stringCard = coreDataChannel.card,
+              let card = VirgilHelper.sharedInstance.buildCard(stringCard)else {
+            Log.error("can't get core data channel")
+            return
+        }
+            
+        guard let secureChat = VirgilHelper.sharedInstance.secureChat else {
+            Log.error("nil secure Chat")
+            return
+        }
+        
+        do {
+            let session = try secureChat.loadUpSession(
+                withParticipantWithCard: card, message: messageBody)
+            let plaintext = try session.decrypt(messageBody)
+            Log.debug("Receiving " + plaintext)
+            
+            CoreDataHelper.sharedInstance.createMessage(forChannel: coreDataChannel, withBody: plaintext, isIncoming: true, date: messageDate)
+        } catch {
+            Log.error("decryption process failed")
+        }
+        NotificationCenter.default.post(
+            name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+            object: self,
+            userInfo: [
+                TwilioHelper.NotificationKeys.Message.rawValue: message
+            ])
     }
     
     func chatClient(_ client: TwilioChatClient, channelDeleted channel: TCHChannel) {

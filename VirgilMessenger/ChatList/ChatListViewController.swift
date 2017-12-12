@@ -90,13 +90,16 @@ class ChatListViewController: ViewController {
         self.tableView.backgroundColor = UIColor(rgb: 0x2B303B)
         
         NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue), object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         TwilioHelper.sharedInstance.selectedChannel = nil
         noChatsView.isHidden =  TwilioHelper.sharedInstance.channels.subscribedChannels().count == 0 ? false : true
-        //FIXME
-        //VirgilHelper.sharedInstance.channelCard = nil
+
+        VirgilHelper.sharedInstance.channelCard = nil
+        self.tableView.reloadData()
     }
     
     @objc private func reloadTableView(notification: Notification) {
@@ -117,7 +120,71 @@ extension ChatListViewController: UITableViewDataSource {
         
         cell.usernameLabel.text = TwilioHelper.sharedInstance.getCompanion(ofChannel: indexPath.row)
         
+        var decryptedMessageBody: String?
+        var messageDate: Date?
+        if let channel = CoreDataHelper.sharedInstance.getChannel(withName: cell.usernameLabel.text ?? ""),
+           let messages = channel.message,
+           let message = messages.lastObject as? Message,
+           let messageBody = message.body,
+           let date = message.date {
+        
+            messageDate = date
+            decryptedMessageBody = try? VirgilHelper.sharedInstance.decrypt(encrypted: messageBody)
+        }
+        
+        let channel = TwilioHelper.sharedInstance.channels.subscribedChannels()[indexPath.row]
+        
+        if let messages = channel.messages {
+            
+            messages.getLastWithCount(UInt(1)) { (result, messages) in
+                
+                if let message = messages?.last,
+                   let messageBody = message.body,
+                   let messageDate = message.dateUpdatedAsDate,
+                   message.author != TwilioHelper.sharedInstance.username,
+                   let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)),
+                   let stringCard = coreDataChannel.card,
+                   let card = VirgilHelper.sharedInstance.buildCard(stringCard),
+                   let secureChat = VirgilHelper.sharedInstance.secureChat
+                {
+                    do {
+                        let session = try secureChat.loadUpSession(
+                            withParticipantWithCard: card, message: messageBody)
+                        let plaintext = try session.decrypt(messageBody)
+                        
+                        cell.lastMessageLabel.text = plaintext
+                        cell.lastMessageDateLabel.text = self.calcDateString(messageDate: messageDate)
+
+                    } catch {
+                        Log.error("decryption process failed")
+                    }
+                }
+            }
+        }
+        
+        cell.lastMessageLabel.text = decryptedMessageBody ?? ""
+        cell.lastMessageDateLabel.text = (messageDate != nil) ? calcDateString(messageDate: messageDate!) : ""
+        
         return cell
+        
+    }
+    
+    private func calcDateString(messageDate: Date) -> String {
+        
+        let dateFormatter = DateFormatter()
+        if messageDate.minutes(from: Date()) < 5 {
+            return "now"
+        } else if messageDate.days(from: Date()) < 1 {
+            dateFormatter.dateStyle = DateFormatter.Style.none
+            dateFormatter.timeStyle = DateFormatter.Style.short
+        } else {
+            dateFormatter.dateStyle = DateFormatter.Style.short
+            dateFormatter.timeStyle = DateFormatter.Style.none
+        }
+
+        let messageDateString = dateFormatter.string(from: messageDate)
+        
+        return messageDateString
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

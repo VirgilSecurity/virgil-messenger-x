@@ -19,6 +19,8 @@ class ChatListCell: UITableViewCell {
     weak var delegate: CellTapDelegate?
     
     @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var lastMessageLabel: UILabel!
+    @IBOutlet weak var lastMessageDateLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

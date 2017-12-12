@@ -101,6 +101,10 @@ class VirgilHelper {
         self.channelCard = VSSCard(data: exportedCard)
     }
     
+    func buildCard(_ exportedCard: String) -> VSSCard? {
+        return VSSCard(data: exportedCard)
+    }
+    
     func getCard(withIdentity: String, completion: @escaping (VSSCard?, Error?) -> ()) {
         let serviceConfig = VSSServiceConfig(token: self.virgilAccessToken)
     

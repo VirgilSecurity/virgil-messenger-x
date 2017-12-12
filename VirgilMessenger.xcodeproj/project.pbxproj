@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld */; };
-		1658BA181FD97497005EF9C1 /* UIColorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1658BA171FD97497005EF9C1 /* UIColorUtils.swift */; };
+		1658BA181FD97497005EF9C1 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1658BA171FD97497005EF9C1 /* Utils.swift */; };
 		1658BA1D1FD9A8BC005EF9C1 /* InputBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1658BA1C1FD9A8BC005EF9C1 /* InputBar.swift */; };
 		1658BA211FD9B08F005EF9C1 /* InputBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1658BA201FD9B08F005EF9C1 /* InputBar.xib */; };
 		166D3E5E1FB495F90032BAAD /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166D3E5D1FB495F90032BAAD /* CoreDataHelper.swift */; };
@@ -94,7 +94,7 @@
 
 /* Begin PBXFileReference section */
 		1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirgilMessenger.xcdatamodel; sourceTree = "<group>"; };
-		1658BA171FD97497005EF9C1 /* UIColorUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorUtils.swift; sourceTree = "<group>"; };
+		1658BA171FD97497005EF9C1 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		1658BA1C1FD9A8BC005EF9C1 /* InputBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBar.swift; sourceTree = "<group>"; };
 		1658BA201FD9B08F005EF9C1 /* InputBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputBar.xib; sourceTree = "<group>"; };
 		166D3E5D1FB495F90032BAAD /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
@@ -331,7 +331,7 @@
 				16E22D871FA896BE008D32D9 /* Chat */,
 				429228E11F963DB300DCECDF /* Twilio */,
 				429228DD1F9637A200DCECDF /* Log.swift */,
-				1658BA171FD97497005EF9C1 /* UIColorUtils.swift */,
+				1658BA171FD97497005EF9C1 /* Utils.swift */,
 				429228B51F96261000DCECDF /* AppDelegate.swift */,
 				429228B71F96261000DCECDF /* ViewController.swift */,
 				16CA51051FC468370042AF9D /* UIConstants.swift */,
@@ -536,7 +536,7 @@
 				4280C0E01F9734DD00075B3A /* TimeSeparatorPresenter.swift in Sources */,
 				427D1E571F9656BB002F2CF3 /* DemoTextMessageViewModel.swift in Sources */,
 				423BDA871F97774F00C3EE9B /* ServiceResponse.swift in Sources */,
-				1658BA181FD97497005EF9C1 /* UIColorUtils.swift in Sources */,
+				1658BA181FD97497005EF9C1 /* Utils.swift in Sources */,
 				427D1E541F965569002F2CF3 /* DataSource.swift in Sources */,
 				16F6FC721FAA235400158615 /* RegistrationViewController.swift in Sources */,
 				4280C0D91F97341A00075B3A /* DemoTextMessageHandler.swift in Sources */,
