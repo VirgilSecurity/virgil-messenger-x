@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld */; };
-		16243B631FCC83D400F7DBD9 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16243B621FCC83D400F7DBD9 /* Login.storyboard */; };
-		16243B651FCC83EB00F7DBD9 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16243B641FCC83EB00F7DBD9 /* LoginViewController.swift */; };
 		1658BA181FD97497005EF9C1 /* UIColorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1658BA171FD97497005EF9C1 /* UIColorUtils.swift */; };
 		1658BA1D1FD9A8BC005EF9C1 /* InputBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1658BA1C1FD9A8BC005EF9C1 /* InputBar.swift */; };
 		1658BA211FD9B08F005EF9C1 /* InputBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1658BA201FD9B08F005EF9C1 /* InputBar.xib */; };
@@ -22,6 +20,7 @@
 		16CA51061FC468370042AF9D /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51051FC468370042AF9D /* UIConstants.swift */; };
 		16CA51101FC5D9960042AF9D /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA510F1FC5D9960042AF9D /* Profile.storyboard */; };
 		16CA51131FC5DA3B0042AF9D /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51121FC5DA3B0042AF9D /* ProfileViewController.swift */; };
+		16D6CB3A1FDFEECC00302A05 /* Registration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16D6CB391FDFEECC00302A05 /* Registration.storyboard */; };
 		16F30D4B1FDAE190006C3DEB /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */; };
 		16F30D4D1FDAE6E6006C3DEB /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */; };
 		16F30D4F1FDAE91D006C3DEB /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */; };
@@ -95,8 +94,6 @@
 
 /* Begin PBXFileReference section */
 		1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirgilMessenger.xcdatamodel; sourceTree = "<group>"; };
-		16243B621FCC83D400F7DBD9 /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
-		16243B641FCC83EB00F7DBD9 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		1658BA171FD97497005EF9C1 /* UIColorUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorUtils.swift; sourceTree = "<group>"; };
 		1658BA1C1FD9A8BC005EF9C1 /* InputBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBar.swift; sourceTree = "<group>"; };
 		1658BA201FD9B08F005EF9C1 /* InputBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputBar.xib; sourceTree = "<group>"; };
@@ -109,6 +106,7 @@
 		16CA51051FC468370042AF9D /* UIConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
 		16CA510F1FC5D9960042AF9D /* Profile.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
 		16CA51121FC5DA3B0042AF9D /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		16D6CB391FDFEECC00302A05 /* Registration.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Registration.storyboard; sourceTree = "<group>"; };
 		16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
@@ -208,12 +206,11 @@
 			isa = PBXGroup;
 			children = (
 				16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */,
+				16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */,
+				16D6CB391FDFEECC00302A05 /* Registration.storyboard */,
+				16F6FC711FAA235300158615 /* RegistrationViewController.swift */,
 				16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */,
 				16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */,
-				16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */,
-				16F6FC711FAA235300158615 /* RegistrationViewController.swift */,
-				16243B621FCC83D400F7DBD9 /* Login.storyboard */,
-				16243B641FCC83EB00F7DBD9 /* LoginViewController.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -447,13 +444,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				16CA51101FC5D9960042AF9D /* Profile.storyboard in Resources */,
+				16D6CB3A1FDFEECC00302A05 /* Registration.storyboard in Resources */,
 				16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */,
 				423BDA7A1F97600A00C3EE9B /* ChatList.storyboard in Resources */,
 				16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */,
 				429228C01F96261000DCECDF /* LaunchScreen.storyboard in Resources */,
 				429228BD1F96261000DCECDF /* Assets.xcassets in Resources */,
 				4280C0D61F97341300075B3A /* SendingStatusCollectionViewCell.xib in Resources */,
-				16243B631FCC83D400F7DBD9 /* Login.storyboard in Resources */,
 				429228EB1F96405800DCECDF /* Chat.storyboard in Resources */,
 				423BDA791F97600A00C3EE9B /* ChatListCell.xib in Resources */,
 				1658BA211FD9B08F005EF9C1 /* InputBar.xib in Resources */,
@@ -549,7 +546,6 @@
 				16CA51021FC45E9A0042AF9D /* Start.swift in Sources */,
 				429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */,
 				423BDA841F97774F00C3EE9B /* Connection.swift in Sources */,
-				16243B651FCC83EB00F7DBD9 /* LoginViewController.swift in Sources */,
 				4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */,
 				429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */,
 				16F30D4B1FDAE190006C3DEB /* AuthenticationViewController.swift in Sources */,
