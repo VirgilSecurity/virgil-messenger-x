@@ -12,7 +12,7 @@ import PKHUD
 
 class ChatListViewController: ViewController {
     
-    @IBOutlet weak var ZeroChatsLabel: UILabel!
+    @IBOutlet weak var noChatsView: UIView!
     private let limitLength = 32
     let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
     
@@ -57,7 +57,7 @@ class ChatListViewController: ViewController {
             TwilioHelper.sharedInstance.createChannel(withUsername: username) { error in
                 HUD.flash(.success)
                 if error == nil {
-                    self.ZeroChatsLabel.isHidden = true
+                    self.noChatsView.isHidden = true
                     self.tableView.reloadData()
                     HUD.flash(.success)
                 } else {
@@ -94,13 +94,14 @@ class ChatListViewController: ViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         TwilioHelper.sharedInstance.selectedChannel = nil
-        ZeroChatsLabel.isHidden =  TwilioHelper.sharedInstance.channels.subscribedChannels().count == 0 ? false : true
-        VirgilHelper.sharedInstance.channelCard = nil
+        noChatsView.isHidden =  TwilioHelper.sharedInstance.channels.subscribedChannels().count == 0 ? false : true
+        //FIXME
+        //VirgilHelper.sharedInstance.channelCard = nil
     }
     
     @objc private func reloadTableView(notification: Notification) {
         self.tableView.reloadData()
-        ZeroChatsLabel.isHidden = true
+        noChatsView.isHidden = true
     }
     
     deinit {

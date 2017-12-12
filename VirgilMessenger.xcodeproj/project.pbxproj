@@ -20,7 +20,6 @@
 		16CA51021FC45E9A0042AF9D /* Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51011FC45E9A0042AF9D /* Start.swift */; };
 		16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA51031FC45EA40042AF9D /* Start.storyboard */; };
 		16CA51061FC468370042AF9D /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51051FC468370042AF9D /* UIConstants.swift */; };
-		16CA510E1FC5A1B20042AF9D /* TabBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA510D1FC5A1B20042AF9D /* TabBar.storyboard */; };
 		16CA51101FC5D9960042AF9D /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA510F1FC5D9960042AF9D /* Profile.storyboard */; };
 		16CA51131FC5DA3B0042AF9D /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51121FC5DA3B0042AF9D /* ProfileViewController.swift */; };
 		16F30D4B1FDAE190006C3DEB /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */; };
@@ -108,7 +107,6 @@
 		16CA51011FC45E9A0042AF9D /* Start.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Start.swift; sourceTree = "<group>"; };
 		16CA51031FC45EA40042AF9D /* Start.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Start.storyboard; sourceTree = "<group>"; };
 		16CA51051FC468370042AF9D /* UIConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
-		16CA510D1FC5A1B20042AF9D /* TabBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBar.storyboard; sourceTree = "<group>"; };
 		16CA510F1FC5D9960042AF9D /* Profile.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
 		16CA51121FC5DA3B0042AF9D /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
@@ -344,7 +342,6 @@
 				429228BC1F96261000DCECDF /* Assets.xcassets */,
 				429228BE1F96261000DCECDF /* LaunchScreen.storyboard */,
 				429228C11F96261000DCECDF /* Info.plist */,
-				16CA510D1FC5A1B20042AF9D /* TabBar.storyboard */,
 			);
 			path = VirgilMessenger;
 			sourceTree = "<group>";
@@ -449,7 +446,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16CA510E1FC5A1B20042AF9D /* TabBar.storyboard in Resources */,
 				16CA51101FC5D9960042AF9D /* Profile.storyboard in Resources */,
 				16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */,
 				423BDA7A1F97600A00C3EE9B /* ChatList.storyboard in Resources */,

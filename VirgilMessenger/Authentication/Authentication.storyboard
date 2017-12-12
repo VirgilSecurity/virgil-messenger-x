@@ -57,12 +57,30 @@
                                     <segue destination="P69-qe-Zuq" kind="embed" id="kHR-4P-bCT"/>
                                 </connections>
                             </containerView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-app-userscreen" translatesAutoresizingMaskIntoConstraints="NO" id="eLU-VO-qVA">
+                                <rect key="frame" x="166.5" y="110" width="42" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="8hg-sz-Dps"/>
+                                    <constraint firstAttribute="width" constant="42" id="u7W-c8-ghN"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" alpha="0.55000000000000004" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="powered by" translatesAutoresizingMaskIntoConstraints="NO" id="DGn-lv-bLJ">
+                                <rect key="frame" x="100" y="618" width="175" height="15"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="175" id="IsO-sF-2em"/>
+                                    <constraint firstAttribute="height" constant="15" id="x1f-0E-ueS"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.12502500414848328" green="0.13665896654129028" blue="0.16987201571464539" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="eLU-VO-qVA" firstAttribute="centerX" secondItem="E1R-uI-IMb" secondAttribute="centerX" id="6aC-gy-out"/>
+                            <constraint firstItem="DGn-lv-bLJ" firstAttribute="centerX" secondItem="E1R-uI-IMb" secondAttribute="centerX" id="9ME-t6-gDM"/>
+                            <constraint firstItem="FAx-Wy-Jxg" firstAttribute="top" secondItem="eLU-VO-qVA" secondAttribute="bottom" constant="54" id="fpU-Lf-8wk"/>
                             <constraint firstItem="ZMJ-LZ-xdp" firstAttribute="bottom" secondItem="E1R-uI-IMb" secondAttribute="bottom" constant="85" id="gvu-XC-C1x"/>
                             <constraint firstItem="E1R-uI-IMb" firstAttribute="centerX" secondItem="zTU-un-FQm" secondAttribute="centerX" id="iNi-jS-Jqq"/>
                             <constraint firstItem="FAx-Wy-Jxg" firstAttribute="centerX" secondItem="E1R-uI-IMb" secondAttribute="centerX" id="mCP-ld-Mlw"/>
+                            <constraint firstItem="ZMJ-LZ-xdp" firstAttribute="bottom" secondItem="DGn-lv-bLJ" secondAttribute="bottom" constant="34" id="s2A-Mf-qGG"/>
                             <constraint firstItem="FAx-Wy-Jxg" firstAttribute="top" secondItem="ZMJ-LZ-xdp" secondAttribute="top" constant="180" id="u2B-aS-5O5"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="ZMJ-LZ-xdp"/>
@@ -266,6 +284,8 @@
         </scene>
     </scenes>
     <resources>
+        <image name="icon-app-userscreen" width="44" height="38"/>
+        <image name="powered by" width="175" height="15"/>
         <image name="user" width="300" height="300"/>
     </resources>
 </document>
