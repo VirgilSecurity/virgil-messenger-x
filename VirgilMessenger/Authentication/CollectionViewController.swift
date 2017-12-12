@@ -23,6 +23,14 @@ class CollectionViewController: UICollectionViewController {
         
         cell.usernameLabel.text = CoreDataHelper.sharedInstance.accounts[indexPath.row].identity ?? "Error name"
         
+        let up = cell.usernameLabel.text!.uppercased().first!
+        cell.letterLabel.text =  String(describing: up)
+        
+        let f = UIColor(rgb: 0x009DFF)
+        let s = UIColor(rgb: 0x6AC7FF)
+        cell.avatarView.gradientLayer.colors = [f.cgColor, s.cgColor]
+        cell.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+        
         return cell
     }
     

@@ -21,6 +21,8 @@ class ChatListCell: UITableViewCell {
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var lastMessageLabel: UILabel!
     @IBOutlet weak var lastMessageDateLabel: UILabel!
+    @IBOutlet weak var avatarView: GradientView!
+    @IBOutlet weak var letterLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

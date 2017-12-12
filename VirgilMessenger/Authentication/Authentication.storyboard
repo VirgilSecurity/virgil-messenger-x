@@ -113,11 +113,28 @@
                                     <rect key="frame" x="0.0" y="0.0" width="80" height="106"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="JDb-2L-WLF">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8ws-Id-j3P">
+                                            <rect key="frame" x="0.0" y="90" width="80" height="17"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BK5-cm-sEq" customClass="GradientView" customModule="VirgilMessenger" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="L" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZiS-wN-1Tr">
+                                                    <rect key="frame" x="30.5" y="19.5" width="19" height="41"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="34"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" red="0.41568627450000001" green="0.78039215689999997" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="80" id="6dx-IP-Cwt"/>
-                                                <constraint firstAttribute="width" constant="80" id="HlF-8m-XYI"/>
+                                                <constraint firstItem="ZiS-wN-1Tr" firstAttribute="centerX" secondItem="BK5-cm-sEq" secondAttribute="centerX" id="Egq-CC-y5F"/>
+                                                <constraint firstAttribute="height" constant="80" id="NdY-4w-GET"/>
+                                                <constraint firstAttribute="width" constant="80" id="TkW-XQ-eUA"/>
+                                                <constraint firstItem="ZiS-wN-1Tr" firstAttribute="centerY" secondItem="BK5-cm-sEq" secondAttribute="centerY" id="der-la-3yJ"/>
                                             </constraints>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
@@ -125,24 +142,19 @@
                                                     <integer key="value" value="10"/>
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8ws-Id-j3P">
-                                            <rect key="frame" x="0.0" y="90" width="80" height="17"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
+                                        </view>
                                     </subviews>
                                 </view>
                                 <constraints>
-                                    <constraint firstItem="JDb-2L-WLF" firstAttribute="leading" secondItem="biy-7s-uib" secondAttribute="leading" id="7aP-lS-sp5"/>
-                                    <constraint firstItem="8ws-Id-j3P" firstAttribute="leading" secondItem="JDb-2L-WLF" secondAttribute="leading" id="LXg-j4-mXm"/>
-                                    <constraint firstItem="JDb-2L-WLF" firstAttribute="top" secondItem="biy-7s-uib" secondAttribute="top" id="RqS-oi-8DW"/>
-                                    <constraint firstItem="8ws-Id-j3P" firstAttribute="top" secondItem="JDb-2L-WLF" secondAttribute="bottom" constant="10" id="rJJ-QR-iTf"/>
-                                    <constraint firstItem="8ws-Id-j3P" firstAttribute="trailing" secondItem="JDb-2L-WLF" secondAttribute="trailing" id="xbV-Yd-7Nn"/>
+                                    <constraint firstItem="8ws-Id-j3P" firstAttribute="top" secondItem="BK5-cm-sEq" secondAttribute="bottom" constant="10" id="AgB-Ed-rGC"/>
+                                    <constraint firstItem="BK5-cm-sEq" firstAttribute="top" secondItem="biy-7s-uib" secondAttribute="top" id="Ddm-XW-yoO"/>
+                                    <constraint firstItem="BK5-cm-sEq" firstAttribute="leading" secondItem="8ws-Id-j3P" secondAttribute="leading" id="VRC-hI-UF1"/>
+                                    <constraint firstItem="BK5-cm-sEq" firstAttribute="leading" secondItem="biy-7s-uib" secondAttribute="leading" id="msa-pH-kge"/>
+                                    <constraint firstItem="BK5-cm-sEq" firstAttribute="trailing" secondItem="8ws-Id-j3P" secondAttribute="trailing" id="zC7-kz-p4v"/>
                                 </constraints>
                                 <connections>
-                                    <outlet property="userPicture" destination="JDb-2L-WLF" id="rGg-Ul-7hB"/>
+                                    <outlet property="avatarView" destination="BK5-cm-sEq" id="qjy-zB-W9d"/>
+                                    <outlet property="letterLabel" destination="ZiS-wN-1Tr" id="P3g-9U-9bO"/>
                                     <outlet property="usernameLabel" destination="8ws-Id-j3P" id="VSB-DM-tjN"/>
                                 </connections>
                             </collectionViewCell>
@@ -155,7 +167,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nIb-95-RAC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2329" y="-237"/>
+            <point key="canvasLocation" x="2328.8000000000002" y="-237.48125937031486"/>
         </scene>
         <!--Registration-->
         <scene sceneID="t6o-yr-Vcx">
@@ -169,6 +181,5 @@
     <resources>
         <image name="icon-app-userscreen" width="44" height="38"/>
         <image name="powered by" width="175" height="15"/>
-        <image name="user" width="300" height="300"/>
     </resources>
 </document>

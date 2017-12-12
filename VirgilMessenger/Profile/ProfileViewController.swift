@@ -14,6 +14,8 @@ class ProfileViewController: ViewController {
     
     private var eggCounter = 0
     private var player: AVAudioPlayer?
+    @IBOutlet weak var avatarView: GradientView!
+    @IBOutlet weak var letterLabel: UILabel!
     
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
@@ -30,6 +32,15 @@ class ProfileViewController: ViewController {
         self.view.backgroundColor = UIColor(rgb: 0x2B303B)
         
         self.usernameLabel.text = TwilioHelper.sharedInstance.username
+        
+        let up = TwilioHelper.sharedInstance.username.uppercased().first!
+        self.letterLabel.text =  String(describing: up)
+        
+        let f = UIColor(rgb: 0x009DFF)
+        let s = UIColor(rgb: 0x6AC7FF)
+        self.avatarView.gradientLayer.colors = [f.cgColor, s.cgColor]
+        self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+        
     }
 }
 

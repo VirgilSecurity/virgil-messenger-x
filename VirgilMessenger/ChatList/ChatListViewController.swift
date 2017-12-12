@@ -132,6 +132,14 @@ extension ChatListViewController: UITableViewDataSource {
             decryptedMessageBody = try? VirgilHelper.sharedInstance.decrypt(encrypted: messageBody)
         }
         
+        let up = cell.usernameLabel.text!.uppercased().first!
+        cell.letterLabel.text =  String(describing: up)
+        
+        let f = UIColor(rgb: 0x009DFF)
+        let s = UIColor(rgb: 0x6AC7FF)
+        cell.avatarView.gradientLayer.colors = [f.cgColor, s.cgColor]
+        cell.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+        
         let channel = TwilioHelper.sharedInstance.channels.subscribedChannels()[indexPath.row]
         
         if let messages = channel.messages {
