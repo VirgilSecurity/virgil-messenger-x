@@ -26,9 +26,11 @@ class CollectionViewController: UICollectionViewController {
         let up = cell.usernameLabel.text!.uppercased().first!
         cell.letterLabel.text =  String(describing: up)
         
-        let f = UIColor(rgb: 0x009DFF)
-        let s = UIColor(rgb: 0x6AC7FF)
-        cell.avatarView.gradientLayer.colors = [f.cgColor, s.cgColor]
+        //FIXME
+        let num = Int(CoreDataHelper.sharedInstance.getAccount(withIdentity: cell.usernameLabel.text!)!.numColorPair)
+        let f = UIConstants.colorPairs[num].first
+        let s = UIConstants.colorPairs[num].second
+        cell.avatarView.gradientLayer.colors = [f, s]
         cell.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
         
         return cell

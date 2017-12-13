@@ -36,9 +36,11 @@ class ProfileViewController: ViewController {
         let up = TwilioHelper.sharedInstance.username.uppercased().first!
         self.letterLabel.text =  String(describing: up)
         
-        let f = UIColor(rgb: 0x009DFF)
-        let s = UIColor(rgb: 0x6AC7FF)
-        self.avatarView.gradientLayer.colors = [f.cgColor, s.cgColor]
+        //FIXME
+        let num = Int(CoreDataHelper.sharedInstance.myAccount!.numColorPair)
+        let f = UIConstants.colorPairs[num].first
+        let s = UIConstants.colorPairs[num].second
+        self.avatarView.gradientLayer.colors = [f, s]
         self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
         
     }

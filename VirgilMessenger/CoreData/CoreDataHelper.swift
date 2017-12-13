@@ -18,7 +18,8 @@ class CoreDataHelper {
     private let appDelegate = UIApplication.shared.delegate as! AppDelegate
     private let managedContext: NSManagedObjectContext
     private(set) var accounts: [Account] = []
-    private var myAccount: Account?
+   //FIXME
+    var myAccount: Account?
     private(set) var selectedChannel: Channel?
     
     enum Entities: String {
@@ -80,6 +81,15 @@ class CoreDataHelper {
         return false
     }
     
+    func getAccount(withIdentity username: String) -> Account? {
+        for account in CoreDataHelper.sharedInstance.accounts {
+            if let identity = account.identity, identity == username {
+                return account
+            }
+        }
+        return nil
+    }
+    
     func createAccount(withIdentity identity: String, exportedCard: String) {
         self.queue.async {
             guard let entity = NSEntityDescription.entity(forEntityName: Entities.Account.rawValue, in: self.managedContext) else {
@@ -91,6 +101,7 @@ class CoreDataHelper {
             
             account.identity = identity
             account.card = exportedCard
+            account.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
             
             self.accounts.append(account)
             self.myAccount = account
@@ -127,6 +138,7 @@ class CoreDataHelper {
             
             channel.name = name
             channel.card = card
+            channel.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
             
             let channels = account.mutableSetValue(forKey: Keys.channel.rawValue)
             channels.add(channel)
