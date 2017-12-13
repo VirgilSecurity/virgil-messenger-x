@@ -22,6 +22,7 @@ class ChatListViewController: ViewController {
         alertController.addTextField(configurationHandler: {
             $0.placeholder = "Username"
             $0.delegate = self
+            $0.keyboardAppearance = UIKeyboardAppearance.dark
         })
         
         alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in

@@ -59,7 +59,7 @@
                                             <constraint firstAttribute="height" constant="46" id="cSm-m8-qpg"/>
                                             <constraint firstAttribute="width" constant="155" id="f4U-RN-HnC"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                         <state key="normal" title="CREATE">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
@@ -77,7 +77,7 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="21" id="SQW-kC-Khl"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
