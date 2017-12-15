@@ -31,9 +31,6 @@ class ChatListViewController: ViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        TwilioHelper.sharedInstance.selectedChannel = nil
-        VirgilHelper.sharedInstance.channelCard = nil
-        
         noChatsView.isHidden =  TwilioHelper.sharedInstance.channels.subscribedChannels().count == 0 ? false : true
         self.tableView.reloadData()
     }

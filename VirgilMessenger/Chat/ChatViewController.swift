@@ -108,6 +108,8 @@ class ChatViewController: BaseChatViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+        TwilioHelper.sharedInstance.selectedChannel = nil
+        VirgilHelper.sharedInstance.channelCard = nil
     }
 
     private func createTextInputItem() -> TextChatInputItem {
@@ -115,7 +117,6 @@ class ChatViewController: BaseChatViewController {
         item.textInputHandler = { [weak self] text in
             self?.dataSource.addTextMessage(text)
         }
-        //item.tabView.isHidden = true
         return item
     }
 }
