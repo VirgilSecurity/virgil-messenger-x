@@ -89,6 +89,10 @@ class ChatListViewController: ViewController {
         }
     }
     
+    @IBAction func noChatsTap(_ sender: Any) {
+        self.didTapAdd(self)
+    }
+    
     @IBAction func didTapAdd(_ sender: Any) {
         let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
         

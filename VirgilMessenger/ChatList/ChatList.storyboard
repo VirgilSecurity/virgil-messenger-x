@@ -61,6 +61,7 @@ Add new one!</string>
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" red="0.1367744505405426" green="0.14833804965019226" blue="0.18569371104240417" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstItem="TUP-2J-1Xj" firstAttribute="top" secondItem="hBi-V5-hAP" secondAttribute="bottom" constant="9" id="DTG-ag-sfz"/>
                                     <constraint firstItem="hBi-V5-hAP" firstAttribute="centerX" secondItem="jgc-zh-Nmg" secondAttribute="centerX" id="hF5-RL-KvO"/>
@@ -74,6 +75,9 @@ Add new one!</string>
                                         <integer key="value" value="10"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="VRT-Hn-lvc" appends="YES" id="s8R-Zy-SAr"/>
+                                </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.49803921568627452" green="0.49803921568627452" blue="0.49803921568627452" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -104,6 +108,11 @@ Add new one!</string>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DDd-4J-wX9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="VRT-Hn-lvc">
+                    <connections>
+                        <action selector="noChatsTap:" destination="zCn-H6-sIC" id="SxE-tI-2Oy"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="727.5" y="-975"/>
         </scene>
