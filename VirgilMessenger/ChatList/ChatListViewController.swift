@@ -39,7 +39,9 @@ class ChatListViewController: ViewController {
     }
     
     @objc private func reloadTableView(notification: Notification) {
-        self.tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
         noChatsView.isHidden = true
     }
     

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17C88" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Account" representedClassName="Account" syncable="YES" codeGenerationType="class">
+    <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="card" attributeType="String" syncable="YES"/>
         <attribute name="identity" attributeType="String" syncable="YES"/>
         <attribute name="numColorPair" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="channel" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Channel" inverseName="account" inverseEntity="Channel" syncable="YES"/>
     </entity>
-    <entity name="Channel" representedClassName="Channel" syncable="YES" codeGenerationType="class">
+    <entity name="Channel" representedClassName="Channel" syncable="YES">
         <attribute name="card" attributeType="String" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="numColorPair" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
