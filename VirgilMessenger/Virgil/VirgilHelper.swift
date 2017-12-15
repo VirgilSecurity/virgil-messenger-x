@@ -82,7 +82,6 @@ class VirgilHelper {
                 }
                 Log.debug("Successfully initialized PFS")
             }
-            
             self.secureChat = secureChat
         } catch {
             Log.error("Error while initializing PFS")

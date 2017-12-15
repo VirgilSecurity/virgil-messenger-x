@@ -67,9 +67,8 @@ class TwilioHelper: NSObject {
                 self.channels = channels
                 self.users = users
                 
-                completion(nil)
-                
                 self.joinChannels(channels)
+                completion(nil)
             }
         }
     }

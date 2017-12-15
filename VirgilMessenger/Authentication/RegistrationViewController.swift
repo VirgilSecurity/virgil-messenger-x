@@ -62,10 +62,7 @@ class RegistrationViewController: ViewController {
     }
     
     @IBAction func signupButtonPressed(_ sender: Any) {
-        self.usernameTextField.inputView = nil
-        self.usernameTextField.reloadInputViews()
         guard let username = self.usernameTextField.text?.lowercased(), !username.isEmpty else {
-            self.usernameTextField.isHidden = false
             self.usernameTextField.becomeFirstResponder()
             return
         }

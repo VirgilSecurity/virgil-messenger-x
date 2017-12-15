@@ -28,6 +28,9 @@ class ChatListViewController: ViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue), object: nil)
+        
+        self.tableView.dataSource = self
+       //self.tableView.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,7 +82,7 @@ class ChatListViewController: ViewController {
                             Log.error("decryption process failed")
                         }
                     }
-                    self.tableView.dataSource = self
+                    //self.tableView.dataSource = self
                     self.tableView.reloadData()
                 }
             }
@@ -155,14 +158,17 @@ class ChatListViewController: ViewController {
     }
 }
 
-extension ChatListViewController: UITableViewDataSource {
+extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
-        cell.tag = indexPath.row
+        //FIXME
+        let count = CoreDataHelper.sharedInstance.myAccount!.channel!.count
+        
+        cell.tag = count - indexPath.row - 1
         cell.delegate = self
         
         //FIXME
-        let channel = CoreDataHelper.sharedInstance.myAccount!.channel![indexPath.row] as! Channel
+        let channel = CoreDataHelper.sharedInstance.myAccount!.channel![count - indexPath.row - 1] as! Channel
         cell.usernameLabel.text = channel.name
         cell.letterLabel.text =  channel.letter
         cell.avatarView.gradientLayer.colors = [channel.colorPair.first, channel.colorPair.second]
@@ -177,7 +183,7 @@ extension ChatListViewController: UITableViewDataSource {
     private func calcDateString(messageDate: Date) -> String {
         
         let dateFormatter = DateFormatter()
-        if messageDate.minutes(from: Date()) < 5 {
+        if messageDate.minutes(from: Date()) < 2 {
             return "now"
         } else if messageDate.days(from: Date()) < 1 {
             dateFormatter.dateStyle = DateFormatter.Style.none
@@ -194,7 +200,7 @@ extension ChatListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //FIXME
-        return (CoreDataHelper.sharedInstance.myAccount?.channel!.count)!
+        return (CoreDataHelper.sharedInstance.myAccount!.channel!.count)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {

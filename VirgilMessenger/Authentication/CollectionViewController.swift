@@ -21,16 +21,13 @@ class CollectionViewController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionCell", for: indexPath) as! CollectionViewCell
         
-        cell.usernameLabel.text = CoreDataHelper.sharedInstance.accounts[indexPath.row].identity ?? "Error name"
+        let account = CoreDataHelper.sharedInstance.accounts[indexPath.row] as Account
+
+        cell.usernameLabel.text = account.identity
         
-        let up = cell.usernameLabel.text!.uppercased().first!
-        cell.letterLabel.text =  String(describing: up)
+        cell.letterLabel.text =  account.letter
         
-        //FIXME
-        let num = Int(CoreDataHelper.sharedInstance.getAccount(withIdentity: cell.usernameLabel.text!)!.numColorPair)
-        let f = UIConstants.colorPairs[num].first
-        let s = UIConstants.colorPairs[num].second
-        cell.avatarView.gradientLayer.colors = [f, s]
+        cell.avatarView.gradientLayer.colors = [account.colorPair.first, account.colorPair.second]
         cell.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
         
         return cell
