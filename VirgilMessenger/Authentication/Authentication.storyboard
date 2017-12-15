@@ -95,7 +95,7 @@
         <scene sceneID="CxZ-4M-GVn">
             <objects>
                 <collectionViewController id="P69-qe-Zuq" customClass="CollectionViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="wUr-bv-Q1U">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" id="wUr-bv-Q1U">
                         <rect key="frame" x="0.0" y="0.0" width="225" height="230"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.12515544891357422" green="0.13764128088951111" blue="0.1697363555431366" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
