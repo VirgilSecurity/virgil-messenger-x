@@ -123,7 +123,7 @@ class CoreDataHelper {
     }
     
     func createChannel(withName name: String, card: String) {
-        self.queue.async {
+        //self.queue.async {
             guard let account = self.myAccount else {
                 Log.error("Core Data: nil account")
                 return
@@ -140,12 +140,12 @@ class CoreDataHelper {
             channel.card = card
             channel.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
             
-            let channels = account.mutableSetValue(forKey: Keys.channel.rawValue)
+            let channels = account.mutableOrderedSetValue(forKey: Keys.channel.rawValue)
             channels.add(channel)
             
             Log.debug("Core Data: new channel added. Count: \(channels.count)")
             self.appDelegate.saveContext()
-        }
+        //}
     }
     
     func createMessage(withBody body: String, isIncoming: Bool, date: Date) {
@@ -153,6 +153,9 @@ class CoreDataHelper {
             Log.error("Core Data: nil selected channel")
             return
         }
+        
+        channel.lastMessagesBody = body
+        channel.lastMessagesDate = date
     
         self.createMessage(forChannel: channel, withBody: body, isIncoming: isIncoming, date: date)
     }

@@ -13,8 +13,81 @@ import PKHUD
 class ChatListViewController: ViewController {
     
     @IBOutlet weak var noChatsView: UIView!
-    private let limitLength = 32
-    let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.updateLastMessages()
+        
+        self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main), forCellReuseIdentifier: ChatListCell.name)
+        self.tableView.rowHeight = 94
+        self.tableView.tableFooterView = UIView(frame: .zero)
+        
+        self.tableView.backgroundColor = UIColor(rgb: 0x2B303B)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue), object: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        TwilioHelper.sharedInstance.selectedChannel = nil
+        VirgilHelper.sharedInstance.channelCard = nil
+        
+        noChatsView.isHidden =  TwilioHelper.sharedInstance.channels.subscribedChannels().count == 0 ? false : true
+        self.tableView.reloadData()
+    }
+    
+    @objc private func reloadTableView(notification: Notification) {
+        self.tableView.reloadData()
+        noChatsView.isHidden = true
+    }
+    
+    private func updateLastMessages() {
+        let channels = TwilioHelper.sharedInstance.channels.subscribedChannels()
+        
+        for i in 0..<channels.count {
+            let channel = channels[i]
+            if let channelCore = CoreDataHelper.sharedInstance.getChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)),
+                let messages = channel.messages
+            {
+                if  let messagesCore = channelCore.message,
+                    let messageCore = messagesCore.lastObject as? Message,
+                    let messageBodyCore = messageCore.body,
+                    let date = messageCore.date
+                {
+                    let decryptedMessageBodyCore = try? VirgilHelper.sharedInstance.decrypt(encrypted: messageBodyCore)
+                    
+                    channelCore.lastMessagesBody = decryptedMessageBodyCore ?? ""
+                    channelCore.lastMessagesDate = date
+                }
+                
+                messages.getLastWithCount(UInt(1)) { (result, messages) in
+                    if  let message = messages?.last,
+                        let messageBody = message.body,
+                        let messageDate = message.dateUpdatedAsDate,
+                        message.author != TwilioHelper.sharedInstance.username,
+                        let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)),
+                        let stringCard = coreDataChannel.card,
+                        let card = VirgilHelper.sharedInstance.buildCard(stringCard),
+                        let secureChat = VirgilHelper.sharedInstance.secureChat
+                    {
+                        do {
+                            let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
+                            let decryptedMessageBody = try session.decrypt(messageBody)
+                            
+                            channelCore.lastMessagesBody = decryptedMessageBody
+                            channelCore.lastMessagesDate = messageDate
+                        } catch {
+                            Log.error("decryption process failed")
+                        }
+                    }
+                    self.tableView.dataSource = self
+                    self.tableView.reloadData()
+                }
+            }
+        }
+    }
     
     @IBAction func didTapAdd(_ sender: Any) {
         let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
@@ -80,34 +153,6 @@ class ChatListViewController: ViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main), forCellReuseIdentifier: ChatListCell.name)
-        self.tableView.rowHeight = 94
-        self.tableView.tableFooterView = UIView(frame: .zero)
-        
-        self.tableView.dataSource = self
-        self.tableView.backgroundColor = UIColor(rgb: 0x2B303B)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue), object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue), object: nil)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        TwilioHelper.sharedInstance.selectedChannel = nil
-        noChatsView.isHidden =  TwilioHelper.sharedInstance.channels.subscribedChannels().count == 0 ? false : true
-
-        VirgilHelper.sharedInstance.channelCard = nil
-        self.tableView.reloadData()
-    }
-    
-    @objc private func reloadTableView(notification: Notification) {
-        self.tableView.reloadData()
-        noChatsView.isHidden = true
-    }
-    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -119,64 +164,17 @@ extension ChatListViewController: UITableViewDataSource {
         cell.tag = indexPath.row
         cell.delegate = self
         
-        cell.usernameLabel.text = TwilioHelper.sharedInstance.getCompanion(ofChannel: indexPath.row)
-        
-        var decryptedMessageBody: String?
-        var messageDate: Date?
-        if let channel = CoreDataHelper.sharedInstance.getChannel(withName: cell.usernameLabel.text ?? ""),
-           let messages = channel.message,
-           let message = messages.lastObject as? Message,
-           let messageBody = message.body,
-           let date = message.date {
-        
-            messageDate = date
-            decryptedMessageBody = try? VirgilHelper.sharedInstance.decrypt(encrypted: messageBody)
-        }
-        
-        let up = cell.usernameLabel.text!.uppercased().first!
-        cell.letterLabel.text =  String(describing: up)
-        
-        let num = Int(CoreDataHelper.sharedInstance.getChannel(withName: cell.usernameLabel.text!)?.numColorPair ?? 0)
-        let f = UIConstants.colorPairs[num].first
-        let s = UIConstants.colorPairs[num].second
-        cell.avatarView.gradientLayer.colors = [f, s]
+        //FIXME
+        let channel = CoreDataHelper.sharedInstance.myAccount!.channel![indexPath.row] as! Channel
+        cell.usernameLabel.text = channel.name
+        cell.letterLabel.text =  channel.letter
+        cell.avatarView.gradientLayer.colors = [channel.colorPair.first, channel.colorPair.second]
         cell.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
         
-        let channel = TwilioHelper.sharedInstance.channels.subscribedChannels()[indexPath.row]
-        
-        if let messages = channel.messages {
-            
-            messages.getLastWithCount(UInt(1)) { (result, messages) in
-                
-                if let message = messages?.last,
-                   let messageBody = message.body,
-                   let messageDate = message.dateUpdatedAsDate,
-                   message.author != TwilioHelper.sharedInstance.username,
-                   let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)),
-                   let stringCard = coreDataChannel.card,
-                   let card = VirgilHelper.sharedInstance.buildCard(stringCard),
-                   let secureChat = VirgilHelper.sharedInstance.secureChat
-                {
-                    do {
-                        let session = try secureChat.loadUpSession(
-                            withParticipantWithCard: card, message: messageBody)
-                        let plaintext = try session.decrypt(messageBody)
-                        
-                        cell.lastMessageLabel.text = plaintext
-                        cell.lastMessageDateLabel.text = self.calcDateString(messageDate: messageDate)
-
-                    } catch {
-                        Log.error("decryption process failed")
-                    }
-                }
-            }
-        }
-        
-        cell.lastMessageLabel.text = decryptedMessageBody ?? ""
-        cell.lastMessageDateLabel.text = (messageDate != nil) ? calcDateString(messageDate: messageDate!) : ""
+        cell.lastMessageLabel.text = channel.lastMessagesBody
+        cell.lastMessageDateLabel.text = channel.lastMessagesDate != nil ? calcDateString(messageDate: channel.lastMessagesDate!) : ""
         
         return cell
-        
     }
     
     private func calcDateString(messageDate: Date) -> String {
@@ -198,8 +196,8 @@ extension ChatListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let channels = TwilioHelper.sharedInstance.channels else { return 0 }
-        return channels.subscribedChannels().count
+        //FIXME
+        return (CoreDataHelper.sharedInstance.myAccount?.channel!.count)!
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -261,11 +259,11 @@ extension ChatListViewController: CellTapDelegate {
 extension ChatListViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else { return true }
-        if string.rangeOfCharacter(from: characterset.inverted) != nil {
+        if string.rangeOfCharacter(from: Constants.characterSet.inverted) != nil {
             Log.debug("string contains special characters")
             return false
         }
         let newLength = text.count + string.count - range.length
-        return newLength <= limitLength
+        return newLength <= Constants.limitLength
     }
 }

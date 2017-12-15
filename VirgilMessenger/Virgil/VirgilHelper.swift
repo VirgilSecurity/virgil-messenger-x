@@ -177,7 +177,7 @@ class VirgilHelper {
         } else {
             getCard(withIdentity: identity) { card, error in
                 guard error == nil, let card = card else {
-                    Log.error("Signing in: can't get virgil card")
+                    Log.error("Signing in: can't get virgil card: \(error?.localizedDescription ?? "")")
                     DispatchQueue.main.async {
                         completion(error, nil)
                     }

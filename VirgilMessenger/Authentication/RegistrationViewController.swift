@@ -12,10 +12,7 @@ import PKHUD
 class RegistrationViewController: ViewController {
     
     @IBOutlet weak var usernameTextField: UITextField!
-    private let limitLength = 32
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    
-    let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
    
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
@@ -103,11 +100,6 @@ class RegistrationViewController: ViewController {
         self.switchNavigationStack(to: vc)
     }
     
-    @IBAction func logoTapped(_ sender: Any) {
-        Log.debug("Logo tapped")
-        openUrl(urlStr: "https://virgilsecurity.com")
-    }
-    
     private func openUrl(urlStr: String) {
         if let url = NSURL(string:urlStr) {
             UIApplication.shared.open(url as URL, options: [:], completionHandler: nil)
@@ -126,11 +118,11 @@ extension RegistrationViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else { return true }
-        if string.rangeOfCharacter(from: characterset.inverted) != nil {
+        if string.rangeOfCharacter(from: Constants.characterSet.inverted) != nil {
             Log.debug("string contains special characters")
             return false
         }
         let newLength = text.count + string.count - range.length
-        return newLength <= limitLength
+        return newLength <= Constants.limitLength
     }
 }

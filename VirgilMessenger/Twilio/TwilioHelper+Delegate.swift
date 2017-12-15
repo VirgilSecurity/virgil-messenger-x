@@ -77,8 +77,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                         TwilioHelper.NotificationKeys.Message.rawValue: message
                     ])
             }
-        }
-        else {
+        } else {
             self.processMessage(channel: channel, message: message)
         }
     }
@@ -98,7 +97,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
             Log.error("can't get core data channel")
             return
         }
-            
+        
         guard let secureChat = VirgilHelper.sharedInstance.secureChat else {
             Log.error("nil secure Chat")
             return
@@ -108,9 +107,12 @@ extension TwilioHelper: TwilioChatClientDelegate {
             let session = try secureChat.loadUpSession(
                 withParticipantWithCard: card, message: messageBody)
             let plaintext = try session.decrypt(messageBody)
+            
+            coreDataChannel.lastMessagesBody = plaintext
+            coreDataChannel.lastMessagesDate = messageDate
+            
             Log.debug("Receiving " + plaintext)
             
-            CoreDataHelper.sharedInstance.createMessage(forChannel: coreDataChannel, withBody: plaintext, isIncoming: true, date: messageDate)
         } catch {
             Log.error("decryption process failed")
         }

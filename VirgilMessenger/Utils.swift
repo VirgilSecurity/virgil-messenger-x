@@ -118,3 +118,8 @@ extension Date {
         return abs(Calendar.current.dateComponents([.second], from: date, to: self).second ?? 0)
     }
 }
+
+class Constants {
+    static let limitLength = 32
+    static let characterSet = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
+}
