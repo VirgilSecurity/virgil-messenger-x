@@ -87,6 +87,34 @@ class TwilioHelper: NSObject {
                                 return
                             }
                             CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
+                            
+                            channel.messages?.getLastWithCount(UInt(1)) { (result, messages) in
+                                if  let message = messages?.last,
+                                    let messageBody = message.body,
+                                    let messageDate = message.dateUpdatedAsDate,
+                                    message.author != TwilioHelper.sharedInstance.username,
+                                    let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)),
+                                    let stringCard = coreDataChannel.card,
+                                    let card = VirgilHelper.sharedInstance.buildCard(stringCard),
+                                    let secureChat = VirgilHelper.sharedInstance.secureChat
+                                {
+                                    do {
+                                        let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
+                                        let decryptedMessageBody = try session.decrypt(messageBody)
+                                        
+                                        coreDataChannel.lastMessagesBody = decryptedMessageBody
+                                        coreDataChannel.lastMessagesDate = messageDate
+                                    } catch {
+                                        Log.error("decryption process failed: \(error.localizedDescription)")
+                                    }
+                                    NotificationCenter.default.post(
+                                        name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                                        object: self,
+                                        userInfo: [:])
+                                }
+                            }
+                            
+                            
                             Log.debug("new card added")
                             NotificationCenter.default.post(
                                 name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),

@@ -30,7 +30,6 @@ class ChatListViewController: ViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue), object: nil)
         
         self.tableView.dataSource = self
-       //self.tableView.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -41,8 +40,8 @@ class ChatListViewController: ViewController {
     @objc private func reloadTableView(notification: Notification) {
         DispatchQueue.main.async {
             self.tableView.reloadData()
+            self.noChatsView.isHidden = true
         }
-        noChatsView.isHidden = true
     }
     
     private func updateLastMessages() {
@@ -69,8 +68,7 @@ class ChatListViewController: ViewController {
                         let messageBody = message.body,
                         let messageDate = message.dateUpdatedAsDate,
                         message.author != TwilioHelper.sharedInstance.username,
-                        let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)),
-                        let stringCard = coreDataChannel.card,
+                        let stringCard = channelCore.card,
                         let card = VirgilHelper.sharedInstance.buildCard(stringCard),
                         let secureChat = VirgilHelper.sharedInstance.secureChat
                     {
@@ -81,7 +79,7 @@ class ChatListViewController: ViewController {
                             channelCore.lastMessagesBody = decryptedMessageBody
                             channelCore.lastMessagesDate = messageDate
                         } catch {
-                            Log.error("decryption process failed")
+                            Log.error("decryption process failed: \(error.localizedDescription)")
                         }
                     }
                     //self.tableView.dataSource = self
