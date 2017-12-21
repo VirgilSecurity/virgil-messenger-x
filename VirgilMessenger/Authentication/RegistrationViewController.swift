@@ -31,12 +31,13 @@ class RegistrationViewController: ViewController {
     }
     
     @objc func keyboardWillShow(notification: Notification) {
-        guard let _ = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+        guard let rect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
             let time = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue else {
                 return
         }
         
-        self.bottomConstraint.constant = self.bottomConstraint.constant + 80
+        // FIXME
+        self.bottomConstraint.constant = rect.height
         UIView.animate(withDuration: time) {
             self.view.layoutIfNeeded()
         }
@@ -47,7 +48,8 @@ class RegistrationViewController: ViewController {
                 return
         }
         
-        self.bottomConstraint.constant = self.bottomConstraint.constant - 80
+        // FIXME
+        self.bottomConstraint.constant = 0
         UIView.animate(withDuration: time) {
             self.view.layoutIfNeeded()
         }

@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -25,7 +26,16 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FLU-BW-xdr">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SS1-PL-Em2">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PICK A USERNAME" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="he8-J4-ucD">
+                                        <rect key="frame" x="16" y="190" width="343" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="SQW-kC-Khl"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="SS1-PL-Em2">
                                         <rect key="frame" x="0.0" y="217" width="375" height="44"/>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Your username" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="mQl-Eo-A0A">
@@ -52,6 +62,13 @@
                                             <constraint firstItem="mQl-Eo-A0A" firstAttribute="top" secondItem="SS1-PL-Em2" secondAttribute="top" id="ajd-Ls-34b"/>
                                         </constraints>
                                     </view>
+                                    <view contentMode="scaleToFill" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="sYY-OM-ych">
+                                        <rect key="frame" x="0.0" y="261" width="375" height="170"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" priority="999" constant="170" id="oJa-vZ-x6U"/>
+                                        </constraints>
+                                    </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kfT-48-y5p">
                                         <rect key="frame" x="109.5" y="431" width="155" height="46"/>
                                         <color key="backgroundColor" red="0.61824858189999998" green="0.21322733159999999" blue="0.12903854249999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -72,27 +89,33 @@
                                             <action selector="signupButtonPressed:" destination="sma-Ja-Wb3" eventType="touchUpInside" id="AMp-ka-B4b"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PICK A USERNAME" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="he8-J4-ucD">
-                                        <rect key="frame" x="16" y="190" width="343" height="21"/>
+                                    <view contentMode="scaleToFill" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="Fo7-Zv-HJe">
+                                        <rect key="frame" x="0.0" y="477" width="375" height="190"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="21" id="SQW-kC-Khl"/>
+                                            <constraint firstAttribute="height" priority="999" constant="190" id="2Cz-pi-m2M"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" red="0.16787937280000001" green="0.18741837140000001" blue="0.233099103" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="he8-J4-ucD" firstAttribute="leading" secondItem="FLU-BW-xdr" secondAttribute="leading" constant="16" id="65K-KD-loc"/>
+                                    <constraint firstItem="sYY-OM-ych" firstAttribute="leading" secondItem="FLU-BW-xdr" secondAttribute="leading" id="69D-bO-S0T"/>
                                     <constraint firstItem="SS1-PL-Em2" firstAttribute="centerX" secondItem="FLU-BW-xdr" secondAttribute="centerX" id="7L4-vr-s9P"/>
                                     <constraint firstItem="SS1-PL-Em2" firstAttribute="top" secondItem="he8-J4-ucD" secondAttribute="bottom" constant="6.25" id="9dN-XG-baF"/>
-                                    <constraint firstAttribute="bottom" secondItem="kfT-48-y5p" secondAttribute="bottom" constant="190" id="H3j-bI-dQc"/>
+                                    <constraint firstItem="sYY-OM-ych" firstAttribute="height" secondItem="Fo7-Zv-HJe" secondAttribute="height" multiplier="17:19" id="Bor-Dj-6XF"/>
+                                    <constraint firstItem="Fo7-Zv-HJe" firstAttribute="leading" secondItem="FLU-BW-xdr" secondAttribute="leading" id="GZ7-98-qcJ"/>
+                                    <constraint firstAttribute="bottom" secondItem="Fo7-Zv-HJe" secondAttribute="bottom" id="KnK-u7-bVd"/>
                                     <constraint firstAttribute="trailing" secondItem="he8-J4-ucD" secondAttribute="trailing" constant="16" id="LGn-fY-Zrv"/>
+                                    <constraint firstItem="kfT-48-y5p" firstAttribute="bottom" secondItem="Fo7-Zv-HJe" secondAttribute="top" id="MUf-o0-bRP"/>
+                                    <constraint firstItem="kfT-48-y5p" firstAttribute="top" secondItem="sYY-OM-ych" secondAttribute="bottom" id="QCb-3C-jUr"/>
                                     <constraint firstItem="SS1-PL-Em2" firstAttribute="leading" secondItem="FLU-BW-xdr" secondAttribute="leading" id="Rr5-XN-55v"/>
                                     <constraint firstItem="kfT-48-y5p" firstAttribute="centerX" secondItem="SS1-PL-Em2" secondAttribute="centerX" id="Ucw-rk-Gy5"/>
-                                    <constraint firstItem="kfT-48-y5p" firstAttribute="top" secondItem="SS1-PL-Em2" secondAttribute="bottom" constant="170" id="icN-p7-fCB"/>
+                                    <constraint firstItem="sYY-OM-ych" firstAttribute="top" secondItem="SS1-PL-Em2" secondAttribute="bottom" id="ZxP-P8-ywO"/>
+                                    <constraint firstAttribute="trailing" secondItem="Fo7-Zv-HJe" secondAttribute="trailing" id="jb4-me-WwV"/>
                                     <constraint firstAttribute="trailing" secondItem="SS1-PL-Em2" secondAttribute="trailing" id="lHr-kq-Bal"/>
+                                    <constraint firstAttribute="trailing" secondItem="sYY-OM-ych" secondAttribute="trailing" id="uoi-ci-YYF"/>
+                                    <constraint firstItem="he8-J4-ucD" firstAttribute="top" relation="greaterThanOrEqual" secondItem="FLU-BW-xdr" secondAttribute="top" constant="50" id="x82-37-4EZ"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -112,7 +135,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Registration" largeTitleDisplayMode="always" id="tbC-5R-4mg"/>
                     <connections>
-                        <outlet property="bottomConstraint" destination="H3j-bI-dQc" id="7Xb-Mu-8XZ"/>
+                        <outlet property="bottomConstraint" destination="KnK-u7-bVd" id="zly-ml-7gs"/>
                         <outlet property="usernameTextField" destination="mQl-Eo-A0A" id="pKp-qC-7yn"/>
                     </connections>
                 </viewController>
