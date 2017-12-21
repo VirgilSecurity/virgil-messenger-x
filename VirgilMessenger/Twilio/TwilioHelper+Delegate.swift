@@ -146,12 +146,11 @@ extension TwilioHelper: TwilioChatClientDelegate {
                         }
                         CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
                         Log.debug("new card added")
+                        NotificationCenter.default.post(
+                            name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                            object: self,
+                            userInfo: [:])
                     }
-                    
-                    NotificationCenter.default.post(
-                        name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-                        object: self,
-                        userInfo: [:])
                 } else {
                     Log.error("Failed to accept invite.");
                 }

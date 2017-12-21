@@ -14,7 +14,7 @@ class StartViewController: ViewController {
 
     static let name = "Start"
     override func viewDidAppear(_ animated: Bool) {
-        
+        super.viewDidAppear(animated)
         if let username = UserDefaults.standard.string(forKey: "last_username"),
             !username.isEmpty {
             PKHUD.sharedHUD.contentView = PKHUDProgressView()
