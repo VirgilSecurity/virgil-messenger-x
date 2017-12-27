@@ -64,8 +64,25 @@
                                     </view>
                                     <view contentMode="scaleToFill" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="sYY-OM-ych">
                                         <rect key="frame" x="0.0" y="261" width="375" height="170"/>
+                                        <subviews>
+                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By registering, you agree to Virgil's Terms of Service and Privacy Policy" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oXe-XS-YGy">
+                                                <rect key="frame" x="16" y="11" width="331" height="31.5"/>
+                                                <gestureRecognizers/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="331" id="Nwy-oS-lzV"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="13"/>
+                                                <color key="textColor" red="0.4194968044757843" green="0.41926056146621704" blue="0.43994408845901489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                                <connections>
+                                                    <outletCollection property="gestureRecognizers" destination="tZj-2S-fyq" appends="YES" id="PrD-bF-1jj"/>
+                                                </connections>
+                                            </label>
+                                        </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
+                                            <constraint firstItem="oXe-XS-YGy" firstAttribute="top" secondItem="sYY-OM-ych" secondAttribute="top" constant="11" id="8t2-XR-pQx"/>
+                                            <constraint firstItem="oXe-XS-YGy" firstAttribute="leading" secondItem="sYY-OM-ych" secondAttribute="leading" constant="16" id="I5H-id-lxn"/>
                                             <constraint firstAttribute="height" priority="999" constant="170" id="oJa-vZ-x6U"/>
                                         </constraints>
                                     </view>
@@ -136,22 +153,18 @@
                     <navigationItem key="navigationItem" title="Registration" largeTitleDisplayMode="always" id="tbC-5R-4mg"/>
                     <connections>
                         <outlet property="bottomConstraint" destination="KnK-u7-bVd" id="zly-ml-7gs"/>
+                        <outlet property="termsLabel" destination="oXe-XS-YGy" id="urL-tf-XLM"/>
                         <outlet property="usernameTextField" destination="mQl-Eo-A0A" id="pKp-qC-7yn"/>
                     </connections>
                 </viewController>
-                <tapGestureRecognizer id="4We-z4-B1k">
-                    <connections>
-                        <action selector="signupButtonPressed:" destination="sma-Ja-Wb3" id="hsw-oZ-xjU"/>
-                    </connections>
-                </tapGestureRecognizer>
-                <tapGestureRecognizer id="kck-9a-OHa">
-                    <connections>
-                        <action selector="logoTapped:" destination="sma-Ja-Wb3" id="E7o-Jj-pGZ"/>
-                    </connections>
-                </tapGestureRecognizer>
                 <tapGestureRecognizer id="224-sp-zzc">
                     <connections>
                         <action selector="backgroundTap:" destination="sma-Ja-Wb3" id="BEb-PA-46o"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="tZj-2S-fyq">
+                    <connections>
+                        <action selector="didTappedTerms:" destination="sma-Ja-Wb3" id="coa-GY-qcd"/>
                     </connections>
                 </tapGestureRecognizer>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lq7-Xt-7Jq" userLabel="First Responder" sceneMemberID="firstResponder"/>
