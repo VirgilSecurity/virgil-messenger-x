@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -171,7 +172,7 @@ Add new one!</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="33j-Gz-5gZ">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="569"/>
                                 <connections>
                                     <segue destination="LyI-I0-95t" kind="embed" id="MBY-7X-EHV"/>
                                 </connections>
@@ -182,7 +183,7 @@ Add new one!</string>
                             <constraint firstItem="33j-Gz-5gZ" firstAttribute="leading" secondItem="tIK-is-C7D" secondAttribute="leading" id="68e-zc-cNc"/>
                             <constraint firstItem="33j-Gz-5gZ" firstAttribute="top" secondItem="ZSA-uh-VMq" secondAttribute="top" id="Bql-jQ-W8F"/>
                             <constraint firstItem="33j-Gz-5gZ" firstAttribute="trailing" secondItem="tIK-is-C7D" secondAttribute="trailing" id="Zd3-PY-8Em"/>
-                            <constraint firstItem="33j-Gz-5gZ" firstAttribute="bottom" secondItem="tIK-is-C7D" secondAttribute="bottom" id="eft-hq-zLg"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="33j-Gz-5gZ" secondAttribute="bottom" constant="-50" id="foo-oh-gqe"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="tIK-is-C7D"/>
                     </view>

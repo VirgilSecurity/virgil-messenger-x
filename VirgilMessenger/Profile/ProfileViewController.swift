@@ -42,8 +42,8 @@ class ProfileViewController: ViewController {
         let s = UIConstants.colorPairs[num].second
         self.avatarView.gradientLayer.colors = [f, s]
         self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
-        
     }
+    
 }
 
 extension ProfileViewController: UITableViewDelegate {
@@ -51,6 +51,8 @@ extension ProfileViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         
         if indexPath.section == 0 {
+           self.performSegue(withIdentifier: "About", sender: self)
+        } else if indexPath.section == 1 {
             let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "Logout", style: .destructive) { _ in
                 UserDefaults.standard.set(nil, forKey: "last_username")
@@ -63,7 +65,7 @@ extension ProfileViewController: UITableViewDelegate {
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             
             self.present(alert, animated: true)
-        } else if indexPath.section == 1 {
+        } else if indexPath.section == 2 {
             let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "Delete account", style: .destructive) { _ in
                 UserDefaults.standard.set(nil, forKey: "last_username")
@@ -97,10 +99,14 @@ extension ProfileViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
         if indexPath.section == 0 {
+            cell.textLabel?.text = "About"
+            cell.textLabel?.textColor = .white
+            cell.accessoryType = .disclosureIndicator
+        } else if indexPath.section == 1 {
             cell.textLabel?.text = "Logout"
             cell.textLabel?.textColor = UIColor(rgb: 0x9E3621)
             cell.accessoryType = .none
-        } else if indexPath.section == 1 {
+        } else if indexPath.section == 2 {
             cell.textLabel?.text = "Delete account"
             cell.textLabel?.textColor = UIColor(rgb: 0x9E3621)
             cell.accessoryType = .none
@@ -110,6 +116,6 @@ extension ProfileViewController: UITableViewDataSource {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 }
