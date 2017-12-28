@@ -46,7 +46,6 @@ class ProfileViewController: ViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        UIApplication.shared.statusBarView?.backgroundColor = UIColor(rgb: 0x20232B)
     }
     
 }

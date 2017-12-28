@@ -17,25 +17,28 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
     
     let termsAndConditionsURL = "https://virgilsecurity.com/terms-of-service"
     let privacyURL = "https://virgilsecurity.com/privacy-policy"
+    
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.viewDidAppear(animated)
         
         privacyLabel.delegate = self
         privacyLabel.textContainerInset = UIEdgeInsets.zero
-        let text1 = (privacyLabel.text)!
         privacyLabel.linkTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: UIColor(rgb: 0x9E3621)]
-        let attriString1 = NSMutableAttributedString(string: text1)
-        let range11 = (text1 as NSString).range(of: text1)
-        attriString1.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor(rgb: 0x6B6B70), range: range11)
-        attriString1.addAttribute(NSAttributedStringKey.font, value: UIFont.init(name: (privacyLabel.font?.fontName)!, size: 13)!, range: range11)
-        let range12 = (text1 as NSString).range(of: "Terms of Service")
-        attriString1.addAttribute(NSAttributedStringKey.link, value: termsAndConditionsURL, range: range12)
-        //attriString1.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor(rgb: 0x9E3621), range: range12)
-        let range22 = (text1 as NSString).range(of: "Privacy Policy")
-        //attriString1.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor(rgb: 0x9E3621), range: range22)
-        attriString1.addAttribute(NSAttributedStringKey.link, value: privacyURL, range: range22)
-        privacyLabel.attributedText = attriString1
+        
+        let text = (privacyLabel.text)!
+        let attriString = NSMutableAttributedString(string: text)
+        
+        let range = (text as NSString).range(of: text)
+        attriString.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor(rgb: 0x6B6B70), range: range)
+        attriString.addAttribute(NSAttributedStringKey.font, value: UIFont.init(name: privacyLabel.font!.fontName, size: 13)!, range: range)
+        
+        let range1 = (text as NSString).range(of: "Terms of Service")
+        attriString.addAttribute(NSAttributedStringKey.link, value: termsAndConditionsURL, range: range1)
+        let range2 = (text as NSString).range(of: "Privacy Policy")
+        attriString.addAttribute(NSAttributedStringKey.link, value: privacyURL, range: range2)
+        
+        privacyLabel.attributedText = attriString
     }
     
     private func textView(textView: UITextView, shouldInteractWithURL URL: NSURL, inRange characterRange: NSRange) -> Bool {
