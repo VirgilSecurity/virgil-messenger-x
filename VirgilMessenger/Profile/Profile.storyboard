@@ -115,15 +115,12 @@
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qcn-Ea-Rfq">
                                 <rect key="frame" x="16" y="98" width="343" height="258"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="258" id="dWu-ne-PBh"/>
-                                </constraints>
                                 <attributedString key="attributedText">
                                     <fragment>
                                         <string key="content">Built by Virgil Security, Inc.
 Under Open Source Licence X.
 Feel free to reuse app or any parts of the source with no restrictions whatsoever.
-Technologies: Virgil Perfect Forward Secrecy SDK, Virgil’s Card Service, Twilio Programmable Chat, etc</string>
+Technologies: Virgil Perfect Forward Secrecy SDK, Virgil’s Card Service, Twilio Programmable Chat, etc.</string>
                                         <attributes>
                                             <color key="NSColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <font key="NSFont" size="16" name="Helvetica-Bold"/>
@@ -147,7 +144,7 @@ Technologies: Virgil Perfect Forward Secrecy SDK, Virgil’s Card Service, Twili
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zN7-93-0Wh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="917.60000000000002" y="133.5832083958021"/>
+            <point key="canvasLocation" x="916.875" y="133.09859154929578"/>
         </scene>
     </scenes>
 </document>

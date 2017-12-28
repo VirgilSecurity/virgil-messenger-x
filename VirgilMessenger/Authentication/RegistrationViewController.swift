@@ -9,23 +9,46 @@
 import UIKit
 import PKHUD
 
-class RegistrationViewController: ViewController {
+class RegistrationViewController: ViewController, UITextViewDelegate {
     
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var termsLabel: UILabel!
+    @IBOutlet weak var privacyLabel: UITextView!
     
+    let termsAndConditionsURL = "https://virgilsecurity.com/terms-of-service"
+    let privacyURL = "https://virgilsecurity.com/privacy-policy"
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.viewDidAppear(animated)
         
-        let text = (termsLabel.text)!
-        let attriString = NSMutableAttributedString(string: text)
-        let range1 = (text as NSString).range(of: "Terms of Service")
-        attriString.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor(rgb: 0x9E3621), range: range1)
-        let range2 = (text as NSString).range(of: "Privacy Policy")
-        attriString.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor(rgb: 0x9E3621), range: range2)
-        termsLabel.attributedText = attriString
+        privacyLabel.delegate = self
+        privacyLabel.textContainerInset = UIEdgeInsets.zero
+        let text1 = (privacyLabel.text)!
+        privacyLabel.linkTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: UIColor(rgb: 0x9E3621)]
+        let attriString1 = NSMutableAttributedString(string: text1)
+        let range11 = (text1 as NSString).range(of: text1)
+        attriString1.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor(rgb: 0x6B6B70), range: range11)
+        attriString1.addAttribute(NSAttributedStringKey.font, value: UIFont.init(name: (privacyLabel.font?.fontName)!, size: 13)!, range: range11)
+        let range12 = (text1 as NSString).range(of: "Terms of Service")
+        attriString1.addAttribute(NSAttributedStringKey.link, value: termsAndConditionsURL, range: range12)
+        //attriString1.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor(rgb: 0x9E3621), range: range12)
+        let range22 = (text1 as NSString).range(of: "Privacy Policy")
+        //attriString1.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor(rgb: 0x9E3621), range: range22)
+        attriString1.addAttribute(NSAttributedStringKey.link, value: privacyURL, range: range22)
+        privacyLabel.attributedText = attriString1
+    }
+    
+    private func textView(textView: UITextView, shouldInteractWithURL URL: NSURL, inRange characterRange: NSRange) -> Bool {
+        if (URL.absoluteString == termsAndConditionsURL) {
+            let myAlert = UIAlertController(title: "Terms", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+            myAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            self.present(myAlert, animated: true, completion: nil)
+        } else if (URL.absoluteString == privacyURL) {
+            let myAlert = UIAlertController(title: "Conditions", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+            myAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            self.present(myAlert, animated: true, completion: nil)
+        }
+        return false
     }
     
     override func viewDidLoad() {
@@ -37,20 +60,6 @@ class RegistrationViewController: ViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(RegistrationViewController.keyboardWillHide(notification:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
             
         self.usernameTextField.delegate = self
-    }
-    
-    @IBAction func didTappedTerms(_ gesture: UITapGestureRecognizer) {
-        let text = (termsLabel.text)!
-        let termsRange = (text as NSString).range(of: "Terms of Service")
-        let privacyRange = (text as NSString).range(of: "Privacy Policy")
-        
-        if gesture.didTapAttributedTextInLabel(label: termsLabel, inRange: termsRange) {
-            Log.debug("Tapped terms")
-            self.openUrl(urlStr: "https://virgilsecurity.com/terms-of-service")
-        } else if gesture.didTapAttributedTextInLabel(label: termsLabel, inRange: privacyRange) {
-            Log.debug("Tapped privacy")
-            self.openUrl(urlStr: "https://virgilsecurity.com/privacy-policy")
-        }
     }
     
     @objc func keyboardWillShow(notification: Notification) {

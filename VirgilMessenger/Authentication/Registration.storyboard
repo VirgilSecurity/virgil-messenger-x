@@ -27,7 +27,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PICK A USERNAME" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="he8-J4-ucD">
-                                        <rect key="frame" x="16" y="190" width="343" height="21"/>
+                                        <rect key="frame" x="14" y="190" width="345" height="21"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="21" id="SQW-kC-Khl"/>
                                         </constraints>
@@ -39,7 +39,7 @@
                                         <rect key="frame" x="0.0" y="217" width="375" height="44"/>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Your username" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="mQl-Eo-A0A">
-                                                <rect key="frame" x="6.5" y="0.0" width="368.5" height="44"/>
+                                                <rect key="frame" x="14" y="0.0" width="361" height="44"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="ITL-e2-w8d"/>
                                                 </constraints>
@@ -58,32 +58,27 @@
                                             <constraint firstAttribute="trailing" secondItem="mQl-Eo-A0A" secondAttribute="trailing" id="3bY-Ji-ELN"/>
                                             <constraint firstAttribute="trailing" secondItem="mQl-Eo-A0A" secondAttribute="trailing" id="8T1-FZ-ePw"/>
                                             <constraint firstAttribute="bottom" secondItem="mQl-Eo-A0A" secondAttribute="bottom" id="DG0-rB-1XF"/>
-                                            <constraint firstItem="mQl-Eo-A0A" firstAttribute="leading" secondItem="SS1-PL-Em2" secondAttribute="leading" constant="6.25" id="OoE-ey-W8x"/>
+                                            <constraint firstItem="mQl-Eo-A0A" firstAttribute="leading" secondItem="SS1-PL-Em2" secondAttribute="leading" constant="14" id="OoE-ey-W8x"/>
                                             <constraint firstItem="mQl-Eo-A0A" firstAttribute="top" secondItem="SS1-PL-Em2" secondAttribute="top" id="ajd-Ls-34b"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="sYY-OM-ych">
                                         <rect key="frame" x="0.0" y="261" width="375" height="170"/>
                                         <subviews>
-                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By registering, you agree to Virgil's Terms of Service and Privacy Policy" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oXe-XS-YGy">
-                                                <rect key="frame" x="16" y="11" width="331" height="31.5"/>
-                                                <gestureRecognizers/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="331" id="Nwy-oS-lzV"/>
-                                                </constraints>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="By registering, you agree to Virgil's Terms of Service and Privacy Policy" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="J9s-rL-DWi">
+                                                <rect key="frame" x="14" y="11" width="347" height="47.5"/>
+                                                <color key="backgroundColor" red="0.1678793728351593" green="0.1874183714389801" blue="0.23309910297393799" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="textColor" red="0.41960784313725491" green="0.41960784313725491" blue="0.4392156862745098" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="13"/>
-                                                <color key="textColor" red="0.4194968044757843" green="0.41926056146621704" blue="0.43994408845901489" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                                <connections>
-                                                    <outletCollection property="gestureRecognizers" destination="tZj-2S-fyq" appends="YES" id="PrD-bF-1jj"/>
-                                                </connections>
-                                            </label>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="oXe-XS-YGy" firstAttribute="top" secondItem="sYY-OM-ych" secondAttribute="top" constant="11" id="8t2-XR-pQx"/>
-                                            <constraint firstItem="oXe-XS-YGy" firstAttribute="leading" secondItem="sYY-OM-ych" secondAttribute="leading" constant="16" id="I5H-id-lxn"/>
+                                            <constraint firstItem="J9s-rL-DWi" firstAttribute="top" secondItem="sYY-OM-ych" secondAttribute="top" constant="11" id="ZXf-Vo-ImQ"/>
                                             <constraint firstAttribute="height" priority="999" constant="170" id="oJa-vZ-x6U"/>
+                                            <constraint firstAttribute="trailing" secondItem="J9s-rL-DWi" secondAttribute="trailing" constant="14" id="pia-E7-GHI"/>
+                                            <constraint firstItem="J9s-rL-DWi" firstAttribute="leading" secondItem="sYY-OM-ych" secondAttribute="leading" constant="14" id="rD3-gQ-2Uo"/>
                                         </constraints>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kfT-48-y5p">
@@ -116,7 +111,7 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.16787937280000001" green="0.18741837140000001" blue="0.233099103" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstItem="he8-J4-ucD" firstAttribute="leading" secondItem="FLU-BW-xdr" secondAttribute="leading" constant="16" id="65K-KD-loc"/>
+                                    <constraint firstItem="he8-J4-ucD" firstAttribute="leading" secondItem="FLU-BW-xdr" secondAttribute="leading" constant="14" id="65K-KD-loc"/>
                                     <constraint firstItem="sYY-OM-ych" firstAttribute="leading" secondItem="FLU-BW-xdr" secondAttribute="leading" id="69D-bO-S0T"/>
                                     <constraint firstItem="SS1-PL-Em2" firstAttribute="centerX" secondItem="FLU-BW-xdr" secondAttribute="centerX" id="7L4-vr-s9P"/>
                                     <constraint firstItem="SS1-PL-Em2" firstAttribute="top" secondItem="he8-J4-ucD" secondAttribute="bottom" constant="6.25" id="9dN-XG-baF"/>
@@ -153,7 +148,7 @@
                     <navigationItem key="navigationItem" title="Registration" largeTitleDisplayMode="always" id="tbC-5R-4mg"/>
                     <connections>
                         <outlet property="bottomConstraint" destination="KnK-u7-bVd" id="zly-ml-7gs"/>
-                        <outlet property="termsLabel" destination="oXe-XS-YGy" id="urL-tf-XLM"/>
+                        <outlet property="privacyLabel" destination="J9s-rL-DWi" id="zKK-da-0o2"/>
                         <outlet property="usernameTextField" destination="mQl-Eo-A0A" id="pKp-qC-7yn"/>
                     </connections>
                 </viewController>
@@ -162,14 +157,9 @@
                         <action selector="backgroundTap:" destination="sma-Ja-Wb3" id="BEb-PA-46o"/>
                     </connections>
                 </tapGestureRecognizer>
-                <tapGestureRecognizer id="tZj-2S-fyq">
-                    <connections>
-                        <action selector="didTappedTerms:" destination="sma-Ja-Wb3" id="coa-GY-qcd"/>
-                    </connections>
-                </tapGestureRecognizer>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lq7-Xt-7Jq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2469.5999999999999" y="419.64017991004499"/>
+            <point key="canvasLocation" x="2465.625" y="417.25352112676057"/>
         </scene>
     </scenes>
 </document>

@@ -93,12 +93,14 @@ class DataSource: ChatDataSourceProtocol {
                     new_tmp_messages = []
                     continue
                 }
+                
+                guard let secureChat = VirgilHelper.sharedInstance.secureChat else {
+                    Log.error("nil secure Chat")
+                    return
+                }
+                
                 do {
-                    guard let session = try VirgilHelper.sharedInstance.secureChat?.loadUpSession(withParticipantWithCard: card, message: message.body)
-                    else {
-                        Log.error("nil session loaded")
-                        return
-                    }
+                    let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: message.body)
     
                     Log.debug("session loaded")
                     

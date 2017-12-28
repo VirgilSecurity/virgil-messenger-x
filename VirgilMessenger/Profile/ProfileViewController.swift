@@ -44,6 +44,11 @@ class ProfileViewController: ViewController {
         self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        UIApplication.shared.statusBarView?.backgroundColor = UIColor(rgb: 0x20232B)
+    }
+    
 }
 
 extension ProfileViewController: UITableViewDelegate {

@@ -64,8 +64,9 @@ class ChatListViewController: ViewController {
                     channelCore.lastMessagesDate = date
                 }
                 
-                messages.getLastWithCount(UInt(1)) { (result, messages) in
-                    if  let message = messages?.last,
+                messages.getLastWithCount(UInt(2)) { (result, messages) in
+                    if  let messages = messages,
+                        let message = messages.last,
                         let messageBody = message.body,
                         let messageDate = message.dateUpdatedAsDate,
                         message.author != TwilioHelper.sharedInstance.username,
@@ -79,6 +80,10 @@ class ChatListViewController: ViewController {
                             
                             channelCore.lastMessagesBody = decryptedMessageBody
                             channelCore.lastMessagesDate = messageDate
+                            
+                            if messages.count == 1, channelCore.message?.count == 0 {
+                                CoreDataHelper.sharedInstance.createMessage(forChannel: channelCore, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
+                            }
                         } catch {
                             Log.error("decryption process failed: \(error.localizedDescription)")
                         }
