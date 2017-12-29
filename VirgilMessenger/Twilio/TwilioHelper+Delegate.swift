@@ -111,6 +111,10 @@ extension TwilioHelper: TwilioChatClientDelegate {
             coreDataChannel.lastMessagesBody = plaintext
             coreDataChannel.lastMessagesDate = messageDate
             
+            if coreDataChannel.message?.count == 0 {
+                CoreDataHelper.sharedInstance.createMessage(forChannel: coreDataChannel, withBody: plaintext, isIncoming: true, date: messageDate)
+            }
+            
             Log.debug("Receiving " + plaintext)
             
         } catch {

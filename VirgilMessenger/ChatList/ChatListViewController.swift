@@ -53,8 +53,12 @@ class ChatListViewController: ViewController {
             if let channelCore = CoreDataHelper.sharedInstance.getChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)),
                 let messages = channel.messages
             {
-                if  let messagesCore = channelCore.message,
-                    let messageCore = messagesCore.lastObject as? Message,
+                guard let messagesCore = channelCore.message else {
+                    Log.error("messages in Core Data is corrupted")
+                    return
+                }
+
+                if  let messageCore = messagesCore.lastObject as? Message,
                     let messageBodyCore = messageCore.body,
                     let date = messageCore.date
                 {
@@ -64,7 +68,34 @@ class ChatListViewController: ViewController {
                     channelCore.lastMessagesDate = date
                 }
                 
-                messages.getLastWithCount(UInt(2)) { (result, messages) in
+                
+                if messagesCore.count == 0 {
+                    messages.getBefore(0, withCount: 1) { (result, messages) in
+                        if  let messages = messages,
+                            let message = messages.first,
+                            let messageBody = message.body,
+                            let messageDate = message.dateUpdatedAsDate,
+                            message.author != TwilioHelper.sharedInstance.username,
+                            let stringCard = channelCore.card,
+                            let card = VirgilHelper.sharedInstance.buildCard(stringCard),
+                            let secureChat = VirgilHelper.sharedInstance.secureChat
+                         {
+                            do {
+                                let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
+                                let decryptedMessageBody = try session.decrypt(messageBody)
+                                
+                                channelCore.lastMessagesBody = decryptedMessageBody
+                                channelCore.lastMessagesDate = messageDate
+                                
+                                CoreDataHelper.sharedInstance.createMessage(forChannel: channelCore, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
+                            } catch {
+                                Log.error("decryption process of first message failed: \(error.localizedDescription)")
+                            }
+                        }
+                    }
+                }
+                    
+                messages.getLastWithCount(UInt(1)) { (result, messages) in
                     if  let messages = messages,
                         let message = messages.last,
                         let messageBody = message.body,
@@ -80,10 +111,6 @@ class ChatListViewController: ViewController {
                             
                             channelCore.lastMessagesBody = decryptedMessageBody
                             channelCore.lastMessagesDate = messageDate
-                            
-                            if messages.count == 1, channelCore.message?.count == 0 {
-                                CoreDataHelper.sharedInstance.createMessage(forChannel: channelCore, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
-                            }
                         } catch {
                             Log.error("decryption process failed: \(error.localizedDescription)")
                         }

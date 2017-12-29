@@ -106,6 +106,7 @@ class DataSource: ChatDataSourceProtocol {
                     
                     let plaintext = try session.decrypt(message.body)
                     Log.debug("encrypted")
+                    Log.debug(plaintext)
                     
                     let model = createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message.date)
                     let decryptedMessage = DemoTextMessageModel(messageModel: model, text: plaintext)
@@ -113,9 +114,13 @@ class DataSource: ChatDataSourceProtocol {
                     new_tmp_messages.append(decryptedMessage)
                 } catch {
                     Log.error("decryption process failed: \(error.localizedDescription)\nMessage: \(message.body)")
+                    let model = createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message.date)
+                    let decryptedMessage = DemoTextMessageModel(messageModel: model, text: "Error decrypting message")
+                    new_tmp_messages.append(decryptedMessage)
                 }
             }
-            
+            Log.debug("\(tmp_messages.count)")
+            Log.debug("\(new_tmp_messages.count)")
             if (tmp_messages.count > new_tmp_messages.count) {
                 Log.error("saved messages count > loaded: \(tmp_messages.count) > \(new_tmp_messages.count)")
             } else {
