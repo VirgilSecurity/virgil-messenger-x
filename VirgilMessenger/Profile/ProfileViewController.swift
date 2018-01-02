@@ -104,7 +104,7 @@ extension ProfileViewController: UITableViewDataSource {
         
         if indexPath.section == 0 {
             cell.textLabel?.text = "About"
-            cell.textLabel?.textColor = .white
+            cell.textLabel?.textColor = UIColor(rgb: 0xC7C7CC)
             cell.accessoryType = .disclosureIndicator
         } else if indexPath.section == 1 {
             cell.textLabel?.text = "Logout"
