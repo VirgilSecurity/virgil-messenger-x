@@ -145,7 +145,8 @@ class VirgilHelper {
             
             dispatchGroup.enter()
             self.initializePFS(withIdentity: identity, card: card, privateKey: key) { error in
-                resultError = error
+                //FIXME
+                //resultError = error
                 dispatchGroup.leave()
             }
         } catch {

@@ -68,9 +68,9 @@ class ChatListViewController: ViewController {
                     channelCore.lastMessagesDate = date
                 }
                 
-                messages.getBefore(UInt(messagesCore.count), withCount: 1) { (result, messages) in
-                    if  let messages = messages,
-                        let message = messages.first,
+                messages.getBefore(UInt(messagesCore.count), withCount: 1) { (result, oneMessages) in
+                    if  let oneMessage = oneMessages,
+                        let message = oneMessage.first,
                         let messageBody = message.body,
                         let messageDate = message.dateUpdatedAsDate,
                         message.author != TwilioHelper.sharedInstance.username,
@@ -85,35 +85,37 @@ class ChatListViewController: ViewController {
                             channelCore.lastMessagesBody = decryptedMessageBody
                             channelCore.lastMessagesDate = messageDate
                             
-                            CoreDataHelper.sharedInstance.createMessage(forChannel: channelCore, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
+                            messages.getLastWithCount(UInt(1)) { (result, messages) in
+                                if  let messages = messages,
+                                    let message = messages.last,
+                                    let messageBody = message.body,
+                                    let messageDate = message.dateUpdatedAsDate,
+                                    message.author != TwilioHelper.sharedInstance.username,
+                                    let stringCard = channelCore.card,
+                                    let card = VirgilHelper.sharedInstance.buildCard(stringCard),
+                                    let secureChat = VirgilHelper.sharedInstance.secureChat
+                                {
+                                    do {
+                                        let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
+                                        let decryptedMessageBody = try session.decrypt(messageBody)
+                                        
+                                        channelCore.lastMessagesBody = decryptedMessageBody
+                                        channelCore.lastMessagesDate = messageDate
+                                    } catch {
+                                        Log.error("decryption process failed: \(error.localizedDescription)")
+                                    }
+                                }
+    
+                                self.tableView.reloadData()
+                            }
+                            
+                            if (messagesCore.count == 0 || (Int(truncating: message.index ?? 0) >= (messagesCore.count))) {
+                                CoreDataHelper.sharedInstance.createMessage(forChannel: channelCore, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
+                            }
                         } catch {
                             Log.error("decryption process of first message failed: \(error.localizedDescription)")
                         }
                     }
-                }
-                    
-                messages.getLastWithCount(UInt(1)) { (result, messages) in
-                    if  let messages = messages,
-                        let message = messages.last,
-                        let messageBody = message.body,
-                        let messageDate = message.dateUpdatedAsDate,
-                        message.author != TwilioHelper.sharedInstance.username,
-                        let stringCard = channelCore.card,
-                        let card = VirgilHelper.sharedInstance.buildCard(stringCard),
-                        let secureChat = VirgilHelper.sharedInstance.secureChat
-                    {
-                        do {
-                            let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
-                            let decryptedMessageBody = try session.decrypt(messageBody)
-                            
-                            channelCore.lastMessagesBody = decryptedMessageBody
-                            channelCore.lastMessagesDate = messageDate
-                        } catch {
-                            Log.error("decryption process failed: \(error.localizedDescription)")
-                        }
-                    }
-                    //self.tableView.dataSource = self
-                    self.tableView.reloadData()
                 }
             }
         }

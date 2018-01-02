@@ -48,10 +48,10 @@
                                 </connections>
                             </button>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FAx-Wy-Jxg">
-                                <rect key="frame" x="75.5" y="200" width="225" height="230"/>
+                                <rect key="frame" x="75" y="200" width="225" height="230"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="225" id="VqQ-hf-PPc"/>
-                                    <constraint firstAttribute="height" constant="230" id="sEb-he-3Wb"/>
+                                    <constraint firstAttribute="height" constant="230" id="wnX-z5-bBZ"/>
                                 </constraints>
                                 <connections>
                                     <segue destination="P69-qe-Zuq" kind="embed" id="kHR-4P-bCT"/>
@@ -74,14 +74,14 @@
                         </subviews>
                         <color key="backgroundColor" red="0.12502500414848328" green="0.13665896654129028" blue="0.16987201571464539" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="eLU-VO-qVA" firstAttribute="centerX" secondItem="E1R-uI-IMb" secondAttribute="centerX" id="6aC-gy-out"/>
-                            <constraint firstItem="DGn-lv-bLJ" firstAttribute="centerX" secondItem="E1R-uI-IMb" secondAttribute="centerX" id="9ME-t6-gDM"/>
-                            <constraint firstItem="FAx-Wy-Jxg" firstAttribute="top" secondItem="eLU-VO-qVA" secondAttribute="bottom" constant="54" id="fpU-Lf-8wk"/>
+                            <constraint firstItem="eLU-VO-qVA" firstAttribute="top" secondItem="ZMJ-LZ-xdp" secondAttribute="top" constant="90" id="9AB-g2-tLW"/>
+                            <constraint firstItem="FAx-Wy-Jxg" firstAttribute="centerX" secondItem="ZMJ-LZ-xdp" secondAttribute="centerX" id="LsK-KR-aIT"/>
+                            <constraint firstItem="eLU-VO-qVA" firstAttribute="centerX" secondItem="ZMJ-LZ-xdp" secondAttribute="centerX" id="Yee-gh-hvz"/>
                             <constraint firstItem="ZMJ-LZ-xdp" firstAttribute="bottom" secondItem="E1R-uI-IMb" secondAttribute="bottom" constant="85" id="gvu-XC-C1x"/>
                             <constraint firstItem="E1R-uI-IMb" firstAttribute="centerX" secondItem="zTU-un-FQm" secondAttribute="centerX" id="iNi-jS-Jqq"/>
-                            <constraint firstItem="FAx-Wy-Jxg" firstAttribute="centerX" secondItem="E1R-uI-IMb" secondAttribute="centerX" id="mCP-ld-Mlw"/>
+                            <constraint firstItem="DGn-lv-bLJ" firstAttribute="centerX" secondItem="ZMJ-LZ-xdp" secondAttribute="centerX" id="kHW-0L-yN6"/>
+                            <constraint firstItem="FAx-Wy-Jxg" firstAttribute="top" secondItem="eLU-VO-qVA" secondAttribute="bottom" constant="54" id="pFv-7N-y5E"/>
                             <constraint firstItem="ZMJ-LZ-xdp" firstAttribute="bottom" secondItem="DGn-lv-bLJ" secondAttribute="bottom" constant="34" id="s2A-Mf-qGG"/>
-                            <constraint firstItem="FAx-Wy-Jxg" firstAttribute="top" secondItem="ZMJ-LZ-xdp" secondAttribute="top" constant="180" id="u2B-aS-5O5"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="ZMJ-LZ-xdp"/>
                     </view>
