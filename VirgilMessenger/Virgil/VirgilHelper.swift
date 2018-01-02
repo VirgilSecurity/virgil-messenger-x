@@ -63,7 +63,7 @@ class VirgilHelper {
         case coreDataAccountFailed
     }
     
-    private func initializePFS(withIdentity: String, card: VSSCard, privateKey: VSSPrivateKey) {
+    private func initializePFS(withIdentity: String, card: VSSCard, privateKey: VSSPrivateKey, completion: @escaping (Error?) -> ()) {
         do {
             let secureChatPreferences = try SecureChatPreferences (
                 crypto: self.crypto,
@@ -76,15 +76,16 @@ class VirgilHelper {
             try secureChat.initialize()
             
             secureChat.rotateKeys(desiredNumberOfCards: 100) { error in
-                guard error == nil else {
+                if error != nil {
                     Log.error("Rotating keys: \(error!.localizedDescription). Error code: \((error! as NSError).code)")
-                    return
+                } else {
+                    Log.debug("Successfully initialized PFS")
                 }
-                Log.debug("Successfully initialized PFS")
+                self.secureChat = secureChat
+                completion(error)
             }
-            self.secureChat = secureChat
         } catch {
-            Log.error("Error while initializing PFS")
+            Log.error("Error while initializing PFS: \(error.localizedDescription)")
         }
     }
     
@@ -92,7 +93,7 @@ class VirgilHelper {
         do {
             try self.keyStorage.deleteKeyEntry(withName: entry)
         } catch {
-            Log.error("can't delete from key storage")
+            Log.error("can't delete from key storage: \(error.localizedDescription)")
         }
     }
     
@@ -126,10 +127,14 @@ class VirgilHelper {
     
     private func signInHelper(card: VSSCard, identity: String, completion: @escaping (Error?) -> ()) {
         self.publicKey = self.crypto.importPublicKey(from: card.publicKeyData)
+        
+        var resultError: Error? = nil
+        let dispatchGroup = DispatchGroup()
+        
+        dispatchGroup.enter()
         self.initializeAccount(withCardId: card.identifier, identity: identity) { error in
-            DispatchQueue.main.async {
-                completion(error)
-            }
+            resultError = error
+            dispatchGroup.leave()
         }
         do {
             let entry = try self.keyStorage.loadKeyEntry(withName: identity)
@@ -138,11 +143,21 @@ class VirgilHelper {
             }
             self.privateKey = key
             
-            self.initializePFS(withIdentity: identity, card: card, privateKey: key)
+            dispatchGroup.enter()
+            self.initializePFS(withIdentity: identity, card: card, privateKey: key) { error in
+                resultError = error
+                dispatchGroup.leave()
+            }
         } catch {
-            Log.error("Signing in: key not found")
+            resultError = error
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            if let error = resultError {
+                Log.error("Signing in: \(error.localizedDescription)")
+            }
             DispatchQueue.main.async {
-                completion(error)
+                completion(resultError)
             }
         }
     }
@@ -257,7 +272,7 @@ class VirgilHelper {
                     throw VirgilHelperError.jsonFailed
                 }
                 
-                 guard let exportedCard = json["virgil_card"] as? String else {
+                guard let exportedCard = json["virgil_card"] as? String else {
                      Log.error("Error while signing up: server didn't return card")
                      DispatchQueue.main.async {
                         completion(VirgilHelperError.usernameAlreadyUsed, VirgilHelperError.usernameAlreadyUsed.rawValue)
@@ -280,15 +295,35 @@ class VirgilHelper {
                 try? self.keyStorage.deleteKeyEntry(withName: identity)
                 try self.keyStorage.store(keyEntry)
                 
-                CoreDataHelper.sharedInstance.createAccount(withIdentity: identity, exportedCard: card.exportData())
+                var resultError: Error? = nil
+                let dispatchGroup = DispatchGroup()
+                
+                dispatchGroup.enter()
+                CoreDataHelper.sharedInstance.createAccount(withIdentity: identity, exportedCard: card.exportData()) {
+                    dispatchGroup.leave()
+                }
+                
+                dispatchGroup.enter()
                 self.initializeAccount(withCardId: card.identifier, identity: identity) { error in
+                    resultError = error
+                    dispatchGroup.leave()
+                }
+                dispatchGroup.enter()
+                self.initializePFS(withIdentity: identity, card: card, privateKey: keyPair.privateKey) { error in
+                    resultError = error
+                    dispatchGroup.leave()
+                }
+                
+                dispatchGroup.notify(queue: .main) {
+                    if let error = resultError {
+                        Log.error("Signing up: \(error.localizedDescription)")
+                    }
                     DispatchQueue.main.async {
-                        completion(error, nil)
+                        completion(resultError, nil)
                     }
                 }
-                self.initializePFS(withIdentity: identity, card: card, privateKey: keyPair.privateKey)
             } catch {
-                Log.error("Error while signing up")
+                Log.error("Signing up: \(error.localizedDescription)")
                 DispatchQueue.main.async {
                     completion(error, nil)
                 }

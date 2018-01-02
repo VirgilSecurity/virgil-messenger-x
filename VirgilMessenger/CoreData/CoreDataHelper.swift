@@ -90,7 +90,7 @@ class CoreDataHelper {
         return nil
     }
     
-    func createAccount(withIdentity identity: String, exportedCard: String) {
+    func createAccount(withIdentity identity: String, exportedCard: String, completion: @escaping () -> ()) {
         self.queue.async {
             guard let entity = NSEntityDescription.entity(forEntityName: Entities.Account.rawValue, in: self.managedContext) else {
                 Log.error("Core Data: entity not found: " + Entities.Account.rawValue)
@@ -109,6 +109,8 @@ class CoreDataHelper {
             Log.debug("Core Data: account created")
             
             self.appDelegate.saveContext()
+            
+            completion()
         }
     }
     
