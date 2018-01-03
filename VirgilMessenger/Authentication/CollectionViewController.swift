@@ -47,6 +47,16 @@ extension CollectionViewController {
         PKHUD.sharedHUD.contentView = PKHUDProgressView()
         PKHUD.sharedHUD.show()
         
+        guard currentReachabilityStatus != .notReachable else {
+            PKHUD.sharedHUD.hide() { _ in
+                let controller = UIAlertController(title: self.title, message: "Please check your network connection", preferredStyle: .alert)
+                controller.addAction(UIAlertAction(title: "OK", style: .default))
+                
+                self.present(controller, animated: true)
+            }
+            return
+        }
+        
         VirgilHelper.sharedInstance.signIn(identity: username) { error, message in
             guard error == nil else {
                 let message = message == nil ? "unknown error" : message

@@ -115,7 +115,13 @@ class ChatViewController: BaseChatViewController {
     private func createTextInputItem() -> TextChatInputItem {
         let item = TextChatInputItem()
         item.textInputHandler = { [weak self] text in
-            self?.dataSource.addTextMessage(text)
+            if self?.currentReachabilityStatus == .notReachable {
+                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
+                controller.addAction(UIAlertAction(title: "OK", style: .default))
+                self?.present(controller, animated: true)
+            } else {
+                self?.dataSource.addTextMessage(text)
+            }
         }
         return item
     }

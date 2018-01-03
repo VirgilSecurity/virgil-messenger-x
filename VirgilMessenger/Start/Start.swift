@@ -19,6 +19,19 @@ class StartViewController: ViewController {
             !username.isEmpty {
             PKHUD.sharedHUD.contentView = PKHUDProgressView()
             PKHUD.sharedHUD.show()
+            
+            guard currentReachabilityStatus != .notReachable else {
+                PKHUD.sharedHUD.hide() { _ in
+                    let controller = UIAlertController(title: self.title, message: "Please check your network connection", preferredStyle: .alert)
+                    controller.addAction(UIAlertAction(title: "OK", style: .default))
+                    
+                    self.present(controller, animated: true)
+                    UserDefaults.standard.set(nil, forKey: "last_username")
+                    self.goToLogin()
+                }
+                return
+            }
+            
             VirgilHelper.sharedInstance.signIn(identity: username) { error, title in
                 guard error == nil else {
                     PKHUD.sharedHUD.hide(true) { _ in

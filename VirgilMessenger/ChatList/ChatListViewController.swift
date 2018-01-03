@@ -126,6 +126,14 @@ class ChatListViewController: ViewController {
     }
     
     @IBAction func didTapAdd(_ sender: Any) {
+        guard currentReachabilityStatus != .notReachable else {
+            let controller = UIAlertController(title: self.title, message: "Please check your network connection", preferredStyle: .alert)
+            controller.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(controller, animated: true)
+            
+            return
+        }
+        
         let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
         
         alertController.addTextField(configurationHandler: {
