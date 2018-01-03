@@ -205,14 +205,21 @@ class ChatListViewController: ViewController {
 extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
-        //FIXME
-        let count = CoreDataHelper.sharedInstance.myAccount!.channel!.count
+        
+        guard let account = CoreDataHelper.sharedInstance.myAccount,
+              let channels = account.channel else {
+                Log.error("Can't form row: Core Data account or channels corrupted")
+                return cell
+        }
+        let count = channels.count
         
         cell.tag = count - indexPath.row - 1
         cell.delegate = self
-        
-        //FIXME
-        let channel = CoreDataHelper.sharedInstance.myAccount!.channel![count - indexPath.row - 1] as! Channel
+       
+        guard let channel = channels[count - indexPath.row - 1] as? Channel else {
+            Log.error("Can't form row: Core Data channel corrupted")
+            return cell
+        }
         cell.usernameLabel.text = channel.name
         cell.letterLabel.text =  channel.letter
         cell.avatarView.gradientLayer.colors = [channel.colorPair.first, channel.colorPair.second]
@@ -243,8 +250,12 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //FIXME
-        return (CoreDataHelper.sharedInstance.myAccount!.channel!.count)
+        guard let account = CoreDataHelper.sharedInstance.myAccount,
+              let channels = account.channel else {
+                Log.error("Can't form row: Core Data account or channels corrupted")
+                return 0
+        }
+        return channels.count
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {

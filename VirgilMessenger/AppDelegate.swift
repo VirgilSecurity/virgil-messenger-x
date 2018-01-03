@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     context.delete(object)
                 }
             }
-            try! VSSKeyStorage().reset()
+            try? VSSKeyStorage().reset()
             UserDefaults.standard.set("happened", forKey: "first_launch")
             UserDefaults.standard.synchronize()
         }

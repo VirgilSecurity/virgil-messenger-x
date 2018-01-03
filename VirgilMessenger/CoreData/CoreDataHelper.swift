@@ -18,9 +18,8 @@ class CoreDataHelper {
     private let appDelegate = UIApplication.shared.delegate as! AppDelegate
     private let managedContext: NSManagedObjectContext
     private(set) var accounts: [Account] = []
-   //FIXME
-    var myAccount: Account?
     private(set) var selectedChannel: Channel?
+    var myAccount: Account?
     
     enum Entities: String {
         case Account   = "Account"
@@ -125,29 +124,27 @@ class CoreDataHelper {
     }
     
     func createChannel(withName name: String, card: String) {
-        //self.queue.async {
-            guard let account = self.myAccount else {
-                Log.error("Core Data: nil account")
-                return
-            }
-            
-            guard let entity = NSEntityDescription.entity(forEntityName: Entities.Channel.rawValue, in: self.managedContext) else {
-                Log.error("Core Data: entity not found: " + Entities.Channel.rawValue)
-                return
-            }
-            
-            let channel = Channel(entity: entity, insertInto: self.managedContext)
-            
-            channel.name = name
-            channel.card = card
-            channel.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
-            
-            let channels = account.mutableOrderedSetValue(forKey: Keys.channel.rawValue)
-            channels.add(channel)
-            
-            Log.debug("Core Data: new channel added. Count: \(channels.count)")
-            self.appDelegate.saveContext()
-        //}
+        guard let account = self.myAccount else {
+            Log.error("Core Data: nil account")
+            return
+        }
+        
+        guard let entity = NSEntityDescription.entity(forEntityName: Entities.Channel.rawValue, in: self.managedContext) else {
+            Log.error("Core Data: entity not found: " + Entities.Channel.rawValue)
+            return
+        }
+        
+        let channel = Channel(entity: entity, insertInto: self.managedContext)
+        
+        channel.name = name
+        channel.card = card
+        channel.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
+        
+        let channels = account.mutableOrderedSetValue(forKey: Keys.channel.rawValue)
+        channels.add(channel)
+        
+        Log.debug("Core Data: new channel added. Count: \(channels.count)")
+        self.appDelegate.saveContext()
     }
     
     func createMessage(withBody body: String, isIncoming: Bool, date: Date) {

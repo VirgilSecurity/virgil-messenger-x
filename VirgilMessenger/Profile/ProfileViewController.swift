@@ -36,12 +36,13 @@ class ProfileViewController: ViewController {
         let up = TwilioHelper.sharedInstance.username.uppercased().first!
         self.letterLabel.text =  String(describing: up)
         
-        //FIXME
-        let num = Int(CoreDataHelper.sharedInstance.myAccount!.numColorPair)
-        let f = UIConstants.colorPairs[num].first
-        let s = UIConstants.colorPairs[num].second
-        self.avatarView.gradientLayer.colors = [f, s]
-        self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+        if let account = CoreDataHelper.sharedInstance.myAccount {
+            let num = Int(account.numColorPair)
+            let f = UIConstants.colorPairs[num].first
+            let s = UIConstants.colorPairs[num].second
+            self.avatarView.gradientLayer.colors = [f, s]
+            self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
