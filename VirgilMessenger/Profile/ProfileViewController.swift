@@ -91,6 +91,10 @@ extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.backgroundColor = UIColor(rgb: 0x20232B)
     }
+    
+    func tableView(_ : UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 10
+    }
 }
 
 
