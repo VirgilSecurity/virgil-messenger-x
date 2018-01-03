@@ -12,8 +12,8 @@ import PKHUD
 class RegistrationViewController: ViewController, UITextViewDelegate {
     
     @IBOutlet weak var usernameTextField: UITextField!
-    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var privacyLabel: UITextView!
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
     let termsAndConditionsURL = "https://virgilsecurity.com/terms-of-service"
     let privacyURL = "https://virgilsecurity.com/privacy-policy"
@@ -57,7 +57,6 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
                 return
         }
         
-        // FIXME
         self.bottomConstraint.constant = rect.height
         UIView.animate(withDuration: time) {
             self.view.layoutIfNeeded()
@@ -69,7 +68,6 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
                 return
         }
         
-        // FIXME
         self.bottomConstraint.constant = 0
         UIView.animate(withDuration: time) {
             self.view.layoutIfNeeded()
