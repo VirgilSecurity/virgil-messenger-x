@@ -13,7 +13,7 @@ import CoreData
 @objc(Channel)
 public class Channel: NSManagedObject {
     var lastMessagesBody: String = ""
-    var lastMessagesDate: Date? = nil
+    var lastMessagesDate: Date?
     var letter: String {
         get {
             return String(describing: self.name!.uppercased().first!)

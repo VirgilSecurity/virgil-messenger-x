@@ -9,13 +9,13 @@
 import UIKit
 
 class AuthenticationViewController: ViewController {
-    
+
     @IBOutlet weak var collectionViewWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var collectionView: UICollectionView!
     override func viewDidLoad() {
         super.viewDidLoad()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         if CoreDataHelper.sharedInstance.accounts.count == 1 {
             collectionViewWidthConstraint.constant = 100

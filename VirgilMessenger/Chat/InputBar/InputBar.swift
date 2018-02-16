@@ -9,7 +9,7 @@
 import Foundation
 import ChattoAdditions
 
-class InputBar : ChatInputBar {
+class InputBar: ChatInputBar {
     override class open func loadNib() -> ChatInputBar {
         let nibName = "InputBar"
         let view = Bundle.main.loadNibNamed(nibName, owner: nil, options: nil)!.first as! ChatInputBar

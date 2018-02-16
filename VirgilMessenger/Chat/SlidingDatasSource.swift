@@ -39,7 +39,7 @@ public class SlidingDataSource<Element> {
     private var itemsOffset: Int
     public var itemsInWindow: [Element] {
         let offset = self.windowOffset - self.itemsOffset
-        return Array(items[offset..<offset+self.windowCount])
+        return Array(items[offset..<offset + self.windowCount])
     }
 
     init(pageSize: Int) {
@@ -80,16 +80,16 @@ public class SlidingDataSource<Element> {
         let previousWindowCount = self.windowCount
         let nextWindowOffset = max(0, self.windowOffset - self.pageSize)
         _ = self.itemsOffset - nextWindowOffset
-        
+
         //TODO loading more messages
-        
+
         let newItemsCount = previousWindowOffset - nextWindowOffset
         self.windowOffset = nextWindowOffset
         self.windowCount = previousWindowCount + newItemsCount
     }
 
     public func loadNext() {
-        guard self.items.count > 0 else { return }
+        guard !self.items.isEmpty else { return }
         let itemCountAfterWindow = self.itemsOffset + self.items.count - self.windowOffset - self.windowCount
         self.windowCount += min(self.pageSize, itemCountAfterWindow)
     }
@@ -103,7 +103,7 @@ public class SlidingDataSource<Element> {
         }
         let sizeDiff = self.windowCount - maxWindowSize
         guard sizeDiff > 0 else { return false }
-        self.windowOffset +=  Int(focusPosition * Double(sizeDiff))
+        self.windowOffset += Int(focusPosition * Double(sizeDiff))
         self.windowCount = maxWindowSize
         return true
     }

@@ -44,6 +44,3 @@ extension TextMessageModel {
         return "text"
     }
 }
-
-
-

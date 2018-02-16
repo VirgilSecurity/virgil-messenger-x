@@ -13,23 +13,23 @@ class TwilioHelper: NSObject {
     static func authorize(username: String, device: String) {
         self.sharedInstance = TwilioHelper(username: username, device: device)
     }
-    
+
     enum TwilioHelperError: Int, Error {
         case initFailed
         case initChannelsFailed
         case initUsersFailed
         case joiningFailed
     }
-    
+
     private(set) static var sharedInstance: TwilioHelper!
-    
+
     private init(username: String, device: String) {
         self.username = username
         self.device = device
-        
+
         super.init()
     }
-    
+
     private let queue = DispatchQueue(label: "TwilioHelper")
     let username: String
     private let device: String
@@ -38,18 +38,18 @@ class TwilioHelper: NSObject {
     private(set) var channels: TCHChannels!
     private(set) var users: TCHUsers!
     var selectedChannel: TCHChannel!
-    
-    func initialize(token: String, completion: @escaping (Error?)->()) {
+
+    func initialize(token: String, completion: @escaping (Error?) -> ()) {
         Log.debug("Initializing Twilio")
 
         self.queue.async {
-            TwilioChatClient.chatClient(withToken: token, properties: nil, delegate: self) { (result, client) in
+            TwilioChatClient.chatClient(withToken: token, properties: nil, delegate: self) { result, client in
                 guard let client = client, result.isSuccessful() else {
                     Log.error("Error while initializing Twilio: \(result.error?.localizedDescription ?? "")")
                     completion(TwilioHelperError.initFailed)
                     return
                 }
-                
+
                 guard let channels = client.channelsList() else {
                     Log.error("Error while initializing Twilio channels")
                     completion(TwilioHelperError.initChannelsFailed)
@@ -61,24 +61,24 @@ class TwilioHelper: NSObject {
                     completion(TwilioHelperError.initUsersFailed)
                     return
                 }
-                
+
                 Log.debug("Successfully initialized Twilio")
                 self.client = client
                 self.channels = channels
                 self.users = users
-                
+
                 self.joinChannels(channels)
                 completion(nil)
             }
         }
     }
-    
+
     private func joinChannels(_ channels: TCHChannels) {
         for channel in channels.subscribedChannels() {
             if channel.status == TCHChannelStatus.invited {
                 channel.join() { channelResult in
                     if channelResult.isSuccessful() {
-                        Log.debug("Successfully accepted invite.");
+                        Log.debug("Successfully accepted invite.")
                         let identity = self.getCompanion(ofChannel: channel)
                         Log.debug("identity: \(identity)")
                         VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
@@ -88,7 +88,7 @@ class TwilioHelper: NSObject {
                             }
                             CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
                             let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: channel))!
-                            channel.messages?.getBefore(0, withCount: 1) { (result, messages) in
+                            channel.messages?.getBefore(0, withCount: 1) { result, messages in
                                 if  let messages = messages,
                                     let message = messages.first,
                                     let messageBody = message.body,
@@ -96,23 +96,22 @@ class TwilioHelper: NSObject {
                                     message.author != TwilioHelper.sharedInstance.username,
                                     let stringCard = coreDataChannel.card,
                                     let card = VirgilHelper.sharedInstance.buildCard(stringCard),
-                                    let secureChat = VirgilHelper.sharedInstance.secureChat
-                                {
+                                    let secureChat = VirgilHelper.sharedInstance.secureChat {
                                     do {
                                         let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
                                         let decryptedMessageBody = try session.decrypt(messageBody)
-                                        
+
                                         coreDataChannel.lastMessagesBody = decryptedMessageBody
                                         coreDataChannel.lastMessagesDate = messageDate
-                                        
+
                                         CoreDataHelper.sharedInstance.createMessage(forChannel: coreDataChannel, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
                                     } catch {
                                         Log.error("decryption process of first message failed: \(error.localizedDescription)")
                                     }
                                 }
                             }
-                            
-                            channel.messages?.getLastWithCount(UInt(1)) { (result, messages) in
+
+                            channel.messages?.getLastWithCount(UInt(1)) { result, messages in
                                 if  let messages = messages,
                                     let message = messages.last,
                                     let messageBody = message.body,
@@ -121,12 +120,11 @@ class TwilioHelper: NSObject {
                                     let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)),
                                     let stringCard = coreDataChannel.card,
                                     let card = VirgilHelper.sharedInstance.buildCard(stringCard),
-                                    let secureChat = VirgilHelper.sharedInstance.secureChat
-                                {
+                                    let secureChat = VirgilHelper.sharedInstance.secureChat {
                                     do {
                                         let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
                                         let decryptedMessageBody = try session.decrypt(messageBody)
-                                        
+
                                         coreDataChannel.lastMessagesBody = decryptedMessageBody
                                         coreDataChannel.lastMessagesDate = messageDate
                                     } catch {
@@ -138,8 +136,7 @@ class TwilioHelper: NSObject {
                                         userInfo: [:])
                                 }
                             }
-                            
-                            
+
                             Log.debug("new card added")
                             NotificationCenter.default.post(
                                 name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
@@ -147,13 +144,13 @@ class TwilioHelper: NSObject {
                                 userInfo: [:])
                         }
                     } else {
-                        Log.error("Failed to accept invite.");
+                        Log.error("Failed to accept invite.")
                     }
                 }
             }
         }
     }
-    
+
     func setChannel(withUsername username: String) {
         for channel in channels.subscribedChannels() {
             if getCompanion(ofChannel: channel) == username {
@@ -162,8 +159,8 @@ class TwilioHelper: NSObject {
             }
         }
     }
-    
-    func createChannel(withUsername username: String, completion: @escaping (Error?)->()) {
+
+    func createChannel(withUsername username: String, completion: @escaping (Error?) -> ()) {
         VirgilHelper.sharedInstance.getCard(withIdentity: username) { card, error in
             guard let card = card, error == nil else {
                 Log.error("failed to add new channel card")
@@ -173,14 +170,14 @@ class TwilioHelper: NSObject {
                 return
             }
             CoreDataHelper.sharedInstance.createChannel(withName: username, card: card.exportData())
-            
+
             TwilioHelper.sharedInstance.channels.createChannel(options: [
                 TCHChannelOptionType: TCHChannelType.private.rawValue,
                 TCHChannelOptionAttributes: [
                     "initiator": self.username,
                     "responder": username
                 ]
-            ]) { (result, channel) in
+            ]) { result, channel in
                 guard let channel = channel, result.isSuccessful() else {
                     Log.error("Error while creating chat with \(username): \(result.error?.localizedDescription ?? "")")
                     DispatchQueue.main.async {
@@ -189,8 +186,8 @@ class TwilioHelper: NSObject {
                     CoreDataHelper.sharedInstance.deleteChannel(withName: username)
                     return
                 }
-                
-                channel.members?.invite(byIdentity: username) { (result) in
+
+                channel.members?.invite(byIdentity: username) { result in
                     guard result.isSuccessful() else {
                         Log.error("Error while inviting member \(username): \(result.error?.localizedDescription ?? "")")
                         DispatchQueue.main.async {
@@ -206,7 +203,7 @@ class TwilioHelper: NSObject {
                         return
                     }
                 }
-                
+
                 channel.join(completion: { channelResult in
                     if channelResult.isSuccessful() {
                         Log.debug("Channel joined.")
@@ -223,8 +220,8 @@ class TwilioHelper: NSObject {
             }
         }
     }
-    
-    func getLastMessages(count: Int, completion: @escaping ([DemoTextMessageModel?])->()) {
+
+    func getLastMessages(count: Int, completion: @escaping ([DemoTextMessageModel?]) -> ()) {
         var ret = [DemoTextMessageModel]()
         guard let messages = self.selectedChannel.messages else {
             Log.error("nil messages in selected channel")
@@ -232,7 +229,7 @@ class TwilioHelper: NSObject {
             return
         }
 
-        messages.getLastWithCount(UInt(count), completion: { (result, messages) in
+        messages.getLastWithCount(UInt(count), completion: { result, messages in
             guard let messages = messages else {
                 Log.error("Twilio can't get last messages")
                 completion(ret)
@@ -247,20 +244,22 @@ class TwilioHelper: NSObject {
                     return
                 }
                 let isIncoming = message.author == self.username ? false : true
-                ret.append(createTextMessageModel("\(ret.count)", text: messageBody, isIncoming: isIncoming, status: .success, date: messageDate))
+                let textMessageModel = createTextMessageModel("\(ret.count)", text: messageBody, isIncoming: isIncoming,
+                                                              status: .success, date: messageDate)
+                ret.append(textMessageModel)
             }
             completion(ret)
         })
     }
- 
-    func getMessages(before: Int, withCount: Int, completion: @escaping ([DemoTextMessageModel?])->()) {
+
+    func getMessages(before: Int, withCount: Int, completion: @escaping ([DemoTextMessageModel?]) -> ()) {
         var ret = [DemoTextMessageModel]()
         guard let messages = self.selectedChannel.messages else {
             Log.error("nil messages in selected channel")
             completion(ret)
             return
         }
-        messages.getBefore(UInt(before), withCount: UInt(withCount), completion: { (result, messages) in
+        messages.getBefore(UInt(before), withCount: UInt(withCount), completion: { result, messages in
             guard let messages = messages else {
                 Log.error("Twilio can't get last messages")
                 completion(ret)
@@ -280,7 +279,7 @@ class TwilioHelper: NSObject {
             completion(ret)
         })
     }
-    
+
     func destroyChannel(_ number: Int, completion: @escaping () -> ()) {
         let channel = self.channels.subscribedChannels()[number]
         channel.destroy { result in
@@ -291,7 +290,7 @@ class TwilioHelper: NSObject {
             }
         }
     }
-    
+
     func getCompanion(ofChannel: Int) -> String {
         let channel = self.channels.subscribedChannels()[ofChannel]
         guard let attributes = channel.attributes(),
@@ -301,11 +300,11 @@ class TwilioHelper: NSObject {
                 Log.error("Error: Didn't find channel attributes")
                 return "Error name"
         }
-        
-        let result =  initiator == self.username ? responder : initiator
+
+        let result = initiator == self.username ? responder : initiator
         return result
     }
-    
+
     func getCompanion(ofChannel channel: TCHChannel) -> String {
         guard let attributes = channel.attributes(),
             let initiator = attributes["initiator"] as? String,
@@ -314,8 +313,8 @@ class TwilioHelper: NSObject {
                 Log.error("Error: Didn't find channel attributes")
                 return "Error name"
         }
-        
-        let result =  initiator == self.username ? responder : initiator
+
+        let result = initiator == self.username ? responder : initiator
         return result
     }
 }

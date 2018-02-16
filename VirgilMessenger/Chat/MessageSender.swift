@@ -34,7 +34,7 @@ public protocol DemoMessageModelProtocol: MessageModelProtocol {
 
 public class MessageSender {
 
-    public var onMessageChanged: ((_ message: DemoMessageModelProtocol) -> Void)?
+    public var onMessageChanged: ((_ message: DemoMessageModelProtocol) -> ())?
 
     public func sendMessages(_ messages: [DemoMessageModelProtocol]) {
         for message in messages {
@@ -68,14 +68,13 @@ public class MessageSender {
         }
         self.sendMessage(usingSession: session, message: message)
     }
-    
+
     private func sendMessage(usingSession session: SecureSession, message: DemoMessageModelProtocol) {
         let msg = message as! DemoTextMessageModel
         do {
             let ciphertext = try session.encrypt(msg.body)
             self.messageStatus(ciphertext: ciphertext, message: message)
-        }
-        catch {
+        } catch {
             Log.error("Error trying to encrypt message")
              self.updateMessage(message, status: .failed)
             return
@@ -97,7 +96,7 @@ public class MessageSender {
                     if result.isSuccessful() {
                         self.updateMessage(message, status: .success)
                         let msg = message as! DemoTextMessageModel
-                        
+
                         CoreDataHelper.sharedInstance.createMessage(withBody: msg.body, isIncoming: false, date: message.date)
                         return
                     } else {
@@ -106,11 +105,10 @@ public class MessageSender {
                         return
                     }
                 }
-            }
-            else {
+            } else {
                 Log.error("can't get channel messages")
             }
-             
+
         }
     }
 

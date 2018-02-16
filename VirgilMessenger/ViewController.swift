@@ -10,21 +10,20 @@ import UIKit
 import CoreData
 
 class ViewController: UIViewController {
-    
+
     deinit {
         Log.debug(self.description)
     }
-    
+
     func switchNavigationStack(to navigationController: UINavigationController) {
         let window = UIApplication.shared.keyWindow!
-        
+
         UIView.transition(with: window, duration: UIConstants.TransitionAnimationDuration, options: .transitionCrossDissolve, animations: {
             window.rootViewController = navigationController
         })
     }
-    
+
     var isRootViewController: Bool {
         return self.navigationController?.viewControllers.count ?? 1 == 1
     }
 }
-

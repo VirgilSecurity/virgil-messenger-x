@@ -32,7 +32,7 @@ public class DemoTextMessageModel: TextMessageModel<MessageModel>, DemoMessageMo
     }
 
     private(set) var body: String
-    
+
     public var status: MessageStatus {
         get {
             return self._messageModel.status

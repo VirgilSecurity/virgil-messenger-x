@@ -13,10 +13,10 @@ import ChattoAdditions
 class ChatViewController: BaseChatViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.chatDataSource = FakeDataSource(messages: [TextMessageItem(textMessage: TextMessage(text: "Test1"))], pageSize: 5)
     }
-    
+
     var chatInputPresenter: BasicChatInputBarPresenter!
     override func createChatInputView() -> UIView {
         let chatInputView = ChatInputBar.loadNib()
@@ -27,13 +27,13 @@ class ChatViewController: BaseChatViewController {
         chatInputView.maxCharactersCount = 1000
         return chatInputView
     }
-    
+
     func createChatInputItems() -> [ChatInputItemProtocol] {
         var items = [ChatInputItemProtocol]()
         items.append(self.createTextInputItem())
         return items
     }
-    
+
     private func createTextInputItem() -> TextChatInputItem {
         let item = TextChatInputItem()
         item.textInputHandler = { [weak self] text in
@@ -41,12 +41,12 @@ class ChatViewController: BaseChatViewController {
         }
         return item
     }
-    
+
     override func createPresenterBuilders() -> [ChatItemType: [ChatItemPresenterBuilderProtocol]] {
         let textMessagePresenter = TextMessagePresenterBuilder()
-        
+
         return [
-            "text": [textMessagePresenter],
+            "text": [textMessagePresenter]
         ]
     }
 }

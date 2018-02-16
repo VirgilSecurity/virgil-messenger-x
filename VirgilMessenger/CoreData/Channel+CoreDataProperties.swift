@@ -10,7 +10,6 @@
 import Foundation
 import CoreData
 
-
 extension Channel {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Channel> {

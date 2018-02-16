@@ -11,48 +11,47 @@ import UIKit
 import PKHUD
 
 class ChatListViewController: ViewController {
-    
+
     @IBOutlet weak var noChatsView: UIView!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.updateLastMessages()
-        
+
         self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main), forCellReuseIdentifier: ChatListCell.name)
         self.tableView.rowHeight = 94
         self.tableView.tableFooterView = UIView(frame: .zero)
-        
+
         self.tableView.backgroundColor = UIColor(rgb: 0x2B303B)
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue), object: nil)
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue), object: nil)
-        
+
         self.tableView.dataSource = self
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        noChatsView.isHidden =  TwilioHelper.sharedInstance.channels.subscribedChannels().count == 0 ? false : true
+        noChatsView.isHidden = TwilioHelper.sharedInstance.channels.subscribedChannels().isEmpty ? false : true
         self.tableView.reloadData()
     }
-    
+
     @objc private func reloadTableView(notification: Notification) {
         DispatchQueue.main.async {
             self.tableView.reloadData()
             self.noChatsView.isHidden = true
         }
     }
-    
+
     private func updateLastMessages() {
         let channels = TwilioHelper.sharedInstance.channels.subscribedChannels()
-        
+
         for i in 0..<channels.count {
             let channel = channels[i]
             if let channelCore = CoreDataHelper.sharedInstance.getChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)),
-                let messages = channel.messages
-            {
+                let messages = channel.messages {
                 guard let messagesCore = channelCore.message else {
                     Log.error("messages in Core Data is corrupted")
                     return
@@ -60,15 +59,14 @@ class ChatListViewController: ViewController {
 
                 if  let messageCore = messagesCore.lastObject as? Message,
                     let messageBodyCore = messageCore.body,
-                    let date = messageCore.date
-                {
+                    let date = messageCore.date {
                     let decryptedMessageBodyCore = try? VirgilHelper.sharedInstance.decrypt(encrypted: messageBodyCore)
-                    
+
                     channelCore.lastMessagesBody = decryptedMessageBodyCore ?? ""
                     channelCore.lastMessagesDate = date
                 }
-                
-                messages.getBefore(UInt(messagesCore.count), withCount: 1) { (result, oneMessages) in
+
+                messages.getBefore(UInt(messagesCore.count), withCount: 1) { result, oneMessages in
                     if  let oneMessage = oneMessages,
                         let message = oneMessage.first,
                         let messageBody = message.body,
@@ -76,16 +74,15 @@ class ChatListViewController: ViewController {
                         message.author != TwilioHelper.sharedInstance.username,
                         let stringCard = channelCore.card,
                         let card = VirgilHelper.sharedInstance.buildCard(stringCard),
-                        let secureChat = VirgilHelper.sharedInstance.secureChat
-                     {
+                        let secureChat = VirgilHelper.sharedInstance.secureChat {
                         do {
                             let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
                             let decryptedMessageBody = try session.decrypt(messageBody)
-                            
+
                             channelCore.lastMessagesBody = decryptedMessageBody
                             channelCore.lastMessagesDate = messageDate
-                            
-                            messages.getLastWithCount(UInt(1)) { (result, messages) in
+
+                            messages.getLastWithCount(UInt(1)) { result, messages in
                                 if  let messages = messages,
                                     let message = messages.last,
                                     let messageBody = message.body,
@@ -93,22 +90,21 @@ class ChatListViewController: ViewController {
                                     message.author != TwilioHelper.sharedInstance.username,
                                     let stringCard = channelCore.card,
                                     let card = VirgilHelper.sharedInstance.buildCard(stringCard),
-                                    let secureChat = VirgilHelper.sharedInstance.secureChat
-                                {
+                                    let secureChat = VirgilHelper.sharedInstance.secureChat {
                                     do {
                                         let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
                                         let decryptedMessageBody = try session.decrypt(messageBody)
-                                        
+
                                         channelCore.lastMessagesBody = decryptedMessageBody
                                         channelCore.lastMessagesDate = messageDate
                                     } catch {
                                         Log.error("decryption process failed: \(error.localizedDescription)")
                                     }
                                 }
-    
+
                                 self.tableView.reloadData()
                             }
-                            
+
                             if (messagesCore.count == 0 || (Int(truncating: message.index ?? 0) >= (messagesCore.count))) {
                                 CoreDataHelper.sharedInstance.createMessage(forChannel: channelCore, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
                             }
@@ -120,57 +116,56 @@ class ChatListViewController: ViewController {
             }
         }
     }
-    
+
     @IBAction func noChatsTap(_ sender: Any) {
         self.didTapAdd(self)
     }
-    
+
     @IBAction func didTapAdd(_ sender: Any) {
         guard currentReachabilityStatus != .notReachable else {
             let controller = UIAlertController(title: self.title, message: "Please check your network connection", preferredStyle: .alert)
             controller.addAction(UIAlertAction(title: "OK", style: .default))
             self.present(controller, animated: true)
-            
+
             return
         }
-        
+
         let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
-        
+
         alertController.addTextField(configurationHandler: {
             $0.placeholder = "Username"
             $0.delegate = self
             $0.keyboardAppearance = UIKeyboardAppearance.dark
         })
-        
+
         alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
             guard let username = alertController.textFields?.first?.text else {
                 return
             }
-            
+
             self.addChat(withUsername: username)
         }))
-        
+
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in }))
-        
+
         self.present(alertController, animated: true)
     }
-    
+
     private func addChat(withUsername username: String) {
         let username = username.lowercased()
-    
-        guard (username != TwilioHelper.sharedInstance.username) else {
+
+        guard username != TwilioHelper.sharedInstance.username else {
             self.alert(withTitle: "You need to communicate with other people :)")
             return
         }
-        
+
         if (TwilioHelper.sharedInstance.channels.subscribedChannels().contains {
-            ($0.attributes()?.values.contains { (value) -> Bool in
+            ($0.attributes()?.values.contains { value -> Bool in
                 value as! String == username
             })!
         }) {
             self.alert(withTitle: "You already have this channel")
-        }
-        else {
+        } else {
             HUD.show(.progress)
             TwilioHelper.sharedInstance.createChannel(withUsername: username) { error in
                 HUD.flash(.success)
@@ -181,22 +176,22 @@ class ChatListViewController: ViewController {
                 } else {
                     HUD.flash(.error)
                 }
-                
+
             }
         }
     }
-    
+
     private func alert(withTitle: String) {
         let alert = UIAlertController(title: title, message: withTitle, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        
+
         self.present(alert, animated: true)
     }
-    
+
     static let name = "ChatList"
-    
+
     @IBOutlet weak var tableView: UITableView!
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -205,34 +200,34 @@ class ChatListViewController: ViewController {
 extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
-        
+
         guard let account = CoreDataHelper.sharedInstance.myAccount,
               let channels = account.channel else {
                 Log.error("Can't form row: Core Data account or channels corrupted")
                 return cell
         }
         let count = channels.count
-        
+
         cell.tag = count - indexPath.row - 1
         cell.delegate = self
-       
+
         guard let channel = channels[count - indexPath.row - 1] as? Channel else {
             Log.error("Can't form row: Core Data channel corrupted")
             return cell
         }
         cell.usernameLabel.text = channel.name
-        cell.letterLabel.text =  channel.letter
+        cell.letterLabel.text = channel.letter
         cell.avatarView.gradientLayer.colors = [channel.colorPair.first, channel.colorPair.second]
         cell.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
-        
+
         cell.lastMessageLabel.text = channel.lastMessagesBody
         cell.lastMessageDateLabel.text = channel.lastMessagesDate != nil ? calcDateString(messageDate: channel.lastMessagesDate!) : ""
-        
+
         return cell
     }
-    
+
     private func calcDateString(messageDate: Date) -> String {
-        
+
         let dateFormatter = DateFormatter()
         if messageDate.minutes(from: Date()) < 2 {
             return "now"
@@ -245,10 +240,10 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
         }
 
         let messageDateString = dateFormatter.string(from: messageDate)
-        
+
         return messageDateString
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let account = CoreDataHelper.sharedInstance.myAccount,
               let channels = account.channel else {
@@ -257,15 +252,15 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
         }
         return channels.count
     }
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.backgroundColor = UIColor(rgb: 0x2B303B)
     }
-    
+
     /*
      func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
          if editingStyle == .delete {
@@ -281,31 +276,31 @@ extension ChatListViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         if let username = (cell as! ChatListCell).usernameLabel.text {
             TwilioHelper.sharedInstance.setChannel(withUsername: (username))
-            
+
             if CoreDataHelper.sharedInstance.loadChannel(withName: username) == false {
                 //CoreDataHelper.sharedInstance.createChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel))
                 return
             }
-            
+
             guard let channel = CoreDataHelper.sharedInstance.selectedChannel,
                 let exportedCard = channel.card
                 else {
                     Log.error("can't find selected channel in Core Data")
                     return
             }
-            
+
             VirgilHelper.sharedInstance.setChannelCard(exportedCard)
-            
+
             self.performSegue(withIdentifier: "goToChat", sender: self)
         }
     }
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
-        
+
         if let chatController = segue.destination as? ChatViewController {
             let pageSize = 10000
-            
+
             let dataSource = DataSource(pageSize: pageSize)
             chatController.title = TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel)
             chatController.dataSource = dataSource

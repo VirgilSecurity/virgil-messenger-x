@@ -13,10 +13,10 @@ extension UIColor {
         assert(red >= 0 && red <= 255, "Invalid red component")
         assert(green >= 0 && green <= 255, "Invalid green component")
         assert(blue >= 0 && blue <= 255, "Invalid blue component")
-        
+
         self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
     }
-    
+
     convenience init(rgb: Int) {
         self.init(
             red: (rgb >> 16) & 0xFF,
@@ -24,7 +24,7 @@ extension UIColor {
             blue: rgb & 0xFF
         )
     }
-    
+
     convenience init(_ hex: UInt) {
         self.init(
             red: CGFloat((hex & 0xFF0000) >> 16) / 255.0,
@@ -46,7 +46,7 @@ enum GradientPoint {
     case bottomRightTopLeft
     case topRightBottomLeft
     case bottomLeftTopRight
-    
+
     func draw() -> GradientType {
         switch self {
         case .leftRight:
@@ -69,7 +69,7 @@ enum GradientPoint {
     }
 }
 
-class GradientLayer : CAGradientLayer {
+class GradientLayer: CAGradientLayer {
     var gradient: GradientType? {
         didSet {
             startPoint = gradient?.x ?? CGPoint.zero
