@@ -10,7 +10,6 @@ import UIKit
 import CoreData
 
 class ViewController: UIViewController {
-
     deinit {
         Log.debug(self.description)
     }

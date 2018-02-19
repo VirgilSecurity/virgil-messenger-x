@@ -11,7 +11,6 @@ import Foundation
 import CoreData
 
 extension Account {
-
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Account> {
         return NSFetchRequest<Account>(entityName: "Account")
     }
@@ -20,7 +19,6 @@ extension Account {
     @NSManaged public var identity: String?
     @NSManaged public var numColorPair: Int32
     @NSManaged public var channel: NSOrderedSet?
-
 }
 
 // MARK: Generated accessors for channel

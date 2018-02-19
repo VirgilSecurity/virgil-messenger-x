@@ -21,8 +21,8 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
     enum NotificationKeys: String {
         case NewState = "TwilioHelper.NotificationKeys.NewState"
-        case Message  = "TwilioHelper.NotificationKeys.Message"
-        case Channel  = "TwilioHelper.NotificationKeys.Channel"
+        case Message = "TwilioHelper.NotificationKeys.Message"
+        case Channel = "TwilioHelper.NotificationKeys.Channel"
     }
 
     enum ConnectionState: String {

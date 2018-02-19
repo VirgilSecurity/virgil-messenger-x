@@ -193,10 +193,10 @@ Add new one!</string>
             </objects>
             <point key="canvasLocation" x="-174.375" y="-250.35211267605635"/>
         </scene>
-        <!--Profile-->
+        <!--Settings-->
         <scene sceneID="nFk-NX-eCI">
             <objects>
-                <viewControllerPlaceholder storyboardName="Profile" id="LyI-I0-95t" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Settings" id="LyI-I0-95t" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XEl-sS-lfX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="728" y="-250"/>

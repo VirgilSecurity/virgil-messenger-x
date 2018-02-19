@@ -10,7 +10,6 @@ import UIKit
 import SystemConfiguration
 
 extension NSObject {
-
     enum ReachabilityStatus {
         case notReachable
         case reachableViaWWAN
@@ -18,7 +17,6 @@ extension NSObject {
     }
 
     var currentReachabilityStatus: ReachabilityStatus {
-
         var zeroAddress = sockaddr_in()
         zeroAddress.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
         zeroAddress.sin_family = sa_family_t(AF_INET)
@@ -52,5 +50,4 @@ extension NSObject {
             return .notReachable
         }
     }
-
 }

@@ -32,7 +32,7 @@
         <!--Settings-->
         <scene sceneID="jLX-Ua-opZ">
             <objects>
-                <viewController id="0FS-Ih-wjM" customClass="ProfileViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="0FS-Ih-wjM" customClass="SettingsViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7iE-m9-29w">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

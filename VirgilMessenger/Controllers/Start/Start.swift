@@ -11,10 +11,11 @@ import UIKit
 import PKHUD
 
 class StartViewController: ViewController {
-
     static let name = "Start"
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
         if let username = UserDefaults.standard.string(forKey: "last_username"),
             !username.isEmpty {
             PKHUD.sharedHUD.contentView = PKHUDProgressView()
@@ -32,7 +33,7 @@ class StartViewController: ViewController {
                 return
             }
 
-            VirgilHelper.sharedInstance.signIn(identity: username) { error, title in
+            VirgilHelper.sharedInstance.signIn(identity: username) { error in
                 guard error == nil else {
                     PKHUD.sharedHUD.hide(true) { _ in
                         self.goToLogin()
@@ -41,7 +42,7 @@ class StartViewController: ViewController {
                 }
 
                 PKHUD.sharedHUD.hide(true) { _ in
-                    self.goToMain()
+                    self.goToChatList()
                 }
             }
         } else {
@@ -49,7 +50,7 @@ class StartViewController: ViewController {
         }
     }
 
-    private func goToMain() {
+    private func goToChatList() {
         let vc = UIStoryboard(name: "ChatList", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
 
         self.switchNavigationStack(to: vc)

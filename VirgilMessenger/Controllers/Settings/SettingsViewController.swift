@@ -1,5 +1,5 @@
 //
-//  ProfileViewController.swift
+//  SettingsViewController.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 11/22/17.
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import AVFoundation
 
-class ProfileViewController: ViewController {
+class SettingsViewController: ViewController {
     @IBOutlet weak var avatarView: GradientView!
     @IBOutlet weak var letterLabel: UILabel!
     @IBOutlet weak var usernameLabel: UILabel!
@@ -48,7 +48,7 @@ class ProfileViewController: ViewController {
 
 }
 
-extension ProfileViewController: UITableViewDelegate {
+extension SettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -95,7 +95,7 @@ extension ProfileViewController: UITableViewDelegate {
     }
 }
 
-extension ProfileViewController: UITableViewDataSource {
+extension SettingsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }

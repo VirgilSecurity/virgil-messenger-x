@@ -11,20 +11,19 @@ import Foundation
 import CoreData
 
 class CoreDataHelper {
-
-    static private(set) var sharedInstance: CoreDataHelper!
-
     private let queue: DispatchQueue
     private let appDelegate = UIApplication.shared.delegate as! AppDelegate
     private let managedContext: NSManagedObjectContext
+
+    static private(set) var sharedInstance: CoreDataHelper!
     private(set) var accounts: [Account] = []
     private(set) var selectedChannel: Channel?
-    var myAccount: Account?
+    private(set) var myAccount: Account?
 
     enum Entities: String {
-        case Account = "Account"
-        case Channel = "Channel"
-        case Message = "Message"
+        case account = "Account"
+        case channel = "Channel"
+        case message = "Message"
     }
 
     enum Keys: String {
@@ -91,8 +90,8 @@ class CoreDataHelper {
 
     func createAccount(withIdentity identity: String, exportedCard: String, completion: @escaping () -> ()) {
         self.queue.async {
-            guard let entity = NSEntityDescription.entity(forEntityName: Entities.Account.rawValue, in: self.managedContext) else {
-                Log.error("Core Data: entity not found: " + Entities.Account.rawValue)
+            guard let entity = NSEntityDescription.entity(forEntityName: Entities.account.rawValue, in: self.managedContext) else {
+                Log.error("Core Data: entity not found: " + Entities.account.rawValue)
                 return
             }
 
@@ -128,8 +127,8 @@ class CoreDataHelper {
             return
         }
 
-        guard let entity = NSEntityDescription.entity(forEntityName: Entities.Channel.rawValue, in: self.managedContext) else {
-            Log.error("Core Data: entity not found: " + Entities.Channel.rawValue)
+        guard let entity = NSEntityDescription.entity(forEntityName: Entities.channel.rawValue, in: self.managedContext) else {
+            Log.error("Core Data: entity not found: " + Entities.channel.rawValue)
             return
         }
 
@@ -160,8 +159,8 @@ class CoreDataHelper {
 
     func createMessage(forChannel channel: Channel, withBody body: String, isIncoming: Bool, date: Date) {
         self.queue.async {
-            guard let entity = NSEntityDescription.entity(forEntityName: Entities.Message.rawValue, in: self.managedContext) else {
-                Log.error("Core Data: entity not found: " + Entities.Message.rawValue)
+            guard let entity = NSEntityDescription.entity(forEntityName: Entities.message.rawValue, in: self.managedContext) else {
+                Log.error("Core Data: entity not found: " + Entities.message.rawValue)
                 return
             }
 
@@ -250,8 +249,7 @@ class CoreDataHelper {
     }
 
     private func fetch() -> [Account]? {
-        let fetchRequest =
-            NSFetchRequest<NSManagedObject>(entityName: Entities.Account.rawValue)
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: Entities.account.rawValue)
 
         do {
             let accounts = try managedContext.fetch(fetchRequest) as? [Account]

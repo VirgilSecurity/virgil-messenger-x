@@ -57,9 +57,13 @@ extension CollectionViewController {
             return
         }
 
-        VirgilHelper.sharedInstance.signIn(identity: username) { error, message in
+        VirgilHelper.sharedInstance.signIn(identity: username) { error in
             guard error == nil else {
-                let message = message == nil ? "unknown error" : message
+                var message: String?
+                if let err = error as? VirgilHelper.UserFriendlyError {
+                    message = err.localizedDescription
+                }
+                message = message ?? "Something went wrong"
                 PKHUD.sharedHUD.hide() { _ in
                     let controller = UIAlertController(title: self.title, message: message, preferredStyle: .alert)
                     controller.addAction(UIAlertAction(title: "OK", style: .default))

@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if UserDefaults.standard.string(forKey: "first_launch")?.isEmpty ?? true {
             let context = persistentContainer.viewContext
             let fetchRequest =
-                NSFetchRequest<NSManagedObject>(entityName: CoreDataHelper.Entities.Account.rawValue)
+                NSFetchRequest<NSManagedObject>(entityName: CoreDataHelper.Entities.account.rawValue)
             if let result = try? context.fetch(fetchRequest) {
                 for object in result {
                     context.delete(object)
@@ -42,7 +42,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //defining selection color for tableViews
         let colorView = UIView()
         colorView.backgroundColor = UIColor(rgb: 0x2B303B)
-
         UITableViewCell.appearance().selectedBackgroundView = colorView
 
         return true
