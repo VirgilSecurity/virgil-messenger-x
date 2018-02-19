@@ -10,7 +10,6 @@ import Foundation
 import VirgilSDKPFS
 
 class VirgilHelper {
-
     static let sharedInstance = VirgilHelper()
     private let crypto: VSSCrypto
     private let keyStorage: VSSKeyStorage

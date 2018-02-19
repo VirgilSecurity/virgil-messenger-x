@@ -54,10 +54,13 @@ class ChatViewController: BaseChatViewController {
         let chatInputView = InputBar.loadNib()
         var appearance = ChatInputBarAppearance()
         appearance.textInputAppearance.textColor = .white
+        appearance.textInputAppearance.font = appearance.textInputAppearance.font.withSize(CGFloat(20))
         appearance.sendButtonAppearance.titleColors = [UIControlStateWrapper(state: UIControlState.disabled) : UIColor(rgb: 0x585A60)]
+        appearance.sendButtonAppearance.font = appearance.textInputAppearance.font
 
         appearance.sendButtonAppearance.title = NSLocalizedString("Send", comment: "")
         appearance.textInputAppearance.placeholderText = NSLocalizedString("Message...", comment: "")
+        appearance.textInputAppearance.placeholderFont = appearance.textInputAppearance.font
         self.chatInputPresenter = BasicChatInputBarPresenter(chatInputBar: chatInputView, chatInputItems: self.createChatInputItems(), chatInputBarAppearance: appearance)
         chatInputView.maxCharactersCount = 1000
         return chatInputView
