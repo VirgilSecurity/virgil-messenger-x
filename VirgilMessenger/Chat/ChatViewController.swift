@@ -111,7 +111,7 @@ class ChatViewController: BaseChatViewController {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-        TwilioHelper.sharedInstance.selectedChannel = nil
+        TwilioHelper.sharedInstance.deselectChannel()
         VirgilHelper.sharedInstance.setChannelCard(nil)
     }
 

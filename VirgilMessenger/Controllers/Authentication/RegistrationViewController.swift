@@ -10,7 +10,6 @@ import UIKit
 import PKHUD
 
 class RegistrationViewController: ViewController, UITextViewDelegate {
-
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var privacyLabel: UITextView!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
@@ -31,7 +30,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
 
         let range = (text as NSString).range(of: text)
         attriString.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor(rgb: 0x6B6B70), range: range)
-        attriString.addAttribute(NSAttributedStringKey.font, value: UIFont.init(name: privacyLabel.font!.fontName, size: 13)!, range: range)
+        attriString.addAttribute(NSAttributedStringKey.font, value: UIFont(name: privacyLabel.font!.fontName, size: 13)!, range: range)
 
         let range1 = (text as NSString).range(of: "Terms of Service")
         attriString.addAttribute(NSAttributedStringKey.link, value: termsAndConditionsURL, range: range1)

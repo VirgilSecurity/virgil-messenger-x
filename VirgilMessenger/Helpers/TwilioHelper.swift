@@ -10,9 +10,16 @@ import Foundation
 import TwilioChatClient
 
 class TwilioHelper: NSObject {
-    static func authorize(username: String, device: String) {
-        self.sharedInstance = TwilioHelper(username: username, device: device)
-    }
+    private(set) static var sharedInstance: TwilioHelper!
+    private(set) var client: TwilioChatClient!
+    private(set) var channels: TCHChannels!
+    private(set) var users: TCHUsers!
+    private(set) var currentChannel: TCHChannel!
+
+    let username: String
+    private let queue = DispatchQueue(label: "TwilioHelper")
+    private let device: String
+    private let connection = ServiceConnection()
 
     enum TwilioHelperError: Int, Error {
         case initFailed
@@ -21,7 +28,9 @@ class TwilioHelper: NSObject {
         case joiningFailed
     }
 
-    private(set) static var sharedInstance: TwilioHelper!
+    static func authorize(username: String, device: String) {
+        self.sharedInstance = TwilioHelper(username: username, device: device)
+    }
 
     private init(username: String, device: String) {
         self.username = username
@@ -29,15 +38,6 @@ class TwilioHelper: NSObject {
 
         super.init()
     }
-
-    private let queue = DispatchQueue(label: "TwilioHelper")
-    let username: String
-    private let device: String
-    private let connection = ServiceConnection()
-    private(set) var client: TwilioChatClient!
-    private(set) var channels: TCHChannels!
-    private(set) var users: TCHUsers!
-    var selectedChannel: TCHChannel!
 
     func initialize(token: String, completion: @escaping (Error?) -> ()) {
         Log.debug("Initializing Twilio")
@@ -77,59 +77,30 @@ class TwilioHelper: NSObject {
         for channel in channels.subscribedChannels() {
             if channel.status == TCHChannelStatus.invited {
                 channel.join() { channelResult in
-                    if channelResult.isSuccessful() {
+                    if channelResult.isSuccessful(),
+                        let messages = channel.messages {
+
                         Log.debug("Successfully accepted invite.")
                         let identity = self.getCompanion(ofChannel: channel)
                         Log.debug("identity: \(identity)")
                         VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
                             guard let card = card, error == nil else {
-                                Log.error("failed to add new channel card")
+                                Log.error("failed to get new channel card")
                                 return
                             }
-                            CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
-                            let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: channel))!
-                            channel.messages?.getBefore(0, withCount: 1) { result, messages in
-                                if  let messages = messages,
-                                    let message = messages.first,
-                                    let messageBody = message.body,
-                                    let messageDate = message.dateUpdatedAsDate,
-                                    message.author != TwilioHelper.sharedInstance.username,
-                                    let stringCard = coreDataChannel.card,
-                                    let card = VirgilHelper.sharedInstance.buildCard(stringCard),
-                                    let secureChat = VirgilHelper.sharedInstance.secureChat {
-                                    do {
-                                        let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
-                                        let decryptedMessageBody = try session.decrypt(messageBody)
-
-                                        coreDataChannel.lastMessagesBody = decryptedMessageBody
-                                        coreDataChannel.lastMessagesDate = messageDate
-
-                                        CoreDataHelper.sharedInstance.createMessage(forChannel: coreDataChannel, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
-                                    } catch {
-                                        Log.error("decryption process of first message failed: \(error.localizedDescription)")
-                                    }
-                                }
+                            guard let channelCore = CoreDataHelper.sharedInstance.createChannel(withName: identity,
+                                                                                                    card: card.exportData()) else {
+                                Log.error("failed to create new core data channel")
+                                return
                             }
-
-                            channel.messages?.getLastWithCount(UInt(1)) { result, messages in
-                                if  let messages = messages,
-                                    let message = messages.last,
-                                    let messageBody = message.body,
-                                    let messageDate = message.dateUpdatedAsDate,
-                                    message.author != TwilioHelper.sharedInstance.username,
-                                    let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)),
-                                    let stringCard = coreDataChannel.card,
-                                    let card = VirgilHelper.sharedInstance.buildCard(stringCard),
-                                    let secureChat = VirgilHelper.sharedInstance.secureChat {
-                                    do {
-                                        let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
-                                        let decryptedMessageBody = try session.decrypt(messageBody)
-
-                                        coreDataChannel.lastMessagesBody = decryptedMessageBody
-                                        coreDataChannel.lastMessagesDate = messageDate
-                                    } catch {
-                                        Log.error("decryption process failed: \(error.localizedDescription)")
-                                    }
+                            self.decryptFirstMessage(of: messages, channel: channelCore, saved: 0) { message, decryptedMessageBody, messageDate in
+                                guard let decryptedMessageBody = decryptedMessageBody,
+                                    let messageDate = messageDate else {
+                                        return
+                                }
+                                CoreDataHelper.sharedInstance.createMessage(forChannel: channelCore, withBody: decryptedMessageBody,
+                                                                            isIncoming: true, date: messageDate)
+                                self.setLastMessage(of: messages, channel: channelCore) {
                                     NotificationCenter.default.post(
                                         name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
                                         object: self,
@@ -154,7 +125,7 @@ class TwilioHelper: NSObject {
     func setChannel(withUsername username: String) {
         for channel in channels.subscribedChannels() {
             if getCompanion(ofChannel: channel) == username {
-                self.selectedChannel = channel
+                self.currentChannel = channel
                 return
             }
         }
@@ -169,7 +140,7 @@ class TwilioHelper: NSObject {
                 }
                 return
             }
-            CoreDataHelper.sharedInstance.createChannel(withName: username, card: card.exportData())
+            _ = CoreDataHelper.sharedInstance.createChannel(withName: username, card: card.exportData())
 
             TwilioHelper.sharedInstance.channels.createChannel(options: [
                 TCHChannelOptionType: TCHChannelType.private.rawValue,
@@ -221,9 +192,62 @@ class TwilioHelper: NSObject {
         }
     }
 
+    func setLastMessage(of messages: TCHMessages, channel: Channel, completion: @escaping () -> ()) {
+        messages.getLastWithCount(UInt(1)) { result, messages in
+            if  let messages = messages,
+                let message = messages.last,
+                let messageBody = message.body,
+                let messageDate = message.dateUpdatedAsDate,
+                message.author != TwilioHelper.sharedInstance.username,
+                let stringCard = channel.card,
+                let card = VirgilHelper.sharedInstance.buildCard(stringCard),
+                let secureChat = VirgilHelper.sharedInstance.secureChat {
+                do {
+                    let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
+                    let decryptedMessageBody = try session.decrypt(messageBody)
+
+                    channel.lastMessagesBody = decryptedMessageBody
+                    channel.lastMessagesDate = messageDate
+                } catch {
+                    Log.error("decryption process failed: \(error.localizedDescription)")
+                }
+            }
+
+            completion()
+        }
+    }
+
+    func decryptFirstMessage(of messages: TCHMessages, channel: Channel, saved: Int, completion: @escaping (TCHMessage?, String?, Date?) -> ()) {
+        messages.getBefore(UInt(saved), withCount: 1) { result, oneMessages in
+            guard let oneMessages = oneMessages,
+                let message = oneMessages.first,
+                let messageBody = message.body,
+                let messageDate = message.dateUpdatedAsDate,
+                message.author != TwilioHelper.sharedInstance.username,
+                let stringCard = channel.card,
+                let card = VirgilHelper.sharedInstance.buildCard(stringCard),
+                let secureChat = VirgilHelper.sharedInstance.secureChat else {
+                    completion(nil, nil, nil)
+                    return
+            }
+            do {
+                let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
+                let decryptedMessageBody = try session.decrypt(messageBody)
+
+                channel.lastMessagesBody = decryptedMessageBody
+                channel.lastMessagesDate = messageDate
+
+                completion(message, decryptedMessageBody, messageDate)
+            } catch {
+                Log.error("decryption process of first message failed: \(error.localizedDescription)")
+                completion(nil, nil, nil)
+            }
+        }
+    }
+
     func getLastMessages(count: Int, completion: @escaping ([DemoTextMessageModel?]) -> ()) {
         var ret = [DemoTextMessageModel]()
-        guard let messages = self.selectedChannel.messages else {
+        guard let messages = self.currentChannel.messages else {
             Log.error("nil messages in selected channel")
             completion(ret)
             return
@@ -254,7 +278,7 @@ class TwilioHelper: NSObject {
 
     func getMessages(before: Int, withCount: Int, completion: @escaping ([DemoTextMessageModel?]) -> ()) {
         var ret = [DemoTextMessageModel]()
-        guard let messages = self.selectedChannel.messages else {
+        guard let messages = self.currentChannel.messages else {
             Log.error("nil messages in selected channel")
             completion(ret)
             return
@@ -316,5 +340,9 @@ class TwilioHelper: NSObject {
 
         let result = initiator == self.username ? responder : initiator
         return result
+    }
+
+    func deselectChannel() {
+        self.currentChannel = nil
     }
 }

@@ -89,7 +89,7 @@ public class MessageSender {
             self.updateMessage(message, status: .sending)
             self.messageStatus(ciphertext: ciphertext, message: message)
         case .sending:
-            if let messages = TwilioHelper.sharedInstance.selectedChannel.messages {
+            if let messages = TwilioHelper.sharedInstance.currentChannel.messages {
                 let options = TCHMessageOptions().withBody(ciphertext)
                 Log.debug("sending \(ciphertext)")
                 messages.sendMessage(with: options) { result, msg in

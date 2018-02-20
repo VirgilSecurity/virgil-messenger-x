@@ -41,7 +41,7 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     private func getLastMessages() {
-        guard let channel = CoreDataHelper.sharedInstance.selectedChannel, let messages = channel.message else {
+        guard let channel = CoreDataHelper.sharedInstance.currentChannel, let messages = channel.message else {
             Log.error("Can't get last messages: channel not found in Core Data")
             return
         }
@@ -80,7 +80,7 @@ class DataSource: ChatDataSourceProtocol {
         }
 
         Log.debug("channel card id: \(card.identity)")
-        Log.debug("selected channel with attributes: \(TwilioHelper.sharedInstance.selectedChannel.attributes() ?? ["no attributes" : ""])")
+        Log.debug("selected channel with attributes: \(TwilioHelper.sharedInstance.currentChannel.attributes() ?? ["no attributes" : ""])")
 
         TwilioHelper.sharedInstance.getLastMessages(count: pageSize) { messages in
             for message in messages {

@@ -33,7 +33,7 @@ class SettingsViewController: ViewController {
         let up = TwilioHelper.sharedInstance.username.uppercased().first!
         self.letterLabel.text = String(describing: up)
 
-        if let account = CoreDataHelper.sharedInstance.myAccount {
+        if let account = CoreDataHelper.sharedInstance.currentAccount {
             let num = Int(account.numColorPair)
             let f = UIConstants.colorPairs[num].first
             let s = UIConstants.colorPairs[num].second

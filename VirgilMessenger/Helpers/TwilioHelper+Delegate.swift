@@ -35,12 +35,12 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
         init(state: TCHClientConnectionState) {
             switch state {
-            case .unknown:       self = .unknown
-            case .disconnected:  self = .disconnected
-            case .connected:     self = .connected
-            case .connecting:    self = .connecting
-            case .denied:        self = .denied
-            case .error:         self = .error
+            case .unknown: self = .unknown
+            case .disconnected: self = .disconnected
+            case .connected: self = .connected
+            case .connecting: self = .connecting
+            case .denied: self = .denied
+            case .error: self = .error
             }
         }
     }
@@ -61,11 +61,11 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
     func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
         Log.debug("message added")
-        guard self.selectedChannel != nil else {
+        guard self.currentChannel != nil else {
             self.processMessage(channel: channel, message: message)
             return
         }
-        if getCompanion(ofChannel: channel) == getCompanion(ofChannel: self.selectedChannel) {
+        if getCompanion(ofChannel: channel) == getCompanion(ofChannel: self.currentChannel) {
             Log.debug("it's from selected channel")
             if message.author != self.username {
                 Log.debug("author is not me")
@@ -112,9 +112,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
             if coreDataChannel.message?.count == 0 {
                 CoreDataHelper.sharedInstance.createMessage(forChannel: coreDataChannel, withBody: plaintext, isIncoming: true, date: messageDate)
             }
-
             Log.debug("Receiving " + plaintext)
-
         } catch {
             Log.error("decryption process failed")
         }
@@ -146,7 +144,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                             Log.error("failed to add new channel card")
                             return
                         }
-                        CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
+                        _ = CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
                         Log.debug("new card added")
                         NotificationCenter.default.post(
                             name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),

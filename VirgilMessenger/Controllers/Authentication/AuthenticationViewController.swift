@@ -9,9 +9,9 @@
 import UIKit
 
 class AuthenticationViewController: ViewController {
-
     @IBOutlet weak var collectionViewWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var collectionView: UICollectionView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }
