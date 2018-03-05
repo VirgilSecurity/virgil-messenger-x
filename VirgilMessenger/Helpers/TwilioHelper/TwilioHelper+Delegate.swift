@@ -59,6 +59,40 @@ extension TwilioHelper: TwilioChatClientDelegate {
             ])
     }
 
+    func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
+        Log.debug("Channel added")
+        if channel.status == TCHChannelStatus.invited {
+            channel.join { channelResult in
+                if channelResult.isSuccessful() {
+                    Log.debug("Successfully accepted invite.")
+                    let identity = self.getCompanion(ofChannel: channel)
+                    Log.debug("identity: \(identity)")
+                    VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
+                        guard let card = card, error == nil else {
+                            Log.error("failed to add new channel card")
+                            return
+                        }
+                        _ = CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
+                        Log.debug("new card added")
+                        NotificationCenter.default.post(
+                            name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                            object: self,
+                            userInfo: [:])
+                    }
+                } else {
+                    Log.error("Failed to accept invite.")
+                }
+            }
+        }
+    }
+
+    func chatClient(_ client: TwilioChatClient, channelDeleted channel: TCHChannel) {
+        NotificationCenter.default.post(
+            name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+            object: self,
+            userInfo: [:])
+    }
+
     func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
         Log.debug("message added")
         guard self.currentChannel != nil else {
@@ -137,39 +171,5 @@ extension TwilioHelper: TwilioChatClientDelegate {
             userInfo: [
                 TwilioHelper.NotificationKeys.Message.rawValue: message
             ])
-    }
-
-    func chatClient(_ client: TwilioChatClient, channelDeleted channel: TCHChannel) {
-        NotificationCenter.default.post(
-            name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-            object: self,
-            userInfo: [:])
-    }
-
-    func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
-        Log.debug("Channel added")
-        if channel.status == TCHChannelStatus.invited {
-            channel.join { channelResult in
-                if channelResult.isSuccessful() {
-                    Log.debug("Successfully accepted invite.")
-                    let identity = self.getCompanion(ofChannel: channel)
-                    Log.debug("identity: \(identity)")
-                    VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
-                        guard let card = card, error == nil else {
-                            Log.error("failed to add new channel card")
-                            return
-                        }
-                        _ = CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
-                        Log.debug("new card added")
-                        NotificationCenter.default.post(
-                            name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-                            object: self,
-                            userInfo: [:])
-                    }
-                } else {
-                    Log.error("Failed to accept invite.")
-                }
-            }
-        }
     }
 }

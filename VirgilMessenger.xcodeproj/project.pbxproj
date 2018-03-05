@@ -37,6 +37,8 @@
 		16FA91051FFC55A400FE98C7 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FA91041FFC55A400FE98C7 /* Reachability.swift */; };
 		16FB2DCA204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DC9204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift */; };
 		16FB2DCC204D806E00346FA0 /* DemoPhotoMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DCB204D806E00346FA0 /* DemoPhotoMessageViewModel.swift */; };
+		16FB2DCE204D832F00346FA0 /* TwilioHelper+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DCD204D832F00346FA0 /* TwilioHelper+Channel.swift */; };
+		16FB2DD1204D846900346FA0 /* TwilioHelper+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DD0204D846900346FA0 /* TwilioHelper+Message.swift */; };
 		16FCF27E1FE46756000348BC /* Channel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FCF27A1FE46756000348BC /* Channel+CoreDataClass.swift */; };
 		16FCF27F1FE46756000348BC /* Channel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FCF27B1FE46756000348BC /* Channel+CoreDataProperties.swift */; };
 		16FCF2801FE46756000348BC /* Account+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FCF27C1FE46756000348BC /* Account+CoreDataClass.swift */; };
@@ -137,6 +139,8 @@
 		16FA91041FFC55A400FE98C7 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		16FB2DC9204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoEncryptedPhotoMessageModel.swift; sourceTree = "<group>"; };
 		16FB2DCB204D806E00346FA0 /* DemoPhotoMessageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageViewModel.swift; sourceTree = "<group>"; };
+		16FB2DCD204D832F00346FA0 /* TwilioHelper+Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Channel.swift"; sourceTree = "<group>"; };
+		16FB2DD0204D846900346FA0 /* TwilioHelper+Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Message.swift"; sourceTree = "<group>"; };
 		16FCF27A1FE46756000348BC /* Channel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Channel+CoreDataClass.swift"; sourceTree = "<group>"; };
 		16FCF27B1FE46756000348BC /* Channel+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Channel+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		16FCF27C1FE46756000348BC /* Account+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -243,8 +247,7 @@
 			children = (
 				16961B5B203B04E00084086E /* VirgilHelper */,
 				16277240203C60BE0086127C /* CoreDataHelper */,
-				429228E21F963DBE00DCECDF /* TwilioHelper.swift */,
-				429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */,
+				16FB2DCF204D843300346FA0 /* TwilioHelper */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -255,6 +258,7 @@
 				16CA51001FC45E840042AF9D /* Start */,
 				16B69E061FA9D2CA00FE8A8D /* Authentication */,
 				423BDA761F97600A00C3EE9B /* ChatList */,
+				16E22D871FA896BE008D32D9 /* Chat */,
 				16CA51111FC5DA1F0042AF9D /* Settings */,
 			);
 			path = Controllers;
@@ -352,6 +356,17 @@
 			path = Decorations;
 			sourceTree = "<group>";
 		};
+		16FB2DCF204D843300346FA0 /* TwilioHelper */ = {
+			isa = PBXGroup;
+			children = (
+				429228E21F963DBE00DCECDF /* TwilioHelper.swift */,
+				429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */,
+				16FB2DCD204D832F00346FA0 /* TwilioHelper+Channel.swift */,
+				16FB2DD0204D846900346FA0 /* TwilioHelper+Message.swift */,
+			);
+			path = TwilioHelper;
+			sourceTree = "<group>";
+		};
 		423BDA761F97600A00C3EE9B /* ChatList */ = {
 			isa = PBXGroup;
 			children = (
@@ -418,7 +433,6 @@
 				166D3E5C1FB495DA0032BAAD /* CoreData */,
 				16961B4E203ADE850084086E /* Helpers */,
 				16961B4F203ADEDE0084086E /* Controllers */,
-				16E22D871FA896BE008D32D9 /* Chat */,
 				16961B50203ADFBA0084086E /* Utils */,
 				429228B51F96261000DCECDF /* AppDelegate.swift */,
 				429228B71F96261000DCECDF /* ViewController.swift */,
@@ -626,6 +640,7 @@
 				16F6FC721FAA235400158615 /* RegistrationViewController.swift in Sources */,
 				4280C0D91F97341A00075B3A /* DemoTextMessageHandler.swift in Sources */,
 				16FCF2801FE46756000348BC /* Account+CoreDataClass.swift in Sources */,
+				16FB2DD1204D846900346FA0 /* TwilioHelper+Message.swift in Sources */,
 				423BDA7E1F97602F00C3EE9B /* ChatListCell.swift in Sources */,
 				4280C0D51F97341300075B3A /* SendingStatusCollectionViewCell.swift in Sources */,
 				4280C0E31F97364F00075B3A /* ChatViewController.swift in Sources */,
@@ -635,6 +650,7 @@
 				423BDA841F97774F00C3EE9B /* Connection.swift in Sources */,
 				4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */,
 				429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */,
+				16FB2DCE204D832F00346FA0 /* TwilioHelper+Channel.swift in Sources */,
 				16FCF27E1FE46756000348BC /* Channel+CoreDataClass.swift in Sources */,
 				16F30D4B1FDAE190006C3DEB /* AuthenticationViewController.swift in Sources */,
 				1658BA1D1FD9A8BC005EF9C1 /* InputBar.swift in Sources */,
