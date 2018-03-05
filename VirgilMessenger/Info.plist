@@ -57,6 +57,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>used for ability to add photo attachmants</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>used for ability to add photo attachmants</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

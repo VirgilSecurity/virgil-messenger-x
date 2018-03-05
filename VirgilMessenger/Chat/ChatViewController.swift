@@ -94,10 +94,15 @@ class ChatViewController: BaseChatViewController {
         textMessagePresenter.baseMessageStyle = baseMessageStyle
         textMessagePresenter.textCellStyle = textCellStyle
 
+        let photoMessagePresenter = PhotoMessagePresenterBuilder(
+            viewModelBuilder: DemoPhotoMessageViewModelBuilder(),
+            interactionHandler: DemoPhotoMessageHandler(baseHandler: self.baseMessageHandler)
+        )
+        photoMessagePresenter.baseCellStyle = baseMessageStyle
+
         return [
-            DemoTextMessageModel.chatItemType: [
-                textMessagePresenter
-            ],
+            DemoTextMessageModel.chatItemType: [textMessagePresenter],
+            DemoPhotoMessageModel.chatItemType: [photoMessagePresenter],
             SendingStatusModel.chatItemType: [SendingStatusPresenterBuilder()],
             TimeSeparatorModel.chatItemType: [TimeSeparatorPresenterBuilder()]
         ]
@@ -106,6 +111,7 @@ class ChatViewController: BaseChatViewController {
     func createChatInputItems() -> [ChatInputItemProtocol] {
         var items = [ChatInputItemProtocol]()
         items.append(self.createTextInputItem())
+        items.append(self.createPhotoInputItem())
         return items
     }
 
@@ -124,6 +130,20 @@ class ChatViewController: BaseChatViewController {
                 self?.present(controller, animated: true)
             } else {
                 self?.dataSource.addTextMessage(text)
+            }
+        }
+        return item
+    }
+
+    private func createPhotoInputItem() -> PhotosChatInputItem {
+        let item = PhotosChatInputItem(presentingController: self)
+        item.photoInputHandler = { [weak self] image in
+            if self?.currentReachabilityStatus == .notReachable {
+                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
+                controller.addAction(UIAlertAction(title: "OK", style: .default))
+                self?.present(controller, animated: true)
+            } else {
+                self?.dataSource.addPhotoMessage(image)
             }
         }
         return item

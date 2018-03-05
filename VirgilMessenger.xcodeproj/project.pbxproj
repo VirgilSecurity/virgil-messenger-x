@@ -20,6 +20,8 @@
 		16961B56203B03720084086E /* VirgilHelper+Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16961B55203B03720084086E /* VirgilHelper+Authentication.swift */; };
 		16961B58203B04790084086E /* VirgilHelper+SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16961B57203B04790084086E /* VirgilHelper+SignIn.swift */; };
 		16961B5A203B04A90084086E /* VirgilHelper+SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16961B59203B04A90084086E /* VirgilHelper+SignUp.swift */; };
+		16AE1D7A2044315B005DF777 /* DemoPhotoMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D772044315B005DF777 /* DemoPhotoMessageModel.swift */; };
+		16AE1D7B2044315B005DF777 /* DemoPhotoMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */; };
 		16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
 		16CA51021FC45E9A0042AF9D /* Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51011FC45E9A0042AF9D /* Start.swift */; };
 		16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA51031FC45EA40042AF9D /* Start.storyboard */; };
@@ -33,6 +35,8 @@
 		16F6FC721FAA235400158615 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F6FC711FAA235300158615 /* RegistrationViewController.swift */; };
 		16F8BC871FAA06040020094B /* TwilioChatClient.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 429228D11F96324B00DCECDF /* TwilioChatClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16FA91051FFC55A400FE98C7 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FA91041FFC55A400FE98C7 /* Reachability.swift */; };
+		16FB2DCA204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DC9204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift */; };
+		16FB2DCC204D806E00346FA0 /* DemoPhotoMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DCB204D806E00346FA0 /* DemoPhotoMessageViewModel.swift */; };
 		16FCF27E1FE46756000348BC /* Channel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FCF27A1FE46756000348BC /* Channel+CoreDataClass.swift */; };
 		16FCF27F1FE46756000348BC /* Channel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FCF27B1FE46756000348BC /* Channel+CoreDataProperties.swift */; };
 		16FCF2801FE46756000348BC /* Account+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FCF27C1FE46756000348BC /* Account+CoreDataClass.swift */; };
@@ -117,6 +121,8 @@
 		16961B55203B03720084086E /* VirgilHelper+Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VirgilHelper+Authentication.swift"; sourceTree = "<group>"; };
 		16961B57203B04790084086E /* VirgilHelper+SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VirgilHelper+SignIn.swift"; sourceTree = "<group>"; };
 		16961B59203B04A90084086E /* VirgilHelper+SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VirgilHelper+SignUp.swift"; sourceTree = "<group>"; };
+		16AE1D772044315B005DF777 /* DemoPhotoMessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageModel.swift; sourceTree = "<group>"; };
+		16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageHandler.swift; sourceTree = "<group>"; };
 		16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
 		16CA51011FC45E9A0042AF9D /* Start.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Start.swift; sourceTree = "<group>"; };
 		16CA51031FC45EA40042AF9D /* Start.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Start.storyboard; sourceTree = "<group>"; };
@@ -129,6 +135,8 @@
 		16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		16F6FC711FAA235300158615 /* RegistrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		16FA91041FFC55A400FE98C7 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		16FB2DC9204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoEncryptedPhotoMessageModel.swift; sourceTree = "<group>"; };
+		16FB2DCB204D806E00346FA0 /* DemoPhotoMessageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageViewModel.swift; sourceTree = "<group>"; };
 		16FCF27A1FE46756000348BC /* Channel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Channel+CoreDataClass.swift"; sourceTree = "<group>"; };
 		16FCF27B1FE46756000348BC /* Channel+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Channel+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		16FCF27C1FE46756000348BC /* Account+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -274,6 +282,17 @@
 			path = VirgilHelper;
 			sourceTree = "<group>";
 		};
+		16AE1D752044315B005DF777 /* Photo Messages */ = {
+			isa = PBXGroup;
+			children = (
+				16FB2DCB204D806E00346FA0 /* DemoPhotoMessageViewModel.swift */,
+				16AE1D772044315B005DF777 /* DemoPhotoMessageModel.swift */,
+				16FB2DC9204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift */,
+				16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */,
+			);
+			path = "Photo Messages";
+			sourceTree = "<group>";
+		};
 		16B69E061FA9D2CA00FE8A8D /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
@@ -310,10 +329,12 @@
 			children = (
 				1658BA191FD99C56005EF9C1 /* InputBar */,
 				16E22D881FA8ACAB008D32D9 /* Decorations */,
+				16AE1D752044315B005DF777 /* Photo Messages */,
 				429228EE1F96454400DCECDF /* TextMessage */,
 				4280C0E21F97364F00075B3A /* ChatViewController.swift */,
 				4280C0CA1F97340B00075B3A /* BaseMessageHandler.swift */,
 				4280C0CB1F97340B00075B3A /* MessageSender.swift */,
+				4280C0C81F97340A00075B3A /* MessageFactory.swift */,
 				427D1E521F965568002F2CF3 /* DataSource.swift */,
 				427D1E531F965569002F2CF3 /* SlidingDatasSource.swift */,
 				429228EA1F96405800DCECDF /* Chat.storyboard */,
@@ -431,7 +452,6 @@
 				4280C0D71F97341A00075B3A /* DemoTextMessageHandler.swift */,
 				4280C0D81F97341A00075B3A /* DemoTextMessageModel.swift */,
 				427D1E561F9656BB002F2CF3 /* DemoTextMessageViewModel.swift */,
-				4280C0C81F97340A00075B3A /* MessageFactory.swift */,
 			);
 			path = TextMessage;
 			sourceTree = "<group>";
@@ -570,6 +590,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16FB2DCC204D806E00346FA0 /* DemoPhotoMessageViewModel.swift in Sources */,
 				16FCF2811FE46756000348BC /* Account+CoreDataProperties.swift in Sources */,
 				166D3E5E1FB495F90032BAAD /* CoreDataHelper.swift in Sources */,
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
@@ -578,6 +599,7 @@
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
 				1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */,
+				16FB2DCA204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift in Sources */,
 				16FCF27F1FE46756000348BC /* Channel+CoreDataProperties.swift in Sources */,
 				16CA51131FC5DA3B0042AF9D /* SettingsViewController.swift in Sources */,
 				4280C0DA1F97341A00075B3A /* DemoTextMessageModel.swift in Sources */,
@@ -616,8 +638,10 @@
 				16FCF27E1FE46756000348BC /* Channel+CoreDataClass.swift in Sources */,
 				16F30D4B1FDAE190006C3DEB /* AuthenticationViewController.swift in Sources */,
 				1658BA1D1FD9A8BC005EF9C1 /* InputBar.swift in Sources */,
+				16AE1D7A2044315B005DF777 /* DemoPhotoMessageModel.swift in Sources */,
 				16277244203C62040086127C /* CoreDataHelper+Messages.swift in Sources */,
 				16961B5A203B04A90084086E /* VirgilHelper+SignUp.swift in Sources */,
+				16AE1D7B2044315B005DF777 /* DemoPhotoMessageHandler.swift in Sources */,
 				4280C0D41F97341300075B3A /* SendingStatusPresenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -93,13 +93,18 @@ class TwilioHelper: NSObject {
                                 Log.error("failed to create new core data channel")
                                 return
                             }
-                            self.decryptFirstMessage(of: messages, channel: channelCore, saved: 0) { message, decryptedMessageBody, messageDate in
-                                guard let decryptedMessageBody = decryptedMessageBody,
-                                    let messageDate = messageDate else {
-                                        return
+                            self.decryptFirstMessage(of: messages, channel: channelCore, saved: 0) { message, decryptedBody, decryptedMedia, messageDate in
+                                guard let messageDate = messageDate else {
+                                    return
                                 }
-                                CoreDataHelper.sharedInstance.createMessage(forChannel: channelCore, withBody: decryptedMessageBody,
-                                                                            isIncoming: true, date: messageDate)
+                                if let decryptedBody = decryptedBody {
+                                    CoreDataHelper.sharedInstance.createTextMessage(forChannel: channelCore, withBody: decryptedBody,
+                                                                                    isIncoming: true, date: messageDate)
+                                } else if let decryptedMedia = decryptedMedia {
+                                    CoreDataHelper.sharedInstance.createMediaMessage(forChannel: channelCore, withData: decryptedMedia,
+                                                                                     isIncoming: true, date: messageDate)
+                                }
+
                                 self.setLastMessage(of: messages, channel: channelCore) {
                                     NotificationCenter.default.post(
                                         name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
@@ -217,36 +222,82 @@ class TwilioHelper: NSObject {
         }
     }
 
-    func decryptFirstMessage(of messages: TCHMessages, channel: Channel, saved: Int, completion: @escaping (TCHMessage?, String?, Date?) -> ()) {
+    func decryptFirstMessage(of messages: TCHMessages, channel: Channel, saved: Int, completion: @escaping (TCHMessage?, String?, Data?, Date?) -> ()) {
         messages.getBefore(UInt(saved), withCount: 1) { result, oneMessages in
             guard let oneMessages = oneMessages,
                 let message = oneMessages.first,
-                let messageBody = message.body,
+                message.body != nil || message.hasMedia(),
                 let messageDate = message.dateUpdatedAsDate,
                 message.author != TwilioHelper.sharedInstance.username,
                 let stringCard = channel.card,
                 let card = VirgilHelper.sharedInstance.buildCard(stringCard),
                 let secureChat = VirgilHelper.sharedInstance.secureChat else {
-                    completion(nil, nil, nil)
+                    completion(nil, nil, nil, nil)
                     return
             }
             do {
-                let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
-                let decryptedMessageBody = try session.decrypt(messageBody)
+                if let messageBody = message.body {
+                    let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
+                    let decryptedMessageBody = try session.decrypt(messageBody)
 
-                channel.lastMessagesBody = decryptedMessageBody
-                channel.lastMessagesDate = messageDate
+                    channel.lastMessagesBody = decryptedMessageBody
+                    channel.lastMessagesDate = messageDate
 
-                completion(message, decryptedMessageBody, messageDate)
+                    completion(message, decryptedMessageBody, nil, messageDate)
+                } else {
+                    self.getMedia(from: message) { encryptedData in
+                        guard let encryptedData = encryptedData,
+                            let encryptedString = String(data: encryptedData, encoding: .utf8),
+                            let session = try? secureChat.loadUpSession(withParticipantWithCard: card,
+                                                                        message: encryptedString),
+                            let decryptedString = try? session.decrypt(encryptedString),
+                            let decryptedData = Data(base64Encoded: decryptedString) else {
+                                Log.error("decryption process of first message failed")
+                                completion(nil, nil, nil, nil)
+                                return
+                        }
+                        completion(message, nil, decryptedData, messageDate)
+                    }
+                }
             } catch {
                 Log.error("decryption process of first message failed: \(error.localizedDescription)")
-                completion(nil, nil, nil)
+                completion(nil, nil, nil, nil)
             }
         }
     }
 
-    func getLastMessages(count: Int, completion: @escaping ([DemoTextMessageModel?]) -> ()) {
-        var ret = [DemoTextMessageModel]()
+    func getMedia(from message: TCHMessage, completion: @escaping (Data?) -> ()) {
+        let tempFilename = (NSTemporaryDirectory() as NSString).appendingPathComponent(message.mediaFilename ?? "File.dat")
+        let outputStream = OutputStream(toFileAtPath: tempFilename, append: false)
+        if let outputStream = outputStream {
+            message.getMediaWith(outputStream,
+                                 onStarted: {
+
+            },
+                                 onProgress: { (bytes) in
+
+            },
+                                 onCompleted: { (mediaSid) in
+
+            }) { result in
+                guard result.isSuccessful() else {
+                    Log.error("getting media message failed: \(result.error?.localizedDescription ?? "unknown error")")
+                    completion(nil)
+                    return
+                }
+                let url = URL(fileURLWithPath: tempFilename)
+                guard let data = try? Data(contentsOf: url) else {
+                    Log.error("reading media from temp directory failed")
+                    completion(nil)
+                    return
+                }
+                completion(data)
+            }
+        }
+    }
+
+    func getLastMessages(count: Int, completion: @escaping ([DemoMessageModelProtocol?]) -> ()) {
+        var ret = [DemoMessageModelProtocol]()
         guard let messages = self.currentChannel.messages else {
             Log.error("nil messages in selected channel")
             completion(ret)
@@ -259,19 +310,39 @@ class TwilioHelper: NSObject {
                 completion(ret)
                 return
             }
+            let group = DispatchGroup()
             for message in messages {
-                guard let messageBody = message.body,
-                      let messageDate = message.dateUpdatedAsDate
-                else {
+                guard let messageDate = message.dateUpdatedAsDate else {
                     Log.error("wrong message atributes")
                     completion(ret)
                     return
                 }
                 let isIncoming = message.author == self.username ? false : true
-                let textMessageModel = createTextMessageModel("\(ret.count)", text: messageBody, isIncoming: isIncoming,
-                                                              status: .success, date: messageDate)
-                ret.append(textMessageModel)
+
+                if let messageBody = message.body {
+                    let textMessageModel = MessageFactory.createTextMessageModel("\(ret.count)", text: messageBody, isIncoming: isIncoming,
+                                                                                 status: .success, date: messageDate)
+                    ret.append(textMessageModel)
+                } else if message.hasMedia() {
+                    group.enter()
+                    self.getMedia(from: message) { encryptedData in
+                        guard let encryptedData = encryptedData else {
+                                completion(ret)
+                                return
+                        }
+                        let encryptedPhotoMessageModel = MessageFactory.createEncryptedPhotoMessageModel("\(ret.count)", data: encryptedData,
+                                                                                                         isIncoming: isIncoming, status: .success,
+                                                                                                         date: messageDate)
+                        ret.append(encryptedPhotoMessageModel)
+                        group.leave()
+                    }
+                } else {
+                    Log.error("Empty message")
+                    completion(ret)
+                    return
+                }
             }
+            group.wait()
             completion(ret)
         })
     }
@@ -298,7 +369,7 @@ class TwilioHelper: NSObject {
                         return
                 }
                 let isIncoming = message.author == self.username ? false : true
-                ret.append(createTextMessageModel("\(ret.count)", text: messageBody, isIncoming: isIncoming, status: .success, date: messageDate))
+                ret.append(MessageFactory.createTextMessageModel("\(ret.count)", text: messageBody, isIncoming: isIncoming, status: .success, date: messageDate))
             }
             completion(ret)
         })

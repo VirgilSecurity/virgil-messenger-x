@@ -82,9 +82,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
     }
 
     private func processMessage(channel: TCHChannel, message: TCHMessage) {
-
-        guard let messageBody = message.body,
-              let messageDate = message.dateUpdatedAsDate else {
+        guard let messageDate = message.dateUpdatedAsDate else {
             Log.error("got corrapted message")
             return
         }
@@ -102,17 +100,34 @@ extension TwilioHelper: TwilioChatClientDelegate {
         }
 
         do {
-            let session = try secureChat.loadUpSession(
-                withParticipantWithCard: card, message: messageBody)
-            let plaintext = try session.decrypt(messageBody)
+            if let messageBody = message.body {
+                let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
+                let decryptedMessageBody = try session.decrypt(messageBody)
 
-            coreDataChannel.lastMessagesBody = plaintext
-            coreDataChannel.lastMessagesDate = messageDate
+                coreDataChannel.lastMessagesBody = decryptedMessageBody
+                coreDataChannel.lastMessagesDate = messageDate
 
-            if coreDataChannel.message?.count == 0 {
-                CoreDataHelper.sharedInstance.createMessage(forChannel: coreDataChannel, withBody: plaintext, isIncoming: true, date: messageDate)
+                if coreDataChannel.message?.count == 0 {
+                    CoreDataHelper.sharedInstance.createTextMessage(forChannel: coreDataChannel, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
+                }
+                Log.debug("Receiving " + decryptedMessageBody)
+            } else if message.hasMedia() {
+                self.getMedia(from: message) { encryptedData in
+                    guard let encryptedData = encryptedData,
+                        let encryptedString = String(data: encryptedData, encoding: .utf8),
+                        let session = try? secureChat.loadUpSession(withParticipantWithCard: card,
+                                                                    message: encryptedString),
+                        let decryptedString = try? session.decrypt(encryptedString),
+                        let decryptedData = Data(base64Encoded: decryptedString) else {
+                            Log.error("decryption process of media message failed")
+                            return
+                    }
+                    if coreDataChannel.message?.count == 0 {
+                        CoreDataHelper.sharedInstance.createMediaMessage(forChannel: coreDataChannel, withData: decryptedData,
+                                                                         isIncoming: true, date: messageDate)
+                    }
+                }
             }
-            Log.debug("Receiving " + plaintext)
         } catch {
             Log.error("decryption process failed")
         }

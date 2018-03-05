@@ -23,24 +23,19 @@
 */
 
 import Foundation
-import Chatto
 import ChattoAdditions
 
-func createTextMessageModel(_ uid: String, text: String, isIncoming: Bool, status: MessageStatus, date: Date) -> DemoTextMessageModel {
-    let messageModel = createMessageModel(uid, isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: status, date: date)
-    let textMessageModel = DemoTextMessageModel(messageModel: messageModel, text: text)
-    return textMessageModel
-}
+public class DemoPhotoMessageModel: PhotoMessageModel<MessageModel>, DemoMessageModelProtocol {
+    public override init(messageModel: MessageModel, imageSize: CGSize, image: UIImage) {
+        super.init(messageModel: messageModel, imageSize: imageSize, image: image)
+    }
 
-func createMessageModel(_ uid: String, isIncoming: Bool, type: String, status: MessageStatus, date: Date) -> MessageModel {
-    let senderId = isIncoming ? "1" : "2"
-    let messageStatus = status
-    let messageModel = MessageModel(uid: uid, senderId: senderId, type: type, isIncoming: isIncoming, date: date, status: messageStatus)
-    return messageModel
-}
-
-extension TextMessageModel {
-    static var chatItemType: ChatItemType {
-        return "text"
+    public var status: MessageStatus {
+        get {
+            return self._messageModel.status
+        }
+        set {
+            self._messageModel.status = newValue
+        }
     }
 }

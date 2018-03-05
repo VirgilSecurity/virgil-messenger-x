@@ -54,9 +54,8 @@ class ChatListViewController: ViewController {
 
                 CoreDataHelper.sharedInstance.setLastMessage(for: channelCore)
 
-                TwilioHelper.sharedInstance.decryptFirstMessage(of: messages, channel: channelCore, saved: messagesCore.count) { message, decryptedMessageBody, messageDate in
+                TwilioHelper.sharedInstance.decryptFirstMessage(of: messages, channel: channelCore, saved: messagesCore.count) { message, decryptedBody, decryptedMedia, messageDate in
                     guard let message = message,
-                        let decryptedMessageBody = decryptedMessageBody,
                         let messageDate = messageDate else {
                             return
                     }
@@ -65,8 +64,12 @@ class ChatListViewController: ViewController {
                     }
 
                     if (messagesCore.count == 0 || (Int(truncating: message.index ?? 0) >= (messagesCore.count))) {
-                        CoreDataHelper.sharedInstance.createMessage(forChannel: channelCore, withBody: decryptedMessageBody,
-                                                                    isIncoming: true, date: messageDate)
+                        if let decryptedBody = decryptedBody {
+                            CoreDataHelper.sharedInstance.createTextMessage(forChannel: channelCore, withBody: decryptedBody,
+                                                                            isIncoming: true, date: messageDate)
+                        } else if let decryptedMedia = decryptedMedia {
+                            CoreDataHelper.sharedInstance.createMediaMessage(forChannel: channelCore, withData: decryptedMedia, isIncoming: true, date: messageDate)
+                        }
                     }
                 }
             } else {

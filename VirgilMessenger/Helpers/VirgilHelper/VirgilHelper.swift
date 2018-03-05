@@ -103,20 +103,29 @@ class VirgilHelper {
     }
 
     func encrypt(text: String) throws -> String {
-        guard let publicKey = self.publicKey,
-            let data = text.data(using: .utf8)
+        guard let data = text.data(using: .utf8)
             else {
+                Log.error("encrypting for Core Data failed")
+                throw VirgilHelperError.coreDataEncDecFailed
+        }
+        let encrypted = try self.encrypt(data: data)
+
+        return encrypted.base64EncodedString()
+    }
+
+    func encrypt(data: Data) throws -> Data {
+        guard let publicKey = self.publicKey else {
                 Log.error("encrypting for Core Data failed")
                 throw VirgilHelperError.coreDataEncDecFailed
         }
         let encrypted = try self.crypto.encrypt(data, for: [publicKey])
 
-        return encrypted.base64EncodedString()
+        return encrypted
     }
 
-    func decrypt(encrypted: String) throws -> String {
+    func decrypt(text: String) throws -> String {
         guard let privateKey = self.privateKey,
-            let data = Data(base64Encoded: encrypted)
+            let data = Data(base64Encoded: text)
             else {
                 Log.error("decrypting for Core Data failed")
                 throw VirgilHelperError.coreDataEncDecFailed
@@ -131,6 +140,16 @@ class VirgilHelper {
         return decrypted
     }
 
+    func decrypt(data: Data) throws -> Data {
+        guard let privateKey = self.privateKey else {
+                Log.error("Private Key not found")
+                throw VirgilHelperError.coreDataEncDecFailed
+        }
+        let decryptedData = try self.crypto.decrypt(data, with: privateKey)
+
+        return decryptedData
+    }
+
     func deleteStorageEntry(entry: String) {
         do {
             try self.keyStorage.deleteKeyEntry(withName: entry)
@@ -139,6 +158,13 @@ class VirgilHelper {
         }
     }
 
+    func buildCard(_ exportedCard: String) -> VSSCard? {
+        return VSSCard(data: exportedCard)
+    }
+}
+
+/// Setters
+extension VirgilHelper {
     func setPrivateKey(_ key: VSSPrivateKey) {
         self.privateKey = key
     }
@@ -153,9 +179,5 @@ class VirgilHelper {
 
     func setChannelCard(_ exportedCard: String) {
         self.channelCard = VSSCard(data: exportedCard)
-    }
-
-    func buildCard(_ exportedCard: String) -> VSSCard? {
-        return VSSCard(data: exportedCard)
     }
 }

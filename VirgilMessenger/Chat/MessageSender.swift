@@ -33,7 +33,6 @@ public protocol DemoMessageModelProtocol: MessageModelProtocol {
 }
 
 public class MessageSender {
-
     public var onMessageChanged: ((_ message: DemoMessageModelProtocol) -> ())?
 
     public func sendMessages(_ messages: [DemoMessageModelProtocol]) {
@@ -70,18 +69,35 @@ public class MessageSender {
     }
 
     private func sendMessage(usingSession session: SecureSession, message: DemoMessageModelProtocol) {
-        let msg = message as! DemoTextMessageModel
         do {
-            let ciphertext = try session.encrypt(msg.body)
-            self.messageStatus(ciphertext: ciphertext, message: message)
+            if let textMessage = message as? DemoTextMessageModel {
+                let ciphertext = try session.encrypt(textMessage.body)
+
+                self.messageStatus(ciphertext: ciphertext, message: textMessage)
+            } else if let photoMessage = message as? DemoPhotoMessageModel {
+                guard let photoData = UIImageJPEGRepresentation(photoMessage.image, 0.0) else {
+                    Log.error("Converting image to JPEG failed")
+                    return
+                }
+                let ciphertext = try session.encrypt(photoData.base64EncodedString())
+                guard let cipherData = ciphertext.data(using: .utf8) else {
+                    Log.error("String to Data failed")
+                    return
+                }
+
+                self.messageStatus(cipherphoto: cipherData, message: photoMessage)
+            } else {
+                Log.error("Unknown message model")
+                return
+            }
         } catch {
             Log.error("Error trying to encrypt message")
-             self.updateMessage(message, status: .failed)
+            self.updateMessage(message, status: .failed)
             return
         }
     }
 
-    private func messageStatus(ciphertext: String, message: DemoMessageModelProtocol) {
+    private func messageStatus(ciphertext: String, message: DemoTextMessageModel) {
         switch message.status {
         case .success:
             break
@@ -95,9 +111,8 @@ public class MessageSender {
                 messages.sendMessage(with: options) { result, msg in
                     if result.isSuccessful() {
                         self.updateMessage(message, status: .success)
-                        let msg = message as! DemoTextMessageModel
 
-                        CoreDataHelper.sharedInstance.createMessage(withBody: msg.body, isIncoming: false, date: message.date)
+                        CoreDataHelper.sharedInstance.createTextMessage(withBody: message.body, isIncoming: false, date: message.date)
                         return
                     } else {
                         Log.error("error sending: Twilio cause")
@@ -108,7 +123,50 @@ public class MessageSender {
             } else {
                 Log.error("can't get channel messages")
             }
+        }
+    }
 
+    private func messageStatus(cipherphoto: Data, message: DemoPhotoMessageModel) {
+        switch message.status {
+        case .success:
+            break
+        case .failed:
+            self.updateMessage(message, status: .sending)
+            self.messageStatus(cipherphoto: cipherphoto, message: message)
+        case .sending:
+            if let messages = TwilioHelper.sharedInstance.currentChannel.messages {
+                let inputStream = InputStream(data: cipherphoto)
+                let options = TCHMessageOptions().withMediaStream(inputStream,
+                                                                  contentType: "image/jpeg",
+                                                                  defaultFilename: "image.jpg",
+                                                                  onStarted: {
+                                                                    print("Media upload started")
+                },
+                                                                  onProgress: { (bytes) in
+                                                                    print("Media upload progress: \(bytes)")
+                }) { (mediaSid) in
+                    print("Media upload completed")
+                }
+                Log.debug("sending photo")
+                messages.sendMessage(with: options) { result, msg in
+                    if result.isSuccessful() {
+                        self.updateMessage(message, status: .success)
+
+                        //CoreDataHelper.sharedInstance.createMessage(withBody: msg.body, isIncoming: false, date: message.date)
+                        return
+                    } else {
+                        if let error = result.error {
+                            Log.error("error sending: \(error.localizedDescription) with \(error.code)")
+                        } else {
+                            Log.error("error sending: Twilio service error")
+                        }
+                        self.updateMessage(message, status: .failed)
+                        return
+                    }
+                }
+            } else {
+                Log.error("can't get channel messages")
+            }
         }
     }
 

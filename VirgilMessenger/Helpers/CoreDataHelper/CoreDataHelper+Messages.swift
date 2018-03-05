@@ -7,10 +7,11 @@
 //
 
 import Foundation
+import UIKit
 import CoreData
 
 extension CoreDataHelper {
-    func createMessage(withBody body: String, isIncoming: Bool, date: Date) {
+    func createTextMessage(withBody body: String, isIncoming: Bool, date: Date) {
         guard let channel = self.currentChannel else {
             Log.error("Core Data: nil selected channel")
             return
@@ -18,10 +19,21 @@ extension CoreDataHelper {
         channel.lastMessagesBody = body
         channel.lastMessagesDate = date
 
-        self.createMessage(forChannel: channel, withBody: body, isIncoming: isIncoming, date: date)
+        self.createTextMessage(forChannel: channel, withBody: body, isIncoming: isIncoming, date: date)
     }
 
-    func createMessage(forChannel channel: Channel, withBody body: String, isIncoming: Bool, date: Date) {
+    func createMediaMessage(withData data: Data, isIncoming: Bool, date: Date) {
+        guard let channel = self.currentChannel else {
+            Log.error("Core Data: nil selected channel")
+            return
+        }
+        channel.lastMessagesBody = ""
+        channel.lastMessagesDate = date
+
+        self.createMediaMessage(forChannel: channel, withData: data, isIncoming: isIncoming, date: date)
+    }
+
+    func createTextMessage(forChannel channel: Channel, withBody body: String, isIncoming: Bool, date: Date) {
         self.queue.async {
             guard let entity = NSEntityDescription.entity(forEntityName: Entities.message.rawValue, in: self.managedContext) else {
                 Log.error("Core Data: entity not found: " + Entities.message.rawValue)
@@ -43,13 +55,39 @@ extension CoreDataHelper {
         }
     }
 
+    func createMediaMessage(forChannel channel: Channel, withData data: Data, isIncoming: Bool, date: Date) {
+        self.queue.async {
+            guard let entity = NSEntityDescription.entity(forEntityName: Entities.message.rawValue, in: self.managedContext) else {
+                Log.error("Core Data: entity not found: " + Entities.message.rawValue)
+                return
+            }
+
+            let message = Message(entity: entity, insertInto: self.managedContext)
+
+            guard let encryptedMedia = try? VirgilHelper.sharedInstance.encrypt(data: data) else {
+                Log.error("Encryption media failed")
+                return
+            }
+            message.media = encryptedMedia
+            message.isIncoming = isIncoming
+            message.date = date
+
+            let messages = channel.mutableOrderedSetValue(forKey: Keys.message.rawValue)
+            messages.add(message)
+
+            Log.debug("Core Data: new message added. Count: \(messages.count)")
+            self.appDelegate.saveContext()
+        }
+    }
+
+
     func setLastMessage(for channel: Channel) {
         if let messages = channel.message,
             let message = messages.lastObject as? Message,
             let messageBody = message.body,
             let date = message.date {
 
-            guard let decryptedMessageBody = try? VirgilHelper.sharedInstance.decrypt(encrypted: messageBody) else {
+            guard let decryptedMessageBody = try? VirgilHelper.sharedInstance.decrypt(text: messageBody) else {
                 Log.error("Core Data: decrypting last message failed")
                 return
             }

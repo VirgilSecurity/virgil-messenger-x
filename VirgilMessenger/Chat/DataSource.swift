@@ -41,7 +41,7 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     private func getLastMessages() {
-        let messagesCore: [DemoTextMessageModel] = self.getCoreDataLastMessages()
+        let messagesCore: [DemoMessageModelProtocol] = self.getCoreDataLastMessages()
 
         self.getTwilioLastMessages { messagesTwilio in
             Log.debug("\(messagesCore.count)")
@@ -50,8 +50,12 @@ class DataSource: ChatDataSourceProtocol {
                 Log.error("saved messages count > loaded: \(messagesCore.count) > \(messagesTwilio.count)")
             } else {
                 for i in messagesCore.count..<messagesTwilio.count {
-                    CoreDataHelper.sharedInstance.createMessage(withBody: messagesTwilio[i].body, isIncoming: messagesTwilio[i].isIncoming, date: messagesTwilio[i].date)
-
+                    if let message = messagesTwilio[i] as? DemoTextMessageModel {
+                        CoreDataHelper.sharedInstance.createTextMessage(withBody: message.body, isIncoming: message.isIncoming, date: message.date)
+                    } else if let message = messagesTwilio[i] as? DemoPhotoMessageModel,
+                            let data = UIImageJPEGRepresentation(message.image, 0.0) {
+                        CoreDataHelper.sharedInstance.createMediaMessage(withData: data, isIncoming: message.isIncoming, date: message.date)
+                    }
                     self.slidingWindow.insertItem(messagesTwilio[i], position: .bottom)
                     self.nextMessageId += 1
                 }
@@ -78,18 +82,39 @@ class DataSource: ChatDataSourceProtocol {
                 return
             }
             do {
-                let session = try secureChat.loadUpSession(
-                    withParticipantWithCard: card, message: message.body)
-                let plaintext = try session.decrypt(message.body)
-                Log.debug("Receiving " + plaintext)
+                if let message = message as? DemoTextMessageModel {
+                    let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: message.body)
+                    let decryptedMessageBody = try session.decrypt(message.body)
+                    Log.debug("Receiving " + decryptedMessageBody)
 
-                let model = createMessageModel("\(self.nextMessageId)", isIncoming: true, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message.date)
-                let decryptedMessage = DemoTextMessageModel(messageModel: model, text: plaintext)
+                    let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: true, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message.date)
+                    let decryptedMessage = DemoTextMessageModel(messageModel: model, text: decryptedMessageBody)
 
-                CoreDataHelper.sharedInstance.createMessage(withBody: decryptedMessage.body, isIncoming: true, date: message.date)
+                    CoreDataHelper.sharedInstance.createTextMessage(withBody: decryptedMessage.body, isIncoming: true, date: message.date)
 
-                self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
-                self.nextMessageId += 1
+                    self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
+                    self.nextMessageId += 1
+                } else if let message = message as? DemoEncryptedPhotoMessageModel {
+                    guard let encryptedString = String(data: message.encryptedData, encoding: .utf8),
+                        let session = try? secureChat.loadUpSession(withParticipantWithCard: card,
+                                                                    message: encryptedString),
+                        let decryptedString = try? session.decrypt(encryptedString),
+                        let decryptedData = Data(base64Encoded: decryptedString),
+                        let image = UIImage(data: decryptedData) else {
+                            Log.error("decryption process of media failed")
+                            return
+                    }
+
+                    let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming,
+                                                                  type: PhotoMessageModel<MessageModel>.chatItemType,
+                                                                  status: .success, date: message.date)
+                    let decryptedMessage = DemoPhotoMessageModel(messageModel: model, imageSize: image.size, image: image)
+
+                    CoreDataHelper.sharedInstance.createMediaMessage(withData: decryptedData, isIncoming: true, date: message.date)
+
+                    self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
+                    self.nextMessageId += 1
+                }
                 self.delegate?.chatDataSourceDidUpdate(self)
             } catch {
                 Log.error("decryption process failed")
@@ -135,7 +160,16 @@ class DataSource: ChatDataSourceProtocol {
     func addTextMessage(_ text: String) {
         let uid = "\(self.nextMessageId)"
         self.nextMessageId += 1
-        let message = createTextMessageModel(uid, text: text, isIncoming: false, status: .sending, date: Date())
+        let message = MessageFactory.createTextMessageModel(uid, text: text, isIncoming: false, status: .sending, date: Date())
+        self.messageSender.sendMessage(message)
+        self.slidingWindow.insertItem(message, position: .bottom)
+        self.delegate?.chatDataSourceDidUpdate(self)
+    }
+
+    func addPhotoMessage(_ image: UIImage) {
+        let uid = "\(self.nextMessageId)"
+        self.nextMessageId += 1
+        let message = MessageFactory.createPhotoMessageModel(uid, image: image, size: image.size, isIncoming: false, status: .sending, date: Date())
         self.messageSender.sendMessage(message)
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
@@ -152,43 +186,67 @@ class DataSource: ChatDataSourceProtocol {
 }
 
 extension DataSource {
-    private func getCoreDataLastMessages() -> [DemoTextMessageModel] {
-        var result: [DemoTextMessageModel] = []
+    private func getCoreDataLastMessages() -> [DemoMessageModelProtocol] {
+        var result: [DemoMessageModelProtocol] = []
 
-        guard let channel = CoreDataHelper.sharedInstance.currentChannel, let messages = channel.message else {
-            Log.error("Can't get last messages: channel not found in Core Data")
-            return result
+        guard let channel = CoreDataHelper.sharedInstance.currentChannel,
+            let messages = channel.message else {
+                Log.error("Can't get last messages: channel not found in Core Data")
+                return result
         }
 
         for message in messages {
             guard let message = message as? Message,
-                let messageBody = message.body,
                 let messageDate = message.date
                 else {
                     Log.error("retriving message from Core Data failed")
                     return result
             }
 
-            let decryptedMessageBody = try? VirgilHelper.sharedInstance.decrypt(encrypted: messageBody)
-            let isIncoming = message.isIncoming
+            let decryptedMessage: DemoMessageModelProtocol
+            if let messageBody = message.body {
+                let decryptedBody = try? VirgilHelper.sharedInstance.decrypt(text: messageBody)
 
-            let model = createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: messageDate)
-            let decryptedMessage = DemoTextMessageModel(messageModel: model, text: decryptedMessageBody ?? "Error decrypting message")
+                let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming,
+                                                              type: TextMessageModel<MessageModel>.chatItemType,
+                                                              status: .success, date: messageDate)
+                decryptedMessage = DemoTextMessageModel(messageModel: model, text: decryptedBody ?? "Error decrypting message")
+            } else if let messageMedia = message.media {
+                if let decryptedMedia = try? VirgilHelper.sharedInstance.decrypt(data: messageMedia),
+                    let image = UIImage(data: decryptedMedia) {
 
+                    let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming,
+                                                                  type: PhotoMessageModel<MessageModel>.chatItemType,
+                                                                  status: .success, date: messageDate)
+                    decryptedMessage = DemoPhotoMessageModel(messageModel: model, imageSize: image.size, image: image)
+                } else {
+                    Log.error("decrypting media message failed")
+                    let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming,
+                                                                  type: TextMessageModel<MessageModel>.chatItemType,
+                                                                  status: .failed, date: messageDate)
+                    decryptedMessage =  DemoTextMessageModel(messageModel: model, text: "Failed to decrypt image")
+                }
+            } else {
+                let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming,
+                                                              type: TextMessageModel<MessageModel>.chatItemType,
+                                                              status: .failed, date: messageDate)
+                decryptedMessage =  DemoTextMessageModel(messageModel: model, text: "Corrupted Message")
+            }
             self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
             self.nextMessageId += 1
 
             result.append(decryptedMessage)
-            if isIncoming == false {
+            if message.isIncoming == false {
                 result = []
+                continue
             }
         }
 
         return result
     }
 
-    private func getTwilioLastMessages(completion: @escaping ([DemoTextMessageModel]) -> ()) {
-        var result: [DemoTextMessageModel] = []
+    private func getTwilioLastMessages(completion: @escaping ([DemoMessageModelProtocol]) -> ()) {
+        var result: [DemoMessageModelProtocol] = []
 
         guard let card = VirgilHelper.sharedInstance.channelCard else {
             Log.error("channel card not found")
@@ -216,21 +274,39 @@ extension DataSource {
                     return
                 }
                 do {
-                    let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: message.body)
+                    if let message = message as? DemoTextMessageModel {
+                        let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: message.body)
+                        let decryptedMessageBody = try session.decrypt(message.body)
 
-                    Log.debug("session loaded")
+                        let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming,
+                                                                      type: TextMessageModel<MessageModel>.chatItemType,
+                                                                      status: .success, date: message.date)
+                        let decryptedMessage = DemoTextMessageModel(messageModel: model, text: decryptedMessageBody)
 
-                    let plaintext = try session.decrypt(message.body)
-                    Log.debug("encrypted")
-                    Log.debug(plaintext)
+                        result.append(decryptedMessage)
+                    } else if let message = message as? DemoEncryptedPhotoMessageModel {
+                        guard let encryptedString = String(data: message.encryptedData, encoding: .utf8),
+                            let session = try? secureChat.loadUpSession(withParticipantWithCard: card,
+                                                                        message: encryptedString),
+                            let decryptedString = try? session.decrypt(encryptedString),
+                            let decryptedData = Data(base64Encoded: decryptedString),
+                            let image = UIImage(data: decryptedData) else {
+                                Log.error("decryption process of media failed")
+                                return
+                        }
 
-                    let model = createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message.date)
-                    let decryptedMessage = DemoTextMessageModel(messageModel: model, text: plaintext)
+                        let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming,
+                                                                      type: PhotoMessageModel<MessageModel>.chatItemType,
+                                                                      status: .success, date: message.date)
+                        let decryptedMessage = DemoPhotoMessageModel(messageModel: model, imageSize: image.size, image: image)
 
-                    result.append(decryptedMessage)
+                        result.append(decryptedMessage)
+                    }
                 } catch {
-                    Log.error("decryption process failed: \(error.localizedDescription)\nMessage: \(message.body)")
-                    let model = createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: message.date)
+                    Log.error("decryption process failed: \(error.localizedDescription)")
+                    let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming,
+                                                                  type: TextMessageModel<MessageModel>.chatItemType,
+                                                                  status: .success, date: message.date)
                     let decryptedMessage = DemoTextMessageModel(messageModel: model, text: "Error decrypting message")
                     result.append(decryptedMessage)
                 }
