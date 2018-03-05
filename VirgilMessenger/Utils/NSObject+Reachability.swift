@@ -1,5 +1,5 @@
 //
-//  Reachibility.swift
+//  NSObject+Reachibility.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 1/3/17.

@@ -147,11 +147,11 @@ extension RegistrationViewController: UITextFieldDelegate {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else { return true }
-        if string.rangeOfCharacter(from: Constants.characterSet.inverted) != nil {
+        if string.rangeOfCharacter(from: ChatConstants.characterSet.inverted) != nil {
             Log.debug("string contains special characters")
             return false
         }
         let newLength = text.count + string.count - range.length
-        return newLength <= Constants.limitLength
+        return newLength <= ChatConstants.limitLength
     }
 }

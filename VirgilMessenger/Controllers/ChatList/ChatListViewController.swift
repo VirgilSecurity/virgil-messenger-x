@@ -259,7 +259,7 @@ extension ChatListViewController: CellTapDelegate {
         super.prepare(for: segue, sender: sender)
 
         if let chatController = segue.destination as? ChatViewController {
-            let pageSize = 10000
+            let pageSize = ChatConstants.chatPageSize
 
             let dataSource = DataSource(pageSize: pageSize)
             chatController.title = TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.currentChannel)
@@ -272,11 +272,11 @@ extension ChatListViewController: CellTapDelegate {
 extension ChatListViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else { return true }
-        if string.rangeOfCharacter(from: Constants.characterSet.inverted) != nil {
+        if string.rangeOfCharacter(from: ChatConstants.characterSet.inverted) != nil {
             Log.debug("string contains special characters")
             return false
         }
         let newLength = text.count + string.count - range.length
-        return newLength <= Constants.limitLength
+        return newLength <= ChatConstants.limitLength
     }
 }

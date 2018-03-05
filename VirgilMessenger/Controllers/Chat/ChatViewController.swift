@@ -62,7 +62,7 @@ class ChatViewController: BaseChatViewController {
         appearance.textInputAppearance.placeholderText = NSLocalizedString("Message...", comment: "")
         appearance.textInputAppearance.placeholderFont = appearance.textInputAppearance.font
         self.chatInputPresenter = BasicChatInputBarPresenter(chatInputBar: chatInputView, chatInputItems: self.createChatInputItems(), chatInputBarAppearance: appearance)
-        chatInputView.maxCharactersCount = 1000
+        chatInputView.maxCharactersCount = ChatConstants.chatMaxCharectersCount
         return chatInputView
     }
 
