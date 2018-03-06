@@ -141,7 +141,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                 coreDataChannel.lastMessagesBody = decryptedMessageBody
                 coreDataChannel.lastMessagesDate = messageDate
 
-                if coreDataChannel.message?.count == 0 {
+                if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
                     CoreDataHelper.sharedInstance.createTextMessage(forChannel: coreDataChannel, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
                 }
                 Log.debug("Receiving " + decryptedMessageBody)
