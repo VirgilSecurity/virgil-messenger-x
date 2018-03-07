@@ -111,13 +111,10 @@ public class MessageSender {
                 messages.sendMessage(with: options) { result, msg in
                     if result.isSuccessful() {
                         self.updateMessage(message, status: .success)
-
                         CoreDataHelper.sharedInstance.createTextMessage(withBody: message.body, isIncoming: false, date: message.date)
-                        return
                     } else {
                         Log.error("error sending: Twilio cause")
                         self.updateMessage(message, status: .failed)
-                        return
                     }
                 }
             } else {
@@ -140,20 +137,23 @@ public class MessageSender {
                                                                   contentType: "image/jpeg",
                                                                   defaultFilename: "image.jpg",
                                                                   onStarted: {
-                                                                    print("Media upload started")
+                                                                    Log.debug("Media upload started")
                 },
                                                                   onProgress: { (bytes) in
-                                                                    print("Media upload progress: \(bytes)")
+                                                                    Log.debug("Media upload progress: \(bytes)")
                 }) { (mediaSid) in
-                    print("Media upload completed")
+                    Log.debug("Media upload completed")
                 }
                 Log.debug("sending photo")
                 messages.sendMessage(with: options) { result, msg in
                     if result.isSuccessful() {
                         self.updateMessage(message, status: .success)
 
-                        //CoreDataHelper.sharedInstance.createMessage(withBody: msg.body, isIncoming: false, date: message.date)
-                        return
+                        guard let imageData = UIImageJPEGRepresentation(message.image, 0.0) else {
+                            Log.error("failed getting data from image")
+                            return
+                        }
+                        CoreDataHelper.sharedInstance.createMediaMessage(withData: imageData, isIncoming: false, date: message.date)
                     } else {
                         if let error = result.error {
                             Log.error("error sending: \(error.localizedDescription) with \(error.code)")
@@ -161,7 +161,6 @@ public class MessageSender {
                             Log.error("error sending: Twilio service error")
                         }
                         self.updateMessage(message, status: .failed)
-                        return
                     }
                 }
             } else {

@@ -136,7 +136,13 @@ class ChatViewController: BaseChatViewController {
     }
 
     private func createPhotoInputItem() -> PhotosChatInputItem {
-        let item = PhotosChatInputItem(presentingController: self)
+        var liveCamaraAppearence = LiveCameraCellAppearance.createDefaultAppearance()
+        liveCamaraAppearence.backgroundColor = UIColor(rgb: 0x2B303B)
+        let photosAppearence = PhotosInputViewAppearance(liveCameraCellAppearence: liveCamaraAppearence)
+        let item = PhotosChatInputItem(presentingController: self,
+                                       tabInputButtonAppearance: PhotosChatInputItem.createDefaultButtonAppearance(),
+                                       inputViewAppearance: photosAppearence)
+
 
         if let subviews = item.inputView?.subviews {
             for subview in subviews {
