@@ -37,7 +37,7 @@ class DemoPhotoMessageViewModel: PhotoMessageViewModel<DemoPhotoMessageModel> {
     }
 
     override func willBeShown() {
-        self.fakeProgress()
+        //self.fakeProgress()
     }
 
     func fakeProgress() {

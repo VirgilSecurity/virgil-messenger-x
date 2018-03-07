@@ -102,6 +102,9 @@ extension SettingsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let colorView = UIView()
+        colorView.backgroundColor = UIColor(rgb: 0x2B303B)
+        cell.selectedBackgroundView = colorView
 
         if indexPath.section == 0 {
             cell.textLabel?.text = "About"

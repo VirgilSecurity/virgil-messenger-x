@@ -221,15 +221,14 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
         cell.backgroundColor = UIColor(rgb: 0x2B303B)
     }
 
-    /*
-     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-         if editingStyle == .delete {
-             CoreDataHelper.sharedInstance.deleteChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: indexPath.row))
-             TwilioHelper.sharedInstance.destroyChannel(indexPath.row) {
-             self.tableView.reloadData()
-             }
-         }
-     }*/
+//     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+//         if editingStyle == .delete {
+//             CoreDataHelper.sharedInstance.deleteChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: indexPath.row))
+//             TwilioHelper.sharedInstance.destroyChannel(indexPath.row) {
+//             self.tableView.reloadData()
+//             }
+//         }
+//     }
 }
 
 extension ChatListViewController: CellTapDelegate {
@@ -237,15 +236,11 @@ extension ChatListViewController: CellTapDelegate {
         if let username = (cell as! ChatListCell).usernameLabel.text {
             TwilioHelper.sharedInstance.setChannel(withUsername: (username))
 
-            if CoreDataHelper.sharedInstance.loadChannel(withName: username) == false {
-                //CoreDataHelper.sharedInstance.createChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.selectedChannel))
-                return
-            }
-
-            guard let channel = CoreDataHelper.sharedInstance.currentChannel,
+            guard CoreDataHelper.sharedInstance.loadChannel(withName: username),
+                let channel = CoreDataHelper.sharedInstance.currentChannel,
                 let exportedCard = channel.card
                 else {
-                    Log.error("can't find selected channel in Core Data")
+                    Log.error("Channel do not exist in Core Data")
                     return
             }
 

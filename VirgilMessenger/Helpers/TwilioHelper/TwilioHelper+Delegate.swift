@@ -156,7 +156,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                             Log.error("decryption process of media message failed")
                             return
                     }
-                    if coreDataChannel.message?.count == 0 {
+                   if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
                         CoreDataHelper.sharedInstance.createMediaMessage(forChannel: coreDataChannel, withData: decryptedData,
                                                                          isIncoming: true, date: messageDate)
                     }

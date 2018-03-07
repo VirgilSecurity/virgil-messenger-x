@@ -137,6 +137,13 @@ class ChatViewController: BaseChatViewController {
 
     private func createPhotoInputItem() -> PhotosChatInputItem {
         let item = PhotosChatInputItem(presentingController: self)
+
+        if let subviews = item.inputView?.subviews {
+            for subview in subviews {
+                subview.backgroundColor = UIColor(rgb: 0x20232B)
+            }
+        }
+
         item.photoInputHandler = { [weak self] image in
             if self?.currentReachabilityStatus == .notReachable {
                 let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
