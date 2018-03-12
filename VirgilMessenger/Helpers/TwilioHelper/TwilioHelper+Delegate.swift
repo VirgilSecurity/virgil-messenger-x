@@ -116,7 +116,8 @@ extension TwilioHelper: TwilioChatClientDelegate {
     }
 
     private func processMessage(channel: TCHChannel, message: TCHMessage) {
-        guard let messageDate = message.dateUpdatedAsDate else {
+        guard let messageDate = message.dateUpdatedAsDate,
+              let messageBody = message.body else {
             Log.error("got corrapted message")
             return
         }
@@ -134,18 +135,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
         }
 
         do {
-            if let messageBody = message.body {
-                let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
-                let decryptedMessageBody = try session.decrypt(messageBody)
-
-                coreDataChannel.lastMessagesBody = decryptedMessageBody
-                coreDataChannel.lastMessagesDate = messageDate
-
-                if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
-                    CoreDataHelper.sharedInstance.createTextMessage(forChannel: coreDataChannel, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
-                }
-                Log.debug("Receiving " + decryptedMessageBody)
-            } else if message.hasMedia() {
+            if message.hasMedia() {
                 self.getMedia(from: message) { encryptedData in
                     guard let encryptedData = encryptedData,
                         let encryptedString = String(data: encryptedData, encoding: .utf8),
@@ -161,6 +151,17 @@ extension TwilioHelper: TwilioChatClientDelegate {
                                                                          isIncoming: true, date: messageDate)
                     }
                 }
+            } else {
+                let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
+                let decryptedMessageBody = try session.decrypt(messageBody)
+
+                coreDataChannel.lastMessagesBody = decryptedMessageBody
+                coreDataChannel.lastMessagesDate = messageDate
+
+                if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
+                    CoreDataHelper.sharedInstance.createTextMessage(forChannel: coreDataChannel, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
+                }
+                Log.debug("Receiving " + decryptedMessageBody)
             }
         } catch {
             Log.error("decryption process failed")

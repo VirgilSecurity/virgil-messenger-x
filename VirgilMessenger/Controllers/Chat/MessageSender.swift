@@ -134,8 +134,8 @@ public class MessageSender {
             if let messages = TwilioHelper.sharedInstance.currentChannel.messages {
                 let inputStream = InputStream(data: cipherphoto)
                 let options = TCHMessageOptions().withMediaStream(inputStream,
-                                                                  contentType: "image/jpeg",
-                                                                  defaultFilename: "image.jpg",
+                                                                  contentType: "text/csv",
+                                                                  defaultFilename: "image.csv",
                                                                   onStarted: {
                                                                     Log.debug("Media upload started")
                 },

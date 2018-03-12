@@ -26,18 +26,15 @@ extension TwilioHelper {
             }
             let group = DispatchGroup()
             for message in messages {
-                guard let messageDate = message.dateUpdatedAsDate else {
+                guard let messageDate = message.dateUpdatedAsDate,
+                      let messageBody = message.body else {
                     Log.error("wrong message atributes")
                     completion(ret)
                     return
                 }
                 let isIncoming = message.author == self.username ? false : true
 
-                if let messageBody = message.body {
-                    let textMessageModel = MessageFactory.createTextMessageModel("\(ret.count)", text: messageBody, isIncoming: isIncoming,
-                                                                                 status: .success, date: messageDate)
-                    ret.append(textMessageModel)
-                } else if message.hasMedia() {
+                if message.hasMedia() {
                     group.enter()
                     self.getMedia(from: message) { encryptedData in
                         guard let encryptedData = encryptedData else {
@@ -51,9 +48,9 @@ extension TwilioHelper {
                         group.leave()
                     }
                 } else {
-                    Log.error("Empty message")
-                    completion(ret)
-                    return
+                    let textMessageModel = MessageFactory.createTextMessageModel("\(ret.count)", text: messageBody, isIncoming: isIncoming,
+                                                                                 status: .success, date: messageDate)
+                    ret.append(textMessageModel)
                 }
             }
             group.wait()
@@ -66,6 +63,7 @@ extension TwilioHelper {
             if  let messages = messages,
                 let message = messages.last,
                 let messageBody = message.body,
+                !message.hasMedia(),
                 let messageDate = message.dateUpdatedAsDate,
                 message.author != TwilioHelper.sharedInstance.username,
                 let stringCard = channel.card,
@@ -90,7 +88,7 @@ extension TwilioHelper {
         messages.getBefore(UInt(saved), withCount: 1) { result, oneMessages in
             guard let oneMessages = oneMessages,
                 let message = oneMessages.first,
-                message.body != nil || message.hasMedia(),
+                let messageBody = message.body,
                 let messageDate = message.dateUpdatedAsDate,
                 message.author != TwilioHelper.sharedInstance.username,
                 let stringCard = channel.card,
@@ -100,15 +98,7 @@ extension TwilioHelper {
                     return
             }
             do {
-                if let messageBody = message.body {
-                    let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
-                    let decryptedMessageBody = try session.decrypt(messageBody)
-
-                    channel.lastMessagesBody = decryptedMessageBody
-                    channel.lastMessagesDate = messageDate
-
-                    completion(message, decryptedMessageBody, nil, messageDate)
-                } else if message.hasMedia() {
+                if message.hasMedia() {
                     self.getMedia(from: message) { encryptedData in
                         guard let encryptedData = encryptedData,
                             let encryptedString = String(data: encryptedData, encoding: .utf8),
@@ -123,8 +113,13 @@ extension TwilioHelper {
                         completion(message, nil, decryptedData, messageDate)
                     }
                 } else {
-                    Log.error("Empty message")
-                    completion(nil, nil, nil, nil)
+                    let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
+                    let decryptedMessageBody = try session.decrypt(messageBody)
+
+                    channel.lastMessagesBody = decryptedMessageBody
+                    channel.lastMessagesDate = messageDate
+
+                    completion(message, decryptedMessageBody, nil, messageDate)
                 }
             } catch {
                 Log.error("decryption process of first message failed: \(error.localizedDescription)")
@@ -139,13 +134,13 @@ extension TwilioHelper {
         if let outputStream = outputStream {
             message.getMediaWith(outputStream,
                                  onStarted: {
-
+                                     Log.debug("Media upload started")
             },
                                  onProgress: { (bytes) in
-
+                                     Log.debug("Media upload progress: \(bytes)")
             },
                                  onCompleted: { (mediaSid) in
-
+                                     Log.debug("Media upload completed")
             }) { result in
                 guard result.isSuccessful() else {
                     Log.error("getting media message failed: \(result.error?.localizedDescription ?? "unknown error")")
