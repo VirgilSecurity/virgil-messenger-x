@@ -26,6 +26,12 @@ import Foundation
 import ChattoAdditions
 
 class DemoTextMessageHandler: BaseMessageInteractionHandlerProtocol {
+    func userDidSelectMessage(viewModel: DemoTextMessageViewModel) {
+    }
+
+    func userDidDeselectMessage(viewModel: DemoTextMessageViewModel) {
+    }
+
     private let baseHandler: BaseMessageHandler
     init (baseHandler: BaseMessageHandler) {
         self.baseHandler = baseHandler

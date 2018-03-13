@@ -179,7 +179,7 @@ typedef void (^TCHCountCompletion)(TCHResult * _Nonnull result, NSUInteger count
 
 /** Block called upon start of the media operation.
  */
-typedef void (^TCHMediaOnStarted)();
+typedef void (^TCHMediaOnStarted)(void);
 
 /** Block called with progress on the media operation.
  

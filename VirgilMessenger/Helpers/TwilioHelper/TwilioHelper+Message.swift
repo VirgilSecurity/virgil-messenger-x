@@ -10,54 +10,6 @@ import Foundation
 import TwilioChatClient
 
 extension TwilioHelper {
-    func getLastMessages(count: Int, completion: @escaping ([DemoMessageModelProtocol?]) -> ()) {
-        var ret = [DemoMessageModelProtocol]()
-        guard let messages = self.currentChannel.messages else {
-            Log.error("nil messages in selected channel")
-            completion(ret)
-            return
-        }
-
-        messages.getLastWithCount(UInt(count), completion: { result, messages in
-            guard let messages = messages else {
-                Log.error("Twilio can't get last messages")
-                completion(ret)
-                return
-            }
-            let group = DispatchGroup()
-            for message in messages {
-                guard let messageDate = message.dateUpdatedAsDate,
-                      let messageBody = message.body else {
-                    Log.error("wrong message atributes")
-                    completion(ret)
-                    return
-                }
-                let isIncoming = message.author == self.username ? false : true
-
-                if message.hasMedia() {
-                    group.enter()
-                    self.getMedia(from: message) { encryptedData in
-                        guard let encryptedData = encryptedData else {
-                            completion(ret)
-                            return
-                        }
-                        let encryptedPhotoMessageModel = MessageFactory.createEncryptedPhotoMessageModel("\(ret.count)", data: encryptedData,
-                                                                                                         isIncoming: isIncoming, status: .success,
-                                                                                                         date: messageDate)
-                        ret.append(encryptedPhotoMessageModel)
-                        group.leave()
-                    }
-                } else {
-                    let textMessageModel = MessageFactory.createTextMessageModel("\(ret.count)", text: messageBody, isIncoming: isIncoming,
-                                                                                 status: .success, date: messageDate)
-                    ret.append(textMessageModel)
-                }
-            }
-            group.wait()
-            completion(ret)
-        })
-    }
-
     func setLastMessage(of messages: TCHMessages, channel: Channel, completion: @escaping () -> ()) {
         messages.getLastWithCount(UInt(1)) { result, messages in
             if  let messages = messages,
@@ -129,9 +81,11 @@ extension TwilioHelper {
     }
 
     func getMedia(from message: TCHMessage, completion: @escaping (Data?) -> ()) {
-        let tempFilename = (NSTemporaryDirectory() as NSString).appendingPathComponent(message.mediaFilename ?? "File.dat")
+        let tempFilename = (NSTemporaryDirectory() as NSString).appendingPathComponent(message.mediaFilename ?? "file.dat")
         let outputStream = OutputStream(toFileAtPath: tempFilename, append: false)
+
         if let outputStream = outputStream {
+            Log.debug("trying to get media")
             message.getMediaWith(outputStream,
                                  onStarted: {
                                      Log.debug("Media upload started")
@@ -155,6 +109,8 @@ extension TwilioHelper {
                 }
                 completion(data)
             }
+        } else {
+            Log.error("outputStream failed")
         }
     }
 }

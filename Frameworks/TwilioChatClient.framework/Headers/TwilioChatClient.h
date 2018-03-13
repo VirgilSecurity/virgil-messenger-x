@@ -260,13 +260,34 @@
  */
 - (void)chatClient:(nonnull TwilioChatClient *)client typingEndedOnChannel:(nonnull TCHChannel *)channel member:(nonnull TCHMember *)member;
 
-/** Called as a result of TwilioChatClient's handleNotification: method being invoked.  `handleNotification:` parses the push payload and extracts the channel and message for the push notification then calls this delegate method.
+/** Called as a result of TwilioChatClient's handleNotification: method being invoked for a new message received notification.  `handleNotification:` parses the push payload and extracts the new message's channel and index for the push notification then calls this delegate method.
  
  @param client The chat client.
- @param channelSid The channel sid for the push notification.
+ @param channelSid The channel sid for the new message.
  @param messageIndex The index of the new message.
  */
 - (void)chatClient:(nonnull TwilioChatClient *)client notificationNewMessageReceivedForChannelSid:(nonnull NSString *)channelSid messageIndex:(NSUInteger)messageIndex;
+
+/** Called as a result of TwilioChatClient's handleNotification: method being invoked for an added to channel notification.  `handleNotification:` parses the push payload and extracts the channel for the push notification then calls this delegate method.
+ 
+ @param client The chat client.
+ @param channelSid The channel sid for the newly added channel.
+ */
+- (void)chatClient:(nonnull TwilioChatClient *)client notificationAddedToChannelWithSid:(nonnull NSString *)channelSid;
+
+/** Called as a result of TwilioChatClient's handleNotification: method being invoked for an invited to channel notification.  `handleNotification:` parses the push payload and extracts the channel for the push notification then calls this delegate method.
+
+ @param client The chat client.
+ @param channelSid The channel sid for the newly invited channel.
+ */
+- (void)chatClient:(nonnull TwilioChatClient *)client notificationInvitedToChannelWithSid:(nonnull NSString *)channelSid;
+
+/** Called as a result of TwilioChatClient's handleNotification: method being invoked for a removed from channel notification.  `handleNotification:` parses the push payload and extracts the channel for the push notification then calls this delegate method.
+
+ @param client The chat client.
+ @param channelSid The channel sid for the removed channel.
+ */
+- (void)chatClient:(nonnull TwilioChatClient *)client notificationRemovedFromChannelWithSid:(nonnull NSString *)channelSid;
 
 /** Called when a processed push notification has changed the application's badge count.  You should call:
  

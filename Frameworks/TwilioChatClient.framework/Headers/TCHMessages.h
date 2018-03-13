@@ -80,21 +80,53 @@
 /** Set the last consumed index for this Member and Channel.  Allows you to set any value, including smaller than the current index.
  
  @param index The new index.
+ @deprecated See setLastConsumedMessageIndex:completion:
  */
-- (void)setLastConsumedMessageIndex:(nonnull NSNumber *)index;
+- (void)setLastConsumedMessageIndex:(nonnull NSNumber *)index __attribute__((deprecated("setLastConsumedMessageIndex: has been deprecated please use setLastConsumedMessageIndex:completion: instead")));
+
+/** Set the last consumed index for this Member and Channel.  Allows you to set any value, including smaller than the current index.
+ 
+ @param index The new index.
+ @param completion Optional completion block that will specify the result of the operation and an updated unconsumed message count for the user on this channel.
+ */
+- (void)setLastConsumedMessageIndex:(nonnull NSNumber *)index completion:(nullable TCHCountCompletion)completion;
 
 /** Update the last consumed index for this Member and Channel.  Only update the index if the value specified is larger than the previous value.
  
  @param index The new index.
+ @deprecated See advanceLastConsumedMessageIndex:completion:
  */
-- (void)advanceLastConsumedMessageIndex:(nonnull NSNumber *)index;
+- (void)advanceLastConsumedMessageIndex:(nonnull NSNumber *)index __attribute__((deprecated("advanceLastConsumedMessageIndex: has been deprecated please use advanceLastConsumedMessageIndex:completion: instead")));
+
+/** Update the last consumed index for this Member and Channel.  Only update the index if the value specified is larger than the previous value.
+ 
+ @param index The new index.
+ @param completion Optional completion block that will specify the result of the operation and an updated unconsumed message count for the user on this channel.
+ */
+- (void)advanceLastConsumedMessageIndex:(nonnull NSNumber *)index completion:(nullable TCHCountCompletion)completion;
 
 /** Update the last consumed index for this Member and Channel to the max message currently on this device.
+
+ @deprecated See setAllMessagesConsumed:completion:
  */
-- (void)setAllMessagesConsumed;
+- (void)setAllMessagesConsumed __attribute__((deprecated("setAllMessagesConsumed has been deprecated please use setAllMessagesConsumedWithCompletion: instead")));
+
+/** Update the last consumed index for this Member and Channel to the max message currently on this device.
+
+ @param completion Optional completion block that will specify the result of the operation and an updated unconsumed message count for the user on this channel.
+ */
+- (void)setAllMessagesConsumedWithCompletion:(nullable TCHCountCompletion)completion;
 
 /** Reset the last consumed index for this Member and Channel to no messages consumed.
+
+ @deprecated See setNoMessagesConsumed:completion:
  */
-- (void)setNoMessagesConsumed;
+- (void)setNoMessagesConsumed __attribute__((deprecated("setNoMessagesConsumed has been deprecated please use setNoMessagesConsumedWithCompletion: instead")));
+
+/** Reset the last consumed index for this Member and Channel to no messages consumed.
+ 
+ @param completion Optional completion block that will specify the result of the operation and an updated unconsumed message count for the user on this channel.
+ */
+- (void)setNoMessagesConsumedWithCompletion:(nullable TCHCountCompletion)completion;
 
 @end

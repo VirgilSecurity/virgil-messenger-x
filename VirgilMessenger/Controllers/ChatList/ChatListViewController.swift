@@ -124,7 +124,7 @@ class ChatListViewController: ViewController {
         if (TwilioHelper.sharedInstance.channels.subscribedChannels().contains {
             ($0.attributes()?.values.contains { value -> Bool in
                 value as! String == username
-            })!
+            }) ?? false
         }) {
             self.alert(withTitle: "You already have this channel")
         } else {

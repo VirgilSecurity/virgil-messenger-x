@@ -116,9 +116,8 @@ extension TwilioHelper: TwilioChatClientDelegate {
     }
 
     private func processMessage(channel: TCHChannel, message: TCHMessage) {
-        guard let messageDate = message.dateUpdatedAsDate,
-              let messageBody = message.body else {
-            Log.error("got corrapted message")
+        guard let messageDate = message.dateUpdatedAsDate else {
+            Log.error("got corrupted message")
             return
         }
 
@@ -151,7 +150,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                                                                          isIncoming: true, date: messageDate)
                     }
                 }
-            } else {
+            } else if let messageBody = message.body {
                 let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
                 let decryptedMessageBody = try session.decrypt(messageBody)
 

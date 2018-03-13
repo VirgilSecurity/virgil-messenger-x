@@ -12,6 +12,9 @@
 /** Representation of a Member on a chat channel. */
 @interface TCHMember : NSObject
 
+/** The unique identifier for this member. */
+@property (nonatomic, copy, readonly, nullable) NSString *sid;
+
 /** The identity for this member. */
 @property (nonatomic, strong, readonly, nullable) NSString *identity;
 

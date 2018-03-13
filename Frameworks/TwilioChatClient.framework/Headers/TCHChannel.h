@@ -130,7 +130,7 @@
  Available even if the channel is not yet synchronized.  Subsequent calls of this
  method prior to the local cache's expiry will return cached values.
  
- @param completion Completion block that will speciy the requested count.  If no completion block is specified, no operation will be executed.
+ @param completion Completion block that will specify the requested count.  If no completion block is specified, no operation will be executed.
  */
 - (void)getUnconsumedMessagesCountWithCompletion:(nonnull TCHCountCompletion)completion;
 
@@ -141,7 +141,7 @@
  Available even if the channel is not yet synchronized.  Subsequent calls of this
  method prior to the local cache's expiry will return cached values.
  
- @param completion Completion block that will speciy the requested count.  If no completion block is specified, no operation will be executed.
+ @param completion Completion block that will specify the requested count.  If no completion block is specified, no operation will be executed.
  */
 - (void)getMessagesCountWithCompletion:(nonnull TCHCountCompletion)completion;
 
@@ -152,7 +152,7 @@
  Available even if the channel is not yet synchronized.  Subsequent calls of this
  method prior to the local cache's expiry will return cached values.
  
- @param completion Completion block that will speciy the requested count.  If no completion block is specified, no operation will be executed.
+ @param completion Completion block that will specify the requested count.  If no completion block is specified, no operation will be executed.
  */
 - (void)getMembersCountWithCompletion:(nonnull TCHCountCompletion)completion;
 

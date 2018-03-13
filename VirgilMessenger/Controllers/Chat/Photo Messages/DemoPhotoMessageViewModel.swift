@@ -31,9 +31,6 @@ class DemoPhotoMessageViewModel: PhotoMessageViewModel<DemoPhotoMessageModel> {
     override init(photoMessage: DemoPhotoMessageModel, messageViewModel: MessageViewModelProtocol) {
         self.fakeImage = photoMessage.image
         super.init(photoMessage: photoMessage, messageViewModel: messageViewModel)
-        if photoMessage.isIncoming {
-            self.image.value = nil
-        }
     }
 
     override func willBeShown() {
