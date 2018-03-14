@@ -43,7 +43,7 @@ class DataSource: ChatDataSourceProtocol {
 
     private func getLastMessages() {
         let messagesCore: [DemoMessageModelProtocol] = self.getCoreDataLastMessages()
-        //self.getTwilioLastMessages(coreMessagesCount: messagesCore.count)
+        self.getTwilioLastMessages(coreMessagesCount: messagesCore.count)
     }
 
     @objc private func processMessage(notification: Notification) {
@@ -225,10 +225,6 @@ extension DataSource {
             self.nextMessageId += 1
 
             result.append(decryptedMessage)
-            if message.isIncoming == false {
-                result = []
-                continue
-            }
         }
 
         return result

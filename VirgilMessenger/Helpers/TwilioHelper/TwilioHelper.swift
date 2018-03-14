@@ -17,7 +17,7 @@ class TwilioHelper: NSObject {
     private(set) var currentChannel: TCHChannel!
 
     let username: String
-    private let queue = DispatchQueue(label: "TwilioHelper")
+    let queue = DispatchQueue(label: "TwilioHelper")
     private let device: String
     private let connection = ServiceConnection()
 

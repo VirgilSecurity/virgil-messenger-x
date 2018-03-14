@@ -30,6 +30,9 @@ extension TwilioHelper {
                 } catch {
                     Log.error("decryption process failed: \(error.localizedDescription)")
                 }
+            } else {
+                channel.lastMessagesBody = ""
+                channel.lastMessagesDate = messages?.last?.dateUpdatedAsDate
             }
 
             completion()
@@ -81,36 +84,42 @@ extension TwilioHelper {
     }
 
     func getMedia(from message: TCHMessage, completion: @escaping (Data?) -> ()) {
-        let tempFilename = (NSTemporaryDirectory() as NSString).appendingPathComponent(message.mediaFilename ?? "file.dat")
-        let outputStream = OutputStream(toFileAtPath: tempFilename, append: false)
+        self.queue.async {
+            let group = DispatchGroup()
+            let tempFilename = (NSTemporaryDirectory() as NSString).appendingPathComponent(message.mediaFilename ?? "file.dat")
+            let outputStream = OutputStream(toFileAtPath: tempFilename, append: false)
 
-        if let outputStream = outputStream {
-            Log.debug("trying to get media")
-            message.getMediaWith(outputStream,
-                                 onStarted: {
-                                     Log.debug("Media upload started")
-            },
-                                 onProgress: { (bytes) in
-                                     Log.debug("Media upload progress: \(bytes)")
-            },
-                                 onCompleted: { (mediaSid) in
-                                     Log.debug("Media upload completed")
-            }) { result in
-                guard result.isSuccessful() else {
-                    Log.error("getting media message failed: \(result.error?.localizedDescription ?? "unknown error")")
-                    completion(nil)
-                    return
+            if let outputStream = outputStream {
+                Log.debug("trying to get media")
+                group.enter()
+                message.getMediaWith(outputStream,
+                                     onStarted: {
+                                        Log.debug("Media upload started")
+                },
+                                     onProgress: { (bytes) in
+                                        Log.debug("Media upload progress: \(bytes)")
+                },
+                                     onCompleted: { (mediaSid) in
+                                        Log.debug("Media upload completed")
+                }) { result in
+                    guard result.isSuccessful() else {
+                        Log.error("getting media message failed: \(result.error?.localizedDescription ?? "unknown error")")
+                        completion(nil)
+                        return
+                    }
+                    let url = URL(fileURLWithPath: tempFilename)
+                    guard let data = try? Data(contentsOf: url) else {
+                        Log.error("reading media from temp directory failed")
+                        completion(nil)
+                        return
+                    }
+                    completion(data)
+                    defer { group.leave() }
                 }
-                let url = URL(fileURLWithPath: tempFilename)
-                guard let data = try? Data(contentsOf: url) else {
-                    Log.error("reading media from temp directory failed")
-                    completion(nil)
-                    return
-                }
-                completion(data)
+            } else {
+                Log.error("outputStream failed")
             }
-        } else {
-            Log.error("outputStream failed")
+            group.wait()
         }
     }
 }
