@@ -105,7 +105,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
             guard error == nil else {
                 var message: String?
                 if let err = error as? VirgilHelper.UserFriendlyError {
-                    message = err.localizedDescription
+                    message = err.rawValue
                 }
                 message = message ?? "Something went wrong"
                 PKHUD.sharedHUD.hide() { _ in
