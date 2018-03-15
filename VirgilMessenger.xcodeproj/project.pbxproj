@@ -35,7 +35,6 @@
 		16F6FC721FAA235400158615 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F6FC711FAA235300158615 /* RegistrationViewController.swift */; };
 		16F8BC871FAA06040020094B /* TwilioChatClient.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 429228D11F96324B00DCECDF /* TwilioChatClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16FA91051FFC55A400FE98C7 /* NSObject+Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FA91041FFC55A400FE98C7 /* NSObject+Reachability.swift */; };
-		16FB2DCA204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DC9204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift */; };
 		16FB2DCC204D806E00346FA0 /* DemoPhotoMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DCB204D806E00346FA0 /* DemoPhotoMessageViewModel.swift */; };
 		16FB2DCE204D832F00346FA0 /* TwilioHelper+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DCD204D832F00346FA0 /* TwilioHelper+Channel.swift */; };
 		16FB2DD1204D846900346FA0 /* TwilioHelper+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DD0204D846900346FA0 /* TwilioHelper+Message.swift */; };
@@ -139,7 +138,6 @@
 		16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		16F6FC711FAA235300158615 /* RegistrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		16FA91041FFC55A400FE98C7 /* NSObject+Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Reachability.swift"; sourceTree = "<group>"; };
-		16FB2DC9204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoEncryptedPhotoMessageModel.swift; sourceTree = "<group>"; };
 		16FB2DCB204D806E00346FA0 /* DemoPhotoMessageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageViewModel.swift; sourceTree = "<group>"; };
 		16FB2DCD204D832F00346FA0 /* TwilioHelper+Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Channel.swift"; sourceTree = "<group>"; };
 		16FB2DD0204D846900346FA0 /* TwilioHelper+Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Message.swift"; sourceTree = "<group>"; };
@@ -297,7 +295,6 @@
 			children = (
 				16FB2DCB204D806E00346FA0 /* DemoPhotoMessageViewModel.swift */,
 				16AE1D772044315B005DF777 /* DemoPhotoMessageModel.swift */,
-				16FB2DC9204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift */,
 				16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */,
 			);
 			path = "Photo Messages";
@@ -619,7 +616,6 @@
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
 				1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */,
-				16FB2DCA204D58C300346FA0 /* DemoEncryptedPhotoMessageModel.swift in Sources */,
 				16FCF27F1FE46756000348BC /* Channel+CoreDataProperties.swift in Sources */,
 				16CA51131FC5DA3B0042AF9D /* SettingsViewController.swift in Sources */,
 				4280C0DA1F97341A00075B3A /* DemoTextMessageModel.swift in Sources */,

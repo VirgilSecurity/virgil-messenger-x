@@ -26,10 +26,6 @@ import Foundation
 import ChattoAdditions
 
 public class DemoPhotoMessageModel: PhotoMessageModel<MessageModel>, DemoMessageModelProtocol {
-    public override init(messageModel: MessageModel, imageSize: CGSize, image: UIImage) {
-        super.init(messageModel: messageModel, imageSize: imageSize, image: image)
-    }
-
     public var status: MessageStatus {
         get {
             return self._messageModel.status

@@ -26,8 +26,8 @@ import Foundation
 import ChattoAdditions
 
 class DemoPhotoMessageViewModel: PhotoMessageViewModel<DemoPhotoMessageModel> {
-
     let fakeImage: UIImage
+
     override init(photoMessage: DemoPhotoMessageModel, messageViewModel: MessageViewModelProtocol) {
         self.fakeImage = photoMessage.image
         super.init(photoMessage: photoMessage, messageViewModel: messageViewModel)

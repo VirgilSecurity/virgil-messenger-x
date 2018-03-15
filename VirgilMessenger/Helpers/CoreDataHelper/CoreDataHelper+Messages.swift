@@ -27,7 +27,7 @@ extension CoreDataHelper {
             Log.error("Core Data: nil selected channel")
             return
         }
-        channel.lastMessagesBody = ""
+        channel.lastMessagesBody = "image.jpg"
         channel.lastMessagesDate = date
 
         self.createMediaMessage(forChannel: channel, withData: data, isIncoming: isIncoming, date: date)
@@ -84,15 +84,17 @@ extension CoreDataHelper {
     func setLastMessage(for channel: Channel) {
         if let messages = channel.message,
             let message = messages.lastObject as? Message,
-            let messageBody = message.body,
             let date = message.date {
 
-            guard let decryptedMessageBody = try? VirgilHelper.sharedInstance.decrypt(text: messageBody) else {
-                Log.error("Core Data: decrypting last message failed")
-                return
+            if message.media != nil {
+                channel.lastMessagesBody = "image.jpg"
+            } else if let messageBody = message.body {
+                guard let decryptedMessageBody = try? VirgilHelper.sharedInstance.decrypt(text: messageBody) else {
+                    Log.error("Core Data: decrypting last message failed")
+                    return
+                }
+                channel.lastMessagesBody = decryptedMessageBody
             }
-
-            channel.lastMessagesBody = decryptedMessageBody
             channel.lastMessagesDate = date
         }
     }

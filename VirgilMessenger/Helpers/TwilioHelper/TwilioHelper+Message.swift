@@ -12,26 +12,19 @@ import TwilioChatClient
 extension TwilioHelper {
     func setLastMessage(of messages: TCHMessages, channel: Channel, completion: @escaping () -> ()) {
         messages.getLastWithCount(UInt(1)) { result, messages in
-            if  let messages = messages,
+            if let messages = messages,
                 let message = messages.last,
                 let messageBody = message.body,
                 !message.hasMedia(),
                 let messageDate = message.dateUpdatedAsDate,
-                message.author != TwilioHelper.sharedInstance.username,
-                let stringCard = channel.card,
-                let card = VirgilHelper.sharedInstance.buildCard(stringCard),
-                let secureChat = VirgilHelper.sharedInstance.secureChat {
-                do {
-                    let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
-                    let decryptedMessageBody = try session.decrypt(messageBody)
-
+                message.author != TwilioHelper.sharedInstance.username {
+                    guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card, encrypted: messageBody) else {
+                        return
+                    }
                     channel.lastMessagesBody = decryptedMessageBody
                     channel.lastMessagesDate = messageDate
-                } catch {
-                    Log.error("decryption process failed: \(error.localizedDescription)")
-                }
-            } else {
-                channel.lastMessagesBody = ""
+            } else if messages?.last?.hasMedia() ?? false {
+                channel.lastMessagesBody = "image.jpg"
                 channel.lastMessagesDate = messages?.last?.dateUpdatedAsDate
             }
 
@@ -43,42 +36,37 @@ extension TwilioHelper {
         messages.getBefore(UInt(saved), withCount: 1) { result, oneMessages in
             guard let oneMessages = oneMessages,
                 let message = oneMessages.first,
-                let messageBody = message.body,
                 let messageDate = message.dateUpdatedAsDate,
-                message.author != TwilioHelper.sharedInstance.username,
-                let stringCard = channel.card,
-                let card = VirgilHelper.sharedInstance.buildCard(stringCard),
-                let secureChat = VirgilHelper.sharedInstance.secureChat else {
+                message.author != TwilioHelper.sharedInstance.username else {
                     completion(nil, nil, nil, nil)
                     return
             }
-            do {
-                if message.hasMedia() {
-                    self.getMedia(from: message) { encryptedData in
-                        guard let encryptedData = encryptedData,
-                            let encryptedString = String(data: encryptedData, encoding: .utf8),
-                            let session = try? secureChat.loadUpSession(withParticipantWithCard: card,
-                                                                        message: encryptedString),
-                            let decryptedString = try? session.decrypt(encryptedString),
-                            let decryptedData = Data(base64Encoded: decryptedString) else {
-                                Log.error("decryption process of first message failed")
-                                completion(nil, nil, nil, nil)
-                                return
-                        }
-                        completion(message, nil, decryptedData, messageDate)
+            if message.hasMedia() {
+                self.getMedia(from: message) { encryptedData in
+                    guard let encryptedData = encryptedData,
+                        let encryptedString = String(data: encryptedData, encoding: .utf8),
+                        let decryptedString = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card,
+                                                                                     encrypted: encryptedString),
+                        let decryptedData = Data(base64Encoded: decryptedString) else {
+                            Log.error("decryption process of first message failed")
+                            completion(nil, nil, nil, nil)
+                            return
                     }
-                } else {
-                    let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
-                    let decryptedMessageBody = try session.decrypt(messageBody)
-
-                    channel.lastMessagesBody = decryptedMessageBody
-                    channel.lastMessagesDate = messageDate
-
-                    completion(message, decryptedMessageBody, nil, messageDate)
+                    completion(message, nil, decryptedData, messageDate)
                 }
-            } catch {
-                Log.error("decryption process of first message failed: \(error.localizedDescription)")
-                completion(nil, nil, nil, nil)
+            } else if let messageBody = message.body {
+                guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card,
+                                                                                        encrypted: messageBody) else {
+                    return
+                }
+
+                channel.lastMessagesBody = decryptedMessageBody
+                channel.lastMessagesDate = messageDate
+
+                completion(message, decryptedMessageBody, nil, messageDate)
+            } else {
+                Log.error("Empty first message")
+                 completion(nil, nil, nil, nil)
             }
         }
     }
@@ -121,5 +109,43 @@ extension TwilioHelper {
             }
             group.wait()
         }
+    }
+
+    func getMediaSync(from message: TCHMessage, completion: @escaping (Data?) -> ()) {
+        let group = DispatchGroup()
+        let tempFilename = (NSTemporaryDirectory() as NSString).appendingPathComponent(message.mediaFilename ?? "file.dat")
+        let outputStream = OutputStream(toFileAtPath: tempFilename, append: false)
+
+        if let outputStream = outputStream {
+            Log.debug("trying to get media")
+            group.enter()
+            message.getMediaWith(outputStream,
+                                 onStarted: {
+                                    Log.debug("Media upload started")
+            },
+                                 onProgress: { (bytes) in
+                                    Log.debug("Media upload progress: \(bytes)")
+            },
+                                 onCompleted: { (mediaSid) in
+                                    Log.debug("Media upload completed")
+            }) { result in
+                guard result.isSuccessful() else {
+                    Log.error("getting media message failed: \(result.error?.localizedDescription ?? "unknown error")")
+                    completion(nil)
+                    return
+                }
+                let url = URL(fileURLWithPath: tempFilename)
+                guard let data = try? Data(contentsOf: url) else {
+                    Log.error("reading media from temp directory failed")
+                    completion(nil)
+                    return
+                }
+                completion(data)
+                defer { group.leave() }
+            }
+        } else {
+            Log.error("outputStream failed")
+        }
+        group.wait()
     }
 }

@@ -46,12 +46,6 @@ class MessageFactory {
 
         return photoMessageModel
     }
-
-    class func createEncryptedPhotoMessageModel(_ uid: String, data: Data, isIncoming: Bool, status: MessageStatus, date: Date) -> DemoEncryptedPhotoMessageModel {
-        let encryptedMessageModel = DemoEncryptedPhotoMessageModel(uid: uid, encryptedData: data, isIncoming: isIncoming,
-                                                                   status: status, date: date)
-        return encryptedMessageModel
-    }
 }
 
 extension TextMessageModel {

@@ -12,21 +12,30 @@ import PKHUD
 
 class ChatListViewController: ViewController {
     @IBOutlet weak var noChatsView: UIView!
+    @IBOutlet weak var tableView: UITableView!
+
+    static let name = "ChatList"
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.updateLastMessages()
 
-        self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main), forCellReuseIdentifier: ChatListCell.name)
+        self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main),
+                                forCellReuseIdentifier: ChatListCell.name)
         self.tableView.rowHeight = 94
         self.tableView.tableFooterView = UIView(frame: .zero)
         self.tableView.backgroundColor = UIColor(rgb: 0x2B303B)
         self.tableView.dataSource = self
 
-        NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue), object: nil)
-
-        NotificationCenter.default.addObserver(self, selector: #selector(ChatListViewController.reloadTableView(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue), object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(ChatListViewController.reloadTableView(notification:)),
+                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(ChatListViewController.reloadTableView(notification:)),
+                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+                                               object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -149,10 +158,6 @@ class ChatListViewController: ViewController {
 
         self.present(alert, animated: true)
     }
-
-    static let name = "ChatList"
-
-    @IBOutlet weak var tableView: UITableView!
 
     deinit {
         NotificationCenter.default.removeObserver(self)

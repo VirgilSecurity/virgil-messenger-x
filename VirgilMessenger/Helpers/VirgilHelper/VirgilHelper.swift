@@ -17,10 +17,10 @@ class VirgilHelper {
     let connection: ServiceConnection
     let validator: VSSCardValidator
 
-    private(set) var secureChat: SecureChat?
-    private(set) var publicKey: VSSPublicKey?
-    private(set) var privateKey: VSSPrivateKey?
-    private(set) var channelCard: VSSCard?
+    private var secureChat: SecureChat?
+    private var publicKey: VSSPublicKey?
+    private var privateKey: VSSPrivateKey?
+    private var channelCard: VSSCard?
 
     let virgilAccessToken = "AT.cc7d17184199dc67b29edf6d57aa0a4db5a704590353d34cae0766f781eac03c"
     let authId = "1deb193fba41419083b655649e7f9bf8286c561feb5e34507d0bf99fed795eff"
@@ -100,6 +100,79 @@ class VirgilHelper {
             }
             completion(cards[0], nil)
         }
+    }
+
+    func encryptPFS(message: String, completion: @escaping (String?) -> ()) {
+        self.getSession { session in
+            guard let session = session else {
+                completion(nil)
+                return
+            }
+            do {
+                let encrypted = try session.encrypt(message)
+                completion(encrypted)
+            } catch {
+                Log.error("enrypting PFS failed: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+        }
+    }
+
+    func decryptPFS(cardString: String? = nil, encrypted: String) -> String? {
+        var card: VSSCard
+        if let cardString = cardString {
+            guard let builtCard = self.buildCard(cardString) else {
+                Log.error("building card from string failed")
+                return nil
+            }
+            card = builtCard
+        } else {
+            guard let channelCard = self.channelCard  else {
+                Log.error("channel card not found")
+                return nil
+            }
+            card = channelCard
+        }
+        guard let secureChat = self.secureChat else {
+            Log.error("nil secure Chat")
+            return nil
+        }
+        do {
+            let session = try secureChat.loadUpSession(withParticipantWithCard: card,
+                                                       message: encrypted)
+            return try session.decrypt(encrypted)
+        } catch {
+            Log.error("decrypting PFS: \(error.localizedDescription)")
+        }
+        return nil
+    }
+
+    private func getSession(completion: @escaping (SecureSession?) -> ()) {
+        guard let card = self.channelCard else {
+            Log.error("channel card not found")
+            completion(nil)
+            return
+        }
+        Log.debug("encrypting for " + card.identity)
+        guard let secureChat = self.secureChat else {
+            Log.error("nil Secure Chat")
+            completion(nil)
+            return
+        }
+        guard let session = secureChat.activeSession(withParticipantWithCardId: card.identifier) else {
+            secureChat.startNewSession(withRecipientWithCard: card) { session, error in
+                guard error == nil, let session = session else {
+                    let errorMessage = error == nil ? "unknown error" : error!.localizedDescription
+                    Log.error("creating session failed: " + errorMessage)
+                    completion(nil)
+                    return
+                }
+                completion(session)
+            }
+            return
+        }
+        completion(session)
     }
 
     func encrypt(text: String) throws -> String {

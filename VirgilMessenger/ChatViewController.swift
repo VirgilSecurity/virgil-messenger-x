@@ -11,19 +11,22 @@ import Chatto
 import ChattoAdditions
 
 class ChatViewController: BaseChatViewController {
+    var chatInputPresenter: BasicChatInputBarPresenter!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.chatDataSource = FakeDataSource(messages: [TextMessageItem(textMessage: TextMessage(text: "Test1"))], pageSize: 5)
     }
 
-    var chatInputPresenter: BasicChatInputBarPresenter!
     override func createChatInputView() -> UIView {
         let chatInputView = ChatInputBar.loadNib()
         var appearance = ChatInputBarAppearance()
         appearance.sendButtonAppearance.title = NSLocalizedString("Send", comment: "")
         appearance.textInputAppearance.placeholderText = NSLocalizedString("Type a message", comment: "")
-        self.chatInputPresenter = BasicChatInputBarPresenter(chatInputBar: chatInputView, chatInputItems: self.createChatInputItems(), chatInputBarAppearance: appearance)
+        self.chatInputPresenter = BasicChatInputBarPresenter(chatInputBar: chatInputView,
+                                                             chatInputItems: self.createChatInputItems(),
+                                                             chatInputBarAppearance: appearance)
         chatInputView.maxCharactersCount = 1000
         return chatInputView
     }

@@ -42,57 +42,30 @@ public class MessageSender {
     }
 
     public func sendMessage(_ message: DemoMessageModelProtocol) {
-        guard let card = VirgilHelper.sharedInstance.channelCard else {
-            Log.error("channel card not found")
-            self.updateMessage(message, status: .failed)
-            return
-        }
-        Log.debug("sending to " + card.identity)
-        guard let secureChat = VirgilHelper.sharedInstance.secureChat else {
-            Log.error("nil Secure Chat")
-            return
-        }
-        guard let session = secureChat.activeSession(withParticipantWithCardId: card.identifier)
-        else {
-            secureChat.startNewSession(withRecipientWithCard: card) { session, error in
-                guard error == nil, let session = session else {
-                    let errorMessage = error == nil ? "unknown error" : error!.localizedDescription
-                    Log.error("creating session failed: " + errorMessage)
-                    self.updateMessage(message, status: .failed)
+        if let textMessage = message as? DemoTextMessageModel {
+            VirgilHelper.sharedInstance.encryptPFS(message: textMessage.body) { encrypted in
+                guard let encrypted = encrypted else {
                     return
                 }
-                self.sendMessage(usingSession: session, message: message)
+                self.messageStatus(ciphertext: encrypted, message: textMessage)
             }
-            return
-        }
-        self.sendMessage(usingSession: session, message: message)
-    }
-
-    private func sendMessage(usingSession session: SecureSession, message: DemoMessageModelProtocol) {
-        do {
-            if let textMessage = message as? DemoTextMessageModel {
-                let ciphertext = try session.encrypt(textMessage.body)
-
-                self.messageStatus(ciphertext: ciphertext, message: textMessage)
-            } else if let photoMessage = message as? DemoPhotoMessageModel {
-                guard let photoData = UIImageJPEGRepresentation(photoMessage.image, 0.0) else {
-                    Log.error("Converting image to JPEG failed")
+        } else if let photoMessage = message as? DemoPhotoMessageModel {
+            guard let photoData = UIImageJPEGRepresentation(photoMessage.image, 0.0) else {
+                Log.error("Converting image to JPEG failed")
+                return
+            }
+            VirgilHelper.sharedInstance.encryptPFS(message: photoData.base64EncodedString()) { encrypted in
+                guard let encrypted = encrypted else {
                     return
                 }
-                let ciphertext = try session.encrypt(photoData.base64EncodedString())
-                guard let cipherData = ciphertext.data(using: .utf8) else {
+                guard let cipherData = encrypted.data(using: .utf8) else {
                     Log.error("String to Data failed")
                     return
                 }
-
                 self.messageStatus(cipherphoto: cipherData, message: photoMessage)
-            } else {
-                Log.error("Unknown message model")
-                return
             }
-        } catch {
-            Log.error("Error trying to encrypt message")
-            self.updateMessage(message, status: .failed)
+        } else {
+            Log.error("Unknown message model")
             return
         }
     }

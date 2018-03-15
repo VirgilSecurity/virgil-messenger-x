@@ -120,50 +120,38 @@ extension TwilioHelper: TwilioChatClientDelegate {
             Log.error("got corrupted message")
             return
         }
-
         guard let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: self.getCompanion(ofChannel: channel)),
-              let stringCard = coreDataChannel.card,
-              let card = VirgilHelper.sharedInstance.buildCard(stringCard)else {
+              let cardString = coreDataChannel.card else {
             Log.error("can't get core data channel")
             return
         }
 
-        guard let secureChat = VirgilHelper.sharedInstance.secureChat else {
-            Log.error("nil secure Chat")
-            return
-        }
-
-        do {
-            if message.hasMedia() {
-                self.getMedia(from: message) { encryptedData in
-                    guard let encryptedData = encryptedData,
-                        let encryptedString = String(data: encryptedData, encoding: .utf8),
-                        let session = try? secureChat.loadUpSession(withParticipantWithCard: card,
-                                                                    message: encryptedString),
-                        let decryptedString = try? session.decrypt(encryptedString),
-                        let decryptedData = Data(base64Encoded: decryptedString) else {
-                            Log.error("decryption process of media message failed")
-                            return
-                    }
-                   if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
-                        CoreDataHelper.sharedInstance.createMediaMessage(forChannel: coreDataChannel, withData: decryptedData,
-                                                                         isIncoming: true, date: messageDate)
-                    }
+        if message.hasMedia() {
+            self.getMedia(from: message) { encryptedData in
+                guard let encryptedData = encryptedData,
+                    let encryptedString = String(data: encryptedData, encoding: .utf8),
+                    let decryptedString = VirgilHelper.sharedInstance.decryptPFS(cardString: cardString, encrypted: encryptedString),
+                    let decryptedData = Data(base64Encoded: decryptedString) else {
+                        Log.error("decryption process of media message failed")
+                        return
                 }
-            } else if let messageBody = message.body {
-                let session = try secureChat.loadUpSession(withParticipantWithCard: card, message: messageBody)
-                let decryptedMessageBody = try session.decrypt(messageBody)
-
-                coreDataChannel.lastMessagesBody = decryptedMessageBody
-                coreDataChannel.lastMessagesDate = messageDate
-
-                if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
-                    CoreDataHelper.sharedInstance.createTextMessage(forChannel: coreDataChannel, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
+               if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
+                    CoreDataHelper.sharedInstance.createMediaMessage(forChannel: coreDataChannel, withData: decryptedData,
+                                                                     isIncoming: true, date: messageDate)
                 }
-                Log.debug("Receiving " + decryptedMessageBody)
             }
-        } catch {
-            Log.error("decryption process failed")
+        } else if let messageBody = message.body {
+            guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: cardString, encrypted: messageBody) else {
+                return
+            }
+
+            coreDataChannel.lastMessagesBody = decryptedMessageBody
+            coreDataChannel.lastMessagesDate = messageDate
+
+            if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
+                CoreDataHelper.sharedInstance.createTextMessage(forChannel: coreDataChannel, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
+            }
+            Log.debug("Receiving " + decryptedMessageBody)
         }
         NotificationCenter.default.post(
             name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
