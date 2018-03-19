@@ -31,8 +31,8 @@ public protocol DemoMessageViewModelProtocol {
 }
 
 class BaseMessageHandler {
-
     private let messageSender: MessageSender
+
     init (messageSender: MessageSender) {
         self.messageSender = messageSender
     }

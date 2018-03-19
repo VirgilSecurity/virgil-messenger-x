@@ -86,10 +86,9 @@ extension TwilioHelper {
                                 Log.error("failed to get new channel card")
                                 return
                             }
-                            guard let channelCore = CoreDataHelper.sharedInstance.createChannel(withName: identity,
-                                                                                                card: card.exportData()) else {
-                                                                                                    Log.error("failed to create new core data channel")
-                                                                                                    return
+                            guard let channelCore = CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData()) else {
+                                Log.error("failed to create new core data channel")
+                                return
                             }
                             self.decryptFirstMessage(of: messages, channel: channelCore, saved: 0) { message, decryptedBody, decryptedMedia, messageDate in
                                 guard let messageDate = messageDate else {

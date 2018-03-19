@@ -18,7 +18,8 @@ extension TwilioHelper {
                 !message.hasMedia(),
                 let messageDate = message.dateUpdatedAsDate,
                 message.author != TwilioHelper.sharedInstance.username {
-                    guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card, encrypted: messageBody) else {
+                    guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card,
+                                                                                            encrypted: messageBody) else {
                         return
                     }
                     channel.lastMessagesBody = decryptedMessageBody
@@ -32,7 +33,8 @@ extension TwilioHelper {
         }
     }
 
-    func decryptFirstMessage(of messages: TCHMessages, channel: Channel, saved: Int, completion: @escaping (TCHMessage?, String?, Data?, Date?) -> ()) {
+    func decryptFirstMessage(of messages: TCHMessages, channel: Channel, saved: Int,
+                             completion: @escaping (TCHMessage?, String?, Data?, Date?) -> ()) {
         messages.getBefore(UInt(saved), withCount: 1) { result, oneMessages in
             guard let oneMessages = oneMessages,
                 let message = oneMessages.first,

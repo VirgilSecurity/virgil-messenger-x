@@ -61,6 +61,10 @@
 	<string>used for ability to add photo attachmants</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>used for ability to add photo attachmants</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Please allow access to save photo in your photo library</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

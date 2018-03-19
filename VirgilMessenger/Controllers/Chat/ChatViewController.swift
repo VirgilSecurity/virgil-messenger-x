@@ -96,7 +96,8 @@ class ChatViewController: BaseChatViewController {
 
         let photoMessagePresenter = PhotoMessagePresenterBuilder(
             viewModelBuilder: DemoPhotoMessageViewModelBuilder(),
-            interactionHandler: DemoPhotoMessageHandler(baseHandler: self.baseMessageHandler)
+            interactionHandler: DemoPhotoMessageHandler(baseHandler: self.baseMessageHandler,
+                                                        presenterController: self)
         )
         photoMessagePresenter.baseCellStyle = baseMessageStyle
 
