@@ -68,8 +68,9 @@ extension SettingsViewController: UITableViewDelegate {
 
             self.present(alert, animated: true)
         } else if indexPath.section == 2 {
-            let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            alert.addAction(UIAlertAction(title: "Delete account", style: .destructive) { _ in
+            let alertController = UIAlertController(title: "Delete account", message: "Account data will be removed from your device. People still would be able to write to you.", preferredStyle: .alert)
+
+            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
                 UserDefaults.standard.set(nil, forKey: "last_username")
 
                 CoreDataHelper.sharedInstance.deleteAccount()
@@ -78,11 +79,11 @@ extension SettingsViewController: UITableViewDelegate {
                 let vc = UIStoryboard(name: "Authentication", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
 
                 self.switchNavigationStack(to: vc)
-            })
+            }))
 
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in }))
 
-            self.present(alert, animated: true)
+            self.present(alertController, animated: true)
         }
     }
 

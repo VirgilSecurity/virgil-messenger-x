@@ -36,7 +36,10 @@ class DataSource: ChatDataSourceProtocol {
     init(pageSize: Int) {
         self.slidingWindow = SlidingDataSource(pageSize: pageSize)
         self.pageSize = pageSize
-        NotificationCenter.default.addObserver(self, selector: #selector(DataSource.processMessage(notification:)), name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue), object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(DataSource.processMessage(notification:)),
+                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue),
+                                                                       object: nil)
 
         self.getLastMessages()
     }

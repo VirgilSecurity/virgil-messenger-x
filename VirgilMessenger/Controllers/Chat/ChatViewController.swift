@@ -49,6 +49,13 @@ class ChatViewController: BaseChatViewController {
         self.view.backgroundColor = UIColor(rgb: 0x2B303B)
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self.dataSource)
+        NotificationCenter.default.removeObserver(self)
+        TwilioHelper.sharedInstance.deselectChannel()
+        VirgilHelper.sharedInstance.setChannelCard(nil)
+    }
+
     var chatInputPresenter: BasicChatInputBarPresenter!
     override func createChatInputView() -> UIView {
         let chatInputView = InputBar.loadNib()
