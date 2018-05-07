@@ -16,6 +16,8 @@ class ChatListViewController: ViewController {
 
     static let name = "ChatList"
 
+    private var currentChannelMessegesCount: Int = 0
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -253,7 +255,21 @@ extension ChatListViewController: CellTapDelegate {
 
             VirgilHelper.sharedInstance.setChannelCard(exportedCard)
 
-            self.performSegue(withIdentifier: "goToChat", sender: self)
+            TwilioHelper.sharedInstance.currentChannel.getMessagesCount { result, count in
+                guard result.isSuccessful() else {
+                    Log.error("Can't get Twilio messages count")
+                    return
+                }
+                self.currentChannelMessegesCount = Int(count)
+                TwilioHelper.sharedInstance.updateMessages(count: Int(count)) { error in
+                    guard error == nil else {
+                        return
+                    }
+                    DispatchQueue.main.async {
+                        self.performSegue(withIdentifier: "goToChat", sender: self)
+                    }
+                }
+            }
         }
     }
 
@@ -263,7 +279,7 @@ extension ChatListViewController: CellTapDelegate {
         if let chatController = segue.destination as? ChatViewController {
             let pageSize = ChatConstants.chatPageSize
 
-            let dataSource = DataSource(pageSize: pageSize)
+            let dataSource = DataSource(count: self.currentChannelMessegesCount, pageSize: pageSize)
             chatController.title = TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.currentChannel)
             chatController.dataSource = dataSource
             chatController.messageSender = dataSource.messageSender

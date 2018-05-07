@@ -30,23 +30,31 @@ public enum InsertPosition {
 }
 
 public class SlidingDataSource<Element> {
-
     private var pageSize: Int
     private var windowOffset: Int
     private var windowCount: Int
-    private var itemGenerator: (() -> Element)?
-    private var items = [Element]()
+    private var itemGenerator: ((Int) -> Element)
+    private(set) var items = [Element]()
     private var itemsOffset: Int
     public var itemsInWindow: [Element] {
         let offset = self.windowOffset - self.itemsOffset
         return Array(items[offset..<offset + self.windowCount])
     }
 
-    init(pageSize: Int) {
-        self.windowOffset = 0
-        self.itemsOffset = 0
+    init(count: Int, pageSize: Int, itemGenerator: @escaping ((Int) -> Element)) {
+        self.windowOffset = count
+        self.itemsOffset = count
         self.windowCount = 0
+        self.itemGenerator = itemGenerator
         self.pageSize = pageSize
+        self.showItems(min(pageSize, count), position: .top)
+    }
+
+    private func showItems(_ count: Int, position: InsertPosition) {
+        guard count > 0 else { return }
+        for _ in 0..<count {
+            self.insertItem(itemGenerator(self.items.count), position: .top)
+        }
     }
 
     public func insertItem(_ item: Element, position: InsertPosition) {
@@ -79,9 +87,11 @@ public class SlidingDataSource<Element> {
         let previousWindowOffset = self.windowOffset
         let previousWindowCount = self.windowCount
         let nextWindowOffset = max(0, self.windowOffset - self.pageSize)
-        _ = self.itemsOffset - nextWindowOffset
+        let messagesNeeded = self.itemsOffset - nextWindowOffset
 
-        //TODO loading more messages
+        if messagesNeeded > 0 {
+            self.showItems(messagesNeeded, position: .top)
+        }
 
         let newItemsCount = previousWindowOffset - nextWindowOffset
         self.windowOffset = nextWindowOffset

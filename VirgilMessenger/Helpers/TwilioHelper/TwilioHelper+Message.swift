@@ -6,7 +6,7 @@
 //  Copyright © 2018 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import TwilioChatClient
 
 extension TwilioHelper {
@@ -30,6 +30,76 @@ extension TwilioHelper {
             }
 
             completion()
+        }
+    }
+
+    func updateMessages(count: Int, completion: @escaping (Error?) -> ()) {
+        guard let coreMessagesCount = CoreDataHelper.sharedInstance.currentChannel?.message?.count else {
+            Log.error("Get CoreData messages count failed")
+            completion(NSError())
+            return
+        }
+
+        let needToLoadCount = count - coreMessagesCount
+
+        guard let messages = TwilioHelper.sharedInstance.currentChannel.messages else {
+            Log.error("Twilio: nil messages in selected channel")
+            completion(NSError())
+            return
+        }
+
+        if needToLoadCount > 0 {
+            messages.getLastWithCount(UInt(needToLoadCount), completion: { result, messages in
+                guard let messages = messages else {
+                    Log.error("Twilio can't get last messages")
+                    completion(NSError())
+                    return
+                }
+                TwilioHelper.sharedInstance.queue.async {
+                    for message in messages {
+                        let isIncoming = message.author == TwilioHelper.sharedInstance.username ? false : true
+                        guard let messageDate = message.dateUpdatedAsDate else {
+                            Log.error("wrong message atributes")
+                            CoreDataHelper.sharedInstance.createTextMessage(withBody: "Message corrupted",
+                                                                            isIncoming: isIncoming, date: Date())
+                            continue
+                        }
+
+                        if message.hasMedia() {
+                            TwilioHelper.sharedInstance.getMediaSync(from: message) { encryptedData in
+                                guard let encryptedData = encryptedData,
+                                    let encryptedString = String(data: encryptedData, encoding: .utf8),
+                                    let decryptedString = VirgilHelper.sharedInstance.decryptPFS(encrypted: encryptedString),
+                                    let decryptedData = Data(base64Encoded: decryptedString) else {
+                                        Log.error("decryption of Media failed")
+                                        CoreDataHelper.sharedInstance.createTextMessage(withBody: "Message encrypted",
+                                                                                        isIncoming: isIncoming, date: messageDate)
+                                        return
+                                }
+
+                                CoreDataHelper.sharedInstance.createMediaMessage(withData: decryptedData,
+                                                                                 isIncoming: isIncoming,
+                                                                                 date: messageDate)
+                            }
+                        } else if let messageBody = message.body {
+                            guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(encrypted: messageBody) else {
+                                CoreDataHelper.sharedInstance.createTextMessage(withBody: "Message encrypted",
+                                                                                isIncoming: isIncoming, date: messageDate)
+                                continue
+                            }
+                            CoreDataHelper.sharedInstance.createTextMessage(withBody: decryptedMessageBody,
+                                                                            isIncoming: isIncoming, date: messageDate)
+                        } else {
+                            Log.error("corrupted Message")
+                            CoreDataHelper.sharedInstance.createTextMessage(withBody: "Message corrupted",
+                                                                            isIncoming: isIncoming, date: Date())
+                        }
+                    }
+                    completion(nil)
+                }
+            })
+        } else {
+            completion(nil)
         }
     }
 

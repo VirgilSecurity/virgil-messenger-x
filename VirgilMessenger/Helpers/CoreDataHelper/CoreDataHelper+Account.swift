@@ -35,7 +35,7 @@ extension CoreDataHelper {
 
     func loadAccount(withIdentity username: String) -> Bool {
         Log.debug("Core Data: Search for " + username)
-        for account in CoreDataHelper.sharedInstance.accounts {
+        for account in self.accounts {
             if let identity = account.identity, identity == username {
                 self.setCurrent(account: account)
                 Log.debug("Core Data: found account: " + identity)
@@ -49,7 +49,7 @@ extension CoreDataHelper {
     }
 
     func getAccount(withIdentity username: String) -> Account? {
-        for account in CoreDataHelper.sharedInstance.accounts {
+        for account in self.accounts {
             if let identity = account.identity, identity == username {
                 return account
             }

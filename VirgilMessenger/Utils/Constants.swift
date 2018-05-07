@@ -12,7 +12,7 @@ class ChatConstants {
     static let limitLength = 32
     static let characterSet = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}@#_")
     static let chatMaxCharectersCount: UInt = 1000
-    static let chatPageSize = 10000
+    static let chatPageSize = 20
 }
 
 class UIConstants {

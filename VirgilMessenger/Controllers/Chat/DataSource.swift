@@ -33,20 +33,42 @@ class DataSource: ChatDataSourceProtocol {
     private let pageSize: Int
     var slidingWindow: SlidingDataSource<ChatItemProtocol>!
 
-    init(pageSize: Int) {
-        self.slidingWindow = SlidingDataSource(pageSize: pageSize)
+    init(count: Int, pageSize: Int) {
         self.pageSize = pageSize
+        self.slidingWindow = SlidingDataSource(count: count, pageSize: pageSize) { [weak self] (count) -> ChatItemProtocol in
+            guard let sSelf = self,
+                let channel = CoreDataHelper.sharedInstance.currentChannel,
+                let messages = channel.message,
+                let anyMessage = messages[safe: messages.count - count - 1],
+                let message = anyMessage as? Message,
+                let messageDate = message.date else {
+                    return MessageFactory.createTextMessageModel("\(0)", text: "Corrupted Message", isIncoming: true,
+                                                          status: .failed, date: Date())
+            }
+
+            let resultMessage: DemoMessageModelProtocol
+            if let messageMedia = message.media,
+                let image = UIImage(data: messageMedia) {
+                    resultMessage = MessageFactory.createPhotoMessageModel("\(sSelf.nextMessageId)", image: image,
+                                                                           size: image.size, isIncoming: message.isIncoming,
+                                                                           status: .success, date: Date())
+            } else if let messageBody = message.body {
+                resultMessage = MessageFactory.createTextMessageModel("\(sSelf.nextMessageId)", text: messageBody,
+                                                                      isIncoming: message.isIncoming, status: .success,
+                                                                      date: messageDate)
+            } else {
+                resultMessage = MessageFactory.createTextMessageModel("\(sSelf.nextMessageId)", text: "Corrupted Message",
+                                                                      isIncoming: true, status: .failed, date: messageDate)
+            }
+
+            sSelf.nextMessageId += 1
+            return resultMessage
+        }
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(DataSource.processMessage(notification:)),
                                                name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue),
                                                                        object: nil)
 
-        self.getLastMessages()
-    }
-
-    private func getLastMessages() {
-        let messagesCore: [DemoMessageModelProtocol] = self.getCoreDataLastMessages()
-        self.getTwilioLastMessages(coreMessagesCount: messagesCore.count)
     }
 
     @objc private func processMessage(notification: Notification) {
@@ -159,135 +181,5 @@ class DataSource: ChatDataSourceProtocol {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-    }
-}
-
-extension DataSource {
-    private func getCoreDataLastMessages() -> [DemoMessageModelProtocol] {
-        var result: [DemoMessageModelProtocol] = []
-
-        guard let channel = CoreDataHelper.sharedInstance.currentChannel,
-            let messages = channel.message else {
-                Log.error("Can't get last messages: channel not found in Core Data")
-                return result
-        }
-
-        for message in messages {
-            guard let message = message as? Message,
-                let messageDate = message.date
-                else {
-                    Log.error("retriving message from Core Data failed")
-                    return result
-            }
-
-            let decryptedMessage: DemoMessageModelProtocol
-            if let messageMedia = message.media {
-                if let decryptedMedia = try? VirgilHelper.sharedInstance.decrypt(data: messageMedia),
-                    let image = UIImage(data: decryptedMedia) {
-
-                    let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming,
-                                                                  type: PhotoMessageModel<MessageModel>.chatItemType,
-                                                                  status: .success, date: messageDate)
-                    decryptedMessage = DemoPhotoMessageModel(messageModel: model, imageSize: image.size, image: image)
-                } else {
-                    Log.error("decrypting media message failed")
-                    let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming,
-                                                                  type: TextMessageModel<MessageModel>.chatItemType,
-                                                                  status: .failed, date: messageDate)
-                    decryptedMessage =  DemoTextMessageModel(messageModel: model, text: "Failed to decrypt image")
-                }
-            } else if let messageBody = message.body {
-                let decryptedBody = try? VirgilHelper.sharedInstance.decrypt(text: messageBody)
-
-                let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming,
-                                                              type: TextMessageModel<MessageModel>.chatItemType,
-                                                              status: .success, date: messageDate)
-                decryptedMessage = DemoTextMessageModel(messageModel: model, text: decryptedBody ?? "Error decrypting message")
-            } else {
-                let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: message.isIncoming,
-                                                              type: TextMessageModel<MessageModel>.chatItemType,
-                                                              status: .failed, date: messageDate)
-                decryptedMessage =  DemoTextMessageModel(messageModel: model, text: "Corrupted Message")
-            }
-            self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
-            self.nextMessageId += 1
-
-            result.append(decryptedMessage)
-        }
-
-        return result
-    }
-
-    private func getTwilioLastMessages(coreMessagesCount: Int) {
-        guard let messages = TwilioHelper.sharedInstance.currentChannel.messages else {
-            Log.error("nil messages in selected channel")
-            return
-        }
-        Log.debug("selected channel with attributes: \(TwilioHelper.sharedInstance.currentChannel.attributes() ?? ["no attributes" : ""])")
-
-        TwilioHelper.sharedInstance.currentChannel.getMessagesCount { result, count in
-            guard result.isSuccessful() else {
-                Log.error("Can't get Twilio messages count")
-                return
-            }
-            let needToLoadCount = Int(count) - coreMessagesCount
-
-            if needToLoadCount > 0 {
-                messages.getLastWithCount(UInt(needToLoadCount), completion: { result, messages in
-                    guard let messages = messages else {
-                        Log.error("Twilio can't get last messages")
-                        return
-                    }
-                    TwilioHelper.sharedInstance.queue.async {
-                        for message in messages {
-                            guard let messageDate = message.dateUpdatedAsDate else {
-                                Log.error("wrong message atributes")
-                                continue
-                            }
-                            let isIncoming = message.author == TwilioHelper.sharedInstance.username ? false : true
-
-                            if message.hasMedia() {
-                                TwilioHelper.sharedInstance.getMediaSync(from: message) { encryptedData in
-                                    guard let encryptedData = encryptedData,
-                                        let encryptedString = String(data: encryptedData, encoding: .utf8),
-                                        let decryptedString = VirgilHelper.sharedInstance.decryptPFS(encrypted: encryptedString),
-                                        let decryptedData = Data(base64Encoded: decryptedString),
-                                        let image = UIImage(data: decryptedData) else {
-                                            Log.error("decryption of Media failed")
-                                            return
-                                    }
-
-                                    let photoMessageModel = MessageFactory.createPhotoMessageModel("\(self.nextMessageId)", image: image,
-                                                                                                   size: image.size, isIncoming: isIncoming,
-                                                                                                   status: .success, date: messageDate)
-                                    self.slidingWindow.insertItem(photoMessageModel, position: .bottom)
-                                    self.nextMessageId += 1
-
-                                    CoreDataHelper.sharedInstance.createMediaMessage(withData: decryptedData,
-                                                                                     isIncoming: isIncoming,
-                                                                                     date: messageDate)
-                                    DispatchQueue.main.async {
-                                        self.delegate?.chatDataSourceDidUpdate(self, updateType: .reload)
-                                    }
-                                }
-                            } else if let messageBody = message.body {
-                                guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(encrypted: messageBody) else {
-                                    return
-                                }
-                                let textMessageModel = MessageFactory.createTextMessageModel("\(self.nextMessageId)", text: decryptedMessageBody,
-                                                                                             isIncoming: isIncoming, status: .success, date: messageDate)
-                                CoreDataHelper.sharedInstance.createTextMessage(withBody: decryptedMessageBody, isIncoming: isIncoming, date: messageDate)
-
-                                self.slidingWindow.insertItem(textMessageModel, position: .bottom)
-                                self.nextMessageId += 1
-                                DispatchQueue.main.async {
-                                    self.delegate?.chatDataSourceDidUpdate(self, updateType: .reload)
-                                }
-                            }
-                        }
-                    }
-                })
-            }
-        }
     }
 }

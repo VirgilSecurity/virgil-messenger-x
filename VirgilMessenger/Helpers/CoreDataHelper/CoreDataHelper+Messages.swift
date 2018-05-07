@@ -42,8 +42,7 @@ extension CoreDataHelper {
 
             let message = Message(entity: entity, insertInto: self.managedContext)
 
-            let encryptedBody = try? VirgilHelper.sharedInstance.encrypt(text: body)
-            message.body = encryptedBody ?? "Error encrypting message"
+            message.body = body
             message.isIncoming = isIncoming
             message.date = date
 
@@ -64,11 +63,7 @@ extension CoreDataHelper {
 
             let message = Message(entity: entity, insertInto: self.managedContext)
 
-            guard let encryptedMedia = try? VirgilHelper.sharedInstance.encrypt(data: data) else {
-                Log.error("Encryption media failed")
-                return
-            }
-            message.media = encryptedMedia
+            message.media = data
             message.isIncoming = isIncoming
             message.date = date
 
@@ -89,11 +84,7 @@ extension CoreDataHelper {
             if message.media != nil {
                 channel.lastMessagesBody = "image.jpg"
             } else if let messageBody = message.body {
-                guard let decryptedMessageBody = try? VirgilHelper.sharedInstance.decrypt(text: messageBody) else {
-                    Log.error("Core Data: decrypting last message failed")
-                    return
-                }
-                channel.lastMessagesBody = decryptedMessageBody
+                channel.lastMessagesBody = messageBody
             }
             channel.lastMessagesDate = date
         }

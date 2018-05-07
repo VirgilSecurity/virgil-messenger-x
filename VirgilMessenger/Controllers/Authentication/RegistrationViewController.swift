@@ -103,11 +103,11 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
 
         VirgilHelper.sharedInstance.signUp(identity: username) { error in
             guard error == nil else {
-                var message: String?
+                var message = "Something went wrong"
                 if let err = error as? VirgilHelper.UserFriendlyError {
                     message = err.rawValue
                 }
-                message = message ?? "Something went wrong"
+
                 PKHUD.sharedHUD.hide() { _ in
                     let controller = UIAlertController(title: self.title, message: message, preferredStyle: .alert)
                     controller.addAction(UIAlertAction(title: "OK", style: .default))
@@ -117,7 +117,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
                 return
             }
             UserDefaults.standard.set(username, forKey: "last_username")
-           PKHUD.sharedHUD.hide(true) { _ in
+            PKHUD.sharedHUD.hide(true) { _ in
                 self.goToChatList()
             }
         }
