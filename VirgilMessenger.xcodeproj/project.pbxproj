@@ -20,6 +20,7 @@
 		16961B56203B03720084086E /* VirgilHelper+Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16961B55203B03720084086E /* VirgilHelper+Authentication.swift */; };
 		16961B58203B04790084086E /* VirgilHelper+SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16961B57203B04790084086E /* VirgilHelper+SignIn.swift */; };
 		16961B5A203B04A90084086E /* VirgilHelper+SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16961B59203B04A90084086E /* VirgilHelper+SignUp.swift */; };
+		1696ADC720A0766600EF8C0D /* NSOrderedSet+SafeSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1696ADC620A0766600EF8C0D /* NSOrderedSet+SafeSubscript.swift */; };
 		16AE1D7A2044315B005DF777 /* DemoPhotoMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D772044315B005DF777 /* DemoPhotoMessageModel.swift */; };
 		16AE1D7B2044315B005DF777 /* DemoPhotoMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */; };
 		16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
@@ -124,6 +125,7 @@
 		16961B55203B03720084086E /* VirgilHelper+Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VirgilHelper+Authentication.swift"; sourceTree = "<group>"; };
 		16961B57203B04790084086E /* VirgilHelper+SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VirgilHelper+SignIn.swift"; sourceTree = "<group>"; };
 		16961B59203B04A90084086E /* VirgilHelper+SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VirgilHelper+SignUp.swift"; sourceTree = "<group>"; };
+		1696ADC620A0766600EF8C0D /* NSOrderedSet+SafeSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSOrderedSet+SafeSubscript.swift"; sourceTree = "<group>"; };
 		16AE1D772044315B005DF777 /* DemoPhotoMessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageModel.swift; sourceTree = "<group>"; };
 		16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageHandler.swift; sourceTree = "<group>"; };
 		16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
@@ -275,6 +277,7 @@
 				16FB2DD2204D875400346FA0 /* UIView+Gradient.swift */,
 				16FB2DD4204D87F200346FA0 /* UIColor+RGB.swift */,
 				1658BA171FD97497005EF9C1 /* Utils+Date.swift */,
+				1696ADC620A0766600EF8C0D /* NSOrderedSet+SafeSubscript.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -488,6 +491,7 @@
 				16F8BC861FAA05E70020094B /* CopyFiles */,
 				429228DA1F96339900DCECDF /* ShellScript */,
 				42B416381FBAFBDF00AFDF80 /* ShellScript */,
+				16319BE72088E60200B09856 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -555,6 +559,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		16319BE72088E60200B09856 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "APP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\ndo\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone";
+		};
 		429228D01F96287E00DCECDF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
@@ -635,6 +652,7 @@
 				429228DE1F9637A200DCECDF /* Log.swift in Sources */,
 				4280C0E01F9734DD00075B3A /* TimeSeparatorPresenter.swift in Sources */,
 				427D1E571F9656BB002F2CF3 /* DemoTextMessageViewModel.swift in Sources */,
+				1696ADC720A0766600EF8C0D /* NSOrderedSet+SafeSubscript.swift in Sources */,
 				423BDA871F97774F00C3EE9B /* ServiceResponse.swift in Sources */,
 				1658BA181FD97497005EF9C1 /* Utils+Date.swift in Sources */,
 				16FB2DD3204D875400346FA0 /* UIView+Gradient.swift in Sources */,
@@ -813,8 +831,9 @@
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.virgilsecurity.VirgilMessenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -838,8 +857,9 @@
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.virgilsecurity.VirgilMessenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
