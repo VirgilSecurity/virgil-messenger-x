@@ -34,45 +34,41 @@ extension CoreDataHelper {
     }
 
     func createTextMessage(forChannel channel: Channel, withBody body: String, isIncoming: Bool, date: Date) {
-        self.queue.async {
-            guard let entity = NSEntityDescription.entity(forEntityName: Entities.message.rawValue, in: self.managedContext) else {
-                Log.error("Core Data: entity not found: " + Entities.message.rawValue)
-                return
-            }
-
-            let message = Message(entity: entity, insertInto: self.managedContext)
-
-            message.body = body
-            message.isIncoming = isIncoming
-            message.date = date
-
-            let messages = channel.mutableOrderedSetValue(forKey: Keys.message.rawValue)
-            messages.add(message)
-
-            Log.debug("Core Data: new message added. Count: \(messages.count)")
-            self.appDelegate.saveContext()
+        guard let entity = NSEntityDescription.entity(forEntityName: Entities.message.rawValue, in: self.managedContext) else {
+            Log.error("Core Data: entity not found: " + Entities.message.rawValue)
+            return
         }
+
+        let message = Message(entity: entity, insertInto: self.managedContext)
+
+        message.body = body
+        message.isIncoming = isIncoming
+        message.date = date
+
+        let messages = channel.mutableOrderedSetValue(forKey: Keys.message.rawValue)
+        messages.add(message)
+
+        Log.debug("Core Data: new message added. Count: \(messages.count)")
+        self.appDelegate.saveContext()
     }
 
     func createMediaMessage(forChannel channel: Channel, withData data: Data, isIncoming: Bool, date: Date) {
-        self.queue.async {
-            guard let entity = NSEntityDescription.entity(forEntityName: Entities.message.rawValue, in: self.managedContext) else {
-                Log.error("Core Data: entity not found: " + Entities.message.rawValue)
-                return
-            }
-
-            let message = Message(entity: entity, insertInto: self.managedContext)
-
-            message.media = data
-            message.isIncoming = isIncoming
-            message.date = date
-
-            let messages = channel.mutableOrderedSetValue(forKey: Keys.message.rawValue)
-            messages.add(message)
-
-            Log.debug("Core Data: new message added. Count: \(messages.count)")
-            self.appDelegate.saveContext()
+        guard let entity = NSEntityDescription.entity(forEntityName: Entities.message.rawValue, in: self.managedContext) else {
+            Log.error("Core Data: entity not found: " + Entities.message.rawValue)
+            return
         }
+
+        let message = Message(entity: entity, insertInto: self.managedContext)
+
+        message.media = data
+        message.isIncoming = isIncoming
+        message.date = date
+
+        let messages = channel.mutableOrderedSetValue(forKey: Keys.message.rawValue)
+        messages.add(message)
+
+        Log.debug("Core Data: new message added. Count: \(messages.count)")
+        self.appDelegate.saveContext()
     }
 
 
