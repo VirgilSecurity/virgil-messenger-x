@@ -33,10 +33,12 @@ extension TwilioHelper {
         }
     }
 
-    func updateMessages(count: Int, completion: @escaping (Error?) -> ()) {
+    func updateMessages(count: Int, completion: @escaping (Int, Error?) -> ()) {
         guard let coreMessagesCount = CoreDataHelper.sharedInstance.currentChannel?.message?.count else {
             Log.error("Get CoreData messages count failed")
-            completion(NSError())
+            DispatchQueue.main.async {
+                completion(0, NSError())
+            }
             return
         }
 
@@ -44,7 +46,9 @@ extension TwilioHelper {
 
         guard let messages = TwilioHelper.sharedInstance.currentChannel.messages else {
             Log.error("Twilio: nil messages in selected channel")
-            completion(NSError())
+            DispatchQueue.main.async {
+                completion(0, NSError())
+            }
             return
         }
 
@@ -52,7 +56,9 @@ extension TwilioHelper {
             messages.getLastWithCount(UInt(needToLoadCount), completion: { result, messages in
                 guard let messages = messages else {
                     Log.error("Twilio can't get last messages")
-                    completion(NSError())
+                    DispatchQueue.main.async {
+                        completion(-1, NSError())
+                    }
                     return
                 }
                 TwilioHelper.sharedInstance.queue.async {
@@ -95,11 +101,15 @@ extension TwilioHelper {
                                                                             isIncoming: isIncoming, date: Date())
                         }
                     }
-                    completion(nil)
+                    DispatchQueue.main.async {
+                        completion(needToLoadCount, nil)
+                    }
                 }
             })
         } else {
-            completion(nil)
+            DispatchQueue.main.async {
+                completion(0, nil)
+            }
         }
     }
 
@@ -129,6 +139,7 @@ extension TwilioHelper {
             } else if let messageBody = message.body {
                 guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card,
                                                                                         encrypted: messageBody) else {
+                    completion(nil, nil, nil, nil)
                     return
                 }
 

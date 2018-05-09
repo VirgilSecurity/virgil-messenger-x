@@ -28,6 +28,7 @@ import ChattoAdditions
 import TwilioChatClient
 
 class DataSource: ChatDataSourceProtocol {
+    let count: Int
     var nextMessageId: Int = 0
     let preferredMaxWindowSize = 500
     private let pageSize: Int
@@ -35,40 +36,59 @@ class DataSource: ChatDataSourceProtocol {
 
     init(count: Int, pageSize: Int) {
         self.pageSize = pageSize
-        self.slidingWindow = SlidingDataSource(count: count, pageSize: pageSize) { [weak self] (count) -> ChatItemProtocol in
+        self.count = count
+
+        self.slidingWindow = SlidingDataSource(count: count, pageSize: pageSize) { [weak self] (messageNumber, messages) -> ChatItemProtocol in
             guard let sSelf = self,
-                let channel = CoreDataHelper.sharedInstance.currentChannel,
-                let messages = channel.message,
-                let anyMessage = messages[safe: messages.count - count - 1],
+                let anyMessage = messages[safe: messageNumber],
                 let message = anyMessage as? Message,
                 let messageDate = message.date else {
-                    return MessageFactory.createTextMessageModel("\(0)", text: "Corrupted Message", isIncoming: true,
-                                                          status: .failed, date: Date())
+                    return MessageFactory.createTextMessageModel("\(0)", text: "Corrupted Message", isIncoming: false,
+                                                                 status: .success, date: Date())
             }
 
             let resultMessage: DemoMessageModelProtocol
             if let messageMedia = message.media,
                 let image = UIImage(data: messageMedia) {
-                    resultMessage = MessageFactory.createPhotoMessageModel("\(sSelf.nextMessageId)", image: image,
-                                                                           size: image.size, isIncoming: message.isIncoming,
-                                                                           status: .success, date: Date())
+                resultMessage = MessageFactory.createPhotoMessageModel("\(sSelf.nextMessageId)", image: image,
+                                                                       size: image.size, isIncoming: message.isIncoming,
+                                                                       status: .success, date: Date())
             } else if let messageBody = message.body {
                 resultMessage = MessageFactory.createTextMessageModel("\(sSelf.nextMessageId)", text: messageBody,
                                                                       isIncoming: message.isIncoming, status: .success,
                                                                       date: messageDate)
             } else {
                 resultMessage = MessageFactory.createTextMessageModel("\(sSelf.nextMessageId)", text: "Corrupted Message",
-                                                                      isIncoming: true, status: .failed, date: messageDate)
+                                                                      isIncoming: message.isIncoming, status: .success, date: messageDate)
             }
-
             sSelf.nextMessageId += 1
+
             return resultMessage
         }
+        self.delegate?.chatDataSourceDidUpdate(self)
+        
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(DataSource.processMessage(notification:)),
                                                name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue),
-                                                                       object: nil)
+                                               object: nil)
+    }
 
+    func updateMessages(completion: @escaping () -> ()) {
+        TwilioHelper.sharedInstance.updateMessages(count: self.count) { needToUpdate, _ in
+            if needToUpdate > 0 {
+                guard let channel = CoreDataHelper.sharedInstance.currentChannel,
+                    let messages = channel.message else {
+                        Log.error("Missing Core Data current channel")
+                        completion()
+                        return
+                }
+                for i in (0..<needToUpdate).reversed() {
+                    self.slidingWindow.insertItem(self.slidingWindow.itemGenerator(messages.count - i - 1, messages), position: .bottom)
+                }
+                self.delegate?.chatDataSourceDidUpdate(self)
+            }
+            completion()
+        }
     }
 
     @objc private func processMessage(notification: Notification) {

@@ -47,6 +47,25 @@ class ChatViewController: BaseChatViewController {
         self.navigationController?.navigationBar.tintColor = .white
 
         self.view.backgroundColor = UIColor(rgb: 0x2B303B)
+
+        self.view.isUserInteractionEnabled = false
+        let indicator = UIActivityIndicatorView()
+        indicator.hidesWhenStopped = false
+        indicator.startAnimating()
+
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
+        titleLabel.textColor = .white
+        titleLabel.text = "Updating"
+        let titleView = UIStackView(arrangedSubviews: [indicator, titleLabel])
+        titleView.spacing = 5
+
+        self.navigationItem.titleView = titleView
+        self.dataSource.updateMessages {
+            self.navigationItem.titleView = nil
+            self.title = TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.currentChannel)
+            self.view.isUserInteractionEnabled = true
+            indicator.stopAnimating()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {

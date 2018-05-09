@@ -21,7 +21,24 @@ class ChatListViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.updateLastMessages()
+        self.view.isUserInteractionEnabled = false
+        let indicator = UIActivityIndicatorView()
+        indicator.hidesWhenStopped = false
+        indicator.startAnimating()
+
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
+        titleLabel.textColor = .white
+        titleLabel.text = "Updating"
+        let titleView = UIStackView(arrangedSubviews: [indicator, titleLabel])
+        titleView.spacing = 5
+
+        self.navigationItem.titleView = titleView
+        self.updateLastMessages {
+            self.navigationItem.titleView = nil
+            self.title = "Chats"
+            self.view.isUserInteractionEnabled = true
+            indicator.stopAnimating()
+        }
 
         self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main),
                                 forCellReuseIdentifier: ChatListCell.name)
@@ -55,25 +72,28 @@ class ChatListViewController: ViewController {
         }
     }
 
-    private func updateLastMessages() {
+    private func updateLastMessages(completion: @escaping () -> ()) {
         let channels = TwilioHelper.sharedInstance.channels.subscribedChannels()
 
+        let group = DispatchGroup()
         for i in 0..<channels.count {
             let channel = channels[i]
             let channelName = TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)
             if let channelCore = CoreDataHelper.sharedInstance.getChannel(withName: channelName),
                 let messages = channel.messages,
                 let messagesCore = channelCore.message {
-
                 CoreDataHelper.sharedInstance.setLastMessage(for: channelCore)
 
+                group.enter()
                 TwilioHelper.sharedInstance.decryptFirstMessage(of: messages, channel: channelCore, saved: messagesCore.count) { message, decryptedBody, decryptedMedia, messageDate in
                     guard let message = message,
                         let messageDate = messageDate else {
+                            group.leave()
                             return
                     }
+                    group.enter()
                     TwilioHelper.sharedInstance.setLastMessage(of: messages, channel: channelCore) {
-                        self.tableView.reloadData()
+                        group.leave()
                     }
 
                     if (messagesCore.count == 0 || (Int(truncating: message.index ?? 0) >= (messagesCore.count))) {
@@ -84,10 +104,15 @@ class ChatListViewController: ViewController {
                             CoreDataHelper.sharedInstance.createMediaMessage(forChannel: channelCore, withData: decryptedMedia, isIncoming: true, date: messageDate)
                         }
                     }
+                    group.leave()
                 }
             } else {
                 Log.error("updating last messages failed")
             }
+        }
+        group.notify(queue: .main) {
+            self.tableView.reloadData()
+            completion()
         }
     }
 
@@ -261,13 +286,8 @@ extension ChatListViewController: CellTapDelegate {
                     return
                 }
                 self.currentChannelMessegesCount = Int(count)
-                TwilioHelper.sharedInstance.updateMessages(count: Int(count)) { error in
-                    guard error == nil else {
-                        return
-                    }
-                    DispatchQueue.main.async {
-                        self.performSegue(withIdentifier: "goToChat", sender: self)
-                    }
+                DispatchQueue.main.async {
+                    self.performSegue(withIdentifier: "goToChat", sender: self)
                 }
             }
         }
@@ -280,7 +300,6 @@ extension ChatListViewController: CellTapDelegate {
             let pageSize = ChatConstants.chatPageSize
 
             let dataSource = DataSource(count: self.currentChannelMessegesCount, pageSize: pageSize)
-            chatController.title = TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.currentChannel)
             chatController.dataSource = dataSource
             chatController.messageSender = dataSource.messageSender
         }
