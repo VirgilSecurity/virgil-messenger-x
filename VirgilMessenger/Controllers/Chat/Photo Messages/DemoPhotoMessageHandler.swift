@@ -32,7 +32,7 @@ class DemoPhotoMessageHandler: NSObject, BaseMessageInteractionHandlerProtocol {
     func userDidDeselectMessage(viewModel: DemoPhotoMessageViewModel) {}
 
     private let baseHandler: BaseMessageHandler
-    private let presenterController: UIViewController
+    weak private var presenterController: UIViewController!
     init (baseHandler: BaseMessageHandler, presenterController: UIViewController) {
         self.baseHandler = baseHandler
         self.presenterController = presenterController
