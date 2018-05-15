@@ -139,6 +139,8 @@ class ChatViewController: BaseChatViewController {
         var items = [ChatInputItemProtocol]()
         items.append(self.createTextInputItem())
         items.append(self.createPhotoInputItem())
+        items.append(self.createAudioInputItem())
+
         return items
     }
 
@@ -157,6 +159,20 @@ class ChatViewController: BaseChatViewController {
                 self?.present(controller, animated: true)
             } else {
                 self?.dataSource.addTextMessage(text)
+            }
+        }
+        return item
+    }
+
+    private func createAudioInputItem() -> AudioChatInputItem {
+        let item = AudioChatInputItem()
+        item.audioInputHandler = { [weak self] audioData in
+            if self?.currentReachabilityStatus == .notReachable {
+                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
+                controller.addAction(UIAlertAction(title: "OK", style: .default))
+                self?.present(controller, animated: true)
+            } else {
+                self?.dataSource.addAudioMessage(audioData)
             }
         }
         return item

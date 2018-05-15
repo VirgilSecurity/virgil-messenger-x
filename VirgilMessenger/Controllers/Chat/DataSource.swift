@@ -194,6 +194,10 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
+    func addAudioMessage(_ audio: Data) {
+        //TODO
+    }
+
     func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> ()) {
         let didAdjust = self.slidingWindow.adjustWindow(focusPosition: focusPosition, maxWindowSize: preferredMaxCount ?? self.preferredMaxWindowSize)
         completion(didAdjust)

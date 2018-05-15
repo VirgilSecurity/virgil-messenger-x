@@ -79,35 +79,39 @@ class ChatListViewController: ViewController {
         for i in 0..<channels.count {
             let channel = channels[i]
             let channelName = TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)
-            if let channelCore = CoreDataHelper.sharedInstance.getChannel(withName: channelName),
-                let messages = channel.messages,
-                let messagesCore = channelCore.message {
-                CoreDataHelper.sharedInstance.setLastMessage(for: channelCore)
+            if let channelCore = CoreDataHelper.sharedInstance.getChannel(withName: channelName) {
+                while channel.messages == nil { sleep(1) }
+                if let messages = channel.messages,
+                    let messagesCore = channelCore.message {
+                        CoreDataHelper.sharedInstance.setLastMessage(for: channelCore)
 
-                group.enter()
-                TwilioHelper.sharedInstance.decryptFirstMessage(of: messages, channel: channelCore, saved: messagesCore.count) { message, decryptedBody, decryptedMedia, messageDate in
-                    guard let message = message,
-                        let messageDate = messageDate else {
+                        group.enter()
+                        TwilioHelper.sharedInstance.decryptFirstMessage(of: messages, channel: channelCore, saved: messagesCore.count) { message, decryptedBody, decryptedMedia, messageDate in
+                            guard let message = message,
+                                let messageDate = messageDate else {
+                                    group.leave()
+                                    return
+                            }
+                            group.enter()
+                            TwilioHelper.sharedInstance.setLastMessage(of: messages, channel: channelCore) {
+                                group.leave()
+                            }
+
+                            if (messagesCore.count == 0 || (Int(truncating: message.index ?? 0) >= (messagesCore.count))) {
+                                if let decryptedBody = decryptedBody {
+                                    CoreDataHelper.sharedInstance.createTextMessage(forChannel: channelCore, withBody: decryptedBody,
+                                                                                    isIncoming: true, date: messageDate)
+                                } else if let decryptedMedia = decryptedMedia {
+                                    CoreDataHelper.sharedInstance.createMediaMessage(forChannel: channelCore, withData: decryptedMedia, isIncoming: true, date: messageDate)
+                                }
+                            }
                             group.leave()
-                            return
-                    }
-                    group.enter()
-                    TwilioHelper.sharedInstance.setLastMessage(of: messages, channel: channelCore) {
-                        group.leave()
-                    }
-
-                    if (messagesCore.count == 0 || (Int(truncating: message.index ?? 0) >= (messagesCore.count))) {
-                        if let decryptedBody = decryptedBody {
-                            CoreDataHelper.sharedInstance.createTextMessage(forChannel: channelCore, withBody: decryptedBody,
-                                                                            isIncoming: true, date: messageDate)
-                        } else if let decryptedMedia = decryptedMedia {
-                            CoreDataHelper.sharedInstance.createMediaMessage(forChannel: channelCore, withData: decryptedMedia, isIncoming: true, date: messageDate)
                         }
-                    }
-                    group.leave()
+                } else {
+                    Log.error("Get Messages failed")
                 }
             } else {
-                Log.error("updating last messages failed")
+                Log.error("Get Channel failed")
             }
         }
         group.notify(queue: .main) {
