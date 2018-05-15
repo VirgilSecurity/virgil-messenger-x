@@ -11,6 +11,9 @@
 		1627723F203C5FB00086127C /* CoreDataHelper+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */; };
 		16277242203C60DB0086127C /* CoreDataHelper+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */; };
 		16277244203C62040086127C /* CoreDataHelper+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277243203C62040086127C /* CoreDataHelper+Messages.swift */; };
+		164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */; };
+		164E173020AAEECD00AB1AAD /* DemoAudioMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E172F20AAEECD00AB1AAD /* DemoAudioMessageModel.swift */; };
+		164E173220AAEF1900AB1AAD /* DemoAudioMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E173120AAEF1900AB1AAD /* DemoAudioMessageHandler.swift */; };
 		1658BA181FD97497005EF9C1 /* Utils+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1658BA171FD97497005EF9C1 /* Utils+Date.swift */; };
 		1658BA1D1FD9A8BC005EF9C1 /* InputBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1658BA1C1FD9A8BC005EF9C1 /* InputBar.swift */; };
 		1658BA211FD9B08F005EF9C1 /* InputBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1658BA201FD9B08F005EF9C1 /* InputBar.xib */; };
@@ -116,6 +119,9 @@
 		1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Account.swift"; sourceTree = "<group>"; };
 		16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Channel.swift"; sourceTree = "<group>"; };
 		16277243203C62040086127C /* CoreDataHelper+Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Messages.swift"; sourceTree = "<group>"; };
+		164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageModel.swift; sourceTree = "<group>"; };
+		164E172F20AAEECD00AB1AAD /* DemoAudioMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAudioMessageModel.swift; sourceTree = "<group>"; };
+		164E173120AAEF1900AB1AAD /* DemoAudioMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAudioMessageHandler.swift; sourceTree = "<group>"; };
 		1658BA171FD97497005EF9C1 /* Utils+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Utils+Date.swift"; sourceTree = "<group>"; };
 		1658BA1C1FD9A8BC005EF9C1 /* InputBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBar.swift; sourceTree = "<group>"; };
 		1658BA201FD9B08F005EF9C1 /* InputBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputBar.xib; sourceTree = "<group>"; };
@@ -225,6 +231,16 @@
 			path = CoreDataHelper;
 			sourceTree = "<group>";
 		};
+		164E172C20AAED4C00AB1AAD /* Audio Messages */ = {
+			isa = PBXGroup;
+			children = (
+				164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */,
+				164E172F20AAEECD00AB1AAD /* DemoAudioMessageModel.swift */,
+				164E173120AAEF1900AB1AAD /* DemoAudioMessageHandler.swift */,
+			);
+			path = "Audio Messages";
+			sourceTree = "<group>";
+		};
 		1658BA191FD99C56005EF9C1 /* InputBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -296,8 +312,8 @@
 		16AE1D752044315B005DF777 /* Photo Messages */ = {
 			isa = PBXGroup;
 			children = (
-				16FB2DCB204D806E00346FA0 /* DemoPhotoMessageViewModel.swift */,
 				16AE1D772044315B005DF777 /* DemoPhotoMessageModel.swift */,
+				16FB2DCB204D806E00346FA0 /* DemoPhotoMessageViewModel.swift */,
 				16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */,
 			);
 			path = "Photo Messages";
@@ -339,6 +355,7 @@
 			children = (
 				1658BA191FD99C56005EF9C1 /* InputBar */,
 				16E22D881FA8ACAB008D32D9 /* Decorations */,
+				164E172C20AAED4C00AB1AAD /* Audio Messages */,
 				16AE1D752044315B005DF777 /* Photo Messages */,
 				429228EE1F96454400DCECDF /* TextMessage */,
 				4280C0E21F97364F00075B3A /* ChatViewController.swift */,
@@ -469,9 +486,9 @@
 		429228EE1F96454400DCECDF /* TextMessage */ = {
 			isa = PBXGroup;
 			children = (
-				4280C0D71F97341A00075B3A /* DemoTextMessageHandler.swift */,
 				4280C0D81F97341A00075B3A /* DemoTextMessageModel.swift */,
 				427D1E561F9656BB002F2CF3 /* DemoTextMessageViewModel.swift */,
+				4280C0D71F97341A00075B3A /* DemoTextMessageHandler.swift */,
 			);
 			path = TextMessage;
 			sourceTree = "<group>";
@@ -624,14 +641,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */,
 				16FB2DCC204D806E00346FA0 /* DemoPhotoMessageViewModel.swift in Sources */,
 				16FCF2811FE46756000348BC /* Account+CoreDataProperties.swift in Sources */,
 				166D3E5E1FB495F90032BAAD /* CoreDataHelper.swift in Sources */,
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
 				423BDA851F97774F00C3EE9B /* ServiceConnection.swift in Sources */,
+				164E173020AAEECD00AB1AAD /* DemoAudioMessageModel.swift in Sources */,
 				16FA91051FFC55A400FE98C7 /* NSObject+Reachability.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
+				164E173220AAEF1900AB1AAD /* DemoAudioMessageHandler.swift in Sources */,
 				1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */,
 				16FCF27F1FE46756000348BC /* Channel+CoreDataProperties.swift in Sources */,
 				16CA51131FC5DA3B0042AF9D /* SettingsViewController.swift in Sources */,
