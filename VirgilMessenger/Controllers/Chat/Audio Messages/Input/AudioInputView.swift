@@ -14,7 +14,7 @@ protocol AudioInputViewProtocol {
 }
 
 protocol AudioInputViewDelegate: class {
-    func inputView(_ inputView: AudioInputViewProtocol, didFinishedRecoeding audio: Data)
+    func inputView(_ inputView: AudioInputViewProtocol, didFinishedRecording audio: Data)
     func inputViewDidRequestMicrophonePermission(_ inputView: AudioInputViewProtocol)
 }
 
@@ -42,19 +42,55 @@ class AudioInputView: UIView, AudioInputViewProtocol {
 
     private func commonInit() {
         self.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.translatesAutoresizingMaskIntoConstraints = false
         self.configureButton()
     }
 
     func configureButton() {
-        self.recordButton = UIButton()
-        let image = UIImage(named: "record", in: Bundle(for: AudioInputView.self), compatibleWith: nil)!
-        recordButton.setImage(image, for: .normal)
-        self.recordButton.translatesAutoresizingMaskIntoConstraints = false
+        let view = UIView(frame: CGRect.zero)
+        view.translatesAutoresizingMaskIntoConstraints = false
 
-        self.addSubview(self.recordButton)
-        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        self.addSubview(view)
+        self.addConstraint(NSLayoutConstraint(item: view, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailing, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: view, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: 0))
+
+        let lineView = UIView(frame: CGRect.zero)
+        lineView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(lineView)
+
+        let textLabel = UILabel.init(frame: CGRect.zero)
+        textLabel.textAlignment = .center
+        textLabel.translatesAutoresizingMaskIntoConstraints = false
+        textLabel.text = "time"
+        textLabel.textColor = .white
+        view.addSubview(textLabel)
+
+        self.addConstraint(NSLayoutConstraint(item: lineView, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: lineView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
+        self.addConstraint(NSLayoutConstraint(item: lineView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
+        self.addConstraint(NSLayoutConstraint(item: lineView, attribute: .bottom, relatedBy: .equal, toItem: textLabel, attribute: .top, multiplier: 1, constant: -10))
+
+        self.recordButton = UIButton(frame: CGRect.zero)
+        let image = UIImage(named: "record", in: Bundle(for: AudioInputView.self), compatibleWith: nil)!
+        self.recordButton.setImage(image, for: .normal)
+        self.recordButton.translatesAutoresizingMaskIntoConstraints = false
+        self.recordButton.addTarget(self, action: #selector(didStartRecord(_:)), for: .touchUpInside)
+
+        view.addSubview(self.recordButton)
+        self.addConstraint(NSLayoutConstraint(item: textLabel, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: textLabel, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
+        self.addConstraint(NSLayoutConstraint(item: textLabel, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
+        self.addConstraint(NSLayoutConstraint(item: textLabel, attribute: .bottom, relatedBy: .equal, toItem: self.recordButton, attribute: .top, multiplier: 1, constant: -20))
+
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: -30))
         self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
         self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
+    }
+
+    @objc func didStartRecord(_ sender: Any) {
+        self.recordButton.backgroundColor = .red
     }
 }
