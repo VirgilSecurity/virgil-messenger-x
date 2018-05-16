@@ -22,10 +22,16 @@ protocol AudioInputViewDelegate: class {
 class AudioInputView: UIView, AudioInputViewProtocol {
     weak var delegate: AudioInputViewDelegate?
     weak var presentingController: UIViewController?
+    private var recordButton: UIButton!
 
     init(presentingController: UIViewController?) {
         super.init(frame: CGRect.zero)
         self.presentingController = presentingController
+        self.commonInit()
+    }
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         self.commonInit()
     }
 
@@ -36,10 +42,19 @@ class AudioInputView: UIView, AudioInputViewProtocol {
 
     private func commonInit() {
         self.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        self.configureView()
+        self.configureButton()
     }
 
-    func configureView() {
+    func configureButton() {
+        self.recordButton = UIButton()
+        let image = UIImage(named: "record", in: Bundle(for: AudioInputView.self), compatibleWith: nil)!
+        recordButton.setImage(image, for: .normal)
+        self.recordButton.translatesAutoresizingMaskIntoConstraints = false
 
+        self.addSubview(self.recordButton)
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
     }
 }

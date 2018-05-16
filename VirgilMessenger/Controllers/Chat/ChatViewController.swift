@@ -165,7 +165,7 @@ class ChatViewController: BaseChatViewController {
     }
 
     private func createAudioInputItem() -> AudioChatInputItem {
-        let item = AudioChatInputItem()
+        let item = AudioChatInputItem(presentingController: self)
         item.audioInputHandler = { [weak self] audioData in
             if self?.currentReachabilityStatus == .notReachable {
                 let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)

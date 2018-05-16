@@ -11,9 +11,13 @@ import ChattoAdditions
 open class AudioChatInputItem {
     typealias Class = AudioChatInputItem
     public var audioInputHandler: ((Data) -> Void)?
+    public weak var presentingController: UIViewController?
 
     let buttonAppearance: TabInputButtonAppearance
-    public init(tabInputButtonAppearance: TabInputButtonAppearance = Class.createDefaultButtonAppearance()) {
+
+    public init(presentingController: UIViewController?,
+                tabInputButtonAppearance: TabInputButtonAppearance = Class.createDefaultButtonAppearance()) {
+        self.presentingController = presentingController
         self.buttonAppearance = tabInputButtonAppearance
     }
 
@@ -31,9 +35,7 @@ open class AudioChatInputItem {
     }()
 
     lazy var audioInputView: AudioInputViewProtocol = {
-        //let audioInputView = AudioInputView(presentingController: self.presentingController, appearance: self.inputViewAppearance)
-        //audioInputView.delegate = self
-        //return audioInputView
+        return AudioInputView.init(presentingController: self.presentingController)
     }()
 
     open var selected = false {
