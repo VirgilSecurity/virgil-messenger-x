@@ -46,6 +46,8 @@
 	<string>used for ability to save photo in photo library</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>used for ability to add photo attachmants</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>used for ability to record audio messages</string>
 	<key>UILaunchStoryboardName</key>
 	<string>Start</string>
 	<key>UIMainStoryboardFile</key>

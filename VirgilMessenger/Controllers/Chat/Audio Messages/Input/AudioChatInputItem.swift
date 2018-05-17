@@ -11,6 +11,7 @@ import ChattoAdditions
 open class AudioChatInputItem {
     typealias Class = AudioChatInputItem
     public var audioInputHandler: ((Data) -> Void)?
+    public var microphonePermissionHandler: (() -> Void)?
     public weak var presentingController: UIViewController?
 
     let buttonAppearance: TabInputButtonAppearance
@@ -35,7 +36,9 @@ open class AudioChatInputItem {
     }()
 
     lazy var audioInputView: AudioInputViewProtocol = {
-        return AudioInputView.init(presentingController: self.presentingController)
+        let audioInputView = AudioInputView(presentingController: self.presentingController)
+        audioInputView.delegate = self
+        return audioInputView
     }()
 
     open var selected = false {
@@ -67,6 +70,17 @@ extension AudioChatInputItem: ChatInputItemProtocol {
         if let audio = input as? Data {
             self.audioInputHandler?(audio)
         }
+    }
+}
+
+// MARK: - AudioInputViewDelegate
+extension AudioChatInputItem: AudioInputViewDelegate {
+    func inputView(_ inputView: AudioInputViewProtocol, didFinishedRecording audio: Data) {
+        self.audioInputHandler?(audio)
+    }
+
+    func inputViewDidRequestMicrophonePermission(_ inputView: AudioInputViewProtocol) {
+        self.microphonePermissionHandler?()
     }
 }
 
