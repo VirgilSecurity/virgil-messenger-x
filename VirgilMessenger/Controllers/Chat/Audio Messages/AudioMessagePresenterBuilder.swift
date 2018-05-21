@@ -14,7 +14,7 @@ open class AudioMessagePresenterBuilder<ViewModelBuilderT, InteractionHandlerT>
     ViewModelBuilderT: ViewModelBuilderProtocol,
     ViewModelBuilderT.ViewModelT: AudioMessageViewModelProtocol,
     InteractionHandlerT: BaseMessageInteractionHandlerProtocol,
-InteractionHandlerT.ViewModelT == ViewModelBuilderT.ViewModelT {
+    InteractionHandlerT.ViewModelT == ViewModelBuilderT.ViewModelT {
     typealias ViewModelT = ViewModelBuilderT.ViewModelT
     typealias ModelT = ViewModelBuilderT.ModelT
 

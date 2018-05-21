@@ -9,32 +9,32 @@
 import ChattoAdditions
 
 class DemoAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
-    func userDidSelectMessage(viewModel: DemoTextMessageViewModel) {}
+    func userDidSelectMessage(viewModel: DemoAudioMessageViewModel) {}
 
-    func userDidDeselectMessage(viewModel: DemoTextMessageViewModel) {}
+    func userDidDeselectMessage(viewModel: DemoAudioMessageViewModel) {}
 
     private let baseHandler: BaseMessageHandler
     init (baseHandler: BaseMessageHandler) {
         self.baseHandler = baseHandler
     }
 
-    func userDidTapOnFailIcon(viewModel: DemoTextMessageViewModel, failIconView: UIView) {
+    func userDidTapOnFailIcon(viewModel: DemoAudioMessageViewModel, failIconView: UIView) {
         self.baseHandler.userDidTapOnFailIcon(viewModel: viewModel)
     }
 
-    func userDidTapOnAvatar(viewModel: DemoTextMessageViewModel) {
+    func userDidTapOnAvatar(viewModel: DemoAudioMessageViewModel) {
         self.baseHandler.userDidTapOnAvatar(viewModel: viewModel)
     }
 
-    func userDidTapOnBubble(viewModel: DemoTextMessageViewModel) {
+    func userDidTapOnBubble(viewModel: DemoAudioMessageViewModel) {
         self.baseHandler.userDidTapOnBubble(viewModel: viewModel)
     }
 
-    func userDidBeginLongPressOnBubble(viewModel: DemoTextMessageViewModel) {
+    func userDidBeginLongPressOnBubble(viewModel: DemoAudioMessageViewModel) {
         self.baseHandler.userDidBeginLongPressOnBubble(viewModel: viewModel)
     }
 
-    func userDidEndLongPressOnBubble(viewModel: DemoTextMessageViewModel) {
+    func userDidEndLongPressOnBubble(viewModel: DemoAudioMessageViewModel) {
         self.baseHandler.userDidEndLongPressOnBubble(viewModel: viewModel)
     }
 }

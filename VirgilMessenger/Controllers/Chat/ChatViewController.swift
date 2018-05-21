@@ -109,8 +109,20 @@ class ChatViewController: BaseChatViewController {
             outgoingInsets: UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 19)
         )
 
+        let audioTextStyle = AudioMessageCollectionViewCellDefaultStyle.TextStyle(
+            font: UIFont.systemFont(ofSize: 15),
+            incomingColor: UIColor(rgb: 0xE4E4E4),
+            outgoingColor: UIColor.white, //for outgoing
+            incomingInsets: UIEdgeInsets(top: 10, left: 19, bottom: 10, right: 15),
+            outgoingInsets: UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 19)
+        )
+
         let textCellStyle: TextMessageCollectionViewCellDefaultStyle = TextMessageCollectionViewCellDefaultStyle(
             textStyle: textStyle,
+            baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
+
+        let audioTextCellStyle: AudioMessageCollectionViewCellDefaultStyle = AudioMessageCollectionViewCellDefaultStyle(
+            textStyle: audioTextStyle,
             baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
 
         let textMessagePresenter = TextMessagePresenterBuilder(
@@ -127,9 +139,15 @@ class ChatViewController: BaseChatViewController {
         )
         photoMessagePresenter.baseCellStyle = baseMessageStyle
 
+        let audioMessagePresenter = AudioMessagePresenterBuilder(viewModelBuilder: DemoAudioMessageViewModelBuilder(),
+                                                                 interactionHandler: DemoAudioMessageHandler(baseHandler: self.baseMessageHandler))
+        audioMessagePresenter.baseMessageStyle = baseMessageStyle
+        audioMessagePresenter.textCellStyle = audioTextCellStyle
+
         return [
             DemoTextMessageModel.chatItemType: [textMessagePresenter],
             DemoPhotoMessageModel.chatItemType: [photoMessagePresenter],
+            DemoAudioMessageModel.chatItemType: [audioMessagePresenter],
             SendingStatusModel.chatItemType: [SendingStatusPresenterBuilder()],
             TimeSeparatorModel.chatItemType: [TimeSeparatorPresenterBuilder()]
         ]

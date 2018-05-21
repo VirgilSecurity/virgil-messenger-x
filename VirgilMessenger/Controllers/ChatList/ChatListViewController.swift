@@ -281,6 +281,7 @@ extension ChatListViewController: CellTapDelegate {
                     Log.error("Channel do not exist in Core Data")
                     return
             }
+            self.view.isUserInteractionEnabled = false
 
             VirgilHelper.sharedInstance.setChannelCard(exportedCard)
 
@@ -291,6 +292,7 @@ extension ChatListViewController: CellTapDelegate {
                 }
                 self.currentChannelMessegesCount = Int(count)
                 DispatchQueue.main.async {
+                    defer { self.view.isUserInteractionEnabled = true }
                     self.performSegue(withIdentifier: "goToChat", sender: self)
                 }
             }

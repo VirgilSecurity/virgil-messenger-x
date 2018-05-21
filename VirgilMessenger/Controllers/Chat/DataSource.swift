@@ -196,6 +196,13 @@ class DataSource: ChatDataSourceProtocol {
 
     func addAudioMessage(_ audio: Data) {
         //TODO
+        let uid = "\(self.nextMessageId)"
+        self.nextMessageId += 1
+        let message = MessageFactory.createAudioMessageModel(uid, audio: audio, isIncoming: false,
+                                                             status: .sending, date: Date())
+        //self.messageSender.sendMessage(message)
+        self.slidingWindow.insertItem(message, position: .bottom)
+        self.delegate?.chatDataSourceDidUpdate(self)
     }
 
     func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> ()) {
