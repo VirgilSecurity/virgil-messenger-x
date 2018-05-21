@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		16013C7920B214460043EA29 /* AudioBubleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C7820B214460043EA29 /* AudioBubleView.swift */; };
+		16013C7B20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C7A20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift */; };
+		16013C7D20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C7C20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift */; };
+		16013C7F20B2C99C0043EA29 /* AudioMessagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C7E20B2C99C0043EA29 /* AudioMessagePresenter.swift */; };
+		16013C8120B2CA760043EA29 /* AudioMessagePresenterBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C8020B2CA760043EA29 /* AudioMessagePresenterBuilder.swift */; };
 		1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld */; };
 		1627723F203C5FB00086127C /* CoreDataHelper+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */; };
 		16277242203C60DB0086127C /* CoreDataHelper+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */; };
@@ -119,6 +124,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		16013C7820B214460043EA29 /* AudioBubleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBubleView.swift; sourceTree = "<group>"; };
+		16013C7A20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageCollectionViewCellDefaultStyle.swift; sourceTree = "<group>"; };
+		16013C7C20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageCollectionViewCell.swift; sourceTree = "<group>"; };
+		16013C7E20B2C99C0043EA29 /* AudioMessagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessagePresenter.swift; sourceTree = "<group>"; };
+		16013C8020B2CA760043EA29 /* AudioMessagePresenterBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessagePresenterBuilder.swift; sourceTree = "<group>"; };
 		1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirgilMessenger.xcdatamodel; sourceTree = "<group>"; };
 		1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Account.swift"; sourceTree = "<group>"; };
 		16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Channel.swift"; sourceTree = "<group>"; };
@@ -228,6 +238,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		16013C7720B200E30043EA29 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				16013C7820B214460043EA29 /* AudioBubleView.swift */,
+				16013C7C20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift */,
+				16013C7A20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		16277240203C60BE0086127C /* CoreDataHelper */ = {
 			isa = PBXGroup;
 			children = (
@@ -242,8 +262,11 @@
 		164E172C20AAED4C00AB1AAD /* Audio Messages */ = {
 			isa = PBXGroup;
 			children = (
+				16013C7720B200E30043EA29 /* View */,
 				164E173620AB1BB100AB1AAD /* Input */,
 				164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */,
+				16013C7E20B2C99C0043EA29 /* AudioMessagePresenter.swift */,
+				16013C8020B2CA760043EA29 /* AudioMessagePresenterBuilder.swift */,
 				164E173420AB0BE600AB1AAD /* AudioMessageViewModel.swift */,
 				164E172F20AAEECD00AB1AAD /* DemoAudioMessageModel.swift */,
 				164E173120AAEF1900AB1AAD /* DemoAudioMessageHandler.swift */,
@@ -654,10 +677,12 @@
 				166D3E5E1FB495F90032BAAD /* CoreDataHelper.swift in Sources */,
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
 				423BDA851F97774F00C3EE9B /* ServiceConnection.swift in Sources */,
+				16013C7B20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift in Sources */,
 				164E173020AAEECD00AB1AAD /* DemoAudioMessageModel.swift in Sources */,
 				16FA91051FFC55A400FE98C7 /* NSObject+Reachability.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
+				16013C8120B2CA760043EA29 /* AudioMessagePresenterBuilder.swift in Sources */,
 				164E173220AAEF1900AB1AAD /* DemoAudioMessageHandler.swift in Sources */,
 				1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */,
 				16FCF27F1FE46756000348BC /* Channel+CoreDataProperties.swift in Sources */,
@@ -686,6 +711,7 @@
 				16FB2DD3204D875400346FA0 /* UIView+Gradient.swift in Sources */,
 				427D1E541F965569002F2CF3 /* DataSource.swift in Sources */,
 				16277242203C60DB0086127C /* CoreDataHelper+Channel.swift in Sources */,
+				16013C7920B214460043EA29 /* AudioBubleView.swift in Sources */,
 				16F6FC721FAA235400158615 /* RegistrationViewController.swift in Sources */,
 				4280C0D91F97341A00075B3A /* DemoTextMessageHandler.swift in Sources */,
 				16FCF2801FE46756000348BC /* Account+CoreDataClass.swift in Sources */,
@@ -703,12 +729,14 @@
 				429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */,
 				16FB2DCE204D832F00346FA0 /* TwilioHelper+Channel.swift in Sources */,
 				16FCF27E1FE46756000348BC /* Channel+CoreDataClass.swift in Sources */,
+				16013C7D20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift in Sources */,
 				164E173C20AB297900AB1AAD /* AudioInputView.swift in Sources */,
 				16F30D4B1FDAE190006C3DEB /* AuthenticationViewController.swift in Sources */,
 				1658BA1D1FD9A8BC005EF9C1 /* InputBar.swift in Sources */,
 				16AE1D7A2044315B005DF777 /* DemoPhotoMessageModel.swift in Sources */,
 				16277244203C62040086127C /* CoreDataHelper+Messages.swift in Sources */,
 				16961B5A203B04A90084086E /* VirgilHelper+SignUp.swift in Sources */,
+				16013C7F20B2C99C0043EA29 /* AudioMessagePresenter.swift in Sources */,
 				16AE1D7B2044315B005DF777 /* DemoPhotoMessageHandler.swift in Sources */,
 				4280C0D41F97341300075B3A /* SendingStatusPresenter.swift in Sources */,
 			);

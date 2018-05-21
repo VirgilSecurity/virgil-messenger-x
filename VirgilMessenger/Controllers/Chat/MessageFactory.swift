@@ -52,6 +52,15 @@ class MessageFactory {
 
         return photoMessageModel
     }
+
+    class func createAudioMessageModel(_ uid: String, audio: Data, isIncoming: Bool, status: MessageStatus, date: Date) -> DemoAudioMessageModel {
+        let messageModel = createMessageModel(uid, isIncoming: isIncoming,
+                                              type: AudioMessageModel<MessageModel>.chatItemType,
+                                              status: status, date: date)
+        let audioMessageModel = DemoAudioMessageModel(messageModel: messageModel, audio: audio)
+
+        return audioMessageModel
+    }
 }
 
 extension TextMessageModel {
@@ -63,5 +72,11 @@ extension TextMessageModel {
 extension PhotoMessageModel {
     static var chatItemType: ChatItemType {
         return "photo"
+    }
+}
+
+extension AudioMessageModel {
+    static var chatItemType: ChatItemType {
+        return "audio"
     }
 }

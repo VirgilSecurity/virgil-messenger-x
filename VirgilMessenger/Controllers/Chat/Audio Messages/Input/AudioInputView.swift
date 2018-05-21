@@ -68,60 +68,6 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
         }
     }
 
-    private func startRecording() {
-        let settings = [
-            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-            AVSampleRateKey: 12000,
-            AVNumberOfChannelsKey: 1,
-            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-        ]
-
-        do {
-            audioRecorder = try AVAudioRecorder(url: self.getFileURL(), settings: settings)
-            audioRecorder.delegate = self
-            audioRecorder.record()
-        } catch {
-            Log.error("Recording failed: \(error.localizedDescription)")
-            finishRecording(success: false)
-        }
-    }
-
-    private func finishRecording(success: Bool) {
-        audioRecorder.stop()
-        audioRecorder = nil
-        self.recordButton.backgroundColor = nil
-
-        do {
-            let data = try Data(contentsOf: self.getFileURL(), options: [])
-            self.delegate?.inputView(self, didFinishedRecording: data)
-            Log.debug("recording sent to controller")
-        } catch {
-            Log.error(error.localizedDescription)
-        }
-    }
-
-    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        if !flag {
-            finishRecording(success: false)
-        }
-    }
-
-    private func getDocumentsDirectory() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
-    }
-
-    func getCacheDirectory() -> String {
-        let paths = NSSearchPathForDirectoriesInDomains(.cachesDirectory,.userDomainMask, true) as [String]
-
-        return paths[0]
-    }
-
-    func getFileURL() -> URL {
-        let path = getDocumentsDirectory().appendingPathComponent("temp.m4a")
-        return path
-    }
-
     private func configureButton() {
         let view = UIView(frame: CGRect.zero)
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -174,5 +120,56 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
 
     @objc func didFinishRecord(_ sender: Any) {
         self.finishRecording(success: true)
+    }
+}
+
+//Recording
+extension AudioInputView {
+    private func startRecording() {
+        let settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 12000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
+
+        do {
+            audioRecorder = try AVAudioRecorder(url: self.getFileURL(), settings: settings)
+            audioRecorder.delegate = self
+            audioRecorder.record()
+        } catch {
+            Log.error("Recording failed: \(error.localizedDescription)")
+            finishRecording(success: false)
+        }
+    }
+
+    private func finishRecording(success: Bool) {
+        audioRecorder.stop()
+        audioRecorder = nil
+        self.recordButton.backgroundColor = nil
+
+        do {
+            let data = try Data(contentsOf: self.getFileURL(), options: [])
+            self.delegate?.inputView(self, didFinishedRecording: data)
+            Log.debug("recording sent to controller")
+        } catch {
+            Log.error(error.localizedDescription)
+        }
+    }
+
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        if !flag {
+            finishRecording(success: false)
+        }
+    }
+
+    private func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
+
+    func getFileURL() -> URL {
+        let path = getDocumentsDirectory().appendingPathComponent("temp.m4a")
+        return path
     }
 }
