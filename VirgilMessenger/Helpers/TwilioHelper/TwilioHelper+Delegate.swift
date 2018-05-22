@@ -135,10 +135,31 @@ extension TwilioHelper: TwilioChatClientDelegate {
                         Log.error("decryption process of media message failed")
                         return
                 }
-               if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
-                    CoreDataHelper.sharedInstance.createMediaMessage(forChannel: coreDataChannel, withData: decryptedData,
-                                                                     isIncoming: true, date: messageDate)
+                coreDataChannel.lastMessagesDate = messageDate
+
+                if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
+                    switch message.mediaType {
+                    case MediaType.photo.rawValue:
+                        coreDataChannel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.photo.rawValue]
+                            ?? "corrupted type"
+                        CoreDataHelper.sharedInstance.createMediaMessage(for: coreDataChannel, with: decryptedData,
+                                                                         isIncoming: true, date: messageDate, type: .photo)
+                    case MediaType.audio.rawValue:
+                        coreDataChannel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.audio.rawValue]
+                            ?? "corrupted type"
+                        CoreDataHelper.sharedInstance.createMediaMessage(for: coreDataChannel, with: decryptedData,
+                                                                         isIncoming: true, date: messageDate, type: .audio)
+                    default:
+                        Log.error("Missing or unknown mediaType")
+                        return
+                    }
                 }
+                NotificationCenter.default.post(
+                    name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+                    object: self,
+                    userInfo: [
+                        TwilioHelper.NotificationKeys.Message.rawValue: message
+                    ])
             }
         } else if let messageBody = message.body {
             guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: cardString, encrypted: messageBody) else {
@@ -149,15 +170,16 @@ extension TwilioHelper: TwilioChatClientDelegate {
             coreDataChannel.lastMessagesDate = messageDate
 
             if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
-                CoreDataHelper.sharedInstance.createTextMessage(forChannel: coreDataChannel, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
+                CoreDataHelper.sharedInstance.createTextMessage(for: coreDataChannel, withBody: decryptedMessageBody,
+                                                                isIncoming: true, date: messageDate)
             }
             Log.debug("Receiving " + decryptedMessageBody)
+            NotificationCenter.default.post(
+                name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+                object: self,
+                userInfo: [
+                    TwilioHelper.NotificationKeys.Message.rawValue: message
+                ])
         }
-        NotificationCenter.default.post(
-            name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
-            object: self,
-            userInfo: [
-                TwilioHelper.NotificationKeys.Message.rawValue: message
-            ])
     }
 }

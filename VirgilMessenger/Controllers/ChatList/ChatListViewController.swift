@@ -99,10 +99,12 @@ class ChatListViewController: ViewController {
 
                             if (messagesCore.count == 0 || (Int(truncating: message.index ?? 0) >= (messagesCore.count))) {
                                 if let decryptedBody = decryptedBody {
-                                    CoreDataHelper.sharedInstance.createTextMessage(forChannel: channelCore, withBody: decryptedBody,
+                                    CoreDataHelper.sharedInstance.createTextMessage(for: channelCore, withBody: decryptedBody,
                                                                                     isIncoming: true, date: messageDate)
                                 } else if let decryptedMedia = decryptedMedia {
-                                    CoreDataHelper.sharedInstance.createMediaMessage(forChannel: channelCore, withData: decryptedMedia, isIncoming: true, date: messageDate)
+                                    CoreDataHelper.sharedInstance.createMediaMessage(for: channelCore, with: decryptedMedia,
+                                                                                     isIncoming: true, date: messageDate,
+                                                                                     type: .photo)
                                 }
                             }
                             group.leave()

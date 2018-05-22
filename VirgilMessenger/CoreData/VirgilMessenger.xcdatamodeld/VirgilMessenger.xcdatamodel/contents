@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17D102" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14133" systemVersion="17E202" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="card" attributeType="String" syncable="YES"/>
         <attribute name="identity" attributeType="String" syncable="YES"/>
@@ -18,11 +18,12 @@
         <attribute name="date" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="isIncoming" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="media" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="channel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Channel" inverseName="message" inverseEntity="Channel" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Account" positionX="-171" positionY="45" width="128" height="105"/>
-        <element name="Channel" positionX="-63" positionY="-18" width="128" height="120"/>
-        <element name="Message" positionX="-272" positionY="45" width="128" height="120"/>
+        <element name="Account" positionX="-450" positionY="45" width="128" height="105"/>
+        <element name="Channel" positionX="-407" positionY="243" width="128" height="120"/>
+        <element name="Message" positionX="-128" positionY="198" width="128" height="133"/>
     </elements>
 </model>

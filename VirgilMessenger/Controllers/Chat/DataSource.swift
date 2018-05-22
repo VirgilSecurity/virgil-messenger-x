@@ -39,27 +39,43 @@ class DataSource: ChatDataSourceProtocol {
         self.count = count
 
         self.slidingWindow = SlidingDataSource(count: count, pageSize: pageSize) { [weak self] (messageNumber, messages) -> ChatItemProtocol in
+            let corruptedMessage = {
+                return MessageFactory.createTextMessageModel("\(0)", text: "Corrupted Message", isIncoming: false,
+                                                             status: .success, date: Date())
+            }
             guard let sSelf = self,
                 let anyMessage = messages[safe: messageNumber],
                 let message = anyMessage as? Message,
-                let messageDate = message.date else {
-                    return MessageFactory.createTextMessageModel("\(0)", text: "Corrupted Message", isIncoming: false,
-                                                                 status: .success, date: Date())
+                let date = message.date,
+                let type = message.type else {
+                    return corruptedMessage()
             }
-
             let resultMessage: DemoMessageModelProtocol
-            if let messageMedia = message.media,
-                let image = UIImage(data: messageMedia) {
+
+            switch type {
+            case CoreDataHelper.MessageType.text.rawValue:
+                guard let body = message.body else {
+                    return corruptedMessage()
+                }
+                resultMessage = MessageFactory.createTextMessageModel("\(sSelf.nextMessageId)", text: body,
+                                                                      isIncoming: message.isIncoming, status: .success,
+                                                                      date: date)
+            case CoreDataHelper.MessageType.photo.rawValue:
+                guard let media = message.media, let image = UIImage(data: media) else {
+                    return corruptedMessage()
+                }
                 resultMessage = MessageFactory.createPhotoMessageModel("\(sSelf.nextMessageId)", image: image,
                                                                        size: image.size, isIncoming: message.isIncoming,
-                                                                       status: .success, date: Date())
-            } else if let messageBody = message.body {
-                resultMessage = MessageFactory.createTextMessageModel("\(sSelf.nextMessageId)", text: messageBody,
-                                                                      isIncoming: message.isIncoming, status: .success,
-                                                                      date: messageDate)
-            } else {
-                resultMessage = MessageFactory.createTextMessageModel("\(sSelf.nextMessageId)", text: "Corrupted Message",
-                                                                      isIncoming: message.isIncoming, status: .success, date: messageDate)
+                                                                       status: .success, date: date)
+            case CoreDataHelper.MessageType.audio.rawValue:
+                guard let media = message.media else {
+                    return corruptedMessage()
+                }
+                resultMessage = MessageFactory.createAudioMessageModel("\(sSelf.nextMessageId)", audio: media,
+                                                                       isIncoming: message.isIncoming, status: .success,
+                                                                       date: date)
+            default:
+                return corruptedMessage()
             }
             sSelf.nextMessageId += 1
 
@@ -101,29 +117,7 @@ class DataSource: ChatDataSourceProtocol {
         let isIncoming = message.author == TwilioHelper.sharedInstance.username ? false : true
 
         if message.hasMedia() {
-            TwilioHelper.sharedInstance.getMedia(from: message) { encryptedData in
-                guard let encryptedData = encryptedData else {
-                    Log.error("decryption process of media message failed")
-                    return
-                }
-                guard let encryptedString = String(data: encryptedData, encoding: .utf8),
-                    let decryptedString = VirgilHelper.sharedInstance.decryptPFS(encrypted: encryptedString),
-                    let decryptedData = Data(base64Encoded: decryptedString),
-                    let image = UIImage(data: decryptedData) else {
-                        Log.error("decryption process of media failed")
-                        return
-                }
-                CoreDataHelper.sharedInstance.createMediaMessage(withData: decryptedData, isIncoming: true, date: messageDate)
-
-                let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming,
-                                                              type: PhotoMessageModel<MessageModel>.chatItemType,
-                                                              status: .success, date: messageDate)
-                let decryptedMessage = DemoPhotoMessageModel(messageModel: model, imageSize: image.size, image: image)
-
-                self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
-                self.nextMessageId += 1
-                self.delegate?.chatDataSourceDidUpdate(self)
-            }
+           self.processMedia(message: message, date: messageDate, isIncoming: isIncoming)
         } else if let messageBody = message.body {
             guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(encrypted: messageBody) else {
                 return
@@ -137,8 +131,54 @@ class DataSource: ChatDataSourceProtocol {
 
             self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
             self.nextMessageId += 1
+        } else {
+            Log.error("Empty Twilio message")
         }
         self.delegate?.chatDataSourceDidUpdate(self)
+    }
+
+    private func processMedia(message: TCHMessage, date: Date, isIncoming: Bool) {
+        guard let type = message.mediaType else {
+            Log.error("Missing mediaType")
+            return
+        }
+        TwilioHelper.sharedInstance.getMedia(from: message) { encryptedData in
+            guard let encryptedData = encryptedData,
+                let encryptedString = String(data: encryptedData, encoding: .utf8),
+                let decryptedString = VirgilHelper.sharedInstance.decryptPFS(encrypted: encryptedString),
+                let decryptedData = Data(base64Encoded: decryptedString) else {
+                    Log.error("decryption process of media message failed")
+                    return
+            }
+
+            switch type {
+            case TwilioHelper.MediaType.photo.rawValue:
+                guard let image = UIImage(data: decryptedData) else {
+                    Log.error("Building image from decrypted data failed")
+                    return
+                }
+                CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: true,
+                                                                 date: date, type: .photo)
+                let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming,
+                                                              type: PhotoMessageModel<MessageModel>.chatItemType,
+                                                              status: .success, date: date)
+                let decryptedMessage = DemoPhotoMessageModel(messageModel: model, imageSize: image.size, image: image)
+                self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
+            case TwilioHelper.MediaType.audio.rawValue:
+                CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: true,
+                                                                 date: date, type: .audio)
+                let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming,
+                                                              type: AudioMessageModel<MessageModel>.chatItemType,
+                                                              status: .success, date: date)
+                let decryptedMessage = DemoAudioMessageModel(messageModel: model, audio: decryptedData)
+                self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
+            default:
+                Log.error("Unknown media type")
+                return
+            }
+            self.nextMessageId += 1
+            self.delegate?.chatDataSourceDidUpdate(self)
+        }
     }
 
     lazy var messageSender: MessageSender = {
@@ -195,12 +235,11 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addAudioMessage(_ audio: Data) {
-        //TODO
         let uid = "\(self.nextMessageId)"
         self.nextMessageId += 1
         let message = MessageFactory.createAudioMessageModel(uid, audio: audio, isIncoming: false,
                                                              status: .sending, date: Date())
-        //self.messageSender.sendMessage(message)
+        self.messageSender.sendMessage(message)
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
     }

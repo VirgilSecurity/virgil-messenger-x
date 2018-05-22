@@ -25,9 +25,12 @@
 import UIKit
 import Chatto
 import ChattoAdditions
+import AVFoundation
+import PKHUD
 
 class ChatViewController: BaseChatViewController {
     var messageSender: MessageSender!
+    private var soundPlayer: AVAudioPlayer?
 
     var dataSource: DataSource! {
         didSet {
@@ -79,9 +82,12 @@ class ChatViewController: BaseChatViewController {
     override func createChatInputView() -> UIView {
         let chatInputView = InputBar.loadNib()
         var appearance = ChatInputBarAppearance()
+
         appearance.textInputAppearance.textColor = .white
         appearance.textInputAppearance.font = appearance.textInputAppearance.font.withSize(CGFloat(20))
-        appearance.sendButtonAppearance.titleColors = [UIControlStateWrapper(state: UIControlState.disabled) : UIColor(rgb: 0x585A60)]
+        appearance.sendButtonAppearance.titleColors = [
+            UIControlStateWrapper(state: UIControlState.disabled) : UIColor(rgb: 0x585A60)
+        ]
         appearance.sendButtonAppearance.font = appearance.textInputAppearance.font
 
         appearance.sendButtonAppearance.title = NSLocalizedString("Send", comment: "")
@@ -89,6 +95,7 @@ class ChatViewController: BaseChatViewController {
         appearance.textInputAppearance.placeholderFont = appearance.textInputAppearance.font
         self.chatInputPresenter = BasicChatInputBarPresenter(chatInputBar: chatInputView, chatInputItems: self.createChatInputItems(), chatInputBarAppearance: appearance)
         chatInputView.maxCharactersCount = ChatConstants.chatMaxCharectersCount
+
         return chatInputView
     }
 
@@ -101,53 +108,10 @@ class ChatViewController: BaseChatViewController {
         // used for base message background + text background
         let baseMessageStyle = BaseMessageCollectionViewCellDefaultStyle(colors: chatColor)
 
-        let textStyle = TextMessageCollectionViewCellDefaultStyle.TextStyle(
-            font: UIFont.systemFont(ofSize: 15),
-            incomingColor: UIColor(rgb: 0xE4E4E4),
-            outgoingColor: UIColor.white, //for outgoing
-            incomingInsets: UIEdgeInsets(top: 10, left: 19, bottom: 10, right: 15),
-            outgoingInsets: UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 19)
-        )
-
-        let audioTextStyle = AudioMessageCollectionViewCellDefaultStyle.TextStyle(
-            font: UIFont.systemFont(ofSize: 15),
-            incomingColor: UIColor(rgb: 0xE4E4E4),
-            outgoingColor: UIColor.white, //for outgoing
-            incomingInsets: UIEdgeInsets(top: 10, left: 19, bottom: 10, right: 15),
-            outgoingInsets: UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 19)
-        )
-
-        let textCellStyle: TextMessageCollectionViewCellDefaultStyle = TextMessageCollectionViewCellDefaultStyle(
-            textStyle: textStyle,
-            baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
-
-        let audioTextCellStyle: AudioMessageCollectionViewCellDefaultStyle = AudioMessageCollectionViewCellDefaultStyle(
-            textStyle: audioTextStyle,
-            baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
-
-        let textMessagePresenter = TextMessagePresenterBuilder(
-            viewModelBuilder: DemoTextMessageViewModelBuilder(),
-            interactionHandler: DemoTextMessageHandler(baseHandler: self.baseMessageHandler)
-        )
-        textMessagePresenter.baseMessageStyle = baseMessageStyle
-        textMessagePresenter.textCellStyle = textCellStyle
-
-        let photoMessagePresenter = PhotoMessagePresenterBuilder(
-            viewModelBuilder: DemoPhotoMessageViewModelBuilder(),
-            interactionHandler: DemoPhotoMessageHandler(baseHandler: self.baseMessageHandler,
-                                                        presenterController: self)
-        )
-        photoMessagePresenter.baseCellStyle = baseMessageStyle
-
-        let audioMessagePresenter = AudioMessagePresenterBuilder(viewModelBuilder: DemoAudioMessageViewModelBuilder(),
-                                                                 interactionHandler: DemoAudioMessageHandler(baseHandler: self.baseMessageHandler))
-        audioMessagePresenter.baseMessageStyle = baseMessageStyle
-        audioMessagePresenter.textCellStyle = audioTextCellStyle
-
         return [
-            DemoTextMessageModel.chatItemType: [textMessagePresenter],
-            DemoPhotoMessageModel.chatItemType: [photoMessagePresenter],
-            DemoAudioMessageModel.chatItemType: [audioMessagePresenter],
+            DemoTextMessageModel.chatItemType: [self.createTextPresenter(with: baseMessageStyle)],
+            DemoPhotoMessageModel.chatItemType: [self.createPhotoPresenter(with: baseMessageStyle)],
+            DemoAudioMessageModel.chatItemType: [self.createAudioPresenter(with: baseMessageStyle)],
             SendingStatusModel.chatItemType: [SendingStatusPresenterBuilder()],
             TimeSeparatorModel.chatItemType: [TimeSeparatorPresenterBuilder()]
         ]
@@ -168,6 +132,74 @@ class ChatViewController: BaseChatViewController {
         VirgilHelper.sharedInstance.setChannelCard(nil)
     }
 
+    private func alert(withTitle: String) {
+        let alert = UIAlertController(title: title, message: withTitle, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+        self.present(alert, animated: true)
+    }
+}
+
+/// Presenters creators
+extension ChatViewController {
+    private func createTextPresenter(with baseMessageStyle: BaseMessageCollectionViewCellDefaultStyle) -> TextMessagePresenterBuilder<DemoTextMessageViewModelBuilder, DemoTextMessageHandler> {
+        let textStyle = TextMessageCollectionViewCellDefaultStyle.TextStyle(
+            font: UIFont.systemFont(ofSize: 15),
+            incomingColor: UIColor(rgb: 0xE4E4E4),
+            outgoingColor: UIColor.white, //for outgoing
+            incomingInsets: UIEdgeInsets(top: 10, left: 19, bottom: 10, right: 15),
+            outgoingInsets: UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 19)
+        )
+
+        let textCellStyle: TextMessageCollectionViewCellDefaultStyle = TextMessageCollectionViewCellDefaultStyle(
+            textStyle: textStyle,
+            baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
+
+        let textMessagePresenter = TextMessagePresenterBuilder(
+            viewModelBuilder: DemoTextMessageViewModelBuilder(),
+            interactionHandler: DemoTextMessageHandler(baseHandler: self.baseMessageHandler)
+        )
+        textMessagePresenter.baseMessageStyle = baseMessageStyle
+        textMessagePresenter.textCellStyle = textCellStyle
+
+        return textMessagePresenter
+    }
+
+    private func createPhotoPresenter(with baseMessageStyle: BaseMessageCollectionViewCellDefaultStyle) -> PhotoMessagePresenterBuilder<DemoPhotoMessageViewModelBuilder, DemoPhotoMessageHandler> {
+        let photoMessagePresenter = PhotoMessagePresenterBuilder(
+            viewModelBuilder: DemoPhotoMessageViewModelBuilder(),
+            interactionHandler: DemoPhotoMessageHandler(baseHandler: self.baseMessageHandler,
+                                                        photoObserverController: self)
+        )
+        photoMessagePresenter.baseCellStyle = baseMessageStyle
+
+        return photoMessagePresenter
+    }
+
+    private func createAudioPresenter(with baseMessageStyle: BaseMessageCollectionViewCellDefaultStyle) -> AudioMessagePresenterBuilder<DemoAudioMessageViewModelBuilder, DemoAudioMessageHandler> {
+        let audioTextStyle = AudioMessageCollectionViewCellDefaultStyle.TextStyle(
+            font: UIFont.systemFont(ofSize: 15),
+            incomingColor: UIColor(rgb: 0xE4E4E4),
+            outgoingColor: UIColor.white, //for outgoing
+            incomingInsets: UIEdgeInsets(top: 10, left: 19, bottom: 10, right: 15),
+            outgoingInsets: UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 19)
+        )
+
+        let audioTextCellStyle: AudioMessageCollectionViewCellDefaultStyle = AudioMessageCollectionViewCellDefaultStyle(
+            textStyle: audioTextStyle,
+            baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
+
+        let audioMessagePresenter = AudioMessagePresenterBuilder(viewModelBuilder: DemoAudioMessageViewModelBuilder(),
+                                                                 interactionHandler: DemoAudioMessageHandler(baseHandler: self.baseMessageHandler, playableController: self))
+        audioMessagePresenter.baseMessageStyle = baseMessageStyle
+        audioMessagePresenter.textCellStyle = audioTextCellStyle
+
+        return audioMessagePresenter
+    }
+}
+
+/// ChatInputItems creators
+extension ChatViewController {
     private func createTextInputItem() -> TextChatInputItem {
         let item = TextChatInputItem()
         item.textInputHandler = { [weak self] text in
@@ -177,20 +209,6 @@ class ChatViewController: BaseChatViewController {
                 self?.present(controller, animated: true)
             } else {
                 self?.dataSource.addTextMessage(text)
-            }
-        }
-        return item
-    }
-
-    private func createAudioInputItem() -> AudioChatInputItem {
-        let item = AudioChatInputItem(presentingController: self)
-        item.audioInputHandler = { [weak self] audioData in
-            if self?.currentReachabilityStatus == .notReachable {
-                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-                controller.addAction(UIAlertAction(title: "OK", style: .default))
-                self?.present(controller, animated: true)
-            } else {
-                self?.dataSource.addAudioMessage(audioData)
             }
         }
         return item
@@ -222,4 +240,81 @@ class ChatViewController: BaseChatViewController {
         }
         return item
     }
+
+    private func createAudioInputItem() -> AudioChatInputItem {
+        let item = AudioChatInputItem(presentingController: self)
+        item.audioInputHandler = { [weak self] audioData in
+            if self?.currentReachabilityStatus == .notReachable {
+                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
+                controller.addAction(UIAlertAction(title: "OK", style: .default))
+                self?.present(controller, animated: true)
+            } else {
+                self?.dataSource.addAudioMessage(audioData)
+            }
+        }
+        return item
+    }
+}
+
+extension ChatViewController: AudioPlayableProtocol {
+    func play(data: Data) {
+        do {
+            try AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
+            self.soundPlayer = try AVAudioPlayer(data: data)
+            self.soundPlayer?.delegate = self
+            self.soundPlayer?.prepareToPlay()
+            self.soundPlayer?.volume = 1.0
+            self.soundPlayer?.play()
+        } catch {
+            Log.error("AVAudioPlayer error: \(error.localizedDescription)")
+            self.alert(withTitle: "Playing error")
+        }
+    }
+}
+
+extension ChatViewController: PhotoObserverProtocol {
+    func showImage(_ image: UIImage) {
+        self.view.endEditing(true)
+
+        let newImageView = UIImageView()
+        newImageView.backgroundColor = .black
+        newImageView.frame = UIScreen.main.bounds
+        newImageView.contentMode = .scaleAspectFit
+        newImageView.image = image
+        newImageView.isUserInteractionEnabled = true
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissFullscreenImage))
+        newImageView.addGestureRecognizer(tap)
+
+        self.view.addSubview(newImageView)
+        self.navigationController?.isNavigationBarHidden = true
+        UIApplication.shared.isStatusBarHidden = true
+    }
+
+    @objc private func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
+        self.navigationController?.isNavigationBarHidden = false
+        sender.view?.removeFromSuperview()
+        UIApplication.shared.isStatusBarHidden = false
+    }
+
+    func showSaveImageAlert(_ image: UIImage) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Save to Camera Roll", style: .default) { _ in
+            UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        self.present(alert, animated: true)
+    }
+
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            let ac = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(ac, animated: true)
+        } else {
+            HUD.flash(.success)
+        }
+    }
+
 }

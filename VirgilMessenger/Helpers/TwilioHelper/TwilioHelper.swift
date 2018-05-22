@@ -28,6 +28,11 @@ class TwilioHelper: NSObject {
         case joiningFailed
     }
 
+    enum MediaType: String {
+        case photo = "image/bmp"
+        case audio = "audio/mp4"
+    }
+
     static func authorize(username: String, device: String) {
         self.sharedInstance = TwilioHelper(username: username, device: device)
     }

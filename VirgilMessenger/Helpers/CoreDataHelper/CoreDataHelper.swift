@@ -34,7 +34,19 @@ class CoreDataHelper {
         case name = "name"
         case body = "body"
         case isIncoming = "isIncoming"
+        case type = "type"
     }
+
+    enum MessageType: String {
+        case text
+        case photo
+        case audio
+    }
+
+    let lastMessageIdentifier = [
+        MessageType.photo.rawValue: "image.jpg",
+        MessageType.audio.rawValue: "audio.mp4"
+    ]
 
     static func initialize() {
         sharedInstance = CoreDataHelper()

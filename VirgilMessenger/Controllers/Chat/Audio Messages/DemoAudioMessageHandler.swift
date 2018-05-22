@@ -7,6 +7,11 @@
 //
 
 import ChattoAdditions
+import AVFoundation
+
+protocol AudioPlayableProtocol: class, AVAudioPlayerDelegate {
+    func play(data: Data)
+}
 
 class DemoAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
     func userDidSelectMessage(viewModel: DemoAudioMessageViewModel) {}
@@ -14,8 +19,10 @@ class DemoAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
     func userDidDeselectMessage(viewModel: DemoAudioMessageViewModel) {}
 
     private let baseHandler: BaseMessageHandler
-    init (baseHandler: BaseMessageHandler) {
+    weak private var playableController: AudioPlayableProtocol!
+    init (baseHandler: BaseMessageHandler, playableController: AudioPlayableProtocol) {
         self.baseHandler = baseHandler
+        self.playableController = playableController
     }
 
     func userDidTapOnFailIcon(viewModel: DemoAudioMessageViewModel, failIconView: UIView) {
@@ -28,6 +35,7 @@ class DemoAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
 
     func userDidTapOnBubble(viewModel: DemoAudioMessageViewModel) {
         self.baseHandler.userDidTapOnBubble(viewModel: viewModel)
+        self.playableController.play(data: viewModel.audio)
     }
 
     func userDidBeginLongPressOnBubble(viewModel: DemoAudioMessageViewModel) {

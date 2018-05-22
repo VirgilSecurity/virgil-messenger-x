@@ -250,6 +250,17 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		16013C8420B354FA0043EA29 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */,
+				16013C7E20B2C99C0043EA29 /* AudioMessagePresenter.swift */,
+				16013C8020B2CA760043EA29 /* AudioMessagePresenterBuilder.swift */,
+				164E173420AB0BE600AB1AAD /* AudioMessageViewModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		16277240203C60BE0086127C /* CoreDataHelper */ = {
 			isa = PBXGroup;
 			children = (
@@ -264,15 +275,12 @@
 		164E172C20AAED4C00AB1AAD /* Audio Messages */ = {
 			isa = PBXGroup;
 			children = (
+				16013C8420B354FA0043EA29 /* Models */,
 				16013C7720B200E30043EA29 /* View */,
 				164E173620AB1BB100AB1AAD /* Input */,
-				164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */,
-				16013C7E20B2C99C0043EA29 /* AudioMessagePresenter.swift */,
-				16013C8020B2CA760043EA29 /* AudioMessagePresenterBuilder.swift */,
-				164E173420AB0BE600AB1AAD /* AudioMessageViewModel.swift */,
 				164E172F20AAEECD00AB1AAD /* DemoAudioMessageModel.swift */,
-				164E173120AAEF1900AB1AAD /* DemoAudioMessageHandler.swift */,
 				16013C8220B30A180043EA29 /* DemoAudioMessageViewModel.swift */,
+				164E173120AAEF1900AB1AAD /* DemoAudioMessageHandler.swift */,
 			);
 			path = "Audio Messages";
 			sourceTree = "<group>";
