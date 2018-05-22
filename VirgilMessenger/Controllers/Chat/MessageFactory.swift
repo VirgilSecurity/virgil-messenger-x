@@ -53,11 +53,11 @@ class MessageFactory {
         return photoMessageModel
     }
 
-    class func createAudioMessageModel(_ uid: String, audio: Data, isIncoming: Bool, status: MessageStatus, date: Date) -> DemoAudioMessageModel {
+    class func createAudioMessageModel(_ uid: String, audio: Data, duration: TimeInterval, isIncoming: Bool, status: MessageStatus, date: Date) -> DemoAudioMessageModel {
         let messageModel = createMessageModel(uid, isIncoming: isIncoming,
                                               type: AudioMessageModel<MessageModel>.chatItemType,
                                               status: status, date: date)
-        let audioMessageModel = DemoAudioMessageModel(messageModel: messageModel, audio: audio)
+        let audioMessageModel = DemoAudioMessageModel(messageModel: messageModel, audio: audio, duration: duration)
 
         return audioMessageModel
     }

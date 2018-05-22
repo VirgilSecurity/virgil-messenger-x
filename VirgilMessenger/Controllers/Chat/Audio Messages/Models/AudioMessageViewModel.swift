@@ -10,11 +10,16 @@ import ChattoAdditions
 
 public protocol AudioMessageViewModelProtocol: DecoratedMessageViewModelProtocol {
     var audio: Data { get }
+    var duration: TimeInterval { get }
 }
 
 open class AudioMessageViewModel<AudioMessageModelT: AudioMessageModelProtocol>: AudioMessageViewModelProtocol {
     open var audio: Data {
         return self.audioMessage.audio
+    }
+
+    open var duration: TimeInterval {
+        return self.audioMessage.duration
     }
 
     public let audioMessage: AudioMessageModelT

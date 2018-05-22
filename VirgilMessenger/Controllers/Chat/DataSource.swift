@@ -26,6 +26,7 @@ import Foundation
 import Chatto
 import ChattoAdditions
 import TwilioChatClient
+import AVFoundation
 
 class DataSource: ChatDataSourceProtocol {
     let count: Int
@@ -68,12 +69,11 @@ class DataSource: ChatDataSourceProtocol {
                                                                        size: image.size, isIncoming: message.isIncoming,
                                                                        status: .success, date: date)
             case CoreDataHelper.MessageType.audio.rawValue:
-                guard let media = message.media else {
+                guard let media = message.media, let duration = try? AVAudioPlayer(data: media).duration else {
                     return corruptedMessage()
                 }
-                resultMessage = MessageFactory.createAudioMessageModel("\(sSelf.nextMessageId)", audio: media,
-                                                                       isIncoming: message.isIncoming, status: .success,
-                                                                       date: date)
+                resultMessage = MessageFactory.createAudioMessageModel("\(sSelf.nextMessageId)", audio: media, duration: duration,
+                                                                       isIncoming: message.isIncoming, status: .success, date: date)
             default:
                 return corruptedMessage()
             }
@@ -159,18 +159,20 @@ class DataSource: ChatDataSourceProtocol {
                 }
                 CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: true,
                                                                  date: date, type: .photo)
-                let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming,
-                                                              type: PhotoMessageModel<MessageModel>.chatItemType,
-                                                              status: .success, date: date)
-                let decryptedMessage = DemoPhotoMessageModel(messageModel: model, imageSize: image.size, image: image)
+                let decryptedMessage = MessageFactory.createPhotoMessageModel("\(self.nextMessageId)", image: image,
+                                                                   size: image.size, isIncoming: isIncoming,
+                                                                   status: .success, date: date)
                 self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
             case TwilioHelper.MediaType.audio.rawValue:
+                guard let duration = try? AVAudioPlayer(data: decryptedData).duration else {
+                    Log.error("Getting audio duration failed")
+                    return
+                }
                 CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: true,
                                                                  date: date, type: .audio)
-                let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming,
-                                                              type: AudioMessageModel<MessageModel>.chatItemType,
-                                                              status: .success, date: date)
-                let decryptedMessage = DemoAudioMessageModel(messageModel: model, audio: decryptedData)
+                let decryptedMessage = MessageFactory.createAudioMessageModel("\(self.nextMessageId)", audio: decryptedData,
+                                                                              duration: duration, isIncoming: isIncoming,
+                                                                              status: .success, date: date)
                 self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
             default:
                 Log.error("Unknown media type")
@@ -235,9 +237,13 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addAudioMessage(_ audio: Data) {
+        guard let duration = try? AVAudioPlayer(data: audio).duration else {
+            Log.error("Getting audio duration failed")
+            return
+        }
         let uid = "\(self.nextMessageId)"
         self.nextMessageId += 1
-        let message = MessageFactory.createAudioMessageModel(uid, audio: audio, isIncoming: false,
+        let message = MessageFactory.createAudioMessageModel(uid, audio: audio, duration: duration, isIncoming: false,
                                                              status: .sending, date: Date())
         self.messageSender.sendMessage(message)
         self.slidingWindow.insertItem(message, position: .bottom)
