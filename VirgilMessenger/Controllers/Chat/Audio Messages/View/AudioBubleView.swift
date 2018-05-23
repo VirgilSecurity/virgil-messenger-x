@@ -33,8 +33,6 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         }
     }
 
-    private let text = "Audio message"
-
     public var style: AudioBubbleViewStyleProtocol! {
         didSet {
             self.updateViews()
@@ -130,6 +128,7 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
     }
 
     private func updateTextView() {
+        self.textView.dataDetectorTypes = []
         guard let style = self.style, let viewModel = self.audioMessageViewModel else { return }
 
         let font = style.textFont(viewModel: viewModel, isSelected: self.selected)
@@ -151,12 +150,20 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
             needsToUpdateText = true
         }
 
-        if needsToUpdateText || self.textView.text != self.text {
-            self.textView.text = self.text
+        if needsToUpdateText || self.textView.text != self.formattedDuration {
+            self.textView.text = self.formattedDuration
         }
 
         let textInsets = style.textInsets(viewModel: viewModel, isSelected: self.selected)
         if self.textView.textContainerInset != textInsets { self.textView.textContainerInset = textInsets }
+    }
+
+    private var formattedDuration: String {
+        let time = self.audioMessageViewModel.duration
+        let minutes = Int(time) / 60 % 60
+        let seconds = Int(time) % 60
+
+        return String(format:"%02i:%02i", minutes, seconds)
     }
 
     private func bubbleImage() -> UIImage {
@@ -179,7 +186,7 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
     public var layoutCache: NSCache<AnyObject, AnyObject>!
     private func calculateAudioBubbleLayout(preferredMaxLayoutWidth: CGFloat) -> AudioBubbleLayoutModel {
         let layoutContext = AudioBubbleLayoutModel.LayoutContext(
-            text: self.text,
+            text: self.formattedDuration,
             font: self.style.textFont(viewModel: self.audioMessageViewModel, isSelected: self.selected),
             textInsets: self.style.textInsets(viewModel: self.audioMessageViewModel, isSelected: self.selected),
             preferredMaxLayoutWidth: preferredMaxLayoutWidth
