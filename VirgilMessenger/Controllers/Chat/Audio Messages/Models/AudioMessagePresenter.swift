@@ -55,6 +55,7 @@ InteractionHandlerT.ViewModelT == ViewModelBuilderT.ViewModelT {
             self?.updateCurrentCell()
         }
         viewModel.avatarImage.observe(self, closure: updateClosure)
+        viewModel.state.observe(self, closure: updateClosure)
         return viewModel
     }
 

@@ -104,6 +104,8 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
         self.recordButton.translatesAutoresizingMaskIntoConstraints = false
         self.recordButton.addTarget(self, action: #selector(didStartRecord(_:)), for: .touchDown)
         self.recordButton.addTarget(self, action: #selector(didFinishRecord(_:)), for: [.touchUpInside, .touchUpOutside])
+        self.recordButton.layer.masksToBounds = true
+        self.recordButton.layer.cornerRadius = 50
 
         view.addSubview(self.recordButton)
         self.addConstraint(NSLayoutConstraint(item: self.textLabel, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0))

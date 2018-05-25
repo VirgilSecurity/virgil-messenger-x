@@ -11,9 +11,18 @@ import ChattoAdditions
 public protocol AudioMessageViewModelProtocol: DecoratedMessageViewModelProtocol {
     var audio: Data { get }
     var duration: TimeInterval { get }
+    var state: Observable<PlayingState> { get set }
+}
+
+public enum PlayingState {
+    case playing
+    case paused
+    case stopped
 }
 
 open class AudioMessageViewModel<AudioMessageModelT: AudioMessageModelProtocol>: AudioMessageViewModelProtocol {
+    public let audioMessage: AudioMessageModelT
+
     open var audio: Data {
         return self.audioMessage.audio
     }
@@ -22,7 +31,7 @@ open class AudioMessageViewModel<AudioMessageModelT: AudioMessageModelProtocol>:
         return self.audioMessage.duration
     }
 
-    public let audioMessage: AudioMessageModelT
+    public var state: Observable<PlayingState> = Observable(.stopped)
     public var messageViewModel: MessageViewModelProtocol
 
     public init(audioMessage: AudioMessageModelT, messageViewModel: MessageViewModelProtocol) {

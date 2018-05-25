@@ -270,6 +270,15 @@ extension ChatViewController: AudioPlayableProtocol {
             self.alert(withTitle: "Playing error")
         }
     }
+
+    func pause() {
+        self.soundPlayer?.pause()
+    }
+
+    func resume() {
+        self.soundPlayer?.prepareToPlay()
+        self.soundPlayer?.play()
+    }
 }
 
 extension ChatViewController: PhotoObserverProtocol {

@@ -11,6 +11,8 @@ import AVFoundation
 
 protocol AudioPlayableProtocol: class, AVAudioPlayerDelegate {
     func play(data: Data)
+    func pause()
+    func resume()
 }
 
 class DemoAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
@@ -35,7 +37,18 @@ class DemoAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
 
     func userDidTapOnBubble(viewModel: DemoAudioMessageViewModel) {
         self.baseHandler.userDidTapOnBubble(viewModel: viewModel)
-        self.playableController.play(data: viewModel.audio)
+
+        switch viewModel.state.value {
+        case .playing:
+            viewModel.state.value = .paused
+            self.playableController.pause()
+        case .paused:
+            viewModel.state.value = .playing
+            self.playableController.resume()
+        case .stopped:
+            viewModel.state.value = .playing
+            self.playableController.play(data: viewModel.audio)
+        }
     }
 
     func userDidBeginLongPressOnBubble(viewModel: DemoAudioMessageViewModel) {

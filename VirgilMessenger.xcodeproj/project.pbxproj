@@ -17,6 +17,7 @@
 		1627723F203C5FB00086127C /* CoreDataHelper+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */; };
 		16277242203C60DB0086127C /* CoreDataHelper+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */; };
 		16277244203C62040086127C /* CoreDataHelper+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277243203C62040086127C /* CoreDataHelper+Messages.swift */; };
+		1644C07920B720F000073D99 /* View.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1644C07820B720F000073D99 /* View.xcassets */; };
 		164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */; };
 		164E173020AAEECD00AB1AAD /* DemoAudioMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E172F20AAEECD00AB1AAD /* DemoAudioMessageModel.swift */; };
 		164E173220AAEF1900AB1AAD /* DemoAudioMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E173120AAEF1900AB1AAD /* DemoAudioMessageHandler.swift */; };
@@ -135,6 +136,7 @@
 		1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Account.swift"; sourceTree = "<group>"; };
 		16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Channel.swift"; sourceTree = "<group>"; };
 		16277243203C62040086127C /* CoreDataHelper+Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Messages.swift"; sourceTree = "<group>"; };
+		1644C07820B720F000073D99 /* View.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = View.xcassets; sourceTree = "<group>"; };
 		164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageModel.swift; sourceTree = "<group>"; };
 		164E172F20AAEECD00AB1AAD /* DemoAudioMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAudioMessageModel.swift; sourceTree = "<group>"; };
 		164E173120AAEF1900AB1AAD /* DemoAudioMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAudioMessageHandler.swift; sourceTree = "<group>"; };
@@ -246,6 +248,7 @@
 				16013C7820B214460043EA29 /* AudioBubleView.swift */,
 				16013C7C20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift */,
 				16013C7A20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift */,
+				1644C07820B720F000073D99 /* View.xcassets */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -617,6 +620,7 @@
 				423BDA7A1F97600A00C3EE9B /* ChatList.storyboard in Resources */,
 				16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */,
 				429228C01F96261000DCECDF /* LaunchScreen.storyboard in Resources */,
+				1644C07920B720F000073D99 /* View.xcassets in Resources */,
 				429228BD1F96261000DCECDF /* Assets.xcassets in Resources */,
 				4280C0D61F97341300075B3A /* SendingStatusCollectionViewCell.xib in Resources */,
 				429228EB1F96405800DCECDF /* Chat.storyboard in Resources */,
