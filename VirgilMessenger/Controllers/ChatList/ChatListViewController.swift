@@ -86,7 +86,7 @@ class ChatListViewController: ViewController {
                         CoreDataHelper.sharedInstance.setLastMessage(for: channelCore)
 
                         group.enter()
-                        TwilioHelper.sharedInstance.decryptFirstMessage(of: messages, channel: channelCore, saved: messagesCore.count) { message, decryptedBody, decryptedMedia, messageDate in
+                        TwilioHelper.sharedInstance.decryptFirstMessage(of: messages, channel: channelCore, saved: messagesCore.count) { message, decryptedBody, decryptedMedia, mediaType, messageDate in
                             guard let message = message,
                                 let messageDate = messageDate else {
                                     group.leave()
@@ -98,13 +98,26 @@ class ChatListViewController: ViewController {
                             }
 
                             if (messagesCore.count == 0 || (Int(truncating: message.index ?? 0) >= (messagesCore.count))) {
-                                if let decryptedBody = decryptedBody {
-                                    CoreDataHelper.sharedInstance.createTextMessage(for: channelCore, withBody: decryptedBody,
-                                                                                    isIncoming: true, date: messageDate)
-                                } else if let decryptedMedia = decryptedMedia {
+                                switch mediaType {
+                                case TwilioHelper.MediaType.photo.rawValue:
+                                    guard let decryptedMedia = decryptedMedia else {
+                                        Log.error("nil decrypted media")
+                                        return
+                                    }
                                     CoreDataHelper.sharedInstance.createMediaMessage(for: channelCore, with: decryptedMedia,
                                                                                      isIncoming: true, date: messageDate,
                                                                                      type: .photo)
+                                case TwilioHelper.MediaType.audio.rawValue:
+                                    guard let decryptedMedia = decryptedMedia else {
+                                        Log.error("nil decrypted media")
+                                        return
+                                    }
+                                    CoreDataHelper.sharedInstance.createMediaMessage(for: channelCore, with: decryptedMedia,
+                                                                                     isIncoming: true, date: messageDate,
+                                                                                     type: .audio)
+                                default:
+                                    CoreDataHelper.sharedInstance.createTextMessage(for: channelCore, withBody: decryptedBody ?? "Corrupted Message",
+                                                                                    isIncoming: true, date: messageDate)
                                 }
                             }
                             group.leave()

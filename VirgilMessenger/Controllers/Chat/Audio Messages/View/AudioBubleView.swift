@@ -136,29 +136,31 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
     }
 
     private func updateViews() {
-        switch self.audioMessageViewModel.state.value {
-        case .playing:
-            if (timer == nil) {
-                self.playImageView.image = UIImage(named: "pause", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
-                self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(AudioBubbleView.updateTimer), userInfo: nil, repeats: true)
-                updateTimer()
+        DispatchQueue.main.async {
+            switch self.audioMessageViewModel.state.value {
+            case .playing:
+                if (self.timer == nil) {
+                    self.playImageView.image = UIImage(named: "pause", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
+                    self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(AudioBubbleView.updateTimer), userInfo: nil, repeats: true)
+                    self.updateTimer()
+                }
+            case .paused:
+                self.playImageView.image = UIImage(named: "play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
+                self.stopTimer()
+            case .stopped:
+                self.playImageView.image = UIImage(named: "play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
+                self.displayTime = self.audioMessageViewModel.duration
             }
-        case .paused:
-            self.playImageView.image = UIImage(named: "play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
-            self.stopTimer()
-        case .stopped:
-            self.playImageView.image = UIImage(named: "play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
-            self.displayTime = self.audioMessageViewModel.duration
-        }
-        if self.viewContext == .sizing { return }
-        if isUpdating { return }
-        guard let style = self.style else { return }
+            if self.viewContext == .sizing { return }
+            if self.isUpdating { return }
+            guard let style = self.style else { return }
 
-        self.updateTextView()
-        let bubbleImage = style.bubbleImage(viewModel: self.audioMessageViewModel, isSelected: self.selected)
-        let borderImage = style.bubbleImageBorder(viewModel: self.audioMessageViewModel, isSelected: self.selected)
-        if self.bubbleImageView.image != bubbleImage { self.bubbleImageView.image = bubbleImage }
-        if self.borderImageView.image != borderImage { self.borderImageView.image = borderImage }
+            self.updateTextView()
+            let bubbleImage = style.bubbleImage(viewModel: self.audioMessageViewModel, isSelected: self.selected)
+            let borderImage = style.bubbleImageBorder(viewModel: self.audioMessageViewModel, isSelected: self.selected)
+            if self.bubbleImageView.image != bubbleImage { self.bubbleImageView.image = bubbleImage }
+            if self.borderImageView.image != borderImage { self.borderImageView.image = borderImage }
+        }
     }
 
     @objc private func updateTimer() {

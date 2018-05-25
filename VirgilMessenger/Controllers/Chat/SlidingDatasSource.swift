@@ -58,7 +58,10 @@ public class SlidingDataSource<Element> {
                 return
         }
         for _ in 0..<count {
-            self.insertItem(itemGenerator(messages.count - self.items.count - 1, messages), position: position)
+            let messageNumber = messages.count - self.items.count - 1
+            if messageNumber >= 0 {
+                self.insertItem(itemGenerator(messages.count - self.items.count - 1, messages), position: position)
+            }
         }
     }
 

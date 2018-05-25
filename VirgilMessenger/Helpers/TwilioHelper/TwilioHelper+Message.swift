@@ -137,16 +137,16 @@ extension TwilioHelper {
     }
 
     func decryptFirstMessage(of messages: TCHMessages, channel: Channel, saved: Int,
-                             completion: @escaping (TCHMessage?, String?, Data?, Date?) -> ()) {
+                             completion: @escaping (TCHMessage?, String?, Data?, String?, Date?) -> ()) {
         messages.getBefore(UInt(saved), withCount: 1) { result, oneMessages in
             guard let oneMessages = oneMessages,
                 let message = oneMessages.first,
                 let messageDate = message.dateUpdatedAsDate,
                 message.author != TwilioHelper.sharedInstance.username else {
-                    completion(nil, nil, nil, nil)
+                    completion(nil, nil, nil, nil, nil)
                     return
             }
-            if message.hasMedia() {
+            if message.hasMedia(), message.mediaType != nil {
                 self.getMedia(from: message) { encryptedData in
                     guard let encryptedData = encryptedData,
                         let encryptedString = String(data: encryptedData, encoding: .utf8),
@@ -154,25 +154,25 @@ extension TwilioHelper {
                                                                                      encrypted: encryptedString),
                         let decryptedData = Data(base64Encoded: decryptedString) else {
                             Log.error("decryption process of first message failed")
-                            completion(nil, nil, nil, nil)
+                            completion(nil, nil, nil, nil, nil)
                             return
                     }
-                    completion(message, nil, decryptedData, messageDate)
+                    completion(message, nil, decryptedData, message.mediaType, messageDate)
                 }
             } else if let messageBody = message.body {
                 guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card,
                                                                                         encrypted: messageBody) else {
-                    completion(nil, nil, nil, nil)
+                    completion(nil, nil, nil, nil, nil)
                     return
                 }
 
                 channel.lastMessagesBody = decryptedMessageBody
                 channel.lastMessagesDate = messageDate
 
-                completion(message, decryptedMessageBody, nil, messageDate)
+                completion(message, decryptedMessageBody, nil, nil, messageDate)
             } else {
                 Log.error("Empty first message")
-                completion(nil, nil, nil, nil)
+                completion(nil, nil, nil, nil, nil)
             }
         }
     }

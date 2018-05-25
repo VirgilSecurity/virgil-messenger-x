@@ -90,17 +90,30 @@ extension TwilioHelper {
                                 Log.error("failed to create new core data channel")
                                 return
                             }
-                            self.decryptFirstMessage(of: messages, channel: channelCore, saved: 0) { message, decryptedBody, decryptedMedia, messageDate in
+                            self.decryptFirstMessage(of: messages, channel: channelCore, saved: 0) { message, decryptedBody, decryptedMedia, mediaType, messageDate in
                                 guard let messageDate = messageDate else {
                                     return
                                 }
-                                if let decryptedBody = decryptedBody {
-                                    CoreDataHelper.sharedInstance.createTextMessage(for: channelCore, withBody: decryptedBody,
-                                                                                    isIncoming: true, date: messageDate)
-                                } else if let decryptedMedia = decryptedMedia {
+                                switch mediaType {
+                                case MediaType.photo.rawValue:
+                                    guard let decryptedMedia = decryptedMedia else {
+                                        Log.error("nil decrypted media")
+                                        return
+                                    }
                                     CoreDataHelper.sharedInstance.createMediaMessage(for: channelCore, with: decryptedMedia,
                                                                                      isIncoming: true, date: messageDate,
                                                                                      type: .photo)
+                                case MediaType.audio.rawValue:
+                                    guard let decryptedMedia = decryptedMedia else {
+                                        Log.error("nil decrypted media")
+                                        return
+                                    }
+                                    CoreDataHelper.sharedInstance.createMediaMessage(for: channelCore, with: decryptedMedia,
+                                                                                     isIncoming: true, date: messageDate,
+                                                                                     type: .audio)
+                                default:
+                                    CoreDataHelper.sharedInstance.createTextMessage(for: channelCore, withBody: decryptedBody ?? "Corrupted Message",
+                                                                                    isIncoming: true, date: messageDate)
                                 }
 
                                 self.setLastMessage(of: messages, channel: channelCore) {
