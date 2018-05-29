@@ -7,7 +7,8 @@
 //
 
 import Foundation
-import VirgilSDKPFS
+import VirgilSDK
+import VirgilCryptoApiImpl
 
 extension VirgilHelper {
     func signUp(identity: String, identityType: String = "name", completion: @escaping (Error?) -> ()) {
@@ -22,64 +23,70 @@ extension VirgilHelper {
                 return
             }
             do {
-                let keyPair = self.crypto.generateKeyPair()
-                self.setPrivateKey(keyPair.privateKey)
-                self.setPublicKey(keyPair.publicKey)
+                let keyPair = try self.crypto.generateKeyPair()
+                self.set(privateKey: keyPair.privateKey)
 
-                let exportedPublicKey = self.crypto.export(keyPair.publicKey)
-                let csr = VSSCreateUserCardRequest(identity: identity, identityType: identityType, publicKeyData: exportedPublicKey, data: ["deviceId": "testDevice123"])
+                let exportedPublicKey = self.crypto.exportPublicKey(keyPair.publicKey)
 
-                let signer = VSSRequestSigner(crypto: self.crypto)
-                try signer.selfSign(csr, with: keyPair.privateKey)
+                let cardContent = RawCardContent(identity: identity, publicKey: exportedPublicKey,
+                                                 previousCardId: nil, createdAt: Date())
 
-                let exportedCSR = csr.exportData()
-                let request = try ServiceRequest(url: URL(string: self.twilioServer + "v1/users")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["csr" : exportedCSR])
+                let snapshot = try JSONEncoder().encode(cardContent)
+
+                let rawCard = RawSignedModel(contentSnapshot: snapshot)
+
+                let modelSigner = ModelSigner(cardCrypto: self.cardCrypto)
+                try modelSigner.selfSign(model: rawCard, privateKey: keyPair.privateKey)
+
+                let exportedRawCard = try rawCard.exportAsJson()
+
+                let request = try ServiceRequest(url: URL(string: self.signUpEndpint)!,
+                                                 method: ServiceRequest.Method.post,
+                                                 headers: ["Content-Type": "application/json"],
+                                                 params: ["rawCard" : exportedRawCard])
 
                 let response = try self.connection.send(request)
 
                 guard let responseBody = response.body,
-                    let json = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any]
-                    else {
+                    let json = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any] else {
                         Log.error("json failed")
                         throw VirgilHelperError.jsonParsingFailed
                 }
 
-                guard let exportedCard = json["virgil_card"] as? String else {
+                guard let exportedCard = json["virgil_card"] as? [String: Any] else {
                     Log.error("Error while signing up: server didn't return card")
                     DispatchQueue.main.async {
                         completion(UserFriendlyError.usernameAlreadyUsed)
                     }
                     return
                 }
-                guard let card = VSSCard(data: exportedCard) else {
-                    Log.error("Can't build card")
-                    throw VirgilHelperError.buildCardFailed
+                let publishedRawCard = try RawSignedModel.import(fromJson: exportedCard)
+                let card = try CardManager.parseCard(from: publishedRawCard, cardCrypto: self.cardCrypto)
+                guard self.verifier.verifyCard(card) else {
+                    Log.error("Card is not valid")
+                    throw VirgilHelperError.cardWasNotVerified
                 }
 
-                guard self.validator.validate(card.cardResponse) else {
-                    Log.error("validating card failed")
-                    throw VirgilHelperError.validatingError
-                }
+                let exportedPrivateKey = try VirgilPrivateKeyExporter().exportPrivateKey(privateKey: keyPair.privateKey)
 
-                let keyEntry = VSSKeyEntry(name: identity, value: self.crypto.export(keyPair.privateKey, withPassword: nil))
+                let keyEntry = KeyEntry(name: identity, value: exportedPrivateKey)
                 try? self.keyStorage.deleteKeyEntry(withName: identity)
                 try self.keyStorage.store(keyEntry)
+
+                self.card = card
 
                 var resultError: Error? = nil
                 let dispatchGroup = DispatchGroup()
 
                 dispatchGroup.enter()
-                CoreDataHelper.sharedInstance.createAccount(withIdentity: identity, exportedCard: card.exportData()) {
+                let exportedPublichedCard = try card.getRawCard().exportAsBase64EncodedString()
+                CoreDataHelper.sharedInstance.createAccount(withIdentity: identity, exportedCard: exportedPublichedCard) {
                     dispatchGroup.leave()
                 }
 
                 dispatchGroup.enter()
+                self.update(identity: identity)
                 self.initializeAccount(withCardId: card.identifier, identity: identity) { error in
-                    resultError = error
-                    dispatchGroup.leave()
-                }
-                dispatchGroup.enter()
-                self.initializePFS(withIdentity: identity, card: card, privateKey: keyPair.privateKey) { error in
                     resultError = error
                     dispatchGroup.leave()
                 }

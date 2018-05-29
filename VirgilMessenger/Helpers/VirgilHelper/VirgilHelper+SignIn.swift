@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import VirgilSDKPFS
+import VirgilSDK
 
 extension VirgilHelper {
     func signIn(identity: String, completion: @escaping (Error?) -> ()) {
@@ -30,14 +30,16 @@ extension VirgilHelper {
 
         let exportedCard = CoreDataHelper.sharedInstance.getAccountCard()
 
-        if let exportedCard = exportedCard, let card = VSSCard(data: exportedCard) {
+        if let exportedCard = exportedCard, let card = self.importCard(exportedCard) {
+            self.card = card
             self.signInHelper(card: card, identity: identity) { error in
                 DispatchQueue.main.async {
                     completion(error)
                 }
             }
         } else {
-            getCard(withIdentity: identity) { card, error in
+            getCard(identity: identity) { card, error in
+                self.card = card
                 guard error == nil, let card = card else {
                     Log.error("Signing in: can't get virgil card: \(error?.localizedDescription ?? "")")
                     DispatchQueue.main.async {
@@ -55,46 +57,40 @@ extension VirgilHelper {
         }
     }
 
-    private func signInHelper(card: VSSCard, identity: String, completion: @escaping (Error?) -> ()) {
-        guard let publicKey = self.crypto.importPublicKey(from: card.publicKeyData) else {
-            DispatchQueue.main.async {
-                completion(VirgilHelperError.importingKeyFailed)
+    private func importCard(_ string: String) -> Card? {
+        do {
+            let rawCard = try RawSignedModel.import(fromBase64Encoded: string)
+            let card = try CardManager.parseCard(from: rawCard, cardCrypto: self.cardCrypto)
+            guard self.verifier.verifyCard(card) else {
+                return nil
             }
-            return
-        }
-        self.setPublicKey(publicKey)
 
-        var resultError: Error? = nil
-        let dispatchGroup = DispatchGroup()
-
-        dispatchGroup.enter()
-        self.initializeAccount(withCardId: card.identifier, identity: identity) { error in
-            resultError = error
-            dispatchGroup.leave()
+            return card
+        } catch {
+            return nil
         }
+    }
+
+    private func signInHelper(card: Card, identity: String, completion: @escaping (Error?) -> ()) {
         do {
             let entry = try self.keyStorage.loadKeyEntry(withName: identity)
-            guard let key = self.crypto.importPrivateKey(from: entry.value) else {
-                throw VirgilHelperError.importingKeyFailed
-            }
-           self.setPrivateKey(key)
-
-            dispatchGroup.enter()
-            self.initializePFS(withIdentity: identity, card: card, privateKey: key) { error in
-                //FIXME
-                //resultError = error
-                dispatchGroup.leave()
-            }
+            let key = try self.crypto.importPrivateKey(from: entry.value)
+            self.set(privateKey: key)
+            self.update(identity: identity)
         } catch {
-            resultError = error
+            Log.error("\(error.localizedDescription)")
+            completion(error)
         }
 
-        dispatchGroup.notify(queue: .main) {
-            if let error = resultError {
+        self.initializeAccount(withCardId: card.identifier, identity: identity) { error in
+            if let error = error {
                 Log.error("Signing in: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    completion(error)
+                }
             }
             DispatchQueue.main.async {
-                completion(resultError)
+                completion(nil)
             }
         }
     }

@@ -75,63 +75,27 @@ class ChatListViewController: ViewController {
     private func updateLastMessages(completion: @escaping () -> ()) {
         let channels = TwilioHelper.sharedInstance.channels.subscribedChannels()
 
-        let group = DispatchGroup()
+        if channels.count == 0 {
+            completion()
+            return
+        }
         for i in 0..<channels.count {
             let channel = channels[i]
             let channelName = TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)
             if let channelCore = CoreDataHelper.sharedInstance.getChannel(withName: channelName) {
                 while channel.messages == nil { sleep(1) }
-                if let messages = channel.messages,
-                    let messagesCore = channelCore.message {
-                        CoreDataHelper.sharedInstance.setLastMessage(for: channelCore)
-
-                        group.enter()
-                        TwilioHelper.sharedInstance.decryptFirstMessage(of: messages, channel: channelCore, saved: messagesCore.count) { message, decryptedBody, decryptedMedia, mediaType, messageDate in
-                            guard let message = message,
-                                let messageDate = messageDate else {
-                                    group.leave()
-                                    return
-                            }
-                            group.enter()
-                            TwilioHelper.sharedInstance.setLastMessage(of: messages, channel: channelCore) {
-                                group.leave()
-                            }
-
-                            if (messagesCore.count == 0 || (Int(truncating: message.index ?? 0) >= (messagesCore.count))) {
-                                switch mediaType {
-                                case TwilioHelper.MediaType.photo.rawValue:
-                                    guard let decryptedMedia = decryptedMedia else {
-                                        Log.error("nil decrypted media")
-                                        return
-                                    }
-                                    CoreDataHelper.sharedInstance.createMediaMessage(for: channelCore, with: decryptedMedia,
-                                                                                     isIncoming: true, date: messageDate,
-                                                                                     type: .photo)
-                                case TwilioHelper.MediaType.audio.rawValue:
-                                    guard let decryptedMedia = decryptedMedia else {
-                                        Log.error("nil decrypted media")
-                                        return
-                                    }
-                                    CoreDataHelper.sharedInstance.createMediaMessage(for: channelCore, with: decryptedMedia,
-                                                                                     isIncoming: true, date: messageDate,
-                                                                                     type: .audio)
-                                default:
-                                    CoreDataHelper.sharedInstance.createTextMessage(for: channelCore, withBody: decryptedBody ?? "Corrupted Message",
-                                                                                    isIncoming: true, date: messageDate)
-                                }
-                            }
-                            group.leave()
-                        }
+                if let messages = channel.messages {
+                    CoreDataHelper.sharedInstance.setLastMessage(for: channelCore)
+                    TwilioHelper.sharedInstance.setLastMessage(of: messages, channel: channelCore) {
+                        self.tableView.reloadData()
+                        completion()
+                    }
                 } else {
                     Log.error("Get Messages failed")
                 }
             } else {
                 Log.error("Get Channel failed")
             }
-        }
-        group.notify(queue: .main) {
-            self.tableView.reloadData()
-            completion()
         }
     }
 

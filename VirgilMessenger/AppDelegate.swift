@@ -8,9 +8,8 @@
 
 import UIKit
 import CoreData
-import Fabric
-import Crashlytics
-import VirgilSDKPFS
+import VirgilSDK
+import VirgilCryptoApiImpl
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -31,13 +30,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     context.delete(object)
                 }
             }
-            try? VSSKeyStorage().reset()
+            try? KeyStorage().reset()
             UserDefaults.standard.set("happened", forKey: "first_launch")
             UserDefaults.standard.synchronize()
         }
 
         CoreDataHelper.initialize()
-        Fabric.with([Crashlytics.self])
 
         return true
     }

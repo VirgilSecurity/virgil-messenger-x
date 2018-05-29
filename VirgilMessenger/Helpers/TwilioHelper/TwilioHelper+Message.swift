@@ -32,11 +32,10 @@ extension TwilioHelper {
                 }
             } else if let body = message.body {
                 if message.author != TwilioHelper.sharedInstance.username {
-                    guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card,
-                                                                                            encrypted: body) else {
+                    guard let decryptedBody = VirgilHelper.sharedInstance.decrypt(body) else {
                         return
                     }
-                    channel.lastMessagesBody = decryptedMessageBody
+                    channel.lastMessagesBody = decryptedBody
                 }
             } else {
                 Log.error("Empty twilio message")
@@ -92,7 +91,7 @@ extension TwilioHelper {
                             TwilioHelper.sharedInstance.getMediaSync(from: message) { encryptedData in
                                 guard let encryptedData = encryptedData,
                                     let encryptedString = String(data: encryptedData, encoding: .utf8),
-                                    let decryptedString = VirgilHelper.sharedInstance.decryptPFS(encrypted: encryptedString),
+                                    let decryptedString = VirgilHelper.sharedInstance.decrypt(encryptedString),
                                     let decryptedData = Data(base64Encoded: decryptedString) else {
                                         Log.error("decryption of media message failed")
                                         makeCorruptedMessage()
@@ -113,7 +112,7 @@ extension TwilioHelper {
                                 }
                             }
                         } else if let messageBody = message.body {
-                            guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(encrypted: messageBody) else {
+                            guard let decryptedMessageBody = VirgilHelper.sharedInstance.decrypt(messageBody) else {
                                 makeCorruptedMessage()
                                 continue
                             }
@@ -150,8 +149,7 @@ extension TwilioHelper {
                 self.getMedia(from: message) { encryptedData in
                     guard let encryptedData = encryptedData,
                         let encryptedString = String(data: encryptedData, encoding: .utf8),
-                        let decryptedString = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card,
-                                                                                     encrypted: encryptedString),
+                        let decryptedString = VirgilHelper.sharedInstance.decrypt(encryptedString),
                         let decryptedData = Data(base64Encoded: decryptedString) else {
                             Log.error("decryption process of first message failed")
                             completion(nil, nil, nil, nil, nil)
@@ -160,8 +158,7 @@ extension TwilioHelper {
                     completion(message, nil, decryptedData, message.mediaType, messageDate)
                 }
             } else if let messageBody = message.body {
-                guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card,
-                                                                                        encrypted: messageBody) else {
+                guard let decryptedMessageBody = VirgilHelper.sharedInstance.decrypt(messageBody) else {
                     completion(nil, nil, nil, nil, nil)
                     return
                 }

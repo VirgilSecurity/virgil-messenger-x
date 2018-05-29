@@ -42,6 +42,21 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>used for ability to add photo attachmants</string>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>example.com</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+            </dict>
+        </dict>
+    </dict>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>used for ability to save photo in photo library</string>
 	<key>NSPhotoLibraryUsageDescription</key>

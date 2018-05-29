@@ -119,13 +119,13 @@ class DataSource: ChatDataSourceProtocol {
         if message.hasMedia() {
            self.processMedia(message: message, date: messageDate, isIncoming: isIncoming)
         } else if let messageBody = message.body {
-            guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(encrypted: messageBody) else {
+            guard let decryptedBody = VirgilHelper.sharedInstance.decrypt(messageBody) else {
                 return
             }
-            Log.debug("Receiving " + decryptedMessageBody)
+            Log.debug("Receiving " + decryptedBody)
 
             let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: messageDate)
-            let decryptedMessage = DemoTextMessageModel(messageModel: model, text: decryptedMessageBody)
+            let decryptedMessage = DemoTextMessageModel(messageModel: model, text: decryptedBody)
 
             CoreDataHelper.sharedInstance.createTextMessage(withBody: decryptedMessage.body, isIncoming: true, date: messageDate)
 
@@ -145,7 +145,7 @@ class DataSource: ChatDataSourceProtocol {
         TwilioHelper.sharedInstance.getMedia(from: message) { encryptedData in
             guard let encryptedData = encryptedData,
                 let encryptedString = String(data: encryptedData, encoding: .utf8),
-                let decryptedString = VirgilHelper.sharedInstance.decryptPFS(encrypted: encryptedString),
+                let decryptedString = VirgilHelper.sharedInstance.decrypt(encryptedString),
                 let decryptedData = Data(base64Encoded: decryptedString) else {
                     Log.error("decryption process of media message failed")
                     return

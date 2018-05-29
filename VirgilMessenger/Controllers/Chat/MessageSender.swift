@@ -26,7 +26,6 @@ import Foundation
 import Chatto
 import ChattoAdditions
 import TwilioChatClient
-import VirgilSDKPFS
 
 public protocol DemoMessageModelProtocol: MessageModelProtocol {
     var status: MessageStatus { get set }
@@ -45,10 +44,8 @@ public class MessageSender {
         switch message {
         case is DemoTextMessageModel:
             let textMessage = message as! DemoTextMessageModel
-            VirgilHelper.sharedInstance.encryptPFS(message: textMessage.body) { encrypted in
-                guard let encrypted = encrypted else {
-                    return
-                }
+
+            if let encrypted = VirgilHelper.sharedInstance.encrypt(textMessage.body) {
                 self.messageStatus(ciphertext: encrypted, message: textMessage)
             }
         case is DemoPhotoMessageModel:
@@ -57,26 +54,22 @@ public class MessageSender {
                 Log.error("Converting image to JPEG failed")
                 return
             }
-            VirgilHelper.sharedInstance.encryptPFS(message: photoData.base64EncodedString()) { encrypted in
-                guard let encrypted = encrypted else {
-                    return
-                }
+            if let encrypted = VirgilHelper.sharedInstance.encrypt(photoData.base64EncodedString()) {
                 guard let cipherData = encrypted.data(using: .utf8) else {
                     Log.error("String to Data failed")
                     return
                 }
+
                 self.messageStatus(of: photoMessage, with: cipherData)
             }
         case is DemoAudioMessageModel:
             let audioMessage = message as! DemoAudioMessageModel
-            VirgilHelper.sharedInstance.encryptPFS(message: audioMessage.audio.base64EncodedString()) { encrypted in
-                guard let encrypted = encrypted else {
-                    return
-                }
+            if let encrypted = VirgilHelper.sharedInstance.encrypt(audioMessage.audio.base64EncodedString()) {
                 guard let cipherData = encrypted.data(using: .utf8) else {
                     Log.error("String to Data failed")
                     return
                 }
+
                 self.messageStatus(of: audioMessage, with: cipherData)
             }
         default:

@@ -67,13 +67,13 @@ extension TwilioHelper: TwilioChatClientDelegate {
                     Log.debug("Successfully accepted invite.")
                     let identity = self.getCompanion(ofChannel: channel)
                     Log.debug("identity: \(identity)")
-                    VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
-                        guard let card = card, error == nil else {
-                            Log.error("failed to add new channel card")
+                    VirgilHelper.sharedInstance.getExportedCard(identity: identity) { exportedCard, error in
+                        guard let exportedCard = exportedCard, error == nil else {
+                            Log.error("Adding new channel Card failed")
                             return
                         }
-                        _ = CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
-                        Log.debug("new card added")
+                        _ = CoreDataHelper.sharedInstance.createChannel(withName: identity, card: exportedCard)
+                        Log.debug("Added new Card")
                         NotificationCenter.default.post(
                             name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
                             object: self,
@@ -120,8 +120,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
             Log.error("got corrupted message")
             return
         }
-        guard let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: self.getCompanion(ofChannel: channel)),
-              let cardString = coreDataChannel.card else {
+        guard let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: self.getCompanion(ofChannel: channel)) else {
             Log.error("can't get core data channel")
             return
         }
@@ -130,7 +129,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
             self.getMedia(from: message) { encryptedData in
                 guard let encryptedData = encryptedData,
                     let encryptedString = String(data: encryptedData, encoding: .utf8),
-                    let decryptedString = VirgilHelper.sharedInstance.decryptPFS(cardString: cardString, encrypted: encryptedString),
+                    let decryptedString = VirgilHelper.sharedInstance.decrypt(encryptedString),
                     let decryptedData = Data(base64Encoded: decryptedString) else {
                         Log.error("decryption process of media message failed")
                         return
@@ -162,7 +161,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                     ])
             }
         } else if let messageBody = message.body {
-            guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: cardString, encrypted: messageBody) else {
+            guard let decryptedMessageBody = VirgilHelper.sharedInstance.decrypt(messageBody) else {
                 return
             }
 

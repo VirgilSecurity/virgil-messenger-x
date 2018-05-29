@@ -11,15 +11,15 @@ import TwilioChatClient
 
 extension TwilioHelper {
     func createChannel(withUsername username: String, completion: @escaping (Error?) -> ()) {
-        VirgilHelper.sharedInstance.getCard(withIdentity: username) { card, error in
-            guard let card = card, error == nil else {
+        VirgilHelper.sharedInstance.getExportedCard(identity: username) { exportedCard, error in
+            guard let exportedCard = exportedCard, error == nil else {
                 Log.error("failed to add new channel card")
                 DispatchQueue.main.async {
                     completion(error)
                 }
                 return
             }
-            _ = CoreDataHelper.sharedInstance.createChannel(withName: username, card: card.exportData())
+            _ = CoreDataHelper.sharedInstance.createChannel(withName: username, card: exportedCard)
 
             TwilioHelper.sharedInstance.channels.createChannel(options: [
                 TCHChannelOptionType: TCHChannelType.private.rawValue,
@@ -81,12 +81,12 @@ extension TwilioHelper {
                         Log.debug("Successfully accepted invite.")
                         let identity = self.getCompanion(ofChannel: channel)
                         Log.debug("identity: \(identity)")
-                        VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
-                            guard let card = card, error == nil else {
+                        VirgilHelper.sharedInstance.getExportedCard(identity: identity) { exportedCard, error in
+                            guard let exportedCard = exportedCard, error == nil else {
                                 Log.error("failed to get new channel card")
                                 return
                             }
-                            guard let channelCore = CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData()) else {
+                            guard let channelCore = CoreDataHelper.sharedInstance.createChannel(withName: identity, card: exportedCard) else {
                                 Log.error("failed to create new core data channel")
                                 return
                             }
