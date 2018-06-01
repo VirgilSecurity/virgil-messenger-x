@@ -30,7 +30,6 @@ class TwilioHelper: NSObject {
 
     enum MediaType: String {
         case photo = "image/bmp"
-        case audio = "audio/mp4"
     }
 
     enum Keys: String {

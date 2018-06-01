@@ -68,12 +68,6 @@ class DataSource: ChatDataSourceProtocol {
                 resultMessage = MessageFactory.createPhotoMessageModel("\(sSelf.nextMessageId)", image: image,
                                                                        size: image.size, isIncoming: message.isIncoming,
                                                                        status: .success, date: date)
-            case CoreDataHelper.MessageType.audio.rawValue:
-                guard let media = message.media, let duration = try? AVAudioPlayer(data: media).duration else {
-                    return corruptedMessage()
-                }
-                resultMessage = MessageFactory.createAudioMessageModel("\(sSelf.nextMessageId)", audio: media, duration: duration,
-                                                                       isIncoming: message.isIncoming, status: .success, date: date)
             default:
                 return corruptedMessage()
             }
@@ -163,17 +157,6 @@ class DataSource: ChatDataSourceProtocol {
                                                                    size: image.size, isIncoming: isIncoming,
                                                                    status: .success, date: date)
                 self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
-            case TwilioHelper.MediaType.audio.rawValue:
-                guard let duration = try? AVAudioPlayer(data: decryptedData).duration else {
-                    Log.error("Getting audio duration failed")
-                    return
-                }
-                CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: true,
-                                                                 date: date, type: .audio)
-                let decryptedMessage = MessageFactory.createAudioMessageModel("\(self.nextMessageId)", audio: decryptedData,
-                                                                              duration: duration, isIncoming: isIncoming,
-                                                                              status: .success, date: date)
-                self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
             default:
                 Log.error("Unknown media type")
                 return
@@ -231,20 +214,6 @@ class DataSource: ChatDataSourceProtocol {
         let uid = "\(self.nextMessageId)"
         self.nextMessageId += 1
         let message = MessageFactory.createPhotoMessageModel(uid, image: image, size: image.size, isIncoming: false, status: .sending, date: Date())
-        self.messageSender.sendMessage(message)
-        self.slidingWindow.insertItem(message, position: .bottom)
-        self.delegate?.chatDataSourceDidUpdate(self)
-    }
-
-    func addAudioMessage(_ audio: Data) {
-        guard let duration = try? AVAudioPlayer(data: audio).duration else {
-            Log.error("Getting audio duration failed")
-            return
-        }
-        let uid = "\(self.nextMessageId)"
-        self.nextMessageId += 1
-        let message = MessageFactory.createAudioMessageModel(uid, audio: audio, duration: duration, isIncoming: false,
-                                                             status: .sending, date: Date())
         self.messageSender.sendMessage(message)
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)

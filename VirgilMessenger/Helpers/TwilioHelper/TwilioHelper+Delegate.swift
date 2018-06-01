@@ -144,11 +144,6 @@ extension TwilioHelper: TwilioChatClientDelegate {
                             ?? "corrupted type"
                         CoreDataHelper.sharedInstance.createMediaMessage(for: coreDataChannel, with: decryptedData,
                                                                          isIncoming: true, date: messageDate, type: .photo)
-                    case MediaType.audio.rawValue:
-                        coreDataChannel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.audio.rawValue]
-                            ?? "corrupted type"
-                        CoreDataHelper.sharedInstance.createMediaMessage(for: coreDataChannel, with: decryptedData,
-                                                                         isIncoming: true, date: messageDate, type: .audio)
                     default:
                         Log.error("Missing or unknown mediaType")
                         return

@@ -15,7 +15,6 @@ extension CoreDataHelper {
     enum MessageType: String {
         case text
         case photo
-        case audio
     }
 
     func createTextMessage(withBody body: String, isIncoming: Bool, date: Date) {
@@ -93,7 +92,7 @@ extension CoreDataHelper {
                     return
                 }
                 channel.lastMessagesBody = body
-            case MessageType.photo.rawValue, MessageType.audio.rawValue:
+            case MessageType.photo.rawValue:
                 channel.lastMessagesBody = self.lastMessageIdentifier[message.type!] ?? "unknown media message type"
             default:
                 Log.error("Unknown message type")

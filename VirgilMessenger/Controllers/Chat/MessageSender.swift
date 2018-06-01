@@ -45,7 +45,10 @@ public class MessageSender {
         case is DemoTextMessageModel:
             let textMessage = message as! DemoTextMessageModel
 
-            let text = "\(TwilioHelper.sharedInstance.username): \(textMessage.body)"
+            var text = textMessage.body
+            if CoreDataHelper.sharedInstance.currentChannel?.type == ChannelType.group.rawValue {
+                text = "\(TwilioHelper.sharedInstance.username): \(textMessage.body)"
+            }
             if let encrypted = VirgilHelper.sharedInstance.encrypt(text) {
                 self.messageStatus(ciphertext: encrypted, message: textMessage)
             }
@@ -62,16 +65,6 @@ public class MessageSender {
                 }
 
                 self.messageStatus(of: photoMessage, with: cipherData)
-            }
-        case is DemoAudioMessageModel:
-            let audioMessage = message as! DemoAudioMessageModel
-            if let encrypted = VirgilHelper.sharedInstance.encrypt(audioMessage.audio.base64EncodedString()) {
-                guard let cipherData = encrypted.data(using: .utf8) else {
-                    Log.error("String to Data failed")
-                    return
-                }
-
-                self.messageStatus(of: audioMessage, with: cipherData)
             }
         default:
             Log.error("Unknown message model")
@@ -137,49 +130,6 @@ public class MessageSender {
                         }
                         CoreDataHelper.sharedInstance.createMediaMessage(with: imageData, isIncoming: false,
                                                                          date: message.date, type: .photo)
-                    } else {
-                        if let error = result.error {
-                            Log.error("error sending: \(error.localizedDescription) with \(error.code)")
-                        } else {
-                            Log.error("error sending: Twilio service error")
-                        }
-                        self.updateMessage(message, status: .failed)
-                    }
-                }
-            } else {
-                Log.error("can't get channel messages")
-            }
-        }
-    }
-
-    private func messageStatus(of message: DemoAudioMessageModel, with cipherdata: Data) {
-        switch message.status {
-        case .success:
-            break
-        case .failed:
-            self.updateMessage(message, status: .sending)
-            self.messageStatus(of: message, with: cipherdata)
-        case .sending:
-            if let messages = TwilioHelper.sharedInstance.currentChannel.messages {
-                let inputStream = InputStream(data: cipherdata)
-                let options = TCHMessageOptions().withMediaStream(inputStream,
-                                                                  contentType: TwilioHelper.MediaType.audio.rawValue,
-                                                                  defaultFilename: "audio.mp4",
-                                                                  onStarted: {
-                                                                    Log.debug("Media upload started")
-                },
-                                                                  onProgress: { (bytes) in
-                                                                    Log.debug("Media upload progress: \(bytes)")
-                }) { (mediaSid) in
-                    Log.debug("Media upload completed")
-                }
-                Log.debug("sending audio")
-                messages.sendMessage(with: options) { result, msg in
-                    if result.isSuccessful() {
-                        self.updateMessage(message, status: .success)
-
-                        CoreDataHelper.sharedInstance.createMediaMessage(with: message.audio, isIncoming: false,
-                                                                         date: message.date, type: .audio)
                     } else {
                         if let error = result.error {
                             Log.error("error sending: \(error.localizedDescription) with \(error.code)")

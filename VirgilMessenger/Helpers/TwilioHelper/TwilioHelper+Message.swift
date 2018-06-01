@@ -26,8 +26,6 @@ extension TwilioHelper {
                 switch message.mediaType {
                 case MediaType.photo.rawValue:
                     channel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.photo.rawValue] ?? "corrupted type"
-                case MediaType.audio.rawValue:
-                    channel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.audio.rawValue] ?? "corrupted type"
                 default:
                     Log.error("Missing or unknown media type")
                 }
@@ -104,9 +102,6 @@ extension TwilioHelper {
                                 case MediaType.photo.rawValue:
                                     CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: isIncoming,
                                                                                      date: messageDate, type: .photo)
-                                case MediaType.audio.rawValue:
-                                    CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: isIncoming,
-                                                                                     date: messageDate, type: .audio)
                                 default:
                                     Log.error("Missing or unknown mediaType")
                                     makeCorruptedMessage()

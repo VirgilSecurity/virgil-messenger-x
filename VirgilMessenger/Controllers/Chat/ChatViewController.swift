@@ -121,7 +121,7 @@ class ChatViewController: BaseChatViewController {
         if (currentChannel.cards.contains {
             VirgilHelper.sharedInstance.buildCard($0)?.identity == username
         }) {
-            self.alert(withTitle: "You already have this channel")
+            self.alert(withTitle: "This user is already member of channel")
         } else {
             HUD.show(.progress)
             VirgilHelper.sharedInstance.getExportedCard(identity: username) { exportedCard, error in
@@ -181,7 +181,6 @@ class ChatViewController: BaseChatViewController {
         return [
             DemoTextMessageModel.chatItemType: [self.createTextPresenter(with: baseMessageStyle)],
             DemoPhotoMessageModel.chatItemType: [self.createPhotoPresenter(with: baseMessageStyle)],
-            DemoAudioMessageModel.chatItemType: [self.createAudioPresenter(with: baseMessageStyle)],
             SendingStatusModel.chatItemType: [SendingStatusPresenterBuilder()],
             TimeSeparatorModel.chatItemType: [TimeSeparatorPresenterBuilder()]
         ]
@@ -191,7 +190,6 @@ class ChatViewController: BaseChatViewController {
         var items = [ChatInputItemProtocol]()
         items.append(self.createTextInputItem())
         items.append(self.createPhotoInputItem())
-        items.append(self.createAudioInputItem())
 
         return items
     }
@@ -244,27 +242,6 @@ extension ChatViewController {
 
         return photoMessagePresenter
     }
-
-    private func createAudioPresenter(with baseMessageStyle: BaseMessageCollectionViewCellDefaultStyle) -> AudioMessagePresenterBuilder<DemoAudioMessageViewModelBuilder, DemoAudioMessageHandler> {
-        let audioTextStyle = AudioMessageCollectionViewCellDefaultStyle.TextStyle(
-            font: UIFont.systemFont(ofSize: 15),
-            incomingColor: UIColor(rgb: 0xE4E4E4),
-            outgoingColor: UIColor.white, //for outgoing
-            incomingInsets: UIEdgeInsets(top: 10, left: 19, bottom: 10, right: 15),
-            outgoingInsets: UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 19)
-        )
-
-        let audioTextCellStyle: AudioMessageCollectionViewCellDefaultStyle = AudioMessageCollectionViewCellDefaultStyle(
-            textStyle: audioTextStyle,
-            baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
-
-        let audioMessagePresenter = AudioMessagePresenterBuilder(viewModelBuilder: DemoAudioMessageViewModelBuilder(),
-                                                                 interactionHandler: DemoAudioMessageHandler(baseHandler: self.baseMessageHandler, playableController: self))
-        audioMessagePresenter.baseMessageStyle = baseMessageStyle
-        audioMessagePresenter.textCellStyle = audioTextCellStyle
-
-        return audioMessagePresenter
-    }
 }
 
 /// ChatInputItems creators
@@ -301,45 +278,6 @@ extension ChatViewController {
             }
         }
         return item
-    }
-
-    private func createAudioInputItem() -> AudioChatInputItem {
-        let item = AudioChatInputItem(presentingController: self)
-        item.audioInputHandler = { [weak self] audioData in
-            if self?.currentReachabilityStatus == .notReachable {
-                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-                controller.addAction(UIAlertAction(title: "OK", style: .default))
-                self?.present(controller, animated: true)
-            } else {
-                self?.dataSource.addAudioMessage(audioData)
-            }
-        }
-        return item
-    }
-}
-
-extension ChatViewController: AudioPlayableProtocol {
-    func play(data: Data) {
-        do {
-            try AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
-            self.soundPlayer = try AVAudioPlayer(data: data)
-            self.soundPlayer?.delegate = self
-            self.soundPlayer?.prepareToPlay()
-            self.soundPlayer?.volume = 1.0
-            self.soundPlayer?.play()
-        } catch {
-            Log.error("AVAudioPlayer error: \(error.localizedDescription)")
-            self.alert(withTitle: "Playing error")
-        }
-    }
-
-    func pause() {
-        self.soundPlayer?.pause()
-    }
-
-    func resume() {
-        self.soundPlayer?.prepareToPlay()
-        self.soundPlayer?.play()
     }
 }
 
