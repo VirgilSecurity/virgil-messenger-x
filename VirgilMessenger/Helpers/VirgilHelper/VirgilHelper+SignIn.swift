@@ -12,7 +12,8 @@ import VirgilSDK
 extension VirgilHelper {
     func signIn(identity: String, completion: @escaping (Error?) -> ()) {
         Log.debug("Signing in")
-
+        self.setCardManager(identity: identity)
+        
         if !keyStorage.existsKeyEntry(withName: identity) {
             DispatchQueue.main.async {
                 completion(UserFriendlyError.noUserOnDevice)
@@ -30,13 +31,15 @@ extension VirgilHelper {
 
         let exportedCard = CoreDataHelper.sharedInstance.getAccountCard()
 
-        if let exportedCard = exportedCard, let card = self.importCard(exportedCard) {
-            self.selfCard = card
-            self.signInHelper(card: card, identity: identity) { error in
-                DispatchQueue.main.async {
-                    completion(error)
+        if let exportedCard = exportedCard,
+            let cardManager = self.cardManager,
+            let card = try? cardManager.importCard(fromBase64Encoded: exportedCard) {
+                self.selfCard = card
+                self.signInHelper(card: card, identity: identity) { error in
+                    DispatchQueue.main.async {
+                        completion(error)
+                    }
                 }
-            }
         } else {
             getCard(identity: identity) { card, error in
                 self.selfCard = card
@@ -57,26 +60,11 @@ extension VirgilHelper {
         }
     }
 
-    private func importCard(_ string: String) -> Card? {
-        do {
-            let rawCard = try RawSignedModel.import(fromBase64Encoded: string)
-            let card = try CardManager.parseCard(from: rawCard, cardCrypto: self.cardCrypto)
-            guard self.verifier.verifyCard(card) else {
-                return nil
-            }
-
-            return card
-        } catch {
-            return nil
-        }
-    }
-
     private func signInHelper(card: Card, identity: String, completion: @escaping (Error?) -> ()) {
         do {
             let entry = try self.keyStorage.loadKeyEntry(withName: identity)
             let key = try self.crypto.importPrivateKey(from: entry.value)
             self.set(privateKey: key)
-            self.setCardManager(identity: identity)
         } catch {
             Log.error("\(error.localizedDescription)")
             completion(error)

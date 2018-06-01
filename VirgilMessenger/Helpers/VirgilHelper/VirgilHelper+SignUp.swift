@@ -12,6 +12,11 @@ import VirgilCryptoApiImpl
 
 extension VirgilHelper {
     func signUp(identity: String, identityType: String = "name", completion: @escaping (Error?) -> ()) {
+        self.setCardManager(identity: identity)
+        guard let cardManager = self.cardManager else {
+            Log.error("Missing CardManager")
+            return
+        }
         self.queue.async {
             Log.debug("Signing up")
 
@@ -27,17 +32,9 @@ extension VirgilHelper {
                 let keyPair = try self.crypto.generateKeyPair()
                 self.set(privateKey: keyPair.privateKey)
 
-                let exportedPublicKey = self.crypto.exportPublicKey(keyPair.publicKey)
-
-                let cardContent = RawCardContent(identity: identity, publicKey: exportedPublicKey,
-                                                 previousCardId: nil, createdAt: Date())
-
-                let snapshot = try JSONEncoder().encode(cardContent)
-
-                let rawCard = RawSignedModel(contentSnapshot: snapshot)
-
-                let modelSigner = ModelSigner(cardCrypto: self.cardCrypto)
-                try modelSigner.selfSign(model: rawCard, privateKey: keyPair.privateKey)
+                let rawCard = try cardManager.generateRawCard(privateKey: keyPair.privateKey,
+                                                              publicKey: keyPair.publicKey,
+                                                              identity: identity)
 
                 let exportedRawCard = try rawCard.exportAsJson()
 
@@ -61,32 +58,25 @@ extension VirgilHelper {
                     }
                     return
                 }
-                let publishedRawCard = try RawSignedModel.import(fromJson: exportedCard)
-                let card = try CardManager.parseCard(from: publishedRawCard, cardCrypto: self.cardCrypto)
-                guard self.verifier.verifyCard(card) else {
-                    Log.error("Card is not valid")
-                    throw VirgilHelperError.cardWasNotVerified
-                }
+                let card = try cardManager.importCard(fromJson: exportedCard)
 
                 let exportedPrivateKey = try VirgilPrivateKeyExporter().exportPrivateKey(privateKey: keyPair.privateKey)
 
                 let keyEntry = KeyEntry(name: identity, value: exportedPrivateKey)
                 try? self.keyStorage.deleteKeyEntry(withName: identity)
                 try self.keyStorage.store(keyEntry)
-
                 self.selfCard = card
 
                 var resultError: Error? = nil
                 let dispatchGroup = DispatchGroup()
 
                 dispatchGroup.enter()
-                let exportedPublichedCard = try card.getRawCard().exportAsBase64EncodedString()
-                CoreDataHelper.sharedInstance.createAccount(withIdentity: identity, exportedCard: exportedPublichedCard) {
+                let exportedPublishedCard = try cardManager.exportCardAsBase64EncodedString(card)
+                CoreDataHelper.sharedInstance.createAccount(withIdentity: identity, exportedCard: exportedPublishedCard) {
                     dispatchGroup.leave()
                 }
 
                 dispatchGroup.enter()
-                self.setCardManager(identity: identity)
                 self.initializeAccount(withCardId: card.identifier, identity: identity) { error in
                     resultError = error
                     dispatchGroup.leave()

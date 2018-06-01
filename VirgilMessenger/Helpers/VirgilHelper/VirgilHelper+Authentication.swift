@@ -72,25 +72,26 @@ extension VirgilHelper {
     }
 
     func setCardManager(identity: String) {
-        guard let cardId = self.selfCard?.identifier else {
-            Log.error("Missing self card")
-            return
-        }
-        guard let privateKey = self.privateKey else {
-            Log.error("Missing private key")
-            return
-        }
-        let authHeader = "\(cardId).\(Int(Date().timeIntervalSince1970))"
-
-        guard let dataToSign = authHeader.data(using: .utf8) else {
-            Log.error("String to Data failed")
-            return
-        }
-        guard let signature = try? self.crypto.generateSignature(of: dataToSign, using: privateKey) else {
-            Log.error("Generating signature failed")
-            return
-        }
         let accessTokenProvider = CachingJwtProvider(renewTokenCallback: { tokenContext, completion in
+            guard let cardId = self.selfCard?.identifier else {
+                Log.error("Missing self card")
+                return
+            }
+            guard let privateKey = self.privateKey else {
+                Log.error("Missing private key")
+                return
+            }
+            let authHeader = "\(cardId).\(Int(Date().timeIntervalSince1970))"
+
+            guard let dataToSign = authHeader.data(using: .utf8) else {
+                Log.error("String to Data failed")
+                return
+            }
+            guard let signature = try? self.crypto.generateSignature(of: dataToSign, using: privateKey) else {
+                Log.error("Generating signature failed")
+                return
+            }
+            
             let jwtRequest = try? ServiceRequest(url: URL(string: self.virgilJwtEndpoint)!,
                                                  method: ServiceRequest.Method.post,
                                                  headers: ["Content-Type": "application/json",

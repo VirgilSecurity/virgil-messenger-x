@@ -45,20 +45,11 @@ class VirgilHelper {
     enum VirgilHelperError: String, Error {
         case gettingTwilioTokenFailed = "Getting Twilio Token Failed"
         case getCardFailed = "Getting Virgil Card Failed"
-        case buildCardFailed
-        case importingKeyFailed
-        case jsonParsingFailed
-        case dataFromString
-        case cardWasNotVerified
-        case coreDataEncDecFailed
-        case coreDataAccountFailed
         case keyIsNotVirgil = "Converting Public or Private Key to Virgil one failed"
         case missingCardManager = "Missing Card Manager"
         case gettingJwtFailed = "Getting JWT failed"
-        case strToDataFailed = "Converting utf8 string to data failed"
-        case strFromDataFailed = "Building string from data failed"
-        case missingPublicKey = "Missing self public key"
-        case missingPrivateKey = "Missing self private key"
+        case jsonParsingFailed
+        case cardWasNotVerified
     }
 
     /// Encrypts given String
@@ -68,7 +59,7 @@ class VirgilHelper {
     /// - Throws: error if fails
     func encrypt(_ text: String) -> String? {
         guard let data = text.data(using: .utf8) else {
-            Log.error(VirgilHelperError.strToDataFailed.rawValue)
+            Log.error("Converting utf8 string to data failed")
             return nil
         }
 
@@ -89,12 +80,12 @@ class VirgilHelper {
     /// - Throws: error if fails
     func decrypt(_ encrypted: String) -> String? {
         guard let privateKey = self.privateKey else {
-            Log.error(VirgilHelperError.missingPrivateKey.rawValue)
+            Log.error("Missing self private key")
             return nil
         }
 
         guard let data = Data(base64Encoded: encrypted) else {
-            Log.error(VirgilHelperError.strToDataFailed.rawValue)
+            Log.error("Converting utf8 string to data failed")
             return nil
         }
 
