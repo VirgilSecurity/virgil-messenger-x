@@ -39,14 +39,6 @@ Follow instructions [here](https://github.com/VirgilSecurity/demo-twilio-chat-js
 ## Build and Run
 At this point you are ready to build and run the application on iPhone and/or Simulator.
 
-## Creating your Virgil + Twilio Application
-You can try this messenger without any further steps using servers and credentials hardcoded in this repository, however, it's very easy to setup your own Virgil & Twilio applications, Twilio token server and then start your own, separate messenger!
-
-The messenger uses [virgil-demo-twilio](https://github.com/VirgilSecurity/virgil-demo-twilio/tree/v2-backend) as a server to obtain **Twilio Token** and make new Virgil and Twilio users. You can make your own server. To do this you'll need to:
-- Create your own account in [Dashboard](https://developer.virgilsecurity.com/account/signin) to get **Virgil Access Token** and *App Private key*.
-- Set up your server to provide [Twilio Tokens creation](https://www.twilio.com/docs/api/chat/guides/create-tokens), new users registration using [Virgil SDK](https://developer.virgilsecurity.com/docs/swift/get-started/encrypted-communication) and [Passwordless authentication](https://developer.virgilsecurity.com/docs/ruby/get-started/passwordless-authentication#setup-your-server)
-- Change server endpoints and **Virgil Access Token** in client messenger app. All of these you can find in the `VirgilHelper` class.
-
 ## Credentials
 
 To build this sample were used next third-party frameworks
