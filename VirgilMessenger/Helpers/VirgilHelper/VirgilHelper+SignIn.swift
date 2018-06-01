@@ -41,22 +41,7 @@ extension VirgilHelper {
                     }
                 }
         } else {
-            getCard(identity: identity) { card, error in
-                self.selfCard = card
-                guard error == nil, let card = card else {
-                    Log.error("Signing in: can't get virgil card: \(error?.localizedDescription ?? "")")
-                    DispatchQueue.main.async {
-                        completion(error)
-                    }
-                    return
-                }
-
-                self.signInHelper(card: card, identity: identity) { error in
-                    DispatchQueue.main.async {
-                        completion(error)
-                    }
-                }
-            }
+           completion(VirgilHelperError.missingCardLocally)
         }
     }
 

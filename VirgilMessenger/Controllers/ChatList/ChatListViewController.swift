@@ -158,9 +158,6 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
         cell.avatarView.gradientLayer.colors = [channel.colorPair.first, channel.colorPair.second]
         cell.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
 
-        cell.lastMessageLabel.text = channel.lastMessagesBody
-        cell.lastMessageDateLabel.text = channel.lastMessagesDate != nil ? calcDateString(messageDate: channel.lastMessagesDate!) : ""
-
         return cell
     }
 

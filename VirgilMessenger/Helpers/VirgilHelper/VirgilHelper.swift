@@ -50,6 +50,7 @@ class VirgilHelper {
         case gettingJwtFailed = "Getting JWT failed"
         case jsonParsingFailed
         case cardWasNotVerified
+        case missingCardLocally
     }
 
     /// Encrypts given String
