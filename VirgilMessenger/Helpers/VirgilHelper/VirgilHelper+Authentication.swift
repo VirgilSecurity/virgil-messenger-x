@@ -11,6 +11,12 @@ import VirgilSDK
 import VirgilCryptoApiImpl
 
 extension VirgilHelper {
+    /// Initializes twilio account
+    ///
+    /// - Parameters:
+    ///   - cardId: Virgil card identifier
+    ///   - identity: identity of user
+    ///   - completion: completion handler, called with error if failed
     func initializeAccount(withCardId cardId: String, identity: String, completion: @escaping (Error?) -> ()) {
         self.queue.async {
             self.getTwilioToken(identity: identity) { token, error in
@@ -26,6 +32,11 @@ extension VirgilHelper {
         }
     }
 
+    /// Gets twilio token from backend
+    ///
+    /// - Parameters:
+    ///   - identity: identity of user
+    ///   - completion: completion handler, called with error if failed
     private func getTwilioToken(identity: String, completion: @escaping (String?, Error?) -> ()) {
         self.queue.async {
             guard let cardId = self.selfCard?.identifier else {
@@ -71,6 +82,9 @@ extension VirgilHelper {
         }
     }
 
+    /// Sets up CardManager instance for operations with Virgil
+    ///
+    /// - Parameter identity: identity of user
     func setCardManager(identity: String) {
         let accessTokenProvider = CachingJwtProvider(renewTokenCallback: { tokenContext, completion in
             guard let cardId = self.selfCard?.identifier else {
@@ -91,7 +105,7 @@ extension VirgilHelper {
                 Log.error("Generating signature failed")
                 return
             }
-            
+
             let jwtRequest = try? ServiceRequest(url: URL(string: self.virgilJwtEndpoint)!,
                                                  method: ServiceRequest.Method.post,
                                                  headers: ["Content-Type": "application/json",

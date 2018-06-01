@@ -24,6 +24,7 @@ class VirgilHelper {
     var selfCard: Card?
     var cardManager: CardManager?
 
+    /// Enpoints to backend
     let virgilJwtEndpoint = "http://localhost:3000/get-virgil-jwt/"
     let twilioJwtEndpoint = "http://localhost:3000/get-twilio-jwt/"
     let signUpEndpint = "http://localhost:3000/signup/"
@@ -37,6 +38,10 @@ class VirgilHelper {
         self.verifier = VirgilCardVerifier(cardCrypto: self.cardCrypto)!
     }
 
+    /// Errors to be displayed to user
+    ///
+    /// - noUserOnDevice: User not found on this device
+    /// - usernameAlreadyUsed: Username is already in use
     enum UserFriendlyError: String, Error {
         case noUserOnDevice = "User not found on this device"
         case usernameAlreadyUsed = "Username is already in use"
@@ -104,6 +109,11 @@ class VirgilHelper {
         }
     }
 
+    /// Returns exported Virgil Card with given identity
+    ///
+    /// - Parameters:
+    ///   - identity: identity to search
+    ///   - completion: completion handler, called with exported card if succeded and error otherwise
     func getExportedCard(identity: String, completion: @escaping (String?, Error?) -> ()) {
         self.getCard(identity: identity) { card, error in
             guard let card = card, error == nil else {
@@ -119,6 +129,11 @@ class VirgilHelper {
         }
     }
 
+    /// Returns Virgil Card with given identity
+    ///
+    /// - Parameters:
+    ///   - identity: identity to search
+    ///   - completion: completion handler, called with card if succeded and error otherwise
     func getCard(identity: String, completion: @escaping (Card?, Error?) -> ()) {
         guard let cardManager = self.cardManager else {
             Log.error("Missing CardManager")
@@ -137,6 +152,9 @@ class VirgilHelper {
         }
     }
 
+    /// Deletes key storage entry
+    ///
+    /// - Parameter entry: key entry to delete
     func deleteStorageEntry(entry: String) {
         do {
             try self.keyStorage.deleteKeyEntry(withName: entry)
@@ -145,6 +163,10 @@ class VirgilHelper {
         }
     }
 
+    /// Imports Card from string
+    ///
+    /// - Parameter exportedCard: exported card as base64
+    /// - Returns: Card if succeded, nil otherwise
     func buildCard(_ exportedCard: String) -> Card? {
         guard let cardManager = self.cardManager else {
             Log.error("Missing CardManager")
@@ -159,6 +181,9 @@ class VirgilHelper {
         }
     }
 
+    /// Sets channels keys to encrypt for
+    ///
+    /// - Parameter exportedCards: exported cards array
     func setChannelKeys(_ exportedCards: [String]) {
         guard let cardManager = self.cardManager else {
             Log.error("Missing CardManager")

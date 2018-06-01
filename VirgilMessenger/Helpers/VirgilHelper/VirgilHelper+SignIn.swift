@@ -10,6 +10,11 @@ import Foundation
 import VirgilSDK
 
 extension VirgilHelper {
+    /// Loads private key and CoreData Account
+    ///
+    /// - Parameters:
+    ///   - identity: identity of user
+    ///   - completion: completion handler, called with error if failed
     func signIn(identity: String, completion: @escaping (Error?) -> ()) {
         Log.debug("Signing in")
         self.setCardManager(identity: identity)

@@ -11,7 +11,12 @@ import VirgilSDK
 import VirgilCryptoApiImpl
 
 extension VirgilHelper {
-    func signUp(identity: String, identityType: String = "name", completion: @escaping (Error?) -> ()) {
+    /// Creates Key Pair, stores private key, publishes Virgil Card
+    ///
+    /// - Parameters:
+    ///   - identity: identity of user
+    ///   - completion: completion handler, called with error if failed
+    func signUp(identity: String, completion: @escaping (Error?) -> ()) {
         self.setCardManager(identity: identity)
         guard let cardManager = self.cardManager else {
             Log.error("Missing CardManager")
