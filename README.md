@@ -29,7 +29,7 @@ $ brew install carthage
 This example already has Carthage file with all required dependencies. All you need to do is to go to the project folder and update these dependencies.
 
 ```bash 
-$ cd PathToProjectFolder/vchat-twilio-ios
+$ cd PathToProjectFolder/chat-twilio-ios
 $ carthage bootstrap --platform iOS --no-use-binaries
 ```
 
