@@ -50,6 +50,14 @@ extension VirgilHelper {
 
                 let response = try self.connection.send(request)
 
+                if let body = response.body,
+                    let text = String.init(data: body, encoding: .utf8),
+                    text == "Card with this identity already exists" {
+                        DispatchQueue.main.async {
+                            completion(UserFriendlyError.usernameAlreadyUsed)
+                        }
+                        return
+                }
                 guard let responseBody = response.body,
                     let json = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any] else {
                         Log.error("json failed")
