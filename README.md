@@ -6,13 +6,13 @@
 
 Start with cloning repository to your PC. Open *terminal*, navigate to the folder where you want to store the application and execute
 ```bash
-$ git clone https://github.com/VirgilSecurity/virgil-demo-messenger.git
+$ git clone https://github.com/VirgilSecurity/chat-twilio-ios.git -b sample-v5
 
-$ cd virgil-demo-messenger
+$ cd chat-twilio-ios
 ```
 
 ## Prerequisites
-**Virgil Messenger** uses several modules, including **Virgil PFS SDK**. These packages are distributed via Carthage and CocoaPods. Since Carthage is a RECOMMENDED way to integrate those packages into the project, these application's dependencies are managed by it. Carthage integration is easy, convenient and you can simultaneously use CocoaPods to manage all other dependencies.
+**Virgil Messenger** uses several modules, including **Virgil SDK**. These packages are distributed via Carthage and CocoaPods. Since Carthage is a RECOMMENDED way to integrate those packages into the project, these application's dependencies are managed by it. Carthage integration is easy, convenient and you can simultaneously use CocoaPods to manage all other dependencies.
 
 ### Carthage
 
@@ -29,12 +29,15 @@ $ brew install carthage
 This example already has Carthage file with all required dependencies. All you need to do is to go to the project folder and update these dependencies.
 
 ```bash 
-$ cd PathToProjectFolder/virgil-demo-messenger
+$ cd PathToProjectFolder/vchat-twilio-ios
 $ carthage bootstrap --platform iOS --no-use-binaries
 ```
 
+### Set Up Backend
+Follow instructions [here](https://github.com/VirgilSecurity/demo-twilio-chat-js/tree/v5) for setting up your own back end.
+
 ## Build and Run
-At this point you are ready to build and run the application on iPhone and/or Simulator. We even created user for you to chat with (username "test"). Please, be nice and polite with him.
+At this point you are ready to build and run the application on iPhone and/or Simulator.
 
 ## Creating your Virgil + Twilio Application
 You can try this messenger without any further steps using servers and credentials hardcoded in this repository, however, it's very easy to setup your own Virgil & Twilio applications, Twilio token server and then start your own, separate messenger!
@@ -50,7 +53,7 @@ To build this sample were used next third-party frameworks
 
 * [Twilio Programmable Chat](https://www.twilio.com/chat) - transmitting messages and handling channel events.
 * [Chatto](https://github.com/badoo/Chatto) - representing UI of chatting. 
-* [Virgil PFS SDK](https://github.com/VirgilSecurity/virgil-sdk-pfs-x) - encrypting, decrypting messages and passwordless authentication.
+* [Virgil SDK](https://github.com/VirgilSecurity/virgil-sdk-x) - encrypting, decrypting messages and passwordless authentication.
 * [PKHUD](https://github.com/pkluz/PKHUD) - reimplementing Apple's HUD.
 
 ## Documentation
