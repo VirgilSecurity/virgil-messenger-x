@@ -21,8 +21,7 @@ class VirgilHelper {
 
     private(set) var privateKey: VirgilPrivateKey?
     private var channelKeys: [VirgilPublicKey] = []
-    private var channelCard: Card?
-    var card: Card?
+    var selfCard: Card?
     var cardManager: CardManager?
 
     let virgilJwtEndpoint = "http://localhost:3000/get-virgil-jwt/"
@@ -72,20 +71,9 @@ class VirgilHelper {
             Log.error(VirgilHelperError.strToDataFailed.rawValue)
             return nil
         }
-        guard let selfPublicKey = self.card?.publicKey as? VirgilPublicKey else {
-            Log.error("Missing self public key")
-            return nil
-        }
-        guard let channelPublicKey = self.channelCard?.publicKey as? VirgilPublicKey else {
-            Log.error("Missing channel card")
-            return nil
-        }
 
-        var keys = self.channelKeys
-        keys.append(selfPublicKey)
-        keys.append(channelPublicKey)
         do {
-            let encrypted = try self.crypto.encrypt(data, for: keys).base64EncodedString()
+            let encrypted = try self.crypto.encrypt(data, for: self.channelKeys).base64EncodedString()
 
             return encrypted
         } catch {
@@ -148,12 +136,12 @@ class VirgilHelper {
             return
         }
         cardManager.searchCards(identity: identity) { cards, error in
-            guard error == nil, let cards = cards else {
+            guard error == nil, let card = cards?.first else {
                 Log.error("Getting Virgil Card failed")
                 completion(nil, VirgilHelperError.getCardFailed)
                 return
             }
-            completion(cards[0], nil)
+            completion(card, nil)
         }
     }
 
@@ -178,6 +166,26 @@ class VirgilHelper {
             return nil
         }
     }
+
+    func setChannelKeys(_ exportedCards: [String]) {
+        guard let cardManager = self.cardManager else {
+            Log.error("Missing CardManager")
+            return
+        }
+        self.channelKeys = []
+
+        do {
+            for exportedCard in exportedCards {
+                let importedCard = try cardManager.importCard(fromBase64Encoded: exportedCard)
+                guard let publicKey = importedCard.publicKey as? VirgilPublicKey else {
+                    throw VirgilHelperError.keyIsNotVirgil
+                }
+                self.channelKeys.append(publicKey)
+            }
+        } catch {
+            Log.error("Importing Card failed with: \(error.localizedDescription)")
+        }
+    }
 }
 
 /// Setters
@@ -187,22 +195,6 @@ extension VirgilHelper {
     }
 
     func set(selfCard: Card) {
-        self.card = selfCard
-    }
-
-    func setChannelCard(_ card: Card?) {
-        self.channelCard = card
-    }
-
-    func setChannelCard(_ exportedCard: String) {
-        guard let cardManager = self.cardManager else {
-            Log.error("Missing CardManager")
-            return
-        }
-        do {
-            self.channelCard = try cardManager.importCard(fromBase64Encoded: exportedCard)
-        } catch {
-            Log.error("Importing Card failed with: \(error.localizedDescription)")
-        }
+        self.selfCard = selfCard
     }
 }

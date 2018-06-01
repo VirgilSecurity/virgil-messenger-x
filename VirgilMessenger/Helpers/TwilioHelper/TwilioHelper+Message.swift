@@ -17,6 +17,7 @@ extension TwilioHelper {
                 let message = messages.last,
                 let date = message.dateUpdatedAsDate else {
                     Log.error("get last twilio message failed with: \(result.error?.localizedDescription ?? "unknown error")")
+                    completion()
                     return
             }
             channel.lastMessagesDate = date
@@ -33,6 +34,7 @@ extension TwilioHelper {
             } else if let body = message.body {
                 if message.author != TwilioHelper.sharedInstance.username {
                     guard let decryptedBody = VirgilHelper.sharedInstance.decrypt(body) else {
+                        completion()
                         return
                     }
                     channel.lastMessagesBody = decryptedBody

@@ -13,6 +13,9 @@
 		16013C7F20B2C99C0043EA29 /* AudioMessagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C7E20B2C99C0043EA29 /* AudioMessagePresenter.swift */; };
 		16013C8120B2CA760043EA29 /* AudioMessagePresenterBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C8020B2CA760043EA29 /* AudioMessagePresenterBuilder.swift */; };
 		16013C8320B30A180043EA29 /* DemoAudioMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C8220B30A180043EA29 /* DemoAudioMessageViewModel.swift */; };
+		16177AA220BED99B0050BB31 /* ChatCreation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16177AA120BED99B0050BB31 /* ChatCreation.storyboard */; };
+		16177AA420BEDB0C0050BB31 /* ChatCreationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16177AA320BEDB0C0050BB31 /* ChatCreationController.swift */; };
+		16177AA620C01F5C0050BB31 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16177AA520C01F5C0050BB31 /* ChannelType.swift */; };
 		1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld */; };
 		1627723F203C5FB00086127C /* CoreDataHelper+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */; };
 		16277242203C60DB0086127C /* CoreDataHelper+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */; };
@@ -129,6 +132,9 @@
 		16013C7E20B2C99C0043EA29 /* AudioMessagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessagePresenter.swift; sourceTree = "<group>"; };
 		16013C8020B2CA760043EA29 /* AudioMessagePresenterBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessagePresenterBuilder.swift; sourceTree = "<group>"; };
 		16013C8220B30A180043EA29 /* DemoAudioMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAudioMessageViewModel.swift; sourceTree = "<group>"; };
+		16177AA120BED99B0050BB31 /* ChatCreation.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChatCreation.storyboard; sourceTree = "<group>"; };
+		16177AA320BEDB0C0050BB31 /* ChatCreationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCreationController.swift; sourceTree = "<group>"; };
+		16177AA520C01F5C0050BB31 /* ChannelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelType.swift; sourceTree = "<group>"; };
 		1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirgilMessenger.xcdatamodel; sourceTree = "<group>"; };
 		1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Account.swift"; sourceTree = "<group>"; };
 		16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Channel.swift"; sourceTree = "<group>"; };
@@ -258,6 +264,15 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		16177AA020BED9830050BB31 /* ChatCreation */ = {
+			isa = PBXGroup;
+			children = (
+				16177AA120BED99B0050BB31 /* ChatCreation.storyboard */,
+				16177AA320BEDB0C0050BB31 /* ChatCreationController.swift */,
+			);
+			path = ChatCreation;
+			sourceTree = "<group>";
+		};
 		16277240203C60BE0086127C /* CoreDataHelper */ = {
 			isa = PBXGroup;
 			children = (
@@ -329,6 +344,7 @@
 				16CA51001FC45E840042AF9D /* Start */,
 				16B69E061FA9D2CA00FE8A8D /* Authentication */,
 				423BDA761F97600A00C3EE9B /* ChatList */,
+				16177AA020BED9830050BB31 /* ChatCreation */,
 				16E22D871FA896BE008D32D9 /* Chat */,
 				16CA51111FC5DA1F0042AF9D /* Settings */,
 			);
@@ -507,6 +523,7 @@
 				423BDA7F1F97774F00C3EE9B /* Networking */,
 				166D3E5C1FB495DA0032BAAD /* CoreData */,
 				16961B4E203ADE850084086E /* Helpers */,
+				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
 				16961B4F203ADEDE0084086E /* Controllers */,
 				16961B50203ADFBA0084086E /* Utils */,
 				429228B51F96261000DCECDF /* AppDelegate.swift */,
@@ -615,6 +632,7 @@
 				423BDA7A1F97600A00C3EE9B /* ChatList.storyboard in Resources */,
 				16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */,
 				429228C01F96261000DCECDF /* LaunchScreen.storyboard in Resources */,
+				16177AA220BED99B0050BB31 /* ChatCreation.storyboard in Resources */,
 				1644C07920B720F000073D99 /* View.xcassets in Resources */,
 				429228BD1F96261000DCECDF /* Assets.xcassets in Resources */,
 				4280C0D61F97341300075B3A /* SendingStatusCollectionViewCell.xib in Resources */,
@@ -698,6 +716,7 @@
 				164E173220AAEF1900AB1AAD /* DemoAudioMessageHandler.swift in Sources */,
 				1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */,
 				16FCF27F1FE46756000348BC /* Channel+CoreDataProperties.swift in Sources */,
+				16177AA620C01F5C0050BB31 /* ChannelType.swift in Sources */,
 				164E173520AB0BE600AB1AAD /* AudioMessageViewModel.swift in Sources */,
 				16CA51131FC5DA3B0042AF9D /* SettingsViewController.swift in Sources */,
 				4280C0DA1F97341A00075B3A /* DemoTextMessageModel.swift in Sources */,
@@ -740,6 +759,7 @@
 				4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */,
 				16FB2DD5204D87F200346FA0 /* UIColor+RGB.swift in Sources */,
 				429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */,
+				16177AA420BEDB0C0050BB31 /* ChatCreationController.swift in Sources */,
 				16FB2DCE204D832F00346FA0 /* TwilioHelper+Channel.swift in Sources */,
 				16FCF27E1FE46756000348BC /* Channel+CoreDataClass.swift in Sources */,
 				16013C7D20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift in Sources */,

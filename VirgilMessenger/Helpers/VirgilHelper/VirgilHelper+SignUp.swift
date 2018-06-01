@@ -22,6 +22,7 @@ extension VirgilHelper {
                 }
                 return
             }
+
             do {
                 let keyPair = try self.crypto.generateKeyPair()
                 self.set(privateKey: keyPair.privateKey)
@@ -73,7 +74,7 @@ extension VirgilHelper {
                 try? self.keyStorage.deleteKeyEntry(withName: identity)
                 try self.keyStorage.store(keyEntry)
 
-                self.card = card
+                self.selfCard = card
 
                 var resultError: Error? = nil
                 let dispatchGroup = DispatchGroup()
@@ -85,7 +86,7 @@ extension VirgilHelper {
                 }
 
                 dispatchGroup.enter()
-                self.update(identity: identity)
+                self.setCardManager(identity: identity)
                 self.initializeAccount(withCardId: card.identifier, identity: identity) { error in
                     resultError = error
                     dispatchGroup.leave()

@@ -65,9 +65,80 @@ class ChatViewController: BaseChatViewController {
         self.navigationItem.titleView = titleView
         self.dataSource.updateMessages {
             self.navigationItem.titleView = nil
-            self.title = TwilioHelper.sharedInstance.getCompanion(ofChannel: TwilioHelper.sharedInstance.currentChannel)
+            self.title = CoreDataHelper.sharedInstance.currentChannel?.name ?? "Error name"
             self.view.isUserInteractionEnabled = true
             indicator.stopAnimating()
+        }
+
+        if CoreDataHelper.sharedInstance.currentChannel?.type == ChannelType.group.rawValue {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self,
+                                                                     action: #selector(self.didTapAdd(_:)))
+        }
+    }
+
+    @objc func didTapAdd(_ sender: Any) {
+        guard currentReachabilityStatus != .notReachable else {
+            let controller = UIAlertController(title: self.title, message: "Please check your network connection", preferredStyle: .alert)
+            controller.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(controller, animated: true)
+
+            return
+        }
+
+        let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
+
+        alertController.addTextField(configurationHandler: {
+            $0.placeholder = "Username"
+            $0.delegate = self
+            $0.keyboardAppearance = UIKeyboardAppearance.dark
+        })
+
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            guard let username = alertController.textFields?.first?.text else {
+                return
+            }
+            self.addMember(username)
+        }))
+
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in }))
+
+        self.present(alertController, animated: true)
+    }
+
+    private func addMember(_ username: String) {
+        let username = username.lowercased()
+
+        guard username != TwilioHelper.sharedInstance.username else {
+            self.alert(withTitle: "You need to communicate with other people :)")
+            return
+        }
+
+        guard let currentChannel = CoreDataHelper.sharedInstance.currentChannel else {
+            Log.error("Missing current channel")
+            return
+        }
+
+        if (currentChannel.cards.contains {
+            VirgilHelper.sharedInstance.buildCard($0)?.identity == username
+        }) {
+            self.alert(withTitle: "You already have this channel")
+        } else {
+            HUD.show(.progress)
+            VirgilHelper.sharedInstance.getExportedCard(identity: username) { exportedCard, error in
+                guard error == nil, let exportedCard = exportedCard else {
+                    HUD.flash(.error)
+                    return
+                }
+                TwilioHelper.sharedInstance.invite(member: username) { error in
+                    HUD.flash(.success)
+                    if error == nil {
+                        CoreDataHelper.sharedInstance.addMember(card: exportedCard)
+                        HUD.flash(.success)
+                    } else {
+                        HUD.flash(.error)
+                    }
+                }
+            }
         }
     }
 
@@ -75,7 +146,6 @@ class ChatViewController: BaseChatViewController {
         NotificationCenter.default.removeObserver(self.dataSource)
         NotificationCenter.default.removeObserver(self)
         TwilioHelper.sharedInstance.deselectChannel()
-        VirgilHelper.sharedInstance.setChannelCard(nil)
     }
 
     var chatInputPresenter: BasicChatInputBarPresenter!
@@ -129,7 +199,6 @@ class ChatViewController: BaseChatViewController {
     deinit {
         NotificationCenter.default.removeObserver(self)
         TwilioHelper.sharedInstance.deselectChannel()
-        VirgilHelper.sharedInstance.setChannelCard(nil)
     }
 
     private func alert(withTitle: String) {
@@ -318,5 +387,16 @@ extension ChatViewController: PhotoObserverProtocol {
             HUD.flash(.success)
         }
     }
+}
 
+extension ChatViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let text = textField.text else { return true }
+        if string.rangeOfCharacter(from: ChatConstants.characterSet.inverted) != nil {
+            Log.debug("string contains special characters")
+            return false
+        }
+        let newLength = text.count + string.count - range.length
+        return newLength <= ChatConstants.limitLength
+    }
 }

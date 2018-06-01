@@ -11,9 +11,16 @@ import UIKit
 import CoreData
 
 extension CoreDataHelper {
+
+    enum MessageType: String {
+        case text
+        case photo
+        case audio
+    }
+
     func createTextMessage(withBody body: String, isIncoming: Bool, date: Date) {
         guard let channel = self.currentChannel else {
-            Log.error("Core Data: nil selected channel")
+            Log.error("Core Data: missing selected channel")
             return
         }
         channel.lastMessagesBody = body

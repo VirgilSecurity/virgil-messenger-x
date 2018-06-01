@@ -7,9 +7,10 @@
         <relationship name="channel" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Channel" inverseName="account" inverseEntity="Channel" syncable="YES"/>
     </entity>
     <entity name="Channel" representedClassName="Channel" syncable="YES">
-        <attribute name="card" attributeType="String" syncable="YES"/>
+        <attribute name="cards" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="numColorPair" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="account" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="channel" inverseEntity="Account" syncable="YES"/>
         <relationship name="message" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Message" inverseName="channel" inverseEntity="Message" syncable="YES"/>
     </entity>
@@ -23,7 +24,7 @@
     </entity>
     <elements>
         <element name="Account" positionX="-450" positionY="45" width="128" height="105"/>
-        <element name="Channel" positionX="-407" positionY="243" width="128" height="120"/>
+        <element name="Channel" positionX="-407" positionY="243" width="128" height="135"/>
         <element name="Message" positionX="-128" positionY="198" width="128" height="133"/>
     </elements>
 </model>

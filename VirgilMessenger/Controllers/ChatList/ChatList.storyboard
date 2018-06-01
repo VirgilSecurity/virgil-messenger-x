@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wMU-06-uKE">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wMU-06-uKE">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -97,7 +97,7 @@ Add new one!</string>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="oan-Wf-XKV">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
-                                <action selector="didTapAdd:" destination="zCn-H6-sIC" id="VOu-x5-Ohi"/>
+                                <action selector="didTapAdd:" destination="zCn-H6-sIC" id="KiL-af-xF1"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -106,6 +106,7 @@ Add new one!</string>
                         <outlet property="tableView" destination="OLu-Yi-HTK" id="p1B-2j-laF"/>
                         <segue destination="tSb-ds-G5u" kind="show" identifier="goToChat" id="28z-YN-Bk9"/>
                         <segue destination="cdC-mY-49V" kind="show" identifier="goToAuth" animates="NO" id="TfX-du-Bf4"/>
+                        <segue destination="RQq-5K-QMM" kind="presentation" identifier="goToChatCreation" id="AzX-XR-kGq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DDd-4J-wX9" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -209,7 +210,17 @@ Add new one!</string>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="re4-ce-Aav" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1501" y="-1101"/>
+            <point key="canvasLocation" x="1433" y="-1119"/>
+        </scene>
+        <!--ChatCreation-->
+        <scene sceneID="1D5-5e-9ri">
+            <objects>
+                <viewControllerPlaceholder storyboardName="ChatCreation" id="RQq-5K-QMM" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="ttc-Np-7qW"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fXx-Q2-2fK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1469" y="-844"/>
         </scene>
         <!--Authentication-->
         <scene sceneID="dV1-zg-E74">
@@ -217,7 +228,7 @@ Add new one!</string>
                 <viewControllerPlaceholder storyboardName="Authentication" id="cdC-mY-49V" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nmc-ZR-b88" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1500" y="-854"/>
+            <point key="canvasLocation" x="1491" y="-975"/>
         </scene>
     </scenes>
     <resources>

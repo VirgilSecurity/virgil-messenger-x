@@ -138,20 +138,10 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
 
 }
 
-extension RegistrationViewController: UITextFieldDelegate {
+extension RegistrationViewController {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.signupButtonPressed(self)
 
         return false
-    }
-
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let text = textField.text else { return true }
-        if string.rangeOfCharacter(from: ChatConstants.characterSet.inverted) != nil {
-            Log.debug("string contains special characters")
-            return false
-        }
-        let newLength = text.count + string.count - range.length
-        return newLength <= ChatConstants.limitLength
     }
 }

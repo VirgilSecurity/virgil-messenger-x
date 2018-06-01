@@ -60,7 +60,6 @@ class ChatListViewController: ViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         TwilioHelper.sharedInstance.deselectChannel()
-        VirgilHelper.sharedInstance.setChannelCard(nil)
         noChatsView.isHidden = TwilioHelper.sharedInstance.channels.subscribedChannels().isEmpty ? false : true
         self.tableView.reloadData()
     }
@@ -81,7 +80,9 @@ class ChatListViewController: ViewController {
         }
         for i in 0..<channels.count {
             let channel = channels[i]
-            let channelName = TwilioHelper.sharedInstance.getCompanion(ofChannel: channel)
+            guard let channelName = TwilioHelper.sharedInstance.getName(of: channel) else {
+                continue
+            }
             if let channelCore = CoreDataHelper.sharedInstance.getChannel(withName: channelName) {
                 while channel.messages == nil { sleep(1) }
                 if let messages = channel.messages {
@@ -104,69 +105,7 @@ class ChatListViewController: ViewController {
     }
 
     @IBAction func didTapAdd(_ sender: Any) {
-        guard currentReachabilityStatus != .notReachable else {
-            let controller = UIAlertController(title: self.title, message: "Please check your network connection", preferredStyle: .alert)
-            controller.addAction(UIAlertAction(title: "OK", style: .default))
-            self.present(controller, animated: true)
-
-            return
-        }
-
-        let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
-
-        alertController.addTextField(configurationHandler: {
-            $0.placeholder = "Username"
-            $0.delegate = self
-            $0.keyboardAppearance = UIKeyboardAppearance.dark
-        })
-
-        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-            guard let username = alertController.textFields?.first?.text else {
-                return
-            }
-            self.addChat(withUsername: username)
-        }))
-
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in }))
-
-        self.present(alertController, animated: true)
-    }
-
-    private func addChat(withUsername username: String) {
-        let username = username.lowercased()
-
-        guard username != TwilioHelper.sharedInstance.username else {
-            self.alert(withTitle: "You need to communicate with other people :)")
-            return
-        }
-
-        if (TwilioHelper.sharedInstance.channels.subscribedChannels().contains {
-            ($0.attributes()?.values.contains { value -> Bool in
-                value as! String == username
-            }) ?? false
-        }) {
-            self.alert(withTitle: "You already have this channel")
-        } else {
-            HUD.show(.progress)
-            TwilioHelper.sharedInstance.createChannel(withUsername: username) { error in
-                HUD.flash(.success)
-                if error == nil {
-                    self.noChatsView.isHidden = true
-                    self.tableView.reloadData()
-                    HUD.flash(.success)
-                } else {
-                    HUD.flash(.error)
-                }
-
-            }
-        }
-    }
-
-    private func alert(withTitle: String) {
-        let alert = UIAlertController(title: title, message: withTitle, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-
-        self.present(alert, animated: true)
+        self.performSegue(withIdentifier: "goToChatCreation", sender: self)
     }
 
     deinit {
@@ -188,8 +127,8 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
         cell.tag = count - indexPath.row - 1
         cell.delegate = self
 
-        guard let channel = channels[count - indexPath.row - 1] as? Channel else {
-            Log.error("Can't form row: Core Data channel corrupted")
+        guard let channel = channels[safe: count - indexPath.row - 1] else {
+            Log.error("Can't form row: Core Data channel wrong index")
             return cell
         }
         cell.usernameLabel.text = channel.name
@@ -251,18 +190,16 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
 extension ChatListViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         if let username = (cell as! ChatListCell).usernameLabel.text {
-            TwilioHelper.sharedInstance.setChannel(withUsername: (username))
+            TwilioHelper.sharedInstance.setChannel(withName: username)
 
             guard CoreDataHelper.sharedInstance.loadChannel(withName: username),
-                let channel = CoreDataHelper.sharedInstance.currentChannel,
-                let exportedCard = channel.card
-                else {
+                let channel = CoreDataHelper.sharedInstance.currentChannel else {
                     Log.error("Channel do not exist in Core Data")
                     return
             }
             self.view.isUserInteractionEnabled = false
 
-            VirgilHelper.sharedInstance.setChannelCard(exportedCard)
+            VirgilHelper.sharedInstance.setChannelKeys(channel.cards)
 
             TwilioHelper.sharedInstance.currentChannel.getMessagesCount { result, count in
                 guard result.isSuccessful() else {
@@ -288,17 +225,5 @@ extension ChatListViewController: CellTapDelegate {
             chatController.dataSource = dataSource
             chatController.messageSender = dataSource.messageSender
         }
-    }
-}
-
-extension ChatListViewController: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let text = textField.text else { return true }
-        if string.rangeOfCharacter(from: ChatConstants.characterSet.inverted) != nil {
-            Log.debug("string contains special characters")
-            return false
-        }
-        let newLength = text.count + string.count - range.length
-        return newLength <= ChatConstants.limitLength
     }
 }

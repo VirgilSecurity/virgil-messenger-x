@@ -28,7 +28,7 @@ extension VirgilHelper {
 
     private func getTwilioToken(identity: String, completion: @escaping (String?, Error?) -> ()) {
         self.queue.async {
-            guard let cardId = self.card?.identifier else {
+            guard let cardId = self.selfCard?.identifier else {
                 Log.error("Missing self card")
                 return
             }
@@ -71,8 +71,8 @@ extension VirgilHelper {
         }
     }
 
-    func update(identity: String) {
-        guard let cardId = self.card?.identifier else {
+    func setCardManager(identity: String) {
+        guard let cardId = self.selfCard?.identifier else {
             Log.error("Missing self card")
             return
         }

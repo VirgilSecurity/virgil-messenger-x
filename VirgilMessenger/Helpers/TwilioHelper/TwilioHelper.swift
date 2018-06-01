@@ -33,6 +33,12 @@ class TwilioHelper: NSObject {
         case audio = "audio/mp4"
     }
 
+    enum Keys: String {
+        case initiator
+        case responder
+        case type
+    }
+
     static func authorize(username: String, device: String) {
         self.sharedInstance = TwilioHelper(username: username, device: device)
     }
@@ -72,35 +78,57 @@ class TwilioHelper: NSObject {
                 self.channels = channels
                 self.users = users
 
-                self.joinChannels(channels)
+                for channel in channels.subscribedChannels() {
+                    self.join(channel: channel)
+                }
+
                 completion(nil)
             }
         }
     }
     
-    func getCompanion(ofChannel channel: TCHChannel) -> String {
+    func getCompanion(of channel: TCHChannel) -> String {
         guard let attributes = channel.attributes(),
-            let initiator = attributes["initiator"] as? String,
-            let responder = attributes["responder"] as? String
+            let initiator = attributes[Keys.initiator.rawValue] as? String,
+            let responder = attributes[Keys.responder.rawValue] as? String
             else {
-                Log.error("Error: Didn't find channel attributes")
+                Log.error("Missing channel attributes")
                 return "Error name"
         }
 
         let result = initiator == self.username ? responder : initiator
         return result
     }
+
+    func getType(of channel: TCHChannel) -> ChannelType? {
+        guard let attributes = channel.attributes(),
+            let type = attributes[Keys.type.rawValue] as? String else {
+                Log.error("Missing channel attributes")
+                return nil
+        }
+
+        switch type {
+        case ChannelType.single.rawValue:
+            return .single
+        case ChannelType.group.rawValue:
+            return .group
+        default:
+            Log.error("Unknown twilio channel type")
+            return nil
+        }
+    }
 }
 
 // Setters
 extension TwilioHelper {
-    func setChannel(withUsername username: String) {
+    func setChannel(withName name: String) {
         for channel in channels.subscribedChannels() {
-            if getCompanion(ofChannel: channel) == username {
+            if self.getName(of: channel) == name {
                 self.currentChannel = channel
                 return
             }
         }
+        Log.error("Channel not found")
     }
 
     func deselectChannel() {

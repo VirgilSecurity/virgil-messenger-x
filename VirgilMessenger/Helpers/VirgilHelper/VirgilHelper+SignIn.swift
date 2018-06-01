@@ -31,7 +31,7 @@ extension VirgilHelper {
         let exportedCard = CoreDataHelper.sharedInstance.getAccountCard()
 
         if let exportedCard = exportedCard, let card = self.importCard(exportedCard) {
-            self.card = card
+            self.selfCard = card
             self.signInHelper(card: card, identity: identity) { error in
                 DispatchQueue.main.async {
                     completion(error)
@@ -39,7 +39,7 @@ extension VirgilHelper {
             }
         } else {
             getCard(identity: identity) { card, error in
-                self.card = card
+                self.selfCard = card
                 guard error == nil, let card = card else {
                     Log.error("Signing in: can't get virgil card: \(error?.localizedDescription ?? "")")
                     DispatchQueue.main.async {
@@ -76,7 +76,7 @@ extension VirgilHelper {
             let entry = try self.keyStorage.loadKeyEntry(withName: identity)
             let key = try self.crypto.importPrivateKey(from: entry.value)
             self.set(privateKey: key)
-            self.update(identity: identity)
+            self.setCardManager(identity: identity)
         } catch {
             Log.error("\(error.localizedDescription)")
             completion(error)
