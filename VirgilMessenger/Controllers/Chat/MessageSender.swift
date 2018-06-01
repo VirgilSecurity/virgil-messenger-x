@@ -45,7 +45,8 @@ public class MessageSender {
         case is DemoTextMessageModel:
             let textMessage = message as! DemoTextMessageModel
 
-            if let encrypted = VirgilHelper.sharedInstance.encrypt(textMessage.body) {
+            let text = "\(TwilioHelper.sharedInstance.username): \(textMessage.body)"
+            if let encrypted = VirgilHelper.sharedInstance.encrypt(text) {
                 self.messageStatus(ciphertext: encrypted, message: textMessage)
             }
         case is DemoPhotoMessageModel:

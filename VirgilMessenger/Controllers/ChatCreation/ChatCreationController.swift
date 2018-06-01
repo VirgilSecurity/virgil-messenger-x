@@ -12,11 +12,43 @@ import PKHUD
 class ChatCreationController: ViewController {
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
-
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.textField.delegate = self
         self.navigationController!.isNavigationBarHidden = false
+
+        NotificationCenter.default.addObserver(self, selector: #selector(ChatCreationController.keyboardWillShow(notification:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(ChatCreationController.keyboardWillHide(notification:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
+    }
+
+    @objc func keyboardWillShow(notification: Notification) {
+        guard let rect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+            let time = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue else {
+                return
+        }
+
+        self.bottomConstraint.constant = 0 - rect.height
+        UIView.animate(withDuration: time) {
+            self.view.layoutIfNeeded()
+        }
+    }
+
+    @objc func keyboardWillHide(notification: Notification) {
+        guard let time = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue else {
+            return
+        }
+
+        self.bottomConstraint.constant = 0
+        UIView.animate(withDuration: time) {
+            self.view.layoutIfNeeded()
+        }
+    }
+
+    @IBAction func backGroundTap(_ sender: Any) {
+        self.view.endEditing(true)
     }
 
     @IBAction func segmentedControlChanged(_ sender: Any) {
@@ -33,7 +65,7 @@ class ChatCreationController: ViewController {
     @IBAction func closeTapped(_ sender: Any) {
         self.dismiss(animated: true)
     }
-    
+
     @IBAction func createTapped(_ sender: Any) {
         guard let text = self.textField.text, !text.isEmpty else {
             self.textField.becomeFirstResponder()

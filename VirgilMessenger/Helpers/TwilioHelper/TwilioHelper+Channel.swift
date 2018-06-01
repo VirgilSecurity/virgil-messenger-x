@@ -196,6 +196,36 @@ extension TwilioHelper {
         }
     }
 
+    func updateMembers(of channel: TCHChannel, coreChannel: Channel, completion: @escaping () -> ()) {
+        channel.members?.members { result, membersPaginator in
+            guard result.isSuccessful(), let membersPaginator = membersPaginator else {
+                Log.error("Fetching members failed with: \(result.error?.localizedDescription ?? "unknown error")")
+                completion()
+                return
+            }
+            let group = DispatchGroup()
+            for member in membersPaginator.items() {
+                guard let identity = member.identity else {
+                    Log.error("Member identity is unaccessable")
+                    continue
+                }
+                if !CoreDataHelper.sharedInstance.doesHave(channel: coreChannel, member: identity) {
+                    group.enter()
+                    VirgilHelper.sharedInstance.getExportedCard(identity: identity) { exportedCard, error in
+                        if error == nil, let exportedCard = exportedCard {
+                            CoreDataHelper.sharedInstance.addMember(card: exportedCard, to: coreChannel)
+                        }
+                        group.leave()
+                    }
+                }
+            }
+
+            group.notify(queue: .main) {
+                completion()
+            }
+        }
+    }
+
     func invite(member username: String, completion: @escaping (Error?) -> ()) {
         currentChannel.members?.invite(byIdentity: username) { result in
             if !result.isSuccessful() {

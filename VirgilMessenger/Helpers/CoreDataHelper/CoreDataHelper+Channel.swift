@@ -97,12 +97,21 @@ extension CoreDataHelper {
         return self.currentAccount?.channel ?? []
     }
 
-    func addMember(card: String) {
-        guard let channel = self.currentChannel else {
-            Log.error("Core Data: missing current account")
-            return
+    func doesHave(channel: Channel, member: String) -> Bool {
+        for exportedCard in channel.cards {
+            let card = VirgilHelper.sharedInstance.buildCard(exportedCard)
+            if card?.identity == member {
+                return true
+            }
         }
-        channel.cards.append(card)
-        self.appDelegate.saveContext()
+        return false
+    }
+
+    func addMember(card: String, to channel: Channel? = nil) {
+        let channel = channel ?? self.currentChannel
+        if let channel = channel, !channel.cards.contains(card) {
+            channel.cards.append(card)
+            self.appDelegate.saveContext()
+        }
     }
 }
