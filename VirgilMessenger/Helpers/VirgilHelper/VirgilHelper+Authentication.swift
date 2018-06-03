@@ -11,42 +11,31 @@ import VirgilSDK
 import VirgilCryptoApiImpl
 
 extension VirgilHelper {
-    func initializeAccount(withCardId cardId: String, identity: String, completion: @escaping (Error?) -> ()) {
-        self.queue.async {
-            self.getTwilioToken(identity: identity) { token, error in
-                guard let token = token, error == nil else {
-                    completion(error)
-                    return
-                }
-                TwilioHelper.authorize(username: identity, device: "iPhone")
-                TwilioHelper.sharedInstance.initialize(token: token) { error in
-                    completion(error)
-                }
+    /// Initializes Twilio SDK
+    ///
+    /// - Parameters:
+    ///   - cardId: Virgil card identifier
+    ///   - identity: identity of user
+    ///   - completion: completion handler, called with error if failed
+    func initializeTwilio(cardId: String, identity: String, completion: @escaping (Error?) -> ()) {
+        self.getTwilioToken(identity: identity) { token, error in
+            guard let token = token, error == nil else {
+                completion(error)
+                return
+            }
+            TwilioHelper.authorize(username: identity, device: "iPhone")
+            TwilioHelper.sharedInstance.initialize(token: token) { error in
+                completion(error)
             }
         }
     }
 
     private func getTwilioToken(identity: String, completion: @escaping (String?, Error?) -> ()) {
         self.queue.async {
-            guard let cardId = self.selfCard?.identifier else {
-                Log.error("Missing self card")
+            guard let authHeader = self.makeAuthHeader() else {
+                completion(nil, VirgilHelperError.gettingTwilioTokenFailed)
                 return
             }
-            guard let privateKey = self.privateKey else {
-                Log.error("Missing private key")
-                return
-            }
-            let stringToSign = "\(cardId).\(Int(Date().timeIntervalSince1970))"
-
-            guard let dataToSign = stringToSign.data(using: .utf8) else {
-                Log.error("String to Data failed")
-                return
-            }
-            guard let signature = try? self.crypto.generateSignature(of: dataToSign, using: privateKey) else {
-                Log.error("Generating signature failed")
-                return
-            }
-            let authHeader = "Bearer " + stringToSign + "." + signature.base64EncodedString()
 
             do {
                 let requestForTwilioToken = try ServiceRequest(url: URL(string: self.twilioJwtEndpoint)!,
@@ -72,29 +61,15 @@ extension VirgilHelper {
     }
 
     func setCardManager(identity: String) {
-        guard let cardId = self.selfCard?.identifier else {
-            Log.error("Missing self card")
-            return
-        }
-        guard let privateKey = self.privateKey else {
-            Log.error("Missing private key")
-            return
-        }
-        let authHeader = "\(cardId).\(Int(Date().timeIntervalSince1970))"
-
-        guard let dataToSign = authHeader.data(using: .utf8) else {
-            Log.error("String to Data failed")
-            return
-        }
-        guard let signature = try? self.crypto.generateSignature(of: dataToSign, using: privateKey) else {
-            Log.error("Generating signature failed")
-            return
-        }
         let accessTokenProvider = CachingJwtProvider(renewTokenCallback: { tokenContext, completion in
+            guard let authHeader = self.makeAuthHeader() else {
+                completion(nil, VirgilHelperError.gettingJwtFailed)
+                return
+            }
             let jwtRequest = try? ServiceRequest(url: URL(string: self.virgilJwtEndpoint)!,
                                                  method: ServiceRequest.Method.post,
                                                  headers: ["Content-Type": "application/json",
-                                                           "Authorization": "Bearer " + authHeader + "." + signature.base64EncodedString()],
+                                                           "Authorization": authHeader],
                                                  params: ["identity": identity])
             guard let request = jwtRequest,
                 let jwtResponse = try? self.connection.send(request),
@@ -116,6 +91,34 @@ extension VirgilHelper {
         let params = CardManagerParams(cardCrypto: cardCrypto,
                                        accessTokenProvider: accessTokenProvider,
                                        cardVerifier: verifier)
-        self.cardManager = CardManager(params: params)
+        self.set(cardManager: CardManager(params: params))
+    }
+
+    /// Returns authentication header for requests to backend
+    ///
+    /// - Returns: string in CardId.Timestamp.Signature(CardId.Timestamp) format if succed, nil otherwise
+    private func makeAuthHeader() -> String? {
+        guard let cardId = self.selfCard?.identifier else {
+            Log.error("Missing self card")
+            return nil
+        }
+        let stringToSign = "\(cardId).\(Int(Date().timeIntervalSince1970))"
+
+        guard let dataToSign = stringToSign.data(using: .utf8) else {
+            Log.error("String to Data failed")
+            return nil
+        }
+
+        guard let privateKey = self.privateKey else {
+            Log.error("Missing private key")
+            return nil
+        }
+
+        guard let signature = try? self.crypto.generateSignature(of: dataToSign, using: privateKey) else {
+            Log.error("Generating signature failed")
+            return nil
+        }
+
+        return "Bearer " + stringToSign + "." + signature.base64EncodedString()
     }
 }

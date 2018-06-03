@@ -35,7 +35,6 @@ class ChatListViewController: ViewController {
 
         self.navigationItem.titleView = titleView
         self.configure {
-            self.tableView.reloadData()
             self.navigationItem.titleView = nil
             self.title = "Chats"
             self.view.isUserInteractionEnabled = true
@@ -74,32 +73,33 @@ class ChatListViewController: ViewController {
     }
 
     private func configure(completion: @escaping () -> ()) {
-        let channels = TwilioHelper.sharedInstance.channels.subscribedChannels()
-        let group = DispatchGroup()
+            let channels = TwilioHelper.sharedInstance.channels.subscribedChannels()
+            let group = DispatchGroup()
 
-        for i in 0..<channels.count {
-            let channel = channels[i]
-            guard let channelName = TwilioHelper.sharedInstance.getName(of: channel) else {
-                continue
-            }
-            if let coreChannel = CoreDataHelper.sharedInstance.getChannel(withName: channelName) {
-                while channel.messages == nil { sleep(1) }
-
-                group.enter()
-                self.setLastMessages(twilioChannel: channel, coreChannel: coreChannel) {
-                    group.leave()
+            for i in 0..<channels.count {
+                let channel = channels[i]
+                guard let channelName = TwilioHelper.sharedInstance.getName(of: channel) else {
+                    continue
                 }
+                if let coreChannel = CoreDataHelper.sharedInstance.getChannel(withName: channelName) {
+                    while channel.messages == nil { sleep(1) }
 
-                group.enter()
-                self.updateGroupChannelMembers(twilioChannel: channel, coreChannel: coreChannel) {
-                    group.leave()
+                    group.enter()
+                    self.setLastMessages(twilioChannel: channel, coreChannel: coreChannel) {
+                        group.leave()
+                    }
+
+                    group.enter()
+                    self.updateGroupChannelMembers(twilioChannel: channel, coreChannel: coreChannel) {
+                        group.leave()
+                    }
+                } else {
+                    Log.error("Get Channel failed")
                 }
-            } else {
-                Log.error("Get Channel failed")
-            }
         }
 
         group.notify(queue: .main) {
+            self.tableView.reloadData()
             completion()
         }
     }
@@ -149,7 +149,7 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
         cell.tag = count - indexPath.row - 1
         cell.delegate = self
 
-        guard let channel = channels[safe: count - indexPath.row - 1] else {
+        guard let channel = channels[safe: count - indexPath.row - 1] as? Channel else {
             Log.error("Can't form row: Core Data channel wrong index")
             return cell
         }

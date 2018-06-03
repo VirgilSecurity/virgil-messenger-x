@@ -57,18 +57,19 @@ extension CollectionViewController {
             return
         }
 
-        VirgilHelper.sharedInstance.signIn(identity: username) { error in
-            guard error == nil else {
-                var message: String?
-                if let err = error as? VirgilHelper.UserFriendlyError {
-                    message = err.localizedDescription
-                }
-                message = message ?? "Something went wrong"
-                PKHUD.sharedHUD.hide() { _ in
-                    let controller = UIAlertController(title: self.title, message: message, preferredStyle: .alert)
-                    controller.addAction(UIAlertAction(title: "OK", style: .default))
+        guard CoreDataHelper.sharedInstance.loadAccount(withIdentity: username) else {
+            PKHUD.sharedHUD.hide() { _ in
+                self.alert(VirgilHelper.UserFriendlyError.noUserOnDevice.localizedDescription)
+            }
+            return
+        }
+        let exportedCard = CoreDataHelper.sharedInstance.getAccountCard()
 
-                    self.present(controller, animated: true)
+        VirgilHelper.sharedInstance.signIn(identity: username, card: exportedCard) { error in
+            guard error == nil else {
+                let message = error is VirgilHelper.UserFriendlyError ? error!.localizedDescription : "Something went wrong"
+                PKHUD.sharedHUD.hide() { _ in
+                    self.alert(message)
                 }
 
                 return
@@ -79,6 +80,13 @@ extension CollectionViewController {
                 self.goToChatList()
             }
         }
+    }
+
+    private func alert(_ message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+        self.present(alert, animated: true)
     }
 
     private func goToChatList() {

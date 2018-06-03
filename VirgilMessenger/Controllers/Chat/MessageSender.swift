@@ -45,7 +45,10 @@ public class MessageSender {
         case is DemoTextMessageModel:
             let textMessage = message as! DemoTextMessageModel
 
-            let text = "\(TwilioHelper.sharedInstance.username): \(textMessage.body)"
+            var text = textMessage.body
+            if CoreDataHelper.sharedInstance.currentChannel?.type == ChannelType.group.rawValue {
+                text = "\(TwilioHelper.sharedInstance.username): \(textMessage.body)"
+            }
             if let encrypted = VirgilHelper.sharedInstance.encrypt(text) {
                 self.messageStatus(ciphertext: encrypted, message: textMessage)
             }

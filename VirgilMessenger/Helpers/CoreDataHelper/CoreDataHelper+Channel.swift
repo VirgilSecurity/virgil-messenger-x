@@ -52,7 +52,7 @@ extension CoreDataHelper {
         }
 
         for channel in channels {
-            guard let name = channel.name  else {
+            guard let channel = channel as? Channel, let name = channel.name  else {
                 Log.error("Core Data: can't get account channel")
                 return nil
             }
@@ -74,7 +74,8 @@ extension CoreDataHelper {
             }
 
             for channel in channels {
-                guard let name = channel.name,
+                guard let channel = channel as? Channel,
+                    let name = channel.name,
                     let type = channel.type else {
                         Log.error("Core Data: can't get account channels")
                         return
@@ -93,8 +94,12 @@ extension CoreDataHelper {
         }
     }
 
-    func getChannels() -> [Channel] {
-        return self.currentAccount?.channel ?? []
+    func getChannels() -> NSOrderedSet {
+        guard let channels = self.currentAccount?.channel else {
+            Log.error("Core Data: missing current account or channels")
+            return NSOrderedSet()
+        }
+        return channels
     }
 
     func doesHave(channel: Channel, member: String) -> Bool {
