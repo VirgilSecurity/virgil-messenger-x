@@ -20,14 +20,15 @@ class VirgilHelper {
     let verifier: VirgilCardVerifier
 
     private(set) var privateKey: VirgilPrivateKey?
+    private(set) var selfCard: Card?
+    private(set) var cardManager: CardManager?
     private var channelKeys: [VirgilPublicKey] = []
-    var selfCard: Card?
-    var cardManager: CardManager?
 
     /// Enpoints to backend
     let virgilJwtEndpoint = "http://localhost:3000/get-virgil-jwt/"
     let twilioJwtEndpoint = "http://localhost:3000/get-twilio-jwt/"
     let signUpEndpint = "http://localhost:3000/signup/"
+    let signInEndpint = "http://localhost:3000/signin/"
 
     private init() {
         self.crypto = VirgilCrypto()
@@ -55,7 +56,6 @@ class VirgilHelper {
         case gettingJwtFailed = "Getting JWT failed"
         case jsonParsingFailed
         case cardWasNotVerified
-        case missingCardLocally
     }
 
     /// Encrypts given String
@@ -213,5 +213,9 @@ extension VirgilHelper {
 
     func set(selfCard: Card) {
         self.selfCard = selfCard
+    }
+
+    func set(cardManager: CardManager) {
+        self.cardManager = cardManager
     }
 }

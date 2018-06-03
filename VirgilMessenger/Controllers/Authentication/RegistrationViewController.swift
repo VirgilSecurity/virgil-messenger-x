@@ -101,8 +101,8 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
             return
         }
 
-        VirgilHelper.sharedInstance.signUp(identity: username) { error in
-            guard error == nil else {
+        VirgilHelper.sharedInstance.signUp(identity: username) { exportedCard, error in
+            guard error == nil, let exportedCard = exportedCard else {
                 var message = "Something went wrong"
                 if let err = error as? VirgilHelper.UserFriendlyError {
                     message = err.rawValue
@@ -116,7 +116,9 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
                 }
                 return
             }
+            CoreDataHelper.sharedInstance.createAccount(withIdentity: username, exportedCard: exportedCard)
             UserDefaults.standard.set(username, forKey: "last_username")
+
             PKHUD.sharedHUD.hide(true) { _ in
                 self.goToChatList()
             }

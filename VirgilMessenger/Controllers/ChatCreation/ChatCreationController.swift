@@ -89,7 +89,7 @@ class ChatCreationController: ViewController {
             }
 
             if (CoreDataHelper.sharedInstance.getChannels().contains {
-                $0.name == username
+                ($0 as Channel).name == username
             }) {
                 self.alert(withTitle: "You already have this channel")
             } else {
@@ -107,7 +107,7 @@ class ChatCreationController: ViewController {
         case 1:
             let name = text
             if (CoreDataHelper.sharedInstance.getChannels().contains {
-                $0.name == name
+                ($0 as Channel).name == name
             }) {
                 self.alert(withTitle: "You already have this channel")
             } else {

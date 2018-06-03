@@ -10,27 +10,23 @@ import Foundation
 import CoreData
 
 extension CoreDataHelper {
-    func createAccount(withIdentity identity: String, exportedCard: String, completion: @escaping () -> ()) {
-        self.queue.async {
-            guard let entity = NSEntityDescription.entity(forEntityName: Entities.account.rawValue, in: self.managedContext) else {
-                Log.error("Core Data: entity not found: " + Entities.account.rawValue)
-                return
-            }
-
-            let account = Account(entity: entity, insertInto: self.managedContext)
-            account.identity = identity
-            account.card = exportedCard
-            account.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
-
-            self.append(account: account)
-            self.setCurrent(account: account)
-
-            Log.debug("Core Data: account created")
-
-            self.appDelegate.saveContext()
-
-            completion()
+    func createAccount(withIdentity identity: String, exportedCard: String) {
+        guard let entity = NSEntityDescription.entity(forEntityName: Entities.account.rawValue, in: self.managedContext) else {
+            Log.error("Core Data: entity not found: " + Entities.account.rawValue)
+            return
         }
+
+        let account = Account(entity: entity, insertInto: self.managedContext)
+        account.identity = identity
+        account.card = exportedCard
+        account.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
+
+        self.append(account: account)
+        self.setCurrent(account: account)
+
+        Log.debug("Core Data: account created")
+
+        self.appDelegate.saveContext()
     }
 
     func loadAccount(withIdentity username: String) -> Bool {
@@ -61,14 +57,14 @@ extension CoreDataHelper {
         if let account = currentAccount, let card = account.card {
             return card
         } else {
-            Log.error("Core Data: nil account found")
+            Log.error("Core Data: missing account")
             return nil
         }
     }
 
     func deleteAccount() {
         guard let account = self.currentAccount else {
-            Log.error("Core Data: nil account")
+            Log.error("Core Data: missing account")
             return
         }
 

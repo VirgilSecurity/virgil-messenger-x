@@ -82,7 +82,7 @@
                             <view contentMode="scaleToFill" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="XTF-C5-9Uc">
                                 <rect key="frame" x="0.0" y="206.5" width="375" height="44"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Your username" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="wBl-o4-Kr6">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter username" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="wBl-o4-Kr6">
                                         <rect key="frame" x="14" y="0.0" width="361" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="4RC-mJ-1Qh"/>

@@ -18,7 +18,7 @@ extension Account {
     @NSManaged public var card: String?
     @NSManaged public var identity: String?
     @NSManaged public var numColorPair: Int32
-    @NSManaged public var channel: [Channel]?
+    @NSManaged public var channel: NSOrderedSet?
 }
 
 // MARK: Generated accessors for channel

@@ -33,7 +33,15 @@ class StartViewController: ViewController {
                 return
             }
 
-            VirgilHelper.sharedInstance.signIn(identity: username) { error in
+            guard CoreDataHelper.sharedInstance.loadAccount(withIdentity: username) else {
+                PKHUD.sharedHUD.hide() { _ in
+                    self.goToLogin()
+                }
+                return
+            }
+            let exportedCard = CoreDataHelper.sharedInstance.getAccountCard()
+
+            VirgilHelper.sharedInstance.signIn(identity: username, card: exportedCard) { error in
                 guard error == nil else {
                     PKHUD.sharedHUD.hide(true) { _ in
                         self.goToLogin()
