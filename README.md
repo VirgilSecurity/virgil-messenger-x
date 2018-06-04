@@ -53,31 +53,25 @@ To build this sample were used next third-party frameworks
 Virgil Security has a powerful set of APIs, and the documentation is there to get you started today.
 
 * [Get Started][_getstarted_root] documentation
-  * [Initialize the SDK][_initialize_root]
+  * [Initialize the SDK][_guide_initialization]
   * [Encrypted storage][_getstarted_storage]
   * [Encrypted communication][_getstarted_encryption]
   * [Data integrity][_getstarted_data_integrity]
-  * [Passwordless login][_getstarted_passwordless_login]
 * [Guides][_guides]
   * [Virgil Cards][_guide_virgil_cards]
-  * [Virgil Keys][_guide_virgil_keys]
 * [Reference API][_reference_api]
 
 ## Support
 
 Our developer support team is here to help you. You can find us on [Twitter](https://twitter.com/virgilsecurity) or send us email support@virgilsecurity.com
 
-[__support_email]: https://google.com.ua/
 [_getstarted_root]: https://developer.virgilsecurity.com/docs/swift/get-started
-[_getstarted]: https://developer.virgilsecurity.com/docs/swift/guides
 [_getstarted_encryption]: https://developer.virgilsecurity.com/docs/swift/get-started/encrypted-communication
 [_getstarted_storage]: https://developer.virgilsecurity.com/docs/swift/get-started/encrypted-storage
 [_getstarted_data_integrity]: https://developer.virgilsecurity.com/docs/swift/get-started/data-integrity
-[_getstarted_passwordless_login]: https://developer.virgilsecurity.com/docs/swift/get-started/passwordless-authentication
 [_guides]: https://developer.virgilsecurity.com/docs/swift/guides
-[_guide_initialization]: https://developer.virgilsecurity.com/docs/swift/guides/settings/install-sdk
-[_guide_virgil_cards]: https://developer.virgilsecurity.com/docs/swift/guides/virgil-card/creating
-[_guide_virgil_keys]: https://developer.virgilsecurity.com/docs/swift/guides/virgil-key/generating
-[_guide_encryption]: https://developer.virgilsecurity.com/docs/swift/guides/encryption/encrypting
-[_initialize_root]: https://developer.virgilsecurity.com/docs/swift/guides/settings/initialize-sdk-on-client
-[_reference_api]: http://virgilsecurity.github.io/virgil-sdk-x/
+[_guide_initialization]: https://developer.virgilsecurity.com/docs/swift/how-to/setup/v5/install-sdk
+[_guide_virgil_cards]: https://developer.virgilsecurity.com/docs/swift/how-to/public-key-management/v5/create-card
+[_guide_virgil_keys]: https://developer.virgilsecurity.com/docs/swift/how-to/public-key-management/v5/create-card
+[_guide_encryption]: https://developer.virgilsecurity.com/docs/swift/how-to/public-key-management/v5/use-card-for-crypto-operation
+[_reference_api]: http://virgilshttps://developer.virgilsecurity.com/docs/swift/guides/settings/initialize-sdk-on-clientecurity.github.io/virgil-sdk-x/
