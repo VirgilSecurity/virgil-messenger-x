@@ -94,13 +94,23 @@ class ChatCreationController: ViewController {
                 self.alert(withTitle: "You already have this channel")
             } else {
                 HUD.show(.progress)
-                TwilioHelper.sharedInstance.createSingleChannel(with: username) { error in
-                    HUD.flash(.success)
-                    if error == nil {
-                        HUD.flash(.success)
-                        self.closeTapped(self)
-                    } else {
+                VirgilHelper.sharedInstance.getExportedCard(identity: username) { exportedCard, error in
+                    guard let exportedCard = exportedCard, error == nil else {
+                        Log.error("Getting card failed")
                         HUD.flash(.error)
+                        return
+                    }
+                    TwilioHelper.sharedInstance.createSingleChannel(with: username) { error in
+                        HUD.flash(.success)
+                        if error == nil {
+                            HUD.flash(.success)
+                            _ = CoreDataHelper.sharedInstance.createChannel(type: .single,
+                                                                            name: username,
+                                                                            cards: [exportedCard])
+                            self.closeTapped(self)
+                        } else {
+                            HUD.flash(.error)
+                        }
                     }
                 }
             }
@@ -112,10 +122,15 @@ class ChatCreationController: ViewController {
                 self.alert(withTitle: "You already have this channel")
             } else {
                 HUD.show(.progress)
+                var cards: [String] = []
+                if let selfCard = VirgilHelper.sharedInstance.getExportedSelfCard() {
+                    cards = [selfCard]
+                }
                 TwilioHelper.sharedInstance.createGlobalChannel(withName: name) { error in
                     HUD.flash(.success)
                     if error == nil {
                         HUD.flash(.success)
+                        _ = CoreDataHelper.sharedInstance.createChannel(type: .group, name: name, cards: cards)
                         self.closeTapped(self)
                     } else {
                         HUD.flash(.error)
