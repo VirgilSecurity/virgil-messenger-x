@@ -11,74 +11,61 @@ import TwilioChatClient
 
 extension TwilioHelper {
     func createSingleChannel(with username: String, completion: @escaping (Error?) -> ()) {
-        VirgilHelper.sharedInstance.getExportedCard(identity: username) { exportedCard, error in
-            guard let exportedCard = exportedCard, error == nil else {
-                Log.error("failed to add new channel card")
+        TwilioHelper.sharedInstance.channels.createChannel(options: [
+            TCHChannelOptionType: TCHChannelType.private.rawValue,
+            TCHChannelOptionAttributes: [
+                Keys.initiator.rawValue: self.username,
+                Keys.responder.rawValue: username,
+                Keys.type.rawValue: ChannelType.single.rawValue
+            ]
+        ]) { result, channel in
+            guard let channel = channel, result.isSuccessful() else {
+                Log.error("Error while creating chat with \(username): \(result.error?.localizedDescription ?? "")")
                 DispatchQueue.main.async {
-                    completion(error)
+                    completion(result.error)
                 }
                 return
             }
-            _ = CoreDataHelper.sharedInstance.createChannel(type: .single, name: username, cards: [exportedCard])
 
-            TwilioHelper.sharedInstance.channels.createChannel(options: [
-                TCHChannelOptionType: TCHChannelType.private.rawValue,
-                TCHChannelOptionAttributes: [
-                    Keys.initiator.rawValue: self.username,
-                    Keys.responder.rawValue: username,
-                    Keys.type.rawValue: ChannelType.single.rawValue
-                ]
-            ]) { result, channel in
-                guard let channel = channel, result.isSuccessful() else {
-                    Log.error("Error while creating chat with \(username): \(result.error?.localizedDescription ?? "")")
+            channel.members?.invite(byIdentity: username) { result in
+                guard result.isSuccessful() else {
+                    Log.error("Error while inviting member \(username): \(result.error?.localizedDescription ?? "")")
                     DispatchQueue.main.async {
                         completion(result.error)
                     }
-                    CoreDataHelper.sharedInstance.deleteChannel(type: .single, name: username)
+                    channel.destroy { result in
+                        guard result.isSuccessful() else {
+                            Log.error("can't destroy channel")
+                            return
+                        }
+                    }
                     return
                 }
+            }
 
-                channel.members?.invite(byIdentity: username) { result in
-                    guard result.isSuccessful() else {
-                        Log.error("Error while inviting member \(username): \(result.error?.localizedDescription ?? "")")
-                        DispatchQueue.main.async {
-                            completion(result.error)
+            channel.join { channelResult in
+                if channelResult.isSuccessful() {
+                    Log.debug("Channel joined.")
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
+                } else {
+                    Log.error("Channel NOT joined.")
+                    DispatchQueue.main.async {
+                        completion(TwilioHelperError.joiningFailed)
+                    }
+                    channel.destroy { result in
+                        guard result.isSuccessful() else {
+                            Log.error("can't destroy channel")
+                            return
                         }
-                        channel.destroy { result in
-                            CoreDataHelper.sharedInstance.deleteChannel(type: .single, name: username)
-                            guard result.isSuccessful() else {
-                                Log.error("can't destroy channel")
-                                return
-                            }
-                        }
-                        return
                     }
                 }
-
-                channel.join(completion: { channelResult in
-                    if channelResult.isSuccessful() {
-                        Log.debug("Channel joined.")
-                        DispatchQueue.main.async {
-                            completion(nil)
-                        }
-                    } else {
-                        Log.error("Channel NOT joined.")
-                        DispatchQueue.main.async {
-                            completion(TwilioHelperError.joiningFailed)
-                        }
-                    }
-                })
             }
         }
     }
 
     func createGlobalChannel(withName name: String, completion: @escaping (Error?) -> ()) {
-        var cards: [String] = []
-        if let selfCard = VirgilHelper.sharedInstance.getExportedSelfCard() {
-            cards = [selfCard]
-        }
-        _ = CoreDataHelper.sharedInstance.createChannel(type: .group, name: name, cards: cards)
-
         TwilioHelper.sharedInstance.channels.createChannel(options: [
             TCHChannelOptionType: TCHChannelType.private.rawValue,
             TCHChannelOptionFriendlyName: name,
@@ -92,7 +79,6 @@ extension TwilioHelper {
                 DispatchQueue.main.async {
                     completion(result.error)
                 }
-                CoreDataHelper.sharedInstance.deleteChannel(type: .group, name: name)
                 return
             }
 
@@ -106,6 +92,12 @@ extension TwilioHelper {
                     Log.error("Channel NOT joined.")
                     DispatchQueue.main.async {
                         completion(TwilioHelperError.joiningFailed)
+                    }
+                    channel.destroy { result in
+                        guard result.isSuccessful() else {
+                            Log.error("can't destroy channel")
+                            return
+                        }
                     }
                 }
             })
