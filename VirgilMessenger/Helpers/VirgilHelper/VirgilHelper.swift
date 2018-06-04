@@ -107,24 +107,33 @@ class VirgilHelper {
     func getExportedCard(identity: String, completion: @escaping (String?, Error?) -> ()) {
         self.getCard(identity: identity) { card, error in
             guard let card = card, error == nil else {
-                completion(nil, error)
+                DispatchQueue.main.async {
+                    completion(nil, error)
+                }
                 return
             }
             do {
                 let exportedCard = try card.getRawCard().exportAsBase64EncodedString()
-                completion(exportedCard, nil)
+                DispatchQueue.main.async {
+                    completion(exportedCard, nil)
+                }
             } catch {
-                completion(nil, error)
+                DispatchQueue.main.async {
+                    completion(nil, error)
+                }
             }
         }
     }
 
-    func getCard(identity: String, completion: @escaping (Card?, Error?) -> ()) {
+    /// Returns Virgil Card with given identity
+    ///
+    /// - Parameters:
+    ///   - identity: identity to search
+    ///   - completion: completion handler, called with card if succeded and error otherwise
+    private func getCard(identity: String, completion: @escaping (Card?, Error?) -> ()) {
         guard let cardManager = self.cardManager else {
             Log.error("Missing CardManager")
-            DispatchQueue.main.async {
-                completion(nil, VirgilHelperError.missingCardManager)
-            }
+            completion(nil, VirgilHelperError.missingCardManager)
             return
         }
         cardManager.searchCards(identity: identity) { cards, error in
@@ -177,6 +186,16 @@ class VirgilHelper {
         } catch {
             Log.error("Importing Card failed with: \(error.localizedDescription)")
         }
+    }
+
+    /// Exports self Card
+    ///
+    /// - Returns: exported self Card
+    func getExportedSelfCard() -> String? {
+        guard let card = self.selfCard, let cardManager = self.cardManager else {
+            return nil
+        }
+        return try? cardManager.exportCardAsBase64EncodedString(card)
     }
 }
 

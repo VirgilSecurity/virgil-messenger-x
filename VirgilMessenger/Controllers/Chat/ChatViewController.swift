@@ -56,16 +56,22 @@ class ChatViewController: BaseChatViewController {
         indicator.hidesWhenStopped = false
         indicator.startAnimating()
 
-        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
-        titleLabel.textColor = .white
-        titleLabel.text = "Updating"
-        let titleView = UIStackView(arrangedSubviews: [indicator, titleLabel])
+        let titleButton = UIButton(type: .custom)
+        titleButton.frame = CGRect(x: 0, y: 0, width: 200, height: 21)
+        titleButton.tintColor = .white
+        titleButton.setTitle("Updating", for: .normal)
+        titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
+
+        let titleView = UIStackView(arrangedSubviews: [indicator, titleButton])
         titleView.spacing = 5
 
         self.navigationItem.titleView = titleView
         self.dataSource.updateMessages {
-            self.navigationItem.titleView = nil
-            self.title = CoreDataHelper.sharedInstance.currentChannel?.name ?? "Error name"
+            if CoreDataHelper.sharedInstance.currentChannel?.type == ChannelType.group.rawValue {
+                titleButton.addTarget(self, action: #selector(self.showParticipants), for: .touchUpInside)
+            }
+            titleButton.setTitle(CoreDataHelper.sharedInstance.currentChannel?.name ?? "Error name", for: .normal)
+            self.navigationItem.titleView = titleButton
             self.view.isUserInteractionEnabled = true
             indicator.stopAnimating()
         }
@@ -74,6 +80,20 @@ class ChatViewController: BaseChatViewController {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self,
                                                                      action: #selector(self.didTapAdd(_:)))
         }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let title = CoreDataHelper.sharedInstance.currentChannel?.name {
+            TwilioHelper.sharedInstance.setChannel(withName: title)
+        }
+        NotificationCenter.default.removeObserver(self.dataSource)
+        self.dataSource.addObserver()
+    }
+
+    @objc func showParticipants() {
+        self.performSegue(withIdentifier: "goToChatParticipants", sender: self)
     }
 
     @objc func didTapAdd(_ sender: Any) {
@@ -130,9 +150,14 @@ class ChatViewController: BaseChatViewController {
                     return
                 }
                 TwilioHelper.sharedInstance.invite(member: username) { error in
-                    HUD.flash(.success)
                     if error == nil {
                         CoreDataHelper.sharedInstance.addMember(card: exportedCard)
+                        guard let cards = CoreDataHelper.sharedInstance.currentChannel?.cards else {
+                            Log.error("Can't fetch Core Data Cards. Card was not added to encrypt for")
+                            HUD.flash(.error)
+                            return
+                        }
+                        VirgilHelper.sharedInstance.setChannelKeys(cards)
                         HUD.flash(.success)
                     } else {
                         HUD.flash(.error)

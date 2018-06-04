@@ -82,7 +82,9 @@ class DataSource: ChatDataSourceProtocol {
             return resultMessage
         }
         self.delegate?.chatDataSourceDidUpdate(self)
-        
+    }
+
+    func addObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(DataSource.processMessage(notification:)),
                                                name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue),

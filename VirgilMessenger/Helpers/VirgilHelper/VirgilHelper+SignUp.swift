@@ -64,6 +64,13 @@ extension VirgilHelper {
         }
     }
 
+    /// Publishes card with given identity using backend
+    ///
+    /// - Parameters:
+    ///   - identity: identity of user
+    ///   - cardManager: Card Manager instance
+    /// - Returns: Card
+    /// - Throws: corresponding error if fails
     private func requestSignUp(rawCard: RawSignedModel, cardManager: CardManager) throws -> Card {
         let exportedRawCard = try rawCard.exportAsJson()
 
