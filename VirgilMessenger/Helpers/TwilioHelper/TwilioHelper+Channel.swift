@@ -73,7 +73,11 @@ extension TwilioHelper {
     }
 
     func createGlobalChannel(withName name: String, completion: @escaping (Error?) -> ()) {
-        _ = CoreDataHelper.sharedInstance.createChannel(type: .group, name: name, cards: [])
+        var cards: [String] = []
+        if let selfCard = VirgilHelper.sharedInstance.getExportedSelfCard() {
+            cards = [selfCard]
+        }
+        _ = CoreDataHelper.sharedInstance.createChannel(type: .group, name: name, cards: cards)
 
         TwilioHelper.sharedInstance.channels.createChannel(options: [
             TCHChannelOptionType: TCHChannelType.private.rawValue,

@@ -10,6 +10,9 @@
 		16177AA220BED99B0050BB31 /* ChatCreation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16177AA120BED99B0050BB31 /* ChatCreation.storyboard */; };
 		16177AA420BEDB0C0050BB31 /* ChatCreationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16177AA320BEDB0C0050BB31 /* ChatCreationController.swift */; };
 		16177AA620C01F5C0050BB31 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16177AA520C01F5C0050BB31 /* ChannelType.swift */; };
+		161F9B8F20C5350C00878515 /* ChatParticipants.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 161F9B8E20C5350C00878515 /* ChatParticipants.storyboard */; };
+		161F9B9120C5354200878515 /* ChatParticipantsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161F9B9020C5354200878515 /* ChatParticipantsController.swift */; };
+		161F9B9320C53F4500878515 /* ChatParticipantsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161F9B9220C53F4500878515 /* ChatParticipantsCell.swift */; };
 		1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld */; };
 		1627723F203C5FB00086127C /* CoreDataHelper+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */; };
 		16277242203C60DB0086127C /* CoreDataHelper+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */; };
@@ -115,6 +118,9 @@
 		16177AA120BED99B0050BB31 /* ChatCreation.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChatCreation.storyboard; sourceTree = "<group>"; };
 		16177AA320BEDB0C0050BB31 /* ChatCreationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCreationController.swift; sourceTree = "<group>"; };
 		16177AA520C01F5C0050BB31 /* ChannelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelType.swift; sourceTree = "<group>"; };
+		161F9B8E20C5350C00878515 /* ChatParticipants.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChatParticipants.storyboard; sourceTree = "<group>"; };
+		161F9B9020C5354200878515 /* ChatParticipantsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatParticipantsController.swift; sourceTree = "<group>"; };
+		161F9B9220C53F4500878515 /* ChatParticipantsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatParticipantsCell.swift; sourceTree = "<group>"; };
 		1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirgilMessenger.xcdatamodel; sourceTree = "<group>"; };
 		1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Account.swift"; sourceTree = "<group>"; };
 		16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Channel.swift"; sourceTree = "<group>"; };
@@ -223,6 +229,16 @@
 			path = ChatCreation;
 			sourceTree = "<group>";
 		};
+		161F9B8D20C534EF00878515 /* ChatParticipants */ = {
+			isa = PBXGroup;
+			children = (
+				161F9B8E20C5350C00878515 /* ChatParticipants.storyboard */,
+				161F9B9020C5354200878515 /* ChatParticipantsController.swift */,
+				161F9B9220C53F4500878515 /* ChatParticipantsCell.swift */,
+			);
+			path = ChatParticipants;
+			sourceTree = "<group>";
+		};
 		16277240203C60BE0086127C /* CoreDataHelper */ = {
 			isa = PBXGroup;
 			children = (
@@ -273,6 +289,7 @@
 				423BDA761F97600A00C3EE9B /* ChatList */,
 				16177AA020BED9830050BB31 /* ChatCreation */,
 				16E22D871FA896BE008D32D9 /* Chat */,
+				161F9B8D20C534EF00878515 /* ChatParticipants */,
 				16CA51111FC5DA1F0042AF9D /* Settings */,
 			);
 			path = Controllers;
@@ -554,6 +571,7 @@
 			files = (
 				16CA51101FC5D9960042AF9D /* Settings.storyboard in Resources */,
 				16D6CB3A1FDFEECC00302A05 /* Registration.storyboard in Resources */,
+				161F9B8F20C5350C00878515 /* ChatParticipants.storyboard in Resources */,
 				16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */,
 				423BDA7A1F97600A00C3EE9B /* ChatList.storyboard in Resources */,
 				16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */,
@@ -632,6 +650,7 @@
 				423BDA851F97774F00C3EE9B /* ServiceConnection.swift in Sources */,
 				16FA91051FFC55A400FE98C7 /* NSObject+Reachability.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
+				161F9B9320C53F4500878515 /* ChatParticipantsCell.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
 				1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */,
 				16FCF27F1FE46756000348BC /* Channel+CoreDataProperties.swift in Sources */,
@@ -650,6 +669,7 @@
 				16961B56203B03720084086E /* VirgilHelper+Authentication.swift in Sources */,
 				16961B58203B04790084086E /* VirgilHelper+SignIn.swift in Sources */,
 				4280C0DF1F9734DD00075B3A /* TimeSeparatorModel.swift in Sources */,
+				161F9B9120C5354200878515 /* ChatParticipantsController.swift in Sources */,
 				423BDA861F97774F00C3EE9B /* ServiceRequest.swift in Sources */,
 				429228DE1F9637A200DCECDF /* Log.swift in Sources */,
 				4280C0E01F9734DD00075B3A /* TimeSeparatorPresenter.swift in Sources */,
