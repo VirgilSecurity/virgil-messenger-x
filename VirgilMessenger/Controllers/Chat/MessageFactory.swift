@@ -43,25 +43,10 @@ class MessageFactory {
                                         date: date, status: messageStatus)
         return messageModel
     }
-
-    class func createPhotoMessageModel(_ uid: String, image: UIImage, size: CGSize, isIncoming: Bool, status: MessageStatus, date: Date) -> DemoPhotoMessageModel {
-        let messageModel = createMessageModel(uid, isIncoming: isIncoming,
-                                              type: PhotoMessageModel<MessageModel>.chatItemType,
-                                              status: status, date: date)
-        let photoMessageModel = DemoPhotoMessageModel(messageModel: messageModel, imageSize: size, image: image)
-
-        return photoMessageModel
-    }
 }
 
 extension TextMessageModel {
     static var chatItemType: ChatItemType {
         return "text"
-    }
-}
-
-extension PhotoMessageModel {
-    static var chatItemType: ChatItemType {
-        return "photo"
     }
 }

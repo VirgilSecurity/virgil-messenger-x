@@ -61,13 +61,6 @@ class DataSource: ChatDataSourceProtocol {
                 resultMessage = MessageFactory.createTextMessageModel("\(sSelf.nextMessageId)", text: body,
                                                                       isIncoming: message.isIncoming, status: .success,
                                                                       date: date)
-            case CoreDataHelper.MessageType.photo.rawValue:
-                guard let media = message.media, let image = UIImage(data: media) else {
-                    return corruptedMessage()
-                }
-                resultMessage = MessageFactory.createPhotoMessageModel("\(sSelf.nextMessageId)", image: image,
-                                                                       size: image.size, isIncoming: message.isIncoming,
-                                                                       status: .success, date: date)
             default:
                 return corruptedMessage()
             }
@@ -112,9 +105,7 @@ class DataSource: ChatDataSourceProtocol {
         }
         let isIncoming = message.author == TwilioHelper.sharedInstance.username ? false : true
 
-        if message.hasMedia() {
-           self.processMedia(message: message, date: messageDate, isIncoming: isIncoming)
-        } else if let messageBody = message.body {
+        if let messageBody = message.body {
             guard let decryptedBody = VirgilHelper.sharedInstance.decrypt(messageBody) else {
                 return
             }
@@ -131,41 +122,6 @@ class DataSource: ChatDataSourceProtocol {
             Log.error("Empty Twilio message")
         }
         self.delegate?.chatDataSourceDidUpdate(self)
-    }
-
-    private func processMedia(message: TCHMessage, date: Date, isIncoming: Bool) {
-        guard let type = message.mediaType else {
-            Log.error("Missing mediaType")
-            return
-        }
-        TwilioHelper.sharedInstance.getMedia(from: message) { encryptedData in
-            guard let encryptedData = encryptedData,
-                let encryptedString = String(data: encryptedData, encoding: .utf8),
-                let decryptedString = VirgilHelper.sharedInstance.decrypt(encryptedString),
-                let decryptedData = Data(base64Encoded: decryptedString) else {
-                    Log.error("decryption process of media message failed")
-                    return
-            }
-
-            switch type {
-            case TwilioHelper.MediaType.photo.rawValue:
-                guard let image = UIImage(data: decryptedData) else {
-                    Log.error("Building image from decrypted data failed")
-                    return
-                }
-                CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: true,
-                                                                 date: date, type: .photo)
-                let decryptedMessage = MessageFactory.createPhotoMessageModel("\(self.nextMessageId)", image: image,
-                                                                   size: image.size, isIncoming: isIncoming,
-                                                                   status: .success, date: date)
-                self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
-            default:
-                Log.error("Unknown media type")
-                return
-            }
-            self.nextMessageId += 1
-            self.delegate?.chatDataSourceDidUpdate(self)
-        }
     }
 
     lazy var messageSender: MessageSender = {
@@ -207,15 +163,6 @@ class DataSource: ChatDataSourceProtocol {
         let uid = "\(self.nextMessageId)"
         self.nextMessageId += 1
         let message = MessageFactory.createTextMessageModel(uid, text: text, isIncoming: false, status: .sending, date: Date())
-        self.messageSender.sendMessage(message)
-        self.slidingWindow.insertItem(message, position: .bottom)
-        self.delegate?.chatDataSourceDidUpdate(self)
-    }
-
-    func addPhotoMessage(_ image: UIImage) {
-        let uid = "\(self.nextMessageId)"
-        self.nextMessageId += 1
-        let message = MessageFactory.createPhotoMessageModel(uid, image: image, size: image.size, isIncoming: false, status: .sending, date: Date())
         self.messageSender.sendMessage(message)
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)

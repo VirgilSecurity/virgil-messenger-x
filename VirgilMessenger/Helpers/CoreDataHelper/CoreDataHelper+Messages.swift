@@ -11,10 +11,8 @@ import UIKit
 import CoreData
 
 extension CoreDataHelper {
-
     enum MessageType: String {
         case text
-        case photo
     }
 
     func createTextMessage(withBody body: String, isIncoming: Bool, date: Date) {
@@ -26,17 +24,6 @@ extension CoreDataHelper {
         channel.lastMessagesDate = date
 
         self.createTextMessage(for: channel, withBody: body, isIncoming: isIncoming, date: date)
-    }
-
-    func createMediaMessage(with data: Data, isIncoming: Bool, date: Date, type: MessageType) {
-        guard let channel = self.currentChannel else {
-            Log.error("Core Data: nil selected channel")
-            return
-        }
-        channel.lastMessagesBody = self.lastMessageIdentifier[type.rawValue] ?? "unknown media message"
-        channel.lastMessagesDate = date
-
-        self.createMediaMessage(for: channel, with: data, isIncoming: isIncoming, date: date, type: type)
     }
 
     func createTextMessage(for channel: Channel, withBody body: String, isIncoming: Bool, date: Date) {
@@ -59,27 +46,6 @@ extension CoreDataHelper {
         self.appDelegate.saveContext()
     }
 
-    func createMediaMessage(for channel: Channel, with data: Data, isIncoming: Bool, date: Date, type: MessageType) {
-        guard let entity = NSEntityDescription.entity(forEntityName: Entities.message.rawValue, in: self.managedContext) else {
-            Log.error("Core Data: entity not found: " + Entities.message.rawValue)
-            return
-        }
-
-        let message = Message(entity: entity, insertInto: self.managedContext)
-
-        message.media = data
-        message.isIncoming = isIncoming
-        message.date = date
-        message.type = type.rawValue
-
-        let messages = channel.mutableOrderedSetValue(forKey: Keys.message.rawValue)
-        messages.add(message)
-
-        Log.debug("Core Data: new message added. Count: \(messages.count)")
-        self.appDelegate.saveContext()
-    }
-
-
     func setLastMessage(for channel: Channel) {
         if let messages = channel.message,
             let message = messages.lastObject as? Message,
@@ -92,8 +58,6 @@ extension CoreDataHelper {
                     return
                 }
                 channel.lastMessagesBody = body
-            case MessageType.photo.rawValue:
-                channel.lastMessagesBody = self.lastMessageIdentifier[message.type!] ?? "unknown media message type"
             default:
                 Log.error("Unknown message type")
             }

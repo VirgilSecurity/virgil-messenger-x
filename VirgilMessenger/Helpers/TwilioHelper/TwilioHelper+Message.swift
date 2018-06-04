@@ -22,14 +22,7 @@ extension TwilioHelper {
             }
             channel.lastMessagesDate = date
 
-            if message.hasMedia() {
-                switch message.mediaType {
-                case MediaType.photo.rawValue:
-                    channel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.photo.rawValue] ?? "corrupted type"
-                default:
-                    Log.error("Missing or unknown media type")
-                }
-            } else if let body = message.body {
+           if let body = message.body {
                 if message.author != TwilioHelper.sharedInstance.username {
                     guard let decryptedBody = VirgilHelper.sharedInstance.decrypt(body) else {
                         completion()
@@ -86,29 +79,7 @@ extension TwilioHelper {
                             CoreDataHelper.sharedInstance.createTextMessage(withBody: "Message encrypted",
                                                                             isIncoming: isIncoming, date: messageDate)
                         }
-
-                        if message.hasMedia() {
-                            TwilioHelper.sharedInstance.getMediaSync(from: message) { encryptedData in
-                                guard let encryptedData = encryptedData,
-                                    let encryptedString = String(data: encryptedData, encoding: .utf8),
-                                    let decryptedString = VirgilHelper.sharedInstance.decrypt(encryptedString),
-                                    let decryptedData = Data(base64Encoded: decryptedString) else {
-                                        Log.error("decryption of media message failed")
-                                        makeCorruptedMessage()
-                                        return
-                                }
-
-                                switch message.mediaType {
-                                case MediaType.photo.rawValue:
-                                    CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: isIncoming,
-                                                                                     date: messageDate, type: .photo)
-                                default:
-                                    Log.error("Missing or unknown mediaType")
-                                    makeCorruptedMessage()
-                                    return
-                                }
-                            }
-                        } else if let messageBody = message.body {
+                        if let messageBody = message.body {
                             guard let decryptedMessageBody = VirgilHelper.sharedInstance.decrypt(messageBody) else {
                                 makeCorruptedMessage()
                                 continue
@@ -130,83 +101,5 @@ extension TwilioHelper {
                 completion(0, nil)
             }
         }
-    }
-
-    func getMedia(from message: TCHMessage, completion: @escaping (Data?) -> ()) {
-        self.queue.async {
-            let group = DispatchGroup()
-            let tempFilename = (NSTemporaryDirectory() as NSString).appendingPathComponent(message.mediaFilename ?? "file.dat")
-            let outputStream = OutputStream(toFileAtPath: tempFilename, append: false)
-
-            if let outputStream = outputStream {
-                Log.debug("trying to get media")
-                group.enter()
-                message.getMediaWith(outputStream,
-                                     onStarted: {
-                                        Log.debug("Media upload started")
-                },
-                                     onProgress: { (bytes) in
-                                        Log.debug("Media upload progress: \(bytes)")
-                },
-                                     onCompleted: { (mediaSid) in
-                                        Log.debug("Media upload completed")
-                }) { result in
-                    guard result.isSuccessful() else {
-                        Log.error("getting media message failed: \(result.error?.localizedDescription ?? "unknown error")")
-                        completion(nil)
-                        return
-                    }
-                    let url = URL(fileURLWithPath: tempFilename)
-                    guard let data = try? Data(contentsOf: url) else {
-                        Log.error("reading media from temp directory failed")
-                        completion(nil)
-                        return
-                    }
-                    completion(data)
-                    defer { group.leave() }
-                }
-            } else {
-                Log.error("outputStream failed")
-            }
-            group.wait()
-        }
-    }
-
-    func getMediaSync(from message: TCHMessage, completion: @escaping (Data?) -> ()) {
-        let group = DispatchGroup()
-        let tempFilename = (NSTemporaryDirectory() as NSString).appendingPathComponent(message.mediaFilename ?? "file.dat")
-        let outputStream = OutputStream(toFileAtPath: tempFilename, append: false)
-
-        if let outputStream = outputStream {
-            Log.debug("trying to get media")
-            group.enter()
-            message.getMediaWith(outputStream,
-                                 onStarted: {
-                                    Log.debug("Media upload started")
-            },
-                                 onProgress: { (bytes) in
-                                    Log.debug("Media upload progress: \(bytes)")
-            },
-                                 onCompleted: { (mediaSid) in
-                                    Log.debug("Media upload completed")
-            }) { result in
-                guard result.isSuccessful() else {
-                    Log.error("getting media message failed: \(result.error?.localizedDescription ?? "unknown error")")
-                    completion(nil)
-                    return
-                }
-                let url = URL(fileURLWithPath: tempFilename)
-                guard let data = try? Data(contentsOf: url) else {
-                    Log.error("reading media from temp directory failed")
-                    completion(nil)
-                    return
-                }
-                completion(data)
-                defer { group.leave() }
-            }
-        } else {
-            Log.error("outputStream failed")
-        }
-        group.wait()
     }
 }

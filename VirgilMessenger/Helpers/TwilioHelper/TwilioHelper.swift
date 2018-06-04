@@ -28,10 +28,6 @@ class TwilioHelper: NSObject {
         case joiningFailed
     }
 
-    enum MediaType: String {
-        case photo = "image/bmp"
-    }
-
     enum Keys: String {
         case initiator
         case responder

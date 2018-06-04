@@ -30,7 +30,6 @@ import PKHUD
 
 class ChatViewController: BaseChatViewController {
     var messageSender: MessageSender!
-    private var soundPlayer: AVAudioPlayer?
 
     var dataSource: DataSource! {
         didSet {
@@ -205,7 +204,6 @@ class ChatViewController: BaseChatViewController {
 
         return [
             DemoTextMessageModel.chatItemType: [self.createTextPresenter(with: baseMessageStyle)],
-            DemoPhotoMessageModel.chatItemType: [self.createPhotoPresenter(with: baseMessageStyle)],
             SendingStatusModel.chatItemType: [SendingStatusPresenterBuilder()],
             TimeSeparatorModel.chatItemType: [TimeSeparatorPresenterBuilder()]
         ]
@@ -214,7 +212,6 @@ class ChatViewController: BaseChatViewController {
     func createChatInputItems() -> [ChatInputItemProtocol] {
         var items = [ChatInputItemProtocol]()
         items.append(self.createTextInputItem())
-        items.append(self.createPhotoInputItem())
 
         return items
     }
@@ -256,17 +253,6 @@ extension ChatViewController {
 
         return textMessagePresenter
     }
-
-    private func createPhotoPresenter(with baseMessageStyle: BaseMessageCollectionViewCellDefaultStyle) -> PhotoMessagePresenterBuilder<DemoPhotoMessageViewModelBuilder, DemoPhotoMessageHandler> {
-        let photoMessagePresenter = PhotoMessagePresenterBuilder(
-            viewModelBuilder: DemoPhotoMessageViewModelBuilder(),
-            interactionHandler: DemoPhotoMessageHandler(baseHandler: self.baseMessageHandler,
-                                                        photoObserverController: self)
-        )
-        photoMessagePresenter.baseCellStyle = baseMessageStyle
-
-        return photoMessagePresenter
-    }
 }
 
 /// ChatInputItems creators
@@ -283,72 +269,6 @@ extension ChatViewController {
             }
         }
         return item
-    }
-
-    private func createPhotoInputItem() -> DemoPhotosChatInputItem {
-        var liveCamaraAppearence = LiveCameraCellAppearance.createDefaultAppearance()
-        liveCamaraAppearence.backgroundColor = UIColor(rgb: 0x2B303B)
-        let photosAppearence = PhotosInputViewAppearance(liveCameraCellAppearence: liveCamaraAppearence)
-        let item = DemoPhotosChatInputItem(presentingController: self,
-                                       tabInputButtonAppearance: PhotosChatInputItem.createDefaultButtonAppearance(),
-                                       inputViewAppearance: photosAppearence)
-
-        item.photoInputHandler = { [weak self] image in
-            if self?.currentReachabilityStatus == .notReachable {
-                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-                controller.addAction(UIAlertAction(title: "OK", style: .default))
-                self?.present(controller, animated: true)
-            } else {
-                self?.dataSource.addPhotoMessage(image)
-            }
-        }
-        return item
-    }
-}
-
-extension ChatViewController: PhotoObserverProtocol {
-    func showImage(_ image: UIImage) {
-        self.view.endEditing(true)
-
-        let newImageView = UIImageView()
-        newImageView.backgroundColor = .black
-        newImageView.frame = UIScreen.main.bounds
-        newImageView.contentMode = .scaleAspectFit
-        newImageView.image = image
-        newImageView.isUserInteractionEnabled = true
-
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissFullscreenImage))
-        newImageView.addGestureRecognizer(tap)
-
-        self.view.addSubview(newImageView)
-        self.navigationController?.isNavigationBarHidden = true
-        UIApplication.shared.isStatusBarHidden = true
-    }
-
-    @objc private func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
-        self.navigationController?.isNavigationBarHidden = false
-        sender.view?.removeFromSuperview()
-        UIApplication.shared.isStatusBarHidden = false
-    }
-
-    func showSaveImageAlert(_ image: UIImage) {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Save to Camera Roll", style: .default) { _ in
-            UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
-        })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-
-        self.present(alert, animated: true)
-    }
-
-    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
-        if let error = error {
-            let ac = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default))
-            self.present(ac, animated: true)
-        } else {
-            HUD.flash(.success)
-        }
     }
 }
 

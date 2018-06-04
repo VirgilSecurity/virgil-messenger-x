@@ -37,10 +37,6 @@ class CoreDataHelper {
         case type = "type"
     }
 
-    let lastMessageIdentifier = [
-        MessageType.photo.rawValue: "image.jpg"
-    ]
-
     static func initialize() {
         sharedInstance = CoreDataHelper()
     }

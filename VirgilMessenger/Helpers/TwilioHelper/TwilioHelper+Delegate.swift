@@ -126,37 +126,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
             return
         }
 
-        if message.hasMedia() {
-            self.getMedia(from: message) { encryptedData in
-                guard let encryptedData = encryptedData,
-                    let encryptedString = String(data: encryptedData, encoding: .utf8),
-                    let decryptedString = VirgilHelper.sharedInstance.decrypt(encryptedString),
-                    let decryptedData = Data(base64Encoded: decryptedString) else {
-                        Log.error("Decryption process of media message failed")
-                        return
-                }
-                coreDataChannel.lastMessagesDate = messageDate
-
-                if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
-                    switch message.mediaType {
-                    case MediaType.photo.rawValue:
-                        coreDataChannel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.photo.rawValue]
-                            ?? "corrupted type"
-                        CoreDataHelper.sharedInstance.createMediaMessage(for: coreDataChannel, with: decryptedData,
-                                                                         isIncoming: true, date: messageDate, type: .photo)
-                    default:
-                        Log.error("Missing or unknown mediaType")
-                        return
-                    }
-                }
-                NotificationCenter.default.post(
-                    name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
-                    object: self,
-                    userInfo: [
-                        TwilioHelper.NotificationKeys.Message.rawValue: message
-                    ])
-            }
-        } else if let messageBody = message.body {
+        if let messageBody = message.body {
             guard let decryptedMessageBody = VirgilHelper.sharedInstance.decrypt(messageBody) else {
                 return
             }
