@@ -74,4 +74,4 @@ Our developer support team is here to help you. You can find us on [Twitter](htt
 [_guide_virgil_cards]: https://developer.virgilsecurity.com/docs/swift/how-to/public-key-management/v5/create-card
 [_guide_virgil_keys]: https://developer.virgilsecurity.com/docs/swift/how-to/public-key-management/v5/create-card
 [_guide_encryption]: https://developer.virgilsecurity.com/docs/swift/how-to/public-key-management/v5/use-card-for-crypto-operation
-[_reference_api]: http://virgilshttps://developer.virgilsecurity.com/docs/swift/guides/settings/initialize-sdk-on-clientecurity.github.io/virgil-sdk-x/
+[_reference_api]: https://developer.virgilsecurity.com/docs/api-reference
