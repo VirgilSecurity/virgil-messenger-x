@@ -83,6 +83,8 @@ class ChatViewController: BaseChatViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         if let title = CoreDataHelper.sharedInstance.currentChannel?.name {
             TwilioHelper.sharedInstance.setChannel(withName: title)
         }
