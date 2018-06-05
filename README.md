@@ -1,4 +1,4 @@
-# Virgil Demo Messenger
+# Demo Virgil & Twilio E2EE Chat
 
 ![VirgilSDK](https://cloud.githubusercontent.com/assets/6513916/19643783/bfbf78be-99f4-11e6-8d5a-a43394f2b9b2.png)
 
@@ -12,7 +12,7 @@ $ cd chat-twilio-ios
 ```
 
 ## Prerequisites
-**Virgil Messenger** uses several modules, including **Virgil SDK**. These packages are distributed via Carthage and CocoaPods. Since Carthage is a RECOMMENDED way to integrate those packages into the project, these application's dependencies are managed by it. Carthage integration is easy, convenient and you can simultaneously use CocoaPods to manage all other dependencies.
+Demo E2EE Twilio Chat uses several modules, including **Virgil SDK**. These packages are distributed via Carthage and CocoaPods. Since Carthage is a RECOMMENDED way to integrate those packages into the project, these application's dependencies are managed by it. Carthage integration is easy, convenient and you can simultaneously use CocoaPods to manage all other dependencies.
 
 ### Carthage
 
