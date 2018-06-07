@@ -31,6 +31,7 @@ import PKHUD
 class ChatViewController: BaseChatViewController {
     var messageSender: MessageSender!
     private var soundPlayer: AVAudioPlayer?
+    weak private var audioModel: DemoAudioMessageViewModel?
 
     var dataSource: DataSource! {
         didSet {
@@ -250,14 +251,19 @@ extension ChatViewController {
 }
 
 extension ChatViewController: AudioPlayableProtocol {
-    func play(data: Data) {
+    func play(model: DemoAudioMessageViewModel) {
+        try? AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
         do {
-            try AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
-            self.soundPlayer = try AVAudioPlayer(data: data)
+            self.soundPlayer = try AVAudioPlayer(data: model.audio)
             self.soundPlayer?.delegate = self
             self.soundPlayer?.prepareToPlay()
             self.soundPlayer?.volume = 1.0
             self.soundPlayer?.play()
+
+            if let audioModel = self.audioModel {
+                audioModel.state.value = .stopped
+            }
+            self.audioModel = model
         } catch {
             Log.error("AVAudioPlayer error: \(error.localizedDescription)")
             self.alert(withTitle: "Playing error")

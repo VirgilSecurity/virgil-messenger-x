@@ -18,7 +18,10 @@ public protocol AudioBubbleViewStyleProtocol {
 }
 
 public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, BackgroundSizingQueryable {
-
+    let audioMessageText: NSAttributedString = NSAttributedString(string: "Audio Message",
+                                                                  attributes: [
+                                                                    NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14),
+                                                                    NSAttributedStringKey.foregroundColor: UIColor(rgb: 0x8E9094)])
     public var preferredMaxLayoutWidth: CGFloat = 0
     public var animationDuration: CFTimeInterval = 0.33
     public var viewContext: ViewContext = .normal {
@@ -73,16 +76,38 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         let stackView = UIStackView()
         self.addSubview(stackView)
 
-        let playImage = UIImage(named: "play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
+        let playImage = UIImage(named: "icon-play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
         self.playImageView = UIImageView(image: playImage)
         self.playImageView.contentMode = .scaleAspectFit
         self.playImageView.translatesAutoresizingMaskIntoConstraints = false
 
-        stackView.addSubview(self.playImageView)
-        self.addConstraint(NSLayoutConstraint(item: self.playImageView, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: 7))
-        self.addConstraint(NSLayoutConstraint(item: self.playImageView, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1, constant: 15))
+        let buttonWrapperView = UIView.init(frame: CGRect.zero)
+        buttonWrapperView.addSubview(self.playImageView)
+        buttonWrapperView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.addSubview(buttonWrapperView)
+
+        self.addConstraint(NSLayoutConstraint(item: buttonWrapperView, attribute: .top, relatedBy: .equal, toItem: self,
+                                              attribute: .top, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: buttonWrapperView, attribute: .leading, relatedBy: .equal, toItem: self,
+                                              attribute: .leading, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: buttonWrapperView, attribute: .bottom, relatedBy: .equal, toItem: self,
+                                              attribute: .bottom, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: buttonWrapperView, attribute: .width, relatedBy: .equal, toItem: buttonWrapperView,
+                                              attribute: .height, multiplier: 1, constant: 0))
+
+        stackView.backgroundColor = UIColor.cyan
+        self.addConstraint(NSLayoutConstraint(item: self.playImageView, attribute: .centerX, relatedBy: .equal, toItem: buttonWrapperView,
+                                              attribute: .centerX, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.playImageView, attribute: .centerY, relatedBy: .equal, toItem: buttonWrapperView,
+                                              attribute: .centerY, multiplier: 1, constant: 0))
 
         stackView.addSubview(self.textView)
+        self.textView.translatesAutoresizingMaskIntoConstraints = false
+
+        self.addConstraint(NSLayoutConstraint(item: self.textView, attribute: .leading, relatedBy: .equal, toItem: buttonWrapperView,
+                                              attribute: .trailing, multiplier: 1, constant: -20))
+        self.addConstraint(NSLayoutConstraint(item: self.textView, attribute: .height, relatedBy: .equal, toItem: self,
+                                              attribute: .height, multiplier: 1, constant: 0))
     }
 
     private lazy var bubbleImageView: UIImageView = {
@@ -109,8 +134,7 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         textView.layoutManager.allowsNonContiguousLayout = true
         textView.isExclusiveTouch = true
         textView.textContainer.lineFragmentPadding = 0
-
-        textView.textAlignment = .right
+        textView.textAlignment = .left
 
         return textView
     }()
@@ -140,15 +164,16 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
             switch self.audioMessageViewModel.state.value {
             case .playing:
                 if (self.timer == nil) {
-                    self.playImageView.image = UIImage(named: "pause", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
+                    self.playImageView.image = UIImage(named: "icon-pause", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
                     self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(AudioBubbleView.updateTimer), userInfo: nil, repeats: true)
                     self.updateTimer()
                 }
             case .paused:
-                self.playImageView.image = UIImage(named: "play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
+                self.playImageView.image = UIImage(named: "icon-play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
                 self.stopTimer()
             case .stopped:
-                self.playImageView.image = UIImage(named: "play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
+                self.playImageView.image = UIImage(named: "icon-play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
+                self.stopTimer()
                 self.displayTime = self.audioMessageViewModel.duration
             }
             if self.viewContext == .sizing { return }
@@ -172,7 +197,7 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
             return
         }
         self.displayTime -= 1
-        defer { self.textView.text = self.formattedDisplayTime }
+        defer { self.textView.attributedText = self.formattedDisplayTime }
     }
 
     private func stopTimer() {
@@ -203,20 +228,28 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
             needsToUpdateText = true
         }
 
-        if needsToUpdateText || self.textView.text != self.formattedDisplayTime {
-            self.textView.text = self.formattedDisplayTime
+        if needsToUpdateText || self.textView.attributedText != self.formattedDisplayTime {
+            self.textView.attributedText = self.formattedDisplayTime
         }
 
         let textInsets = style.textInsets(viewModel: viewModel, isSelected: self.selected)
         if self.textView.textContainerInset != textInsets { self.textView.textContainerInset = textInsets }
     }
 
-    private var formattedDisplayTime: String {
+    private var formattedDisplayTime: NSMutableAttributedString {
         let time = self.displayTime
         let minutes = Int(time) / 60 % 60
         let seconds = Int(time) % 60
 
-        return "\n" + String(format:"%02i:%02i", minutes, seconds)
+        let timerString = "\n" + String(format:"%02i:%02i", minutes, seconds)
+
+        let result = NSMutableAttributedString()
+        result.append(self.audioMessageText)
+        result.append(NSAttributedString(string: timerString, attributes: [
+                                        NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14),
+                                        NSAttributedStringKey.foregroundColor: UIColor.white]))
+
+        return result
     }
 
     private func bubbleImage() -> UIImage {
@@ -239,7 +272,7 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
     public var layoutCache: NSCache<AnyObject, AnyObject>!
     private func calculateAudioBubbleLayout(preferredMaxLayoutWidth: CGFloat) -> AudioBubbleLayoutModel {
         let layoutContext = AudioBubbleLayoutModel.LayoutContext(
-            text: self.formattedDisplayTime,
+            text: self.audioMessageText.string,
             font: self.style.textFont(viewModel: self.audioMessageViewModel, isSelected: self.selected),
             textInsets: self.style.textInsets(viewModel: self.audioMessageViewModel, isSelected: self.selected),
             preferredMaxLayoutWidth: preferredMaxLayoutWidth
@@ -289,13 +322,14 @@ private final class AudioBubbleLayoutModel {
     }
 
     func calculateLayout() {
-        let textHorizontalInset = self.layoutContext.textInsets.bma_horziontalInset + 50
-        let maxTextWidth = self.layoutContext.preferredMaxLayoutWidth - textHorizontalInset
-        let textSize = self.textSizeThatFitsWidth(maxTextWidth)
-        let bubbleSize = textSize.bma_outsetBy(dx: textHorizontalInset, dy: self.layoutContext.textInsets.bma_verticalInset)
+        let bubbleSize = CGSize(width: 180, height: 60)
         self.bubbleFrame = CGRect(origin: CGPoint.zero, size: bubbleSize)
-        self.textFrame = self.bubbleFrame
         self.size = bubbleSize
+
+        let maxTextWidth_ = CGFloat(10)
+        let textSize_ = self.textSizeThatFitsWidth(maxTextWidth_)
+        let bubbleSize_ = textSize_.bma_outsetBy(dx: CGFloat(10), dy: 20)
+        self.textFrame = CGRect(origin: CGPoint.zero, size: bubbleSize_)
     }
 
     private func textSizeThatFitsWidth(_ width: CGFloat) -> CGSize {
