@@ -34,7 +34,7 @@ $ carthage bootstrap --platform iOS --no-use-binaries
 ```
 
 ### Set Up Backend
-Follow instructions [here](https://github.com/VirgilSecurity/demo-twilio-chat-js/tree/v5) for setting up your own backend.
+Follow instructions [here](https://github.com/VirgilSecurity/demo-twilio-chat-js/tree/master) for setting up your own backend.
 
 ## Build and Run
 At this point you are ready to build and run the application on iPhone and/or Simulator.
