@@ -51,6 +51,7 @@
 		16CA51061FC468370042AF9D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51051FC468370042AF9D /* Constants.swift */; };
 		16CA51101FC5D9960042AF9D /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA510F1FC5D9960042AF9D /* Settings.storyboard */; };
 		16CA51131FC5DA3B0042AF9D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51121FC5DA3B0042AF9D /* SettingsViewController.swift */; };
+		16CDE19E20C95B5F00D6430B /* VSCCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16CDE19D20C95B5F00D6430B /* VSCCrypto.framework */; };
 		16D6CB3A1FDFEECC00302A05 /* Registration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16D6CB391FDFEECC00302A05 /* Registration.storyboard */; };
 		16F30D4B1FDAE190006C3DEB /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */; };
 		16F30D4D1FDAE6E6006C3DEB /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */; };
@@ -172,6 +173,7 @@
 		16CA51051FC468370042AF9D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		16CA510F1FC5D9960042AF9D /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		16CA51121FC5DA3B0042AF9D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		16CDE19D20C95B5F00D6430B /* VSCCrypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCCrypto.framework; path = Carthage/Build/iOS/VSCCrypto.framework; sourceTree = "<group>"; };
 		16D6CB391FDFEECC00302A05 /* Registration.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Registration.storyboard; sourceTree = "<group>"; };
 		16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16CDE19E20C95B5F00D6430B /* VSCCrypto.framework in Frameworks */,
 				16638EDB20BD98FF00D051B7 /* VirgilCryptoAPI.framework in Frameworks */,
 				167C49CE20BD577A006B49B7 /* VirgilCrypto.framework in Frameworks */,
 				429228CD1F96287B00DCECDF /* Chatto.framework in Frameworks */,
@@ -556,6 +559,7 @@
 		429228C71F96287A00DCECDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				16CDE19D20C95B5F00D6430B /* VSCCrypto.framework */,
 				1627E4CF20BD522400D0AF36 /* VirgilCryptoAPI.framework */,
 				42B4163A1FBAFC7D00AFDF80 /* Crashlytics.framework */,
 				42B416391FBAFC7D00AFDF80 /* Fabric.framework */,

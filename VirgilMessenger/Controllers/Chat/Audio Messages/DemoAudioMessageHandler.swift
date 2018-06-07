@@ -10,7 +10,7 @@ import ChattoAdditions
 import AVFoundation
 
 protocol AudioPlayableProtocol: class, AVAudioPlayerDelegate {
-    func play(data: Data)
+    func play(model: DemoAudioMessageViewModel)
     func pause()
     func resume()
 }
@@ -47,7 +47,7 @@ class DemoAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
             self.playableController.resume()
         case .stopped:
             viewModel.state.value = .playing
-            self.playableController.play(data: viewModel.audio)
+            self.playableController.play(model: viewModel)
         }
     }
 

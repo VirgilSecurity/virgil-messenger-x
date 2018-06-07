@@ -19,12 +19,14 @@ protocol AudioInputViewDelegate: class {
     func inputViewDidRequestMicrophonePermission(_ inputView: AudioInputViewProtocol)
 }
 
-
 class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
     weak var delegate: AudioInputViewDelegate?
     weak var presentingController: UIViewController?
     private var recordButton: UIButton!
-    private var textLabel: UILabel!
+    private var holdToRecordLabel: UILabel!
+    private var timerLabel: UILabel!
+    private var cancelLabel: UILabel!
+    private var lineView: UIView!
     private var recordingSession: AVAudioSession!
     private var audioRecorder: AVAudioRecorder!
     private var timer = Timer()
@@ -49,6 +51,7 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
     private func commonInit() {
         self.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.translatesAutoresizingMaskIntoConstraints = false
+        self.backgroundColor = UIColor(rgb: 0x202124)
         self.configureAudio()
     }
 
@@ -60,7 +63,7 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
             recordingSession.requestRecordPermission() { [unowned self] allowed in
                 DispatchQueue.main.async {
                     if allowed {
-                         self.configureButton()
+                         self.configureView()
                     } else {
                         Log.error("Permission to record audio was not granted")
                     }
@@ -71,59 +74,137 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
         }
     }
 
-    private func configureButton() {
+    private func configureView() {
         let view = UIView(frame: CGRect.zero)
-        view.backgroundColor = UIColor(rgb: 0x20232B)
+        view.backgroundColor = UIColor(rgb: 0x202124)
         view.translatesAutoresizingMaskIntoConstraints = false
 
         self.addSubview(view)
-        self.addConstraint(NSLayoutConstraint(item: view, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailing, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: view, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: view, attribute: .leading, relatedBy: .equal, toItem: self,
+                                              attribute: .leading, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: self,
+                                              attribute: .trailing, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: view, attribute: .top, relatedBy: .equal, toItem: self,
+                                              attribute: .top, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: self,
+                                              attribute: .bottom, multiplier: 1, constant: 0))
 
-        let lineView = UIView(frame: CGRect.zero)
-        lineView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(lineView)
+        self.configureLineView(inside: view)
+        self.configureCancelLabel(inside: view)
+        self.configureRecordButton(inside: view)
+        self.configureTimerLabel(inside: view)
+        self.configureHoldToRecordLabel(inside: view)
+    }
 
-        self.textLabel = UILabel.init(frame: CGRect.zero)
-        self.textLabel.textAlignment = .center
-        self.textLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.textLabel.text = "Hold to record"
-        self.textLabel.textColor = .white
-        view.addSubview(self.textLabel)
+    private func configureLineView(inside view: UIView) {
+        self.lineView = UIView(frame: CGRect.zero)
+        self.lineView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(self.lineView)
 
-        self.addConstraint(NSLayoutConstraint(item: lineView, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: lineView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
-        self.addConstraint(NSLayoutConstraint(item: lineView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
-        self.addConstraint(NSLayoutConstraint(item: lineView, attribute: .bottom, relatedBy: .equal, toItem: self.textLabel, attribute: .top, multiplier: 1, constant: -10))
+        self.addConstraint(NSLayoutConstraint(item: self.lineView, attribute: .centerX, relatedBy: .equal, toItem: view,
+                                              attribute: .centerX, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.lineView, attribute: .width, relatedBy: .equal, toItem: nil,
+                                              attribute: .notAnAttribute, multiplier: 1, constant: 100))
+        self.addConstraint(NSLayoutConstraint(item: self.lineView, attribute: .height, relatedBy: .equal, toItem: nil,
+                                              attribute: .notAnAttribute, multiplier: 1, constant: 100))
+        self.addConstraint(NSLayoutConstraint(item: self.lineView, attribute: .bottom, relatedBy: .equal, toItem: view,
+                                              attribute: .bottom, multiplier: 1, constant: 30))
+    }
 
+    private func configureCancelLabel(inside view: UIView) {
+        self.cancelLabel = UILabel(frame: CGRect.zero)
+        self.cancelLabel.textAlignment = .center
+        self.cancelLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.cancelLabel.text = "To cancel, drag your finger off Record"
+        self.cancelLabel.textColor = UIColor(rgb: 0x909092)
+        self.cancelLabel.font = UIFont.systemFont(ofSize: 16)
+        self.cancelLabel.isHidden = true
+        view.addSubview(self.cancelLabel)
+
+        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel, attribute: .centerX, relatedBy: .equal, toItem: view,
+                                              attribute: .centerX, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel, attribute: .width, relatedBy: .equal, toItem: nil,
+                                              attribute: .notAnAttribute, multiplier: 1, constant: 300))
+        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel, attribute: .height, relatedBy: .equal, toItem: nil,
+                                              attribute: .notAnAttribute, multiplier: 1, constant: 50))
+        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel, attribute: .bottom, relatedBy: .equal, toItem: self.lineView,
+                                              attribute: .bottom, multiplier: 1, constant: -30))
+    }
+
+    private func configureRecordButton(inside view: UIView) {
         self.recordButton = UIButton(frame: CGRect.zero)
-        let image = UIImage(named: "record", in: Bundle(for: AudioInputView.self), compatibleWith: nil)!
-        self.recordButton.setImage(image, for: .normal)
         self.recordButton.translatesAutoresizingMaskIntoConstraints = false
+
+        let image = UIImage(named: "button-record-voice", in: Bundle(for: AudioInputView.self), compatibleWith: nil)!
+        self.recordButton.setImage(image, for: .normal)
+
         self.recordButton.addTarget(self, action: #selector(didStartRecord(_:)), for: .touchDown)
-        self.recordButton.addTarget(self, action: #selector(didFinishRecord(_:)), for: [.touchUpInside, .touchUpOutside])
-        self.recordButton.layer.masksToBounds = true
-        self.recordButton.layer.cornerRadius = 50
-
+        self.recordButton.addTarget(self, action: #selector(didFinishRecord(_:)), for: .touchUpInside)
+        self.recordButton.addTarget(self, action: #selector(didCancelRecord(_:)), for: .touchDragExit)
         view.addSubview(self.recordButton)
-        self.addConstraint(NSLayoutConstraint(item: self.textLabel, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.textLabel, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 200))
-        self.addConstraint(NSLayoutConstraint(item: self.textLabel, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
-        self.addConstraint(NSLayoutConstraint(item: self.textLabel, attribute: .bottom, relatedBy: .equal, toItem: self.recordButton, attribute: .top, multiplier: 1, constant: -20))
 
-        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: -30))
-        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
-        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 100))
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .centerX, relatedBy: .equal, toItem: view,
+                                              attribute: .centerX, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .bottom, relatedBy: .equal, toItem: self.cancelLabel,
+                                              attribute: .top, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .width, relatedBy: .equal, toItem: nil,
+                                              attribute: .notAnAttribute, multiplier: 1, constant: 100))
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .height, relatedBy: .equal, toItem: nil,
+                                              attribute: .notAnAttribute, multiplier: 1, constant: 100))
+    }
+
+    private func configureTimerLabel(inside view: UIView) {
+        self.timerLabel = UILabel.init(frame: CGRect.zero)
+        self.timerLabel.textAlignment = .center
+        self.timerLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.timerLabel.text = self.timeString(0)
+        self.timerLabel.textColor = .white
+        self.timerLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        view.addSubview(self.timerLabel)
+
+        self.addConstraint(NSLayoutConstraint(item: self.timerLabel, attribute: .centerX, relatedBy: .equal, toItem: view,
+                                              attribute: .centerX, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.timerLabel, attribute: .width, relatedBy: .equal, toItem: nil,
+                                              attribute: .notAnAttribute, multiplier: 1, constant: 200))
+        self.addConstraint(NSLayoutConstraint(item: self.timerLabel, attribute: .height, relatedBy: .equal, toItem: nil,
+                                              attribute: .notAnAttribute, multiplier: 1, constant: 25))
+        self.addConstraint(NSLayoutConstraint(item: self.timerLabel, attribute: .bottom, relatedBy: .equal, toItem: self.recordButton,
+                                              attribute: .top, multiplier: 1, constant: -10))
+    }
+
+    private func configureHoldToRecordLabel(inside view: UIView) {
+        self.holdToRecordLabel = UILabel(frame: CGRect.zero)
+        self.holdToRecordLabel.textAlignment = .center
+        self.holdToRecordLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.holdToRecordLabel.text = "Hold to record"
+        self.holdToRecordLabel.textColor = UIColor(rgb: 0x909092)
+        self.holdToRecordLabel.font = UIFont.systemFont(ofSize: 20)
+        view.addSubview(self.holdToRecordLabel)
+
+        self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel, attribute: .centerX, relatedBy: .equal, toItem: view,
+                                              attribute: .centerX, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel, attribute: .width, relatedBy: .equal, toItem: nil,
+                                              attribute: .notAnAttribute, multiplier: 1, constant: 200))
+        self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel, attribute: .height, relatedBy: .equal, toItem: nil,
+                                              attribute: .notAnAttribute, multiplier: 1, constant: 25))
+        self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel, attribute: .bottom, relatedBy: .equal, toItem: self.timerLabel,
+                                              attribute: .top, multiplier: 1, constant: -10))
+    }
+
+    @objc func didCancelRecord(_ sender: Any) {
+        Log.debug("Canceled")
+        self.finishRecording(success: false)
     }
 
     @objc func didStartRecord(_ sender: Any) {
-        self.recordButton.backgroundColor = .red
+        let imageTapped = UIImage(named: "button-stop-record", in: Bundle(for: AudioInputView.self), compatibleWith: nil)!
+        self.recordButton.setImage(imageTapped, for: .normal)
+        self.recordButton.setImage(imageTapped, for: .highlighted)
+        self.cancelLabel.isHidden = false
         self.startRecording()
-        self.textLabel.text = String(format: "%02i:%02i:%02i", 0,0,0)
-        self.timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(AudioInputView.updateTimer), userInfo: nil, repeats: true)
+        self.holdToRecordLabel.text = "Recording..."
+        self.timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(AudioInputView.updateTimer),
+                                          userInfo: nil, repeats: true)
     }
 
     @objc func didFinishRecord(_ sender: Any) {
@@ -152,18 +233,22 @@ extension AudioInputView {
     }
 
     private func finishRecording(success: Bool) {
+        let image = UIImage(named: "button-record-voice", in: Bundle(for: AudioInputView.self), compatibleWith: nil)!
+        self.recordButton.setImage(image, for: .normal)
+        self.cancelLabel.isHidden = true
         audioRecorder.stop()
         audioRecorder = nil
-        self.recordButton.backgroundColor = nil
 
-        do {
-            let data = try Data(contentsOf: self.getFileURL(), options: [])
-            self.delegate?.inputView(self, didFinishedRecording: data)
-            Log.debug("recording sent to controller")
-        } catch {
-            Log.error(error.localizedDescription)
+        if success {
+            do {
+                let data = try Data(contentsOf: self.getFileURL(), options: [])
+                self.delegate?.inputView(self, didFinishedRecording: data)
+            } catch {
+                Log.error(error.localizedDescription)
+            }
         }
-        self.textLabel.text = "Hold to record"
+        self.timerLabel.text = self.timeString(0)
+        self.holdToRecordLabel.text = "Hold to record"
         self.timer.invalidate()
         self.time = 0
     }
@@ -176,7 +261,7 @@ extension AudioInputView {
 
     @objc private func updateTimer() {
         self.time += 0.01
-        self.textLabel.text = self.timeString(self.time)
+        self.timerLabel.text = self.timeString(self.time)
     }
 
     private func timeString(_ time: TimeInterval) -> String {
