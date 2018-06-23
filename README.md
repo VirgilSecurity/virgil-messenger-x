@@ -6,7 +6,7 @@
 
 Start with cloning repository to your PC. Open *terminal*, navigate to the folder where you want to store the application and execute
 ```bash
-$ git clone https://github.com/VirgilSecurity/chat-twilio-ios.git
+$ git clone https://github.com/VirgilSecurity/chat-twilio-ios.git -b v5
 
 $ cd chat-twilio-ios
 ```
