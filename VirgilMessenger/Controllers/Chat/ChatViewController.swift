@@ -31,7 +31,7 @@ import PKHUD
 class ChatViewController: BaseChatViewController {
     var messageSender: MessageSender!
     private var soundPlayer: AVAudioPlayer?
-    weak private var audioModel: DemoAudioMessageViewModel?
+    weak private var cachedAudioModel: DemoAudioMessageViewModel?
 
     var dataSource: DataSource! {
         didSet {
@@ -354,10 +354,10 @@ extension ChatViewController: AudioPlayableProtocol {
             self.soundPlayer?.volume = 1.0
             self.soundPlayer?.play()
 
-            if let audioModel = self.audioModel {
+            if let audioModel = self.cachedAudioModel {
                 audioModel.state.value = .stopped
             }
-            self.audioModel = model
+            self.cachedAudioModel = model
         } catch {
             Log.error("AVAudioPlayer error: \(error.localizedDescription)")
             self.alert("Playing error")
@@ -371,6 +371,10 @@ extension ChatViewController: AudioPlayableProtocol {
     func resume() {
         self.soundPlayer?.prepareToPlay()
         self.soundPlayer?.play()
+    }
+
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        self.cachedAudioModel = nil
     }
 }
 
