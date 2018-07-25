@@ -10,8 +10,8 @@ import ChattoAdditions
 import AVFoundation
 
 protocol AudioInputViewProtocol {
-    weak var delegate: AudioInputViewDelegate? { get set }
-    weak var presentingController: UIViewController? { get }
+    var delegate: AudioInputViewDelegate? { get set }
+    var presentingController: UIViewController? { get }
 }
 
 protocol AudioInputViewDelegate: class {
