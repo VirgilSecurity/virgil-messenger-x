@@ -86,7 +86,9 @@ open class AudioMessagePresenter<ViewModelBuilderT, InteractionHandlerT>
 
     public func updateCurrentCell() {
         if let cell = self.textCell, let decorationAttributes = self.decorationAttributes {
-            self.configureCell(cell, decorationAttributes: decorationAttributes, animated: self.itemVisibility != .appearing, additionalConfiguration: nil)
+            self.configureCell(cell, decorationAttributes: decorationAttributes,
+                               animated: self.itemVisibility != .appearing,
+                               additionalConfiguration: nil)
         }
     }
 

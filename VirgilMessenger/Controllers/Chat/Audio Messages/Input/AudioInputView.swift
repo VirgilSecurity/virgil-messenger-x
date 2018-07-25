@@ -208,7 +208,7 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
     }
 
     @objc func didFinishRecord(_ sender: Any) {
-        self.finishRecording(success: true)
+        self.finishRecording(success: self.time < 1 ? false : true)
     }
 }
 

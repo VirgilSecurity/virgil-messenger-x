@@ -55,7 +55,7 @@ class ChatParticipantsController: ViewController {
         let username = username.lowercased()
 
         guard username != TwilioHelper.sharedInstance.username else {
-            self.alert(withTitle: "You need to communicate with other people :)")
+            self.alert("You need to communicate with other people :)")
             return
         }
 
@@ -67,7 +67,7 @@ class ChatParticipantsController: ViewController {
         if (currentChannel.cards.contains {
             VirgilHelper.sharedInstance.buildCard($0)?.identity == username
         }) {
-            self.alert(withTitle: "This user is already member of channel")
+            self.alert("This user is already member of channel")
         } else {
             HUD.show(.progress)
             VirgilHelper.sharedInstance.getExportedCard(identity: username) { exportedCard, error in

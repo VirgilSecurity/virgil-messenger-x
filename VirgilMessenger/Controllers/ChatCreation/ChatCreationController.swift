@@ -84,14 +84,14 @@ class ChatCreationController: ViewController {
             let username = text.lowercased()
 
             guard username != TwilioHelper.sharedInstance.username else {
-                self.alert(withTitle: "You need to communicate with other people :)")
+                self.alert("You need to communicate with other people :)")
                 return
             }
 
             if (CoreDataHelper.sharedInstance.getChannels().contains {
                 ($0 as Channel).name == username
             }) {
-                self.alert(withTitle: "You already have this channel")
+                self.alert("You already have this channel")
             } else {
                 HUD.show(.progress)
                 VirgilHelper.sharedInstance.getExportedCard(identity: username) { exportedCard, error in
@@ -119,7 +119,7 @@ class ChatCreationController: ViewController {
             if (CoreDataHelper.sharedInstance.getChannels().contains {
                 ($0 as Channel).name == name
             }) {
-                self.alert(withTitle: "You already have this channel")
+                self.alert("You already have this channel")
             } else {
                 HUD.show(.progress)
                 var cards: [String] = []

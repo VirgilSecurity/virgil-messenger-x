@@ -353,6 +353,7 @@
 				16961B5B203B04E00084086E /* VirgilHelper */,
 				16277240203C60BE0086127C /* CoreDataHelper */,
 				16FB2DCF204D843300346FA0 /* TwilioHelper */,
+				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -543,7 +544,6 @@
 				423BDA7F1F97774F00C3EE9B /* Networking */,
 				166D3E5C1FB495DA0032BAAD /* CoreData */,
 				16961B4E203ADE850084086E /* Helpers */,
-				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
 				16961B4F203ADEDE0084086E /* Controllers */,
 				16961B50203ADFBA0084086E /* Utils */,
 				429228B51F96261000DCECDF /* AppDelegate.swift */,

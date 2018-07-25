@@ -130,7 +130,7 @@ class ChatViewController: BaseChatViewController {
         let username = username.lowercased()
 
         guard username != TwilioHelper.sharedInstance.username else {
-            self.alert(withTitle: "You need to communicate with other people :)")
+            self.alert("You need to communicate with other people :)")
             return
         }
 
@@ -142,7 +142,7 @@ class ChatViewController: BaseChatViewController {
         if (currentChannel.cards.contains {
             VirgilHelper.sharedInstance.buildCard($0)?.identity == username
         }) {
-            self.alert(withTitle: "This user is already member of channel")
+            self.alert("This user is already member of channel")
         } else {
             HUD.show(.progress)
             VirgilHelper.sharedInstance.getExportedCard(identity: username) { exportedCard, error in
@@ -227,8 +227,8 @@ class ChatViewController: BaseChatViewController {
         TwilioHelper.sharedInstance.deselectChannel()
     }
 
-    private func alert(withTitle: String) {
-        let alert = UIAlertController(title: title, message: withTitle, preferredStyle: .alert)
+    private func alert(_ message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 
         self.present(alert, animated: true)
@@ -360,7 +360,7 @@ extension ChatViewController: AudioPlayableProtocol {
             self.audioModel = model
         } catch {
             Log.error("AVAudioPlayer error: \(error.localizedDescription)")
-            self.alert(withTitle: "Playing error")
+            self.alert("Playing error")
         }
     }
 
