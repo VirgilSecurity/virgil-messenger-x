@@ -84,7 +84,7 @@ extension VirgilHelper {
     /// - Returns: Card
     /// - Throws: corresponding error if fails
     private func requestSignIn(identity: String, cardManager: CardManager) throws -> Card {
-        let request = try ServiceRequest(url: URL(string: self.signUpEndpint)!,
+        let request = try ServiceRequest(url: URL(string: self.signUpEndpoint)!,
                                          method: ServiceRequest.Method.post,
                                          headers: ["Content-Type": "application/json"],
                                          params: ["identity" : identity])

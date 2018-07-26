@@ -26,8 +26,8 @@ class VirgilHelper {
 
     let virgilJwtEndpoint = "http://localhost:3000/get-virgil-jwt/"
     let twilioJwtEndpoint = "http://localhost:3000/get-twilio-jwt/"
-    let signUpEndpint = "http://localhost:3000/signup/"
-    let signInEndpint = "http://localhost:3000/signin/"
+    let signUpEndpoint = "http://localhost:3000/signup/"
+    let signInEndpoint = "http://localhost:3000/signin/"
 
     private init() {
         self.crypto = VirgilCrypto()

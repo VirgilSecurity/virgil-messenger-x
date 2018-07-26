@@ -74,7 +74,7 @@ extension VirgilHelper {
     private func requestSignUp(rawCard: RawSignedModel, cardManager: CardManager) throws -> Card {
         let exportedRawCard = try rawCard.exportAsJson()
 
-        let request = try ServiceRequest(url: URL(string: self.signUpEndpint)!,
+        let request = try ServiceRequest(url: URL(string: self.signUpEndpoint)!,
                                          method: ServiceRequest.Method.post,
                                          headers: ["Content-Type": "application/json"],
                                          params: ["rawCard" : exportedRawCard])

@@ -23,6 +23,7 @@
 		1627723F203C5FB00086127C /* CoreDataHelper+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */; };
 		16277242203C60DB0086127C /* CoreDataHelper+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */; };
 		16277244203C62040086127C /* CoreDataHelper+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277243203C62040086127C /* CoreDataHelper+Messages.swift */; };
+		163C9EB42109FE320096A751 /* UITextView+ZeroPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C9EB32109FE320096A751 /* UITextView+ZeroPaddings.swift */; };
 		1644C07920B720F000073D99 /* View.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1644C07820B720F000073D99 /* View.xcassets */; };
 		1644C07B20B85AC500073D99 /* DemoPhotosChatInputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1644C07A20B85AC500073D99 /* DemoPhotosChatInputItem.swift */; };
 		164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */; };
@@ -147,6 +148,7 @@
 		16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Channel.swift"; sourceTree = "<group>"; };
 		16277243203C62040086127C /* CoreDataHelper+Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Messages.swift"; sourceTree = "<group>"; };
 		1627E4CF20BD522400D0AF36 /* VirgilCryptoAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCryptoAPI.framework; path = Carthage/Build/iOS/VirgilCryptoAPI.framework; sourceTree = "<group>"; };
+		163C9EB32109FE320096A751 /* UITextView+ZeroPaddings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+ZeroPaddings.swift"; sourceTree = "<group>"; };
 		1644C07820B720F000073D99 /* View.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = View.xcassets; sourceTree = "<group>"; };
 		1644C07A20B85AC500073D99 /* DemoPhotosChatInputItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoPhotosChatInputItem.swift; sourceTree = "<group>"; };
 		164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageModel.swift; sourceTree = "<group>"; };
@@ -383,6 +385,7 @@
 				16FB2DD4204D87F200346FA0 /* UIColor+RGB.swift */,
 				1658BA171FD97497005EF9C1 /* Utils+Date.swift */,
 				1696ADC620A0766600EF8C0D /* Utils+SafeSubscript.swift */,
+				163C9EB32109FE320096A751 /* UITextView+ZeroPaddings.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -727,6 +730,7 @@
 				164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */,
 				16FB2DCC204D806E00346FA0 /* DemoPhotoMessageViewModel.swift in Sources */,
 				16FCF2811FE46756000348BC /* Account+CoreDataProperties.swift in Sources */,
+				163C9EB42109FE320096A751 /* UITextView+ZeroPaddings.swift in Sources */,
 				166D3E5E1FB495F90032BAAD /* CoreDataHelper.swift in Sources */,
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
 				423BDA851F97774F00C3EE9B /* ServiceConnection.swift in Sources */,
