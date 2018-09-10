@@ -13,8 +13,6 @@
 		16013C7F20B2C99C0043EA29 /* AudioMessagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C7E20B2C99C0043EA29 /* AudioMessagePresenter.swift */; };
 		16013C8120B2CA760043EA29 /* AudioMessagePresenterBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C8020B2CA760043EA29 /* AudioMessagePresenterBuilder.swift */; };
 		16013C8320B30A180043EA29 /* DemoAudioMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C8220B30A180043EA29 /* DemoAudioMessageViewModel.swift */; };
-		16177AA220BED99B0050BB31 /* ChatCreation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16177AA120BED99B0050BB31 /* ChatCreation.storyboard */; };
-		16177AA420BEDB0C0050BB31 /* ChatCreationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16177AA320BEDB0C0050BB31 /* ChatCreationController.swift */; };
 		16177AA620C01F5C0050BB31 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16177AA520C01F5C0050BB31 /* ChannelType.swift */; };
 		161F9B8F20C5350C00878515 /* ChatParticipants.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 161F9B8E20C5350C00878515 /* ChatParticipants.storyboard */; };
 		161F9B9120C5354200878515 /* ChatParticipantsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161F9B9020C5354200878515 /* ChatParticipantsController.swift */; };
@@ -137,8 +135,6 @@
 		16013C7E20B2C99C0043EA29 /* AudioMessagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessagePresenter.swift; sourceTree = "<group>"; };
 		16013C8020B2CA760043EA29 /* AudioMessagePresenterBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessagePresenterBuilder.swift; sourceTree = "<group>"; };
 		16013C8220B30A180043EA29 /* DemoAudioMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAudioMessageViewModel.swift; sourceTree = "<group>"; };
-		16177AA120BED99B0050BB31 /* ChatCreation.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChatCreation.storyboard; sourceTree = "<group>"; };
-		16177AA320BEDB0C0050BB31 /* ChatCreationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCreationController.swift; sourceTree = "<group>"; };
 		16177AA520C01F5C0050BB31 /* ChannelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelType.swift; sourceTree = "<group>"; };
 		161F9B8E20C5350C00878515 /* ChatParticipants.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChatParticipants.storyboard; sourceTree = "<group>"; };
 		161F9B9020C5354200878515 /* ChatParticipantsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatParticipantsController.swift; sourceTree = "<group>"; };
@@ -275,15 +271,6 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		16177AA020BED9830050BB31 /* ChatCreation */ = {
-			isa = PBXGroup;
-			children = (
-				16177AA120BED99B0050BB31 /* ChatCreation.storyboard */,
-				16177AA320BEDB0C0050BB31 /* ChatCreationController.swift */,
-			);
-			path = ChatCreation;
-			sourceTree = "<group>";
-		};
 		161F9B8D20C534EF00878515 /* ChatParticipants */ = {
 			isa = PBXGroup;
 			children = (
@@ -366,7 +353,6 @@
 				16CA51001FC45E840042AF9D /* Start */,
 				16B69E061FA9D2CA00FE8A8D /* Authentication */,
 				423BDA761F97600A00C3EE9B /* ChatList */,
-				16177AA020BED9830050BB31 /* ChatCreation */,
 				16E22D871FA896BE008D32D9 /* Chat */,
 				161F9B8D20C534EF00878515 /* ChatParticipants */,
 				16CA51111FC5DA1F0042AF9D /* Settings */,
@@ -658,7 +644,6 @@
 				423BDA7A1F97600A00C3EE9B /* ChatList.storyboard in Resources */,
 				16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */,
 				429228C01F96261000DCECDF /* LaunchScreen.storyboard in Resources */,
-				16177AA220BED99B0050BB31 /* ChatCreation.storyboard in Resources */,
 				1644C07920B720F000073D99 /* View.xcassets in Resources */,
 				429228BD1F96261000DCECDF /* Assets.xcassets in Resources */,
 				4280C0D61F97341300075B3A /* SendingStatusCollectionViewCell.xib in Resources */,
@@ -788,7 +773,6 @@
 				4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */,
 				16FB2DD5204D87F200346FA0 /* UIColor+RGB.swift in Sources */,
 				429228E51F963DBE00DCECDF /* TwilioHelper+Delegate.swift in Sources */,
-				16177AA420BEDB0C0050BB31 /* ChatCreationController.swift in Sources */,
 				16FB2DCE204D832F00346FA0 /* TwilioHelper+Channel.swift in Sources */,
 				16FCF27E1FE46756000348BC /* Channel+CoreDataClass.swift in Sources */,
 				16013C7D20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift in Sources */,

@@ -131,7 +131,69 @@ class ChatListViewController: ViewController {
     }
 
     @IBAction func didTapAdd(_ sender: Any) {
-        self.performSegue(withIdentifier: "goToChatCreation", sender: self)
+        guard currentReachabilityStatus != .notReachable else {
+            let controller = UIAlertController(title: self.title, message: "Please check your network connection", preferredStyle: .alert)
+            controller.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(controller, animated: true)
+
+            return
+        }
+
+        let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
+
+        alertController.addTextField(configurationHandler: {
+            $0.placeholder = "Username"
+            $0.delegate = self
+            $0.keyboardAppearance = UIKeyboardAppearance.dark
+        })
+
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            guard let username = alertController.textFields?.first?.text else {
+                return
+            }
+            self.addChat(withUsername: username)
+        }))
+
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in }))
+
+        self.present(alertController, animated: true)
+    }
+
+    private func addChat(withUsername username: String) {
+        let username = username.lowercased()
+
+        guard username != TwilioHelper.sharedInstance.username else {
+            self.alert("You need to communicate with other people :)")
+            return
+        }
+
+        if (CoreDataHelper.sharedInstance.getChannels().contains {
+            ($0 as Channel).name == username
+        }) {
+            self.alert("You already have this channel")
+        } else {
+            HUD.show(.progress)
+            VirgilHelper.sharedInstance.getExportedCard(identity: username) { exportedCard, error in
+                guard let exportedCard = exportedCard, error == nil else {
+                    Log.error("Getting card failed")
+                    HUD.flash(.error)
+                    return
+                }
+                TwilioHelper.sharedInstance.createSingleChannel(with: username) { error in
+                    if error == nil {
+                        _ = CoreDataHelper.sharedInstance.createChannel(type: .single,
+                                                                        name: username,
+                                                                        cards: [exportedCard])
+                        self.noChatsView.isHidden = true
+                        self.tableView.reloadData()
+                        
+                        HUD.flash(.success)
+                    } else {
+                        HUD.flash(.error)
+                    }
+                }
+            }
+        }
     }
 
     deinit {
