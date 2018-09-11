@@ -171,7 +171,6 @@ class ChatViewController: BaseChatViewController {
     override func viewWillDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self.dataSource)
         NotificationCenter.default.removeObserver(self)
-        TwilioHelper.sharedInstance.deselectChannel()
     }
 
     var chatInputPresenter: BasicChatInputBarPresenter!
@@ -224,7 +223,6 @@ class ChatViewController: BaseChatViewController {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-        TwilioHelper.sharedInstance.deselectChannel()
     }
 
     private func alert(_ message: String) {
