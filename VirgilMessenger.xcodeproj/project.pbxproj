@@ -45,6 +45,7 @@
 		16AE1D7A2044315B005DF777 /* DemoPhotoMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D772044315B005DF777 /* DemoPhotoMessageModel.swift */; };
 		16AE1D7B2044315B005DF777 /* DemoPhotoMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */; };
 		16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
+		16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */; };
 		16CA51021FC45E9A0042AF9D /* Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51011FC45E9A0042AF9D /* Start.swift */; };
 		16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA51031FC45EA40042AF9D /* Start.storyboard */; };
 		16CA51061FC468370042AF9D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51051FC468370042AF9D /* Constants.swift */; };
@@ -166,6 +167,7 @@
 		16AE1D772044315B005DF777 /* DemoPhotoMessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageModel.swift; sourceTree = "<group>"; };
 		16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageHandler.swift; sourceTree = "<group>"; };
 		16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
+		16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
 		16CA51011FC45E9A0042AF9D /* Start.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Start.swift; sourceTree = "<group>"; };
 		16CA51031FC45EA40042AF9D /* Start.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Start.storyboard; sourceTree = "<group>"; };
 		16CA51051FC468370042AF9D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -372,6 +374,7 @@
 				1658BA171FD97497005EF9C1 /* Utils+Date.swift */,
 				1696ADC620A0766600EF8C0D /* Utils+SafeSubscript.swift */,
 				163C9EB32109FE320096A751 /* UITextView+ZeroPaddings.swift */,
+				16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -765,6 +768,7 @@
 				4280C0D51F97341300075B3A /* SendingStatusCollectionViewCell.swift in Sources */,
 				4280C0E31F97364F00075B3A /* ChatViewController.swift in Sources */,
 				1627723F203C5FB00086127C /* CoreDataHelper+Account.swift in Sources */,
+				16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */,
 				16CA51021FC45E9A0042AF9D /* Start.swift in Sources */,
 				429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */,
 				164E173820AB1BED00AB1AAD /* AudioChatInputItem.swift in Sources */,
