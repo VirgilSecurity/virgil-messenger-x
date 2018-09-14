@@ -148,7 +148,7 @@ class ChatListViewController: ViewController {
         })
 
         alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-            guard let username = alertController.textFields?.first?.text else {
+            guard let username = alertController.textFields?.first?.text, !username.isEmpty else {
                 return
             }
             self.addChat(withUsername: username)
