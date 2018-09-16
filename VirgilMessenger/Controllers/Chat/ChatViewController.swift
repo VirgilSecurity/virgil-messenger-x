@@ -300,7 +300,7 @@ extension ChatViewController {
                 let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
                 controller.addAction(UIAlertAction(title: "OK", style: .default))
                 self?.present(controller, animated: true)
-            } else {
+            } else if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 self?.dataSource.addTextMessage(text)
             }
         }
