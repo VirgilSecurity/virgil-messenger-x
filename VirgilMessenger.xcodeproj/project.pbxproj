@@ -17,7 +17,7 @@
 		161F9B8F20C5350C00878515 /* ChatParticipants.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 161F9B8E20C5350C00878515 /* ChatParticipants.storyboard */; };
 		161F9B9120C5354200878515 /* ChatParticipantsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161F9B9020C5354200878515 /* ChatParticipantsController.swift */; };
 		161F9B9320C53F4500878515 /* ChatParticipantsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161F9B9220C53F4500878515 /* ChatParticipantsCell.swift */; };
-		1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld */; };
+		1621B8491FB333B100D1ABC1 /* VirgilMessenger-1.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-1.xcdatamodeld */; };
 		1627723F203C5FB00086127C /* CoreDataHelper+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */; };
 		16277242203C60DB0086127C /* CoreDataHelper+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */; };
 		16277244203C62040086127C /* CoreDataHelper+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277243203C62040086127C /* CoreDataHelper+Messages.swift */; };
@@ -333,7 +333,7 @@
 				16FCF27B1FE46756000348BC /* Channel+CoreDataProperties.swift */,
 				16FCF27C1FE46756000348BC /* Account+CoreDataClass.swift */,
 				16FCF27D1FE46756000348BC /* Account+CoreDataProperties.swift */,
-				1621B8471FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld */,
+				1621B8471FB333B100D1ABC1 /* VirgilMessenger-1.xcdatamodeld */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -730,7 +730,7 @@
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
 				16013C8120B2CA760043EA29 /* AudioMessagePresenterBuilder.swift in Sources */,
 				164E173220AAEF1900AB1AAD /* DemoAudioMessageHandler.swift in Sources */,
-				1621B8491FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld in Sources */,
+				1621B8491FB333B100D1ABC1 /* VirgilMessenger-1.xcdatamodeld in Sources */,
 				16FCF27F1FE46756000348BC /* Channel+CoreDataProperties.swift in Sources */,
 				16177AA620C01F5C0050BB31 /* ChannelType.swift in Sources */,
 				164E173520AB0BE600AB1AAD /* AudioMessageViewModel.swift in Sources */,
@@ -1003,13 +1003,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		1621B8471FB333B100D1ABC1 /* VirgilMessenger.xcdatamodeld */ = {
+		1621B8471FB333B100D1ABC1 /* VirgilMessenger-1.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
 				1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */,
 			);
 			currentVersion = 1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */;
-			path = VirgilMessenger.xcdatamodeld;
+			path = "VirgilMessenger-1.xcdatamodeld";
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
