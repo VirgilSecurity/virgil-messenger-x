@@ -10,6 +10,8 @@ import UIKit
 import CoreData
 import VirgilSDK
 import VirgilCryptoApiImpl
+import Fabric
+import Crashlytics
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+
         UIApplication.shared.statusBarStyle = .lightContent
         UIApplication.shared.delegate?.window??.rootViewController = UIStoryboard(name: StartViewController.name, bundle: Bundle.main).instantiateInitialViewController()!
 
@@ -36,6 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         CoreDataHelper.initialize()
+
+        Fabric.with([Crashlytics.self])
 
         return true
     }

@@ -24,9 +24,9 @@ class VirgilHelper {
     private(set) var cardManager: CardManager?
     private var channelKeys: [VirgilPublicKey] = []
 
-    let virgilJwtEndpoint = "https://messenger-dev.virgilsecurity.com/get-virgil-jwt/"
-    let twilioJwtEndpoint = "https://messenger-dev.virgilsecurity.com/get-twilio-jwt/"
-    let signUpEndpoint = "https://messenger-dev.virgilsecurity.com/signup/"
+    let virgilJwtEndpoint = "https://messenger.virgilsecurity.com/get-virgil-jwt/"
+    let twilioJwtEndpoint = "https://messenger.virgilsecurity.com/get-twilio-jwt/"
+    let signUpEndpoint = "https://messenger.virgilsecurity.com/signup/"
 
     private init() {
         self.crypto = VirgilCrypto()

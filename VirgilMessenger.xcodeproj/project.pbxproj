@@ -53,6 +53,12 @@
 		16CA51131FC5DA3B0042AF9D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51121FC5DA3B0042AF9D /* SettingsViewController.swift */; };
 		16CDE19E20C95B5F00D6430B /* VSCCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16CDE19D20C95B5F00D6430B /* VSCCrypto.framework */; };
 		16D6CB3A1FDFEECC00302A05 /* Registration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16D6CB391FDFEECC00302A05 /* Registration.storyboard */; };
+		16D70729214C05D300452A16 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D70728214C05D300452A16 /* Crashlytics.framework */; };
+		16D7072B214C05E500452A16 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D7072A214C05E500452A16 /* Fabric.framework */; };
+		16D7072C214C060000452A16 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D70726214BF60E00452A16 /* Security.framework */; };
+		16D7072E214C060B00452A16 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D7072D214C060B00452A16 /* libz.tbd */; };
+		16D70730214C061400452A16 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D7072F214C061400452A16 /* libc++.tbd */; };
+		16D70732214C061C00452A16 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D70731214C061C00452A16 /* SystemConfiguration.framework */; };
 		16F30D4B1FDAE190006C3DEB /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */; };
 		16F30D4D1FDAE6E6006C3DEB /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */; };
 		16F30D4F1FDAE91D006C3DEB /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */; };
@@ -175,6 +181,12 @@
 		16CA51121FC5DA3B0042AF9D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		16CDE19D20C95B5F00D6430B /* VSCCrypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCCrypto.framework; path = Carthage/Build/iOS/VSCCrypto.framework; sourceTree = "<group>"; };
 		16D6CB391FDFEECC00302A05 /* Registration.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Registration.storyboard; sourceTree = "<group>"; };
+		16D70726214BF60E00452A16 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		16D70728214C05D300452A16 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		16D7072A214C05E500452A16 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		16D7072D214C060B00452A16 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		16D7072F214C061400452A16 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		16D70731214C061C00452A16 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
@@ -229,8 +241,6 @@
 		429228E21F963DBE00DCECDF /* TwilioHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwilioHelper.swift; sourceTree = "<group>"; };
 		429228E31F963DBE00DCECDF /* TwilioHelper+Delegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Delegate.swift"; sourceTree = "<group>"; };
 		429228EA1F96405800DCECDF /* Chat.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Chat.storyboard; sourceTree = "<group>"; };
-		42B416391FBAFC7D00AFDF80 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
-		42B4163A1FBAFC7D00AFDF80 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		42E8F8731F978A51007CB39F /* PKHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PKHUD.framework; path = Carthage/Build/iOS/PKHUD.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -239,12 +249,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16D70732214C061C00452A16 /* SystemConfiguration.framework in Frameworks */,
+				16D70730214C061400452A16 /* libc++.tbd in Frameworks */,
+				16D7072E214C060B00452A16 /* libz.tbd in Frameworks */,
+				16D7072C214C060000452A16 /* Security.framework in Frameworks */,
 				16CDE19E20C95B5F00D6430B /* VSCCrypto.framework in Frameworks */,
 				16638EDB20BD98FF00D051B7 /* VirgilCryptoAPI.framework in Frameworks */,
 				167C49CE20BD577A006B49B7 /* VirgilCrypto.framework in Frameworks */,
+				16D7072B214C05E500452A16 /* Fabric.framework in Frameworks */,
 				429228CD1F96287B00DCECDF /* Chatto.framework in Frameworks */,
 				429228D71F96334E00DCECDF /* TwilioChatClient.framework in Frameworks */,
 				429228CF1F96287B00DCECDF /* VirgilSDK.framework in Frameworks */,
+				16D70729214C05D300452A16 /* Crashlytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -552,11 +568,15 @@
 		429228C71F96287A00DCECDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				16D70731214C061C00452A16 /* SystemConfiguration.framework */,
+				16D7072F214C061400452A16 /* libc++.tbd */,
+				16D7072D214C060B00452A16 /* libz.tbd */,
+				16D70726214BF60E00452A16 /* Security.framework */,
 				16CDE19D20C95B5F00D6430B /* VSCCrypto.framework */,
 				1627E4CF20BD522400D0AF36 /* VirgilCryptoAPI.framework */,
-				42B4163A1FBAFC7D00AFDF80 /* Crashlytics.framework */,
-				42B416391FBAFC7D00AFDF80 /* Fabric.framework */,
 				42E8F8731F978A51007CB39F /* PKHUD.framework */,
+				16D7072A214C05E500452A16 /* Fabric.framework */,
+				16D70728214C05D300452A16 /* Crashlytics.framework */,
 				429228D11F96324B00DCECDF /* TwilioChatClient.framework */,
 				429228C91F96287A00DCECDF /* Chatto.framework */,
 				429228C81F96287A00DCECDF /* ChattoAdditions.framework */,
@@ -590,7 +610,7 @@
 				429228D91F96334E00DCECDF /* Embed Frameworks */,
 				16F8BC861FAA05E70020094B /* CopyFiles */,
 				429228DA1F96339900DCECDF /* ShellScript */,
-				16319BE72088E60200B09856 /* ShellScript */,
+				16319BE72088E60200B09856 /* Remove unused architectures */,
 			);
 			buildRules = (
 			);
@@ -661,13 +681,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		16319BE72088E60200B09856 /* ShellScript */ = {
+		16319BE72088E60200B09856 /* Remove unused architectures */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Remove unused architectures";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
