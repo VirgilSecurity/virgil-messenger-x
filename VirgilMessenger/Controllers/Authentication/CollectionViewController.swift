@@ -49,7 +49,7 @@ extension CollectionViewController {
 
         guard currentReachabilityStatus != .notReachable else {
             PKHUD.sharedHUD.hide() { _ in
-                let controller = UIAlertController(title: self.title, message: "Please check your network connection", preferredStyle: .alert)
+                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
                 controller.addAction(UIAlertAction(title: "OK", style: .default))
 
                 self.present(controller, animated: true)
@@ -83,7 +83,7 @@ extension CollectionViewController {
     }
 
     private func alert(_ message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 
         self.present(alert, animated: true)

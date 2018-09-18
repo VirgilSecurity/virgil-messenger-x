@@ -23,10 +23,16 @@ open class AudioChatInputItem {
     }
 
     public static func createDefaultButtonAppearance() -> TabInputButtonAppearance {
+        var imageUnselected = UIImage(named: "icon-record-voice-unselected", in: Bundle(for: AudioChatInputItem.self), compatibleWith: nil)!
+        imageUnselected = imageUnselected.resize(to: CGSize(width: imageUnselected.size.width - 5, height: imageUnselected.size.height - 9))
+
+        var imageSelected = UIImage(named: "icon-record-voice-selected", in: Bundle(for: AudioChatInputItem.self), compatibleWith: nil)!
+        imageSelected = imageSelected.resize(to: CGSize(width: imageSelected.size.width - 5, height: imageSelected.size.height - 9))
+
         let images: [UIControlStateWrapper: UIImage] = [
-            UIControlStateWrapper(state: .normal): UIImage(named: "icon-record-voice-unselected", in: Bundle(for: AudioChatInputItem.self), compatibleWith: nil)!,
-            UIControlStateWrapper(state: .selected): UIImage(named: "icon-record-voice-selected", in: Bundle(for: AudioChatInputItem.self), compatibleWith: nil)!,
-            UIControlStateWrapper(state: .highlighted): UIImage(named: "icon-record-voice-selected", in: Bundle(for: AudioChatInputItem.self), compatibleWith: nil)!
+            UIControlStateWrapper(state: .normal): imageUnselected,
+            UIControlStateWrapper(state: .selected): imageSelected,
+            UIControlStateWrapper(state: .highlighted): imageSelected
         ]
         return TabInputButtonAppearance(images: images, size: nil)
     }

@@ -106,7 +106,6 @@ Add new one!</string>
                         <outlet property="tableView" destination="OLu-Yi-HTK" id="p1B-2j-laF"/>
                         <segue destination="tSb-ds-G5u" kind="show" identifier="goToChat" id="28z-YN-Bk9"/>
                         <segue destination="cdC-mY-49V" kind="show" identifier="goToAuth" animates="NO" id="TfX-du-Bf4"/>
-                        <segue destination="RQq-5K-QMM" kind="presentation" identifier="goToChatCreation" id="AzX-XR-kGq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DDd-4J-wX9" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -210,17 +209,7 @@ Add new one!</string>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="re4-ce-Aav" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1433" y="-1119"/>
-        </scene>
-        <!--ChatCreation-->
-        <scene sceneID="1D5-5e-9ri">
-            <objects>
-                <viewControllerPlaceholder storyboardName="ChatCreation" id="RQq-5K-QMM" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="ttc-Np-7qW"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="fXx-Q2-2fK" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1469" y="-844"/>
+            <point key="canvasLocation" x="1362" y="-1083"/>
         </scene>
         <!--Authentication-->
         <scene sceneID="dV1-zg-E74">
@@ -228,7 +217,7 @@ Add new one!</string>
                 <viewControllerPlaceholder storyboardName="Authentication" id="cdC-mY-49V" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nmc-ZR-b88" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1491" y="-975"/>
+            <point key="canvasLocation" x="1419" y="-874"/>
         </scene>
     </scenes>
     <resources>

@@ -99,7 +99,7 @@ class ChatViewController: BaseChatViewController {
 
     @objc func didTapAdd(_ sender: Any) {
         guard currentReachabilityStatus != .notReachable else {
-            let controller = UIAlertController(title: self.title, message: "Please check your network connection", preferredStyle: .alert)
+            let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
             controller.addAction(UIAlertAction(title: "OK", style: .default))
             self.present(controller, animated: true)
 
@@ -171,7 +171,6 @@ class ChatViewController: BaseChatViewController {
     override func viewWillDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self.dataSource)
         NotificationCenter.default.removeObserver(self)
-        TwilioHelper.sharedInstance.deselectChannel()
     }
 
     var chatInputPresenter: BasicChatInputBarPresenter!
@@ -224,11 +223,10 @@ class ChatViewController: BaseChatViewController {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-        TwilioHelper.sharedInstance.deselectChannel()
     }
 
     private func alert(_ message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 
         self.present(alert, animated: true)
@@ -302,7 +300,7 @@ extension ChatViewController {
                 let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
                 controller.addAction(UIAlertAction(title: "OK", style: .default))
                 self?.present(controller, animated: true)
-            } else {
+            } else if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 self?.dataSource.addTextMessage(text)
             }
         }

@@ -22,7 +22,7 @@ class StartViewController: ViewController {
 
             guard currentReachabilityStatus != .notReachable else {
                 PKHUD.sharedHUD.hide() { _ in
-                    let controller = UIAlertController(title: self.title, message: "Please check your network connection", preferredStyle: .alert)
+                    let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
                     controller.addAction(UIAlertAction(title: "OK", style: .default))
 
                     self.present(controller, animated: true)

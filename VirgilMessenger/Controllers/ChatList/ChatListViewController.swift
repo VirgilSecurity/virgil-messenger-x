@@ -73,29 +73,29 @@ class ChatListViewController: ViewController {
     }
 
     private func configure(completion: @escaping () -> ()) {
-            let channels = TwilioHelper.sharedInstance.channels.subscribedChannels()
-            let group = DispatchGroup()
+        let channels = TwilioHelper.sharedInstance.channels.subscribedChannels()
+        let group = DispatchGroup()
 
-            for i in 0..<channels.count {
-                let channel = channels[i]
-                guard let channelName = TwilioHelper.sharedInstance.getName(of: channel) else {
-                    continue
+        for i in 0..<channels.count {
+            let channel = channels[i]
+            guard let channelName = TwilioHelper.sharedInstance.getName(of: channel) else {
+                continue
+            }
+            if let coreChannel = CoreDataHelper.sharedInstance.getChannel(withName: channelName) {
+                while channel.messages == nil { sleep(1) }
+
+                group.enter()
+                self.setLastMessages(twilioChannel: channel, coreChannel: coreChannel) {
+                    group.leave()
                 }
-                if let coreChannel = CoreDataHelper.sharedInstance.getChannel(withName: channelName) {
-                    while channel.messages == nil { sleep(1) }
 
-                    group.enter()
-                    self.setLastMessages(twilioChannel: channel, coreChannel: coreChannel) {
-                        group.leave()
-                    }
-
-                    group.enter()
-                    self.updateGroupChannelMembers(twilioChannel: channel, coreChannel: coreChannel) {
-                        group.leave()
-                    }
-                } else {
-                    Log.error("Get Channel failed")
+                group.enter()
+                self.updateGroupChannelMembers(twilioChannel: channel, coreChannel: coreChannel) {
+                    group.leave()
                 }
+            } else {
+                Log.error("Get Channel failed")
+            }
         }
 
         group.notify(queue: .main) {
@@ -131,7 +131,79 @@ class ChatListViewController: ViewController {
     }
 
     @IBAction func didTapAdd(_ sender: Any) {
-        self.performSegue(withIdentifier: "goToChatCreation", sender: self)
+        guard currentReachabilityStatus != .notReachable else {
+            let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
+            controller.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(controller, animated: true)
+
+            return
+        }
+
+        let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
+
+        alertController.addTextField(configurationHandler: {
+            $0.placeholder = "Username"
+            $0.delegate = self
+            $0.keyboardAppearance = UIKeyboardAppearance.dark
+        })
+
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            guard let username = alertController.textFields?.first?.text, !username.isEmpty else {
+                return
+            }
+            self.addChat(withUsername: username)
+        }))
+
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in }))
+
+        self.present(alertController, animated: true)
+    }
+
+    private func addChat(withUsername username: String) {
+        guard currentReachabilityStatus != .notReachable else {
+            let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
+            controller.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(controller, animated: true)
+
+            return
+        }
+
+        let username = username.lowercased()
+
+        guard username != TwilioHelper.sharedInstance.username else {
+            self.alert("You need to communicate with other people :)")
+            return
+        }
+
+        if (CoreDataHelper.sharedInstance.getChannels().contains {
+            ($0 as! Channel).name == username
+        }) {
+            self.alert("You already have this channel")
+        } else {
+            HUD.show(.progress)
+            VirgilHelper.sharedInstance.getExportedCard(identity: username) { exportedCard, error in
+                guard let exportedCard = exportedCard, error == nil else {
+                    Log.error("Getting card failed")
+                    self.alert("User not found")
+                    HUD.hide()
+                    return
+                }
+                TwilioHelper.sharedInstance.createSingleChannel(with: username) { error in
+                    if error == nil {
+                        _ = CoreDataHelper.sharedInstance.createChannel(type: .single,
+                                                                        name: username,
+                                                                        cards: [exportedCard])
+                        self.noChatsView.isHidden = true
+                        self.tableView.reloadData()
+                        
+                        HUD.flash(.success)
+                    } else {
+                        self.alert("Something went wrong")
+                        HUD.hide()
+                    }
+                }
+            }
+        }
     }
 
     deinit {

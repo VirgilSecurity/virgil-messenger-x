@@ -38,7 +38,11 @@ public class SlidingDataSource<Element> {
     private var itemsOffset: Int
     public var itemsInWindow: [Element] {
         let offset = self.windowOffset - self.itemsOffset
-        return Array(items[offset..<offset + self.windowCount])
+        let a = offset < 0 ? 0 : offset
+        var b = a + self.windowCount + abs(offset)
+        b = b > items.count ? items.count : b
+
+        return Array(items[a..<b])
     }
 
     init(count: Int, pageSize: Int, itemGenerator: @escaping ((Int, NSOrderedSet) -> Element)) {
