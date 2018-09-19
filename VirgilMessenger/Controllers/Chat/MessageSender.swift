@@ -54,7 +54,7 @@ public class MessageSender {
             }
         case is DemoPhotoMessageModel:
             let photoMessage = message as! DemoPhotoMessageModel
-            guard let photoData = UIImageJPEGRepresentation(photoMessage.image, 0.0) else {
+            guard let photoData = photoMessage.image.jpegData(compressionQuality: 0.0) else {
                 Log.error("Converting image to JPEG failed")
                 return
             }
@@ -134,7 +134,7 @@ public class MessageSender {
                     if result.isSuccessful() {
                         self.updateMessage(message, status: .success)
 
-                        guard let imageData = UIImageJPEGRepresentation(message.image, 0.0) else {
+                        guard let imageData = message.image.jpegData(compressionQuality: 0.0) else {
                             Log.error("failed getting data from image")
                             return
                         }

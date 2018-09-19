@@ -181,7 +181,7 @@ class ChatViewController: BaseChatViewController {
         appearance.textInputAppearance.textColor = .white
         appearance.textInputAppearance.font = appearance.textInputAppearance.font.withSize(CGFloat(20))
         appearance.sendButtonAppearance.titleColors = [
-            UIControlStateWrapper(state: UIControlState.disabled) : UIColor(rgb: 0x585A60)
+            UIControlStateWrapper(state: UIControl.State.disabled) : UIColor(rgb: 0x585A60)
         ]
         appearance.sendButtonAppearance.font = appearance.textInputAppearance.font
 
@@ -344,7 +344,7 @@ extension ChatViewController {
 
 extension ChatViewController: AudioPlayableProtocol {
     func play(model: DemoAudioMessageViewModel) {
-        try? AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
+        try? AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
         do {
             self.soundPlayer = try AVAudioPlayer(data: model.audio)
             self.soundPlayer?.delegate = self

@@ -20,8 +20,8 @@ public protocol AudioBubbleViewStyleProtocol {
 public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, BackgroundSizingQueryable {
     let audioMessageText: NSAttributedString = NSAttributedString(string: "Audio Message",
                                                                   attributes: [
-                                                                    NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14),
-                                                                    NSAttributedStringKey.foregroundColor: UIColor(rgb: 0x8E9094)])
+                                                                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14),
+                                                                    NSAttributedString.Key.foregroundColor: UIColor(rgb: 0x8E9094)])
     public var preferredMaxLayoutWidth: CGFloat = 0
     public var animationDuration: CFTimeInterval = 0.33
     public var viewContext: ViewContext = .normal {
@@ -229,10 +229,10 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
 
         if self.textView.textColor != textColor {
             self.textView.textColor = textColor
-            self.textView.linkTextAttributes = [
-                NSAttributedStringKey.foregroundColor.rawValue: textColor,
-                NSAttributedStringKey.underlineStyle.rawValue: NSUnderlineStyle.styleSingle.rawValue
-            ]
+            self.textView.linkTextAttributes = convertToOptionalNSAttributedStringKeyDictionary([
+                NSAttributedString.Key.foregroundColor.rawValue: textColor,
+                NSAttributedString.Key.underlineStyle.rawValue: NSUnderlineStyle.single.rawValue
+            ])
             needsToUpdateText = true
         }
 
@@ -254,8 +254,8 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         let result = NSMutableAttributedString()
         result.append(self.audioMessageText)
         result.append(NSAttributedString(string: timerString, attributes: [
-                                        NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14),
-                                        NSAttributedStringKey.foregroundColor: UIColor.white]))
+                                        NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14),
+                                        NSAttributedString.Key.foregroundColor: UIColor.white]))
 
         return result
     }
@@ -363,8 +363,8 @@ private final class AudioBubbleLayoutModel {
     private func replicateUITextViewNSTextStorage() -> NSTextStorage {
         // See https://github.com/badoo/Chatto/issues/129
         return NSTextStorage(string: self.layoutContext.text, attributes: [
-            NSAttributedStringKey.font: self.layoutContext.font,
-            NSAttributedStringKey(rawValue: "NSOriginalFont"): self.layoutContext.font
+            NSAttributedString.Key.font: self.layoutContext.font,
+            NSAttributedString.Key(rawValue: "NSOriginalFont"): self.layoutContext.font
             ])
     }
 }
@@ -411,4 +411,10 @@ private final class ChatMessageTextView: UITextViewZeroPaddings {
             // See https://github.com/badoo/Chatto/pull/144
         }
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

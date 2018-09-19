@@ -10,7 +10,7 @@ import Chatto
 import ChattoAdditions
 
 open class AudioMessageCollectionViewCellDefaultStyle: AudioBubbleViewStyleProtocol {
-    typealias Class = AudioMessageCollectionViewCellDefaultStyle
+    public typealias Class = AudioMessageCollectionViewCellDefaultStyle
 
     public struct BubbleImages {
         let incomingTail: () -> UIImage

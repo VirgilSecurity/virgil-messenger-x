@@ -9,7 +9,7 @@
 import ChattoAdditions
 
 open class AudioChatInputItem {
-    typealias Class = AudioChatInputItem
+    public typealias Class = AudioChatInputItem
     public var audioInputHandler: ((Data) -> Void)?
     public var microphonePermissionHandler: (() -> Void)?
     public weak var presentingController: UIViewController?
