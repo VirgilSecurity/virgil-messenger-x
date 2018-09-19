@@ -61,29 +61,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
     func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
         Log.debug("Channel added")
-        if channel.status == TCHChannelStatus.invited {
-            channel.join { channelResult in
-                if channelResult.isSuccessful() {
-                    Log.debug("Successfully accepted invite.")
-                    let identity = self.getCompanion(ofChannel: channel)
-                    Log.debug("identity: \(identity)")
-                    VirgilHelper.sharedInstance.getCard(withIdentity: identity) { card, error in
-                        guard let card = card, error == nil else {
-                            Log.error("failed to add new channel card")
-                            return
-                        }
-                        _ = CoreDataHelper.sharedInstance.createChannel(withName: identity, card: card.exportData())
-                        Log.debug("new card added")
-                        NotificationCenter.default.post(
-                            name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-                            object: self,
-                            userInfo: [:])
-                    }
-                } else {
-                    Log.error("Failed to accept invite.")
-                }
-            }
-        }
+        self.join(channel: channel)
     }
 
     func chatClient(_ client: TwilioChatClient, channelDeleted channel: TCHChannel) {
@@ -94,35 +72,57 @@ extension TwilioHelper: TwilioChatClientDelegate {
     }
 
     func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
-        Log.debug("message added")
-        guard self.currentChannel != nil else {
-            self.processMessage(channel: channel, message: message)
-            return
-        }
-        if getCompanion(ofChannel: channel) == getCompanion(ofChannel: self.currentChannel) {
-            Log.debug("it's from selected channel")
-            if message.author != self.username {
-                Log.debug("author is not me")
-                NotificationCenter.default.post(
-                    name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue),
-                    object: self,
-                    userInfo: [
-                        TwilioHelper.NotificationKeys.Message.rawValue: message
-                    ])
-            }
+        Log.debug("Message added")
+        if let currentChannel = self.currentChannel,
+            self.getName(of: channel) == self.getName(of: currentChannel) {
+                Log.debug("it's from selected channel")
+                if message.author != self.username {
+                    Log.debug("author is not me")
+                    NotificationCenter.default.post(
+                        name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue),
+                        object: self,
+                        userInfo: [
+                            TwilioHelper.NotificationKeys.Message.rawValue: message
+                        ])
+                }
         } else {
             self.processMessage(channel: channel, message: message)
         }
     }
 
+    func chatClient(_ client: TwilioChatClient, channel: TCHChannel, memberJoined member: TCHMember) {
+        if self.getType(of: channel) == ChannelType.group,
+            let name = self.getName(of: channel),
+            let coreChannel = CoreDataHelper.sharedInstance.getChannel(withName: name) {
+                Log.debug("New member joined")
+                guard let identity = member.identity else {
+                    Log.error("Member identity is unaccessable")
+                    return
+                }
+                VirgilHelper.sharedInstance.getExportedCard(identity: identity) { exportedCard, error in
+                    guard error == nil, let exportedCard = exportedCard else {
+                        return
+                    }
+                    CoreDataHelper.sharedInstance.addMember(card: exportedCard, to: coreChannel)
+                    guard let cards = CoreDataHelper.sharedInstance.currentChannel?.cards else {
+                        Log.error("Fetching current channel cards failed")
+                        return
+                    }
+                    VirgilHelper.sharedInstance.setChannelKeys(cards)
+                }
+        }
+    }
+
     private func processMessage(channel: TCHChannel, message: TCHMessage) {
         guard let messageDate = message.dateUpdatedAsDate else {
-            Log.error("got corrupted message")
+            Log.error("Got corrupted message")
             return
         }
-        guard let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: self.getCompanion(ofChannel: channel)),
-              let cardString = coreDataChannel.card else {
-            Log.error("can't get core data channel")
+        guard let channelName = self.getName(of: channel) else {
+            return
+        }
+        guard let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: channelName) else {
+            Log.error("Can't get core data channel")
             return
         }
 
@@ -130,18 +130,39 @@ extension TwilioHelper: TwilioChatClientDelegate {
             self.getMedia(from: message) { encryptedData in
                 guard let encryptedData = encryptedData,
                     let encryptedString = String(data: encryptedData, encoding: .utf8),
-                    let decryptedString = VirgilHelper.sharedInstance.decryptPFS(cardString: cardString, encrypted: encryptedString),
+                    let decryptedString = VirgilHelper.sharedInstance.decrypt(encryptedString),
                     let decryptedData = Data(base64Encoded: decryptedString) else {
-                        Log.error("decryption process of media message failed")
+                        Log.error("Decryption process of media message failed")
                         return
                 }
-               if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
-                    CoreDataHelper.sharedInstance.createMediaMessage(forChannel: coreDataChannel, withData: decryptedData,
-                                                                     isIncoming: true, date: messageDate)
+                coreDataChannel.lastMessagesDate = messageDate
+
+                if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
+                    switch message.mediaType {
+                    case MediaType.photo.rawValue:
+                        coreDataChannel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.photo.rawValue]
+                            ?? "corrupted type"
+                        CoreDataHelper.sharedInstance.createMediaMessage(for: coreDataChannel, with: decryptedData,
+                                                                         isIncoming: true, date: messageDate, type: .photo)
+                    case MediaType.audio.rawValue:
+                        coreDataChannel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.audio.rawValue]
+                            ?? "corrupted type"
+                        CoreDataHelper.sharedInstance.createMediaMessage(for: coreDataChannel, with: decryptedData,
+                                                                         isIncoming: true, date: messageDate, type: .audio)
+                    default:
+                        Log.error("Missing or unknown mediaType")
+                        return
+                    }
                 }
+                NotificationCenter.default.post(
+                    name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+                    object: self,
+                    userInfo: [
+                        TwilioHelper.NotificationKeys.Message.rawValue: message
+                    ])
             }
         } else if let messageBody = message.body {
-            guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: cardString, encrypted: messageBody) else {
+            guard let decryptedMessageBody = VirgilHelper.sharedInstance.decrypt(messageBody) else {
                 return
             }
 
@@ -149,15 +170,16 @@ extension TwilioHelper: TwilioChatClientDelegate {
             coreDataChannel.lastMessagesDate = messageDate
 
             if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
-                CoreDataHelper.sharedInstance.createTextMessage(forChannel: coreDataChannel, withBody: decryptedMessageBody, isIncoming: true, date: messageDate)
+                CoreDataHelper.sharedInstance.createTextMessage(for: coreDataChannel, withBody: decryptedMessageBody,
+                                                                isIncoming: true, date: messageDate)
             }
             Log.debug("Receiving " + decryptedMessageBody)
+            NotificationCenter.default.post(
+                name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+                object: self,
+                userInfo: [
+                    TwilioHelper.NotificationKeys.Message.rawValue: message
+                ])
         }
-        NotificationCenter.default.post(
-            name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
-            object: self,
-            userInfo: [
-                TwilioHelper.NotificationKeys.Message.rawValue: message
-            ])
     }
 }

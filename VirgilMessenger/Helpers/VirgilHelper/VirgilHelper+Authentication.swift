@@ -7,40 +7,47 @@
 //
 
 import Foundation
+import VirgilSDK
+import VirgilCryptoApiImpl
 
 extension VirgilHelper {
-    func initializeAccount(withCardId cardId: String, identity: String, completion: @escaping (Error?) -> ()) {
-        self.queue.async {
-            do {
-                let virgilToken = try self.getVirgilToken(withCardId: cardId, identity: identity)
-
-                self.getTwilioToken(virgilToken: virgilToken) { token, error in
-                    guard let token = token, error == nil else {
-                        completion(error)
-                        return
-                    }
-                    TwilioHelper.authorize(username: identity, device: "iPhone")
-                    TwilioHelper.sharedInstance.initialize(token: token) { error in
-                        completion(error)
-                    }
-                }
-            } catch {
-                completion(VirgilHelperError.gettingVirgilTokenFailed)
+    /// Initializes Twilio SDK
+    ///
+    /// - Parameters:
+    ///   - cardId: Virgil card identifier
+    ///   - identity: identity of user
+    ///   - completion: completion handler, called with error if failed
+    func initializeTwilio(cardId: String, identity: String, completion: @escaping (Error?) -> ()) {
+        self.getTwilioToken(identity: identity) { token, error in
+            guard let token = token, error == nil else {
+                completion(error)
                 return
+            }
+            TwilioHelper.authorize(username: identity, device: "iPhone")
+            TwilioHelper.sharedInstance.initialize(token: token) { error in
+                completion(error)
             }
         }
     }
 
-    private func getTwilioToken(virgilToken: String, completion: @escaping (String?, Error?) -> ()) {
+    private func getTwilioToken(identity: String, completion: @escaping (String?, Error?) -> ()) {
         self.queue.async {
+            guard let authHeader = self.makeAuthHeader() else {
+                completion(nil, VirgilHelperError.gettingTwilioTokenFailed)
+                return
+            }
+
             do {
-                let virgilToken = "bearer " + virgilToken
-                let requestForTwilioToken = try ServiceRequest(url: URL(string: self.twilioServer + "v1/tokens/twilio")!, method: ServiceRequest.Method.get, headers: ["Authorization": virgilToken])
+                let requestForTwilioToken = try ServiceRequest(url: URL(string: self.twilioJwtEndpoint)!,
+                                                               method: ServiceRequest.Method.post,
+                                                               headers: ["Content-Type": "application/json",
+                                                                         "Authorization": authHeader],
+                                                               params: ["identity": identity])
                 let responseWithTwilioToken = try self.connection.send(requestForTwilioToken)
 
                 guard let responseWithTwilioTokenBody = responseWithTwilioToken.body,
                     let twilioTokenJson = try JSONSerialization.jsonObject(with: responseWithTwilioTokenBody, options: []) as? [String: Any],
-                    let twilioToken = twilioTokenJson["twilioToken"] as? String
+                    let twilioToken = twilioTokenJson["token"] as? String
                     else {
                         throw VirgilHelperError.gettingTwilioTokenFailed
                 }
@@ -53,52 +60,65 @@ extension VirgilHelper {
         }
     }
 
-    private func getVirgilToken(withCardId: String, identity: String) throws -> String {
-        let requestForGrantId = try ServiceRequest(url: URL(string: self.authServer + "v4/authorization-grant/actions/get-challenge-message")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["resource_owner_virgil_card_id" : withCardId])
+    func setCardManager(identity: String) {
+        let accessTokenProvider = CachingJwtProvider(renewTokenCallback: { tokenContext, completion in
+            guard let authHeader = self.makeAuthHeader() else {
+                completion(nil, VirgilHelperError.gettingJwtFailed)
+                return
+            }
+            let jwtRequest = try? ServiceRequest(url: URL(string: self.virgilJwtEndpoint)!,
+                                                 method: ServiceRequest.Method.post,
+                                                 headers: ["Content-Type": "application/json",
+                                                           "Authorization": authHeader],
+                                                 params: ["identity": identity])
+            guard let request = jwtRequest,
+                let jwtResponse = try? self.connection.send(request),
+                let responseBody = jwtResponse.body,
+                let json = try? JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
+                let jwtStr = json?["token"] as? String else {
+                    Log.error("Getting JWT failed")
+                    completion(nil, VirgilHelperError.gettingJwtFailed)
+                    return
+            }
+            completion(jwtStr, nil)
+        })
 
-        let responseWithGrantId = try self.connection.send(requestForGrantId)
+        let cardCrypto = VirgilCardCrypto()
+        guard let verifier = VirgilCardVerifier(cardCrypto: cardCrypto) else {
+            Log.error("VirgilCardVerifier init failed")
+            return
+        }
+        let params = CardManagerParams(cardCrypto: cardCrypto,
+                                       accessTokenProvider: accessTokenProvider,
+                                       cardVerifier: verifier)
+        self.set(cardManager: CardManager(params: params))
+    }
 
-        let entry = try self.keyStorage.loadKeyEntry(withName: identity)
+    /// Returns authentication header for requests to backend
+    ///
+    /// - Returns: string in CardId.Timestamp.Signature(CardId.Timestamp) format if succed, nil otherwise
+    private func makeAuthHeader() -> String? {
+        guard let cardId = self.selfCard?.identifier else {
+            Log.error("Missing self card")
+            return nil
+        }
+        let stringToSign = "\(cardId).\(Int(Date().timeIntervalSince1970))"
 
-        guard let responseWithGrantIdBody = responseWithGrantId.body,
-            let jsonWithGrantId = try JSONSerialization.jsonObject(with: responseWithGrantIdBody, options: []) as? [String: Any],
-            let encryptedMessage = jsonWithGrantId["encrypted_message"] as? String,
-            let authGrantId = jsonWithGrantId["authorization_grant_id"] as? String,
-            let data = Data(base64Encoded: encryptedMessage),
-            let privateKey = self.crypto.importPrivateKey(from: entry.value),
-            let authPublicKeyData = Data(base64Encoded: self.authPublicKey),
-            let importedPublicKey = self.crypto.importPublicKey(from: authPublicKeyData)
-            else {
-                throw VirgilHelperError.gettingVirgilTokenFailed
+        guard let dataToSign = stringToSign.data(using: .utf8) else {
+            Log.error("String to Data failed")
+            return nil
         }
 
-        let decodedMessage = try self.crypto.decrypt(data, with: privateKey)
-
-        let newEncryptedMessage = try self.crypto.encrypt(decodedMessage, for: [importedPublicKey])
-        let message = newEncryptedMessage.base64EncodedString()
-
-        let requestForCode = try ServiceRequest(url: URL(string: self.authServer + "v4/authorization-grant/" + authGrantId + "/actions/acknowledge")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["encrypted_message": message])
-
-        let responseWithCode = try self.connection.send(requestForCode)
-
-        guard let responseWithCodeBody = responseWithCode.body,
-            let jsonWithCode = try JSONSerialization.jsonObject(with: responseWithCodeBody, options: []) as? [String: Any],
-            let code = jsonWithCode["code"] as? String
-            else {
-                throw VirgilHelperError.gettingVirgilTokenFailed
+        guard let privateKey = self.privateKey else {
+            Log.error("Missing private key")
+            return nil
         }
 
-        let requestForVirgilToken = try ServiceRequest(url: URL(string: self.authServer + "v4/authorization/actions/obtain-access-token")!, method: ServiceRequest.Method.post, headers: ["Content-Type":"application/json"], params: ["grant_type": "access_code", "code": code])
-
-        let responseWithVirgilToken = try self.connection.send(requestForVirgilToken)
-
-        guard let responseWithVirgilTokenBody = responseWithVirgilToken.body,
-            let jsonWithVirgilToken = try JSONSerialization.jsonObject(with: responseWithVirgilTokenBody, options: []) as? [String: Any],
-            let accessToken = jsonWithVirgilToken["access_token"] as? String
-            else {
-                throw VirgilHelperError.gettingVirgilTokenFailed
+        guard let signature = try? self.crypto.generateSignature(of: dataToSign, using: privateKey) else {
+            Log.error("Generating signature failed")
+            return nil
         }
 
-        return accessToken
+        return "Bearer " + stringToSign + "." + signature.base64EncodedString()
     }
 }

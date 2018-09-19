@@ -15,11 +15,12 @@ extension Channel {
         return NSFetchRequest<Channel>(entityName: "Channel")
     }
 
-    @NSManaged public var card: String?
+    @NSManaged public var cards: [String]
     @NSManaged public var name: String?
     @NSManaged public var numColorPair: Int32
     @NSManaged public var account: Account?
     @NSManaged public var message: NSOrderedSet?
+    @NSManaged public var type: String?
 }
 
 // MARK: Generated accessors for message

@@ -6,69 +6,133 @@
 //  Copyright © 2018 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import TwilioChatClient
 
 extension TwilioHelper {
     func setLastMessage(of messages: TCHMessages, channel: Channel, completion: @escaping () -> ()) {
         messages.getLastWithCount(UInt(1)) { result, messages in
-            if let messages = messages,
+            guard result.isSuccessful(),
+                let messages = messages,
                 let message = messages.last,
-                let messageBody = message.body,
-                !message.hasMedia(),
-                let messageDate = message.dateUpdatedAsDate,
-                message.author != TwilioHelper.sharedInstance.username {
-                    guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card,
-                                                                                            encrypted: messageBody) else {
+                let date = message.dateUpdatedAsDate else {
+                    Log.error("get last twilio message failed with: \(result.error?.localizedDescription ?? "unknown error")")
+                    completion()
+                    return
+            }
+            channel.lastMessagesDate = date
+
+            if message.hasMedia() {
+                switch message.mediaType {
+                case MediaType.photo.rawValue:
+                    channel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.photo.rawValue] ?? "corrupted type"
+                case MediaType.audio.rawValue:
+                    channel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.audio.rawValue] ?? "corrupted type"
+                default:
+                    Log.error("Missing or unknown media type")
+                }
+            } else if let body = message.body {
+                if message.author != TwilioHelper.sharedInstance.username {
+                    guard let decryptedBody = VirgilHelper.sharedInstance.decrypt(body) else {
+                        completion()
                         return
                     }
-                    channel.lastMessagesBody = decryptedMessageBody
-                    channel.lastMessagesDate = messageDate
-            } else if messages?.last?.hasMedia() ?? false {
-                channel.lastMessagesBody = "image.jpg"
-                channel.lastMessagesDate = messages?.last?.dateUpdatedAsDate
+                    channel.lastMessagesBody = decryptedBody
+                }
+            } else {
+                Log.error("Empty twilio message")
             }
 
             completion()
         }
     }
 
-    func decryptFirstMessage(of messages: TCHMessages, channel: Channel, saved: Int,
-                             completion: @escaping (TCHMessage?, String?, Data?, Date?) -> ()) {
-        messages.getBefore(UInt(saved), withCount: 1) { result, oneMessages in
-            guard let oneMessages = oneMessages,
-                let message = oneMessages.first,
-                let messageDate = message.dateUpdatedAsDate,
-                message.author != TwilioHelper.sharedInstance.username else {
-                    completion(nil, nil, nil, nil)
-                    return
+    func updateMessages(count: Int, completion: @escaping (Int, Error?) -> ()) {
+        guard let coreMessagesCount = CoreDataHelper.sharedInstance.currentChannel?.message?.count else {
+            Log.error("Get CoreData messages count failed")
+            DispatchQueue.main.async {
+                completion(0, NSError())
             }
-            if message.hasMedia() {
-                self.getMedia(from: message) { encryptedData in
-                    guard let encryptedData = encryptedData,
-                        let encryptedString = String(data: encryptedData, encoding: .utf8),
-                        let decryptedString = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card,
-                                                                                     encrypted: encryptedString),
-                        let decryptedData = Data(base64Encoded: decryptedString) else {
-                            Log.error("decryption process of first message failed")
-                            completion(nil, nil, nil, nil)
-                            return
+            return
+        }
+
+        let needToLoadCount = count - coreMessagesCount
+
+        guard let messages = TwilioHelper.sharedInstance.currentChannel.messages else {
+            Log.error("Twilio: nil messages in selected channel")
+            DispatchQueue.main.async {
+                completion(0, NSError())
+            }
+            return
+        }
+
+        if needToLoadCount > 0 {
+            messages.getLastWithCount(UInt(needToLoadCount), completion: { result, messages in
+                guard let messages = messages else {
+                    Log.error("Twilio can't get last messages")
+                    DispatchQueue.main.async {
+                        completion(-1, NSError())
                     }
-                    completion(message, nil, decryptedData, messageDate)
-                }
-            } else if let messageBody = message.body {
-                guard let decryptedMessageBody = VirgilHelper.sharedInstance.decryptPFS(cardString: channel.card,
-                                                                                        encrypted: messageBody) else {
                     return
                 }
+                TwilioHelper.sharedInstance.queue.async {
+                    for message in messages {
+                        let isIncoming = message.author == TwilioHelper.sharedInstance.username ? false : true
+                        guard let messageDate = message.dateUpdatedAsDate else {
+                            Log.error("wrong message atributes")
+                            CoreDataHelper.sharedInstance.createTextMessage(withBody: "Message corrupted",
+                                                                            isIncoming: isIncoming, date: Date())
+                            continue
+                        }
+                        let makeCorruptedMessage = {
+                            CoreDataHelper.sharedInstance.createTextMessage(withBody: "Message encrypted",
+                                                                            isIncoming: isIncoming, date: messageDate)
+                        }
 
-                channel.lastMessagesBody = decryptedMessageBody
-                channel.lastMessagesDate = messageDate
+                        if message.hasMedia() {
+                            TwilioHelper.sharedInstance.getMediaSync(from: message) { encryptedData in
+                                guard let encryptedData = encryptedData,
+                                    let encryptedString = String(data: encryptedData, encoding: .utf8),
+                                    let decryptedString = VirgilHelper.sharedInstance.decrypt(encryptedString),
+                                    let decryptedData = Data(base64Encoded: decryptedString) else {
+                                        Log.error("decryption of media message failed")
+                                        makeCorruptedMessage()
+                                        return
+                                }
 
-                completion(message, decryptedMessageBody, nil, messageDate)
-            } else {
-                Log.error("Empty first message")
-                 completion(nil, nil, nil, nil)
+                                switch message.mediaType {
+                                case MediaType.photo.rawValue:
+                                    CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: isIncoming,
+                                                                                     date: messageDate, type: .photo)
+                                case MediaType.audio.rawValue:
+                                    CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: isIncoming,
+                                                                                     date: messageDate, type: .audio)
+                                default:
+                                    Log.error("Missing or unknown mediaType")
+                                    makeCorruptedMessage()
+                                    return
+                                }
+                            }
+                        } else if let messageBody = message.body {
+                            guard let decryptedMessageBody = VirgilHelper.sharedInstance.decrypt(messageBody) else {
+                                makeCorruptedMessage()
+                                continue
+                            }
+                            CoreDataHelper.sharedInstance.createTextMessage(withBody: decryptedMessageBody,
+                                                                            isIncoming: isIncoming, date: messageDate)
+                        } else {
+                            Log.error("Corrupted Message")
+                            makeCorruptedMessage()
+                        }
+                    }
+                    DispatchQueue.main.async {
+                        completion(needToLoadCount, nil)
+                    }
+                }
+            })
+        } else {
+            DispatchQueue.main.async {
+                completion(0, nil)
             }
         }
     }

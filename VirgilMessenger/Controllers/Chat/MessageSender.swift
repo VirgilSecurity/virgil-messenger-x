@@ -26,7 +26,6 @@ import Foundation
 import Chatto
 import ChattoAdditions
 import TwilioChatClient
-import VirgilSDKPFS
 
 public protocol DemoMessageModelProtocol: MessageModelProtocol {
     var status: MessageStatus { get set }
@@ -42,31 +41,43 @@ public class MessageSender {
     }
 
     public func sendMessage(_ message: DemoMessageModelProtocol) {
-        if let textMessage = message as? DemoTextMessageModel {
-            VirgilHelper.sharedInstance.encryptPFS(message: textMessage.body) { encrypted in
-                guard let encrypted = encrypted else {
-                    return
-                }
+        switch message {
+        case is DemoTextMessageModel:
+            let textMessage = message as! DemoTextMessageModel
+
+            var text = textMessage.body
+            if CoreDataHelper.sharedInstance.currentChannel?.type == ChannelType.group.rawValue {
+                text = "\(TwilioHelper.sharedInstance.username): \(textMessage.body)"
+            }
+            if let encrypted = VirgilHelper.sharedInstance.encrypt(text) {
                 self.messageStatus(ciphertext: encrypted, message: textMessage)
             }
-        } else if let photoMessage = message as? DemoPhotoMessageModel {
+        case is DemoPhotoMessageModel:
+            let photoMessage = message as! DemoPhotoMessageModel
             guard let photoData = UIImageJPEGRepresentation(photoMessage.image, 0.0) else {
                 Log.error("Converting image to JPEG failed")
                 return
             }
-            VirgilHelper.sharedInstance.encryptPFS(message: photoData.base64EncodedString()) { encrypted in
-                guard let encrypted = encrypted else {
-                    return
-                }
+            if let encrypted = VirgilHelper.sharedInstance.encrypt(photoData.base64EncodedString()) {
                 guard let cipherData = encrypted.data(using: .utf8) else {
                     Log.error("String to Data failed")
                     return
                 }
-                self.messageStatus(cipherphoto: cipherData, message: photoMessage)
+
+                self.messageStatus(of: photoMessage, with: cipherData)
             }
-        } else {
+        case is DemoAudioMessageModel:
+            let audioMessage = message as! DemoAudioMessageModel
+            if let encrypted = VirgilHelper.sharedInstance.encrypt(audioMessage.audio.base64EncodedString()) {
+                guard let cipherData = encrypted.data(using: .utf8) else {
+                    Log.error("String to Data failed")
+                    return
+                }
+
+                self.messageStatus(of: audioMessage, with: cipherData)
+            }
+        default:
             Log.error("Unknown message model")
-            return
         }
     }
 
@@ -84,7 +95,8 @@ public class MessageSender {
                 messages.sendMessage(with: options) { result, msg in
                     if result.isSuccessful() {
                         self.updateMessage(message, status: .success)
-                        CoreDataHelper.sharedInstance.createTextMessage(withBody: message.body, isIncoming: false, date: message.date)
+                        CoreDataHelper.sharedInstance.createTextMessage(withBody: message.body, isIncoming: false,
+                                                                        date: message.date)
                     } else {
                         Log.error("error sending: Twilio cause")
                         self.updateMessage(message, status: .failed)
@@ -96,19 +108,19 @@ public class MessageSender {
         }
     }
 
-    private func messageStatus(cipherphoto: Data, message: DemoPhotoMessageModel) {
+    private func messageStatus(of message: DemoPhotoMessageModel, with cipherphoto: Data) {
         switch message.status {
         case .success:
             break
         case .failed:
             self.updateMessage(message, status: .sending)
-            self.messageStatus(cipherphoto: cipherphoto, message: message)
+            self.messageStatus(of: message, with: cipherphoto)
         case .sending:
             if let messages = TwilioHelper.sharedInstance.currentChannel.messages {
                 let inputStream = InputStream(data: cipherphoto)
                 let options = TCHMessageOptions().withMediaStream(inputStream,
-                                                                  contentType: "text/rtf",
-                                                                  defaultFilename: "image.rtf",
+                                                                  contentType: TwilioHelper.MediaType.photo.rawValue,
+                                                                  defaultFilename: "image.bmp",
                                                                   onStarted: {
                                                                     Log.debug("Media upload started")
                 },
@@ -126,7 +138,51 @@ public class MessageSender {
                             Log.error("failed getting data from image")
                             return
                         }
-                        CoreDataHelper.sharedInstance.createMediaMessage(withData: imageData, isIncoming: false, date: message.date)
+                        CoreDataHelper.sharedInstance.createMediaMessage(with: imageData, isIncoming: false,
+                                                                         date: message.date, type: .photo)
+                    } else {
+                        if let error = result.error {
+                            Log.error("error sending: \(error.localizedDescription) with \(error.code)")
+                        } else {
+                            Log.error("error sending: Twilio service error")
+                        }
+                        self.updateMessage(message, status: .failed)
+                    }
+                }
+            } else {
+                Log.error("can't get channel messages")
+            }
+        }
+    }
+
+    private func messageStatus(of message: DemoAudioMessageModel, with cipherdata: Data) {
+        switch message.status {
+        case .success:
+            break
+        case .failed:
+            self.updateMessage(message, status: .sending)
+            self.messageStatus(of: message, with: cipherdata)
+        case .sending:
+            if let messages = TwilioHelper.sharedInstance.currentChannel.messages {
+                let inputStream = InputStream(data: cipherdata)
+                let options = TCHMessageOptions().withMediaStream(inputStream,
+                                                                  contentType: TwilioHelper.MediaType.audio.rawValue,
+                                                                  defaultFilename: "audio.mp4",
+                                                                  onStarted: {
+                                                                    Log.debug("Media upload started")
+                },
+                                                                  onProgress: { (bytes) in
+                                                                    Log.debug("Media upload progress: \(bytes)")
+                }) { (mediaSid) in
+                    Log.debug("Media upload completed")
+                }
+                Log.debug("sending audio")
+                messages.sendMessage(with: options) { result, msg in
+                    if result.isSuccessful() {
+                        self.updateMessage(message, status: .success)
+
+                        CoreDataHelper.sharedInstance.createMediaMessage(with: message.audio, isIncoming: false,
+                                                                         date: message.date, type: .audio)
                     } else {
                         if let error = result.error {
                             Log.error("error sending: \(error.localizedDescription) with \(error.code)")

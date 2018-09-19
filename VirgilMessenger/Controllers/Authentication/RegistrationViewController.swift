@@ -93,7 +93,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
 
         guard currentReachabilityStatus != .notReachable else {
             PKHUD.sharedHUD.hide() { _ in
-                let controller = UIAlertController(title: self.title, message: "Please check your network connection", preferredStyle: .alert)
+                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
                 controller.addAction(UIAlertAction(title: "OK", style: .default))
 
                 self.present(controller, animated: true)
@@ -101,13 +101,13 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
             return
         }
 
-        VirgilHelper.sharedInstance.signUp(identity: username) { error in
-            guard error == nil else {
-                var message: String?
+        VirgilHelper.sharedInstance.signUp(identity: username) { exportedCard, error in
+            guard error == nil, let exportedCard = exportedCard else {
+                var message = "Something went wrong"
                 if let err = error as? VirgilHelper.UserFriendlyError {
                     message = err.rawValue
                 }
-                message = message ?? "Something went wrong"
+
                 PKHUD.sharedHUD.hide() { _ in
                     let controller = UIAlertController(title: self.title, message: message, preferredStyle: .alert)
                     controller.addAction(UIAlertAction(title: "OK", style: .default))
@@ -116,8 +116,10 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
                 }
                 return
             }
+            CoreDataHelper.sharedInstance.createAccount(withIdentity: username, exportedCard: exportedCard)
             UserDefaults.standard.set(username, forKey: "last_username")
-           PKHUD.sharedHUD.hide(true) { _ in
+
+            PKHUD.sharedHUD.hide(true) { _ in
                 self.goToChatList()
             }
         }
@@ -138,20 +140,10 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
 
 }
 
-extension RegistrationViewController: UITextFieldDelegate {
+extension RegistrationViewController {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.signupButtonPressed(self)
 
         return false
-    }
-
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let text = textField.text else { return true }
-        if string.rangeOfCharacter(from: ChatConstants.characterSet.inverted) != nil {
-            Log.debug("string contains special characters")
-            return false
-        }
-        let newLength = text.count + string.count - range.length
-        return newLength <= ChatConstants.limitLength
     }
 }

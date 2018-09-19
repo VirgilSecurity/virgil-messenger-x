@@ -7,95 +7,100 @@
 //
 
 import Foundation
-import VirgilSDKPFS
+import VirgilSDK
 
 extension VirgilHelper {
-    func signIn(identity: String, completion: @escaping (Error?) -> ()) {
-        Log.debug("Signing in")
+    /// Loads private key, initializes Twilio
+    ///
+    /// - Parameters:
+    ///   - identity: identity of user
+    ///   - completion: completion handler, called with error if failed
+    func signIn(identity: String, card exportedCard: String?, completion: @escaping (Error?) -> ()) {
+        self.queue.async {
+            Log.debug("Signing in")
 
-        if !keyStorage.existsKeyEntry(withName: identity) {
-            DispatchQueue.main.async {
-                completion(UserFriendlyError.noUserOnDevice)
-            }
-            Log.error("Key not found")
-            return
-        }
+            self.setCardManager(identity: identity)
+            do {
+                guard let cardManager = self.cardManager else {
+                    throw VirgilHelperError.missingCardManager
+                }
 
-        guard CoreDataHelper.sharedInstance.loadAccount(withIdentity: identity) else {
-            DispatchQueue.main.async {
-                completion(UserFriendlyError.noUserOnDevice)
-            }
-            return
-        }
+                if !self.keyStorage.existsKeyEntry(withName: identity) {
+                    Log.error("Key not found")
+                    throw UserFriendlyError.noUserOnDevice
+                }
 
-        let exportedCard = CoreDataHelper.sharedInstance.getAccountCard()
-
-        if let exportedCard = exportedCard, let card = VSSCard(data: exportedCard) {
-            self.signInHelper(card: card, identity: identity) { error in
+                if let exportedCard = exportedCard {
+                    let card = try cardManager.importCard(fromBase64Encoded: exportedCard)
+                    self.signInHelper(card: card, identity: identity) { error in
+                        DispatchQueue.main.async {
+                            completion(error)
+                        }
+                    }
+                } else {
+                    let card = try self.requestSignIn(identity: identity, cardManager: cardManager)
+                    self.signInHelper(card: card, identity: identity) { error in
+                        DispatchQueue.main.async {
+                            completion(error)
+                        }
+                    }
+                }
+            } catch {
+                Log.error("Signing in: \(error.localizedDescription)")
                 DispatchQueue.main.async {
                     completion(error)
-                }
-            }
-        } else {
-            getCard(withIdentity: identity) { card, error in
-                guard error == nil, let card = card else {
-                    Log.error("Signing in: can't get virgil card: \(error?.localizedDescription ?? "")")
-                    DispatchQueue.main.async {
-                        completion(error)
-                    }
-                    return
-                }
-
-                self.signInHelper(card: card, identity: identity) { error in
-                    DispatchQueue.main.async {
-                        completion(error)
-                    }
                 }
             }
         }
     }
 
-    private func signInHelper(card: VSSCard, identity: String, completion: @escaping (Error?) -> ()) {
-        guard let publicKey = self.crypto.importPublicKey(from: card.publicKeyData) else {
-            DispatchQueue.main.async {
-                completion(VirgilHelperError.importingKeyFailed)
-            }
-            return
-        }
-        self.setPublicKey(publicKey)
-
-        var resultError: Error? = nil
-        let dispatchGroup = DispatchGroup()
-
-        dispatchGroup.enter()
-        self.initializeAccount(withCardId: card.identifier, identity: identity) { error in
-            resultError = error
-            dispatchGroup.leave()
-        }
+    private func signInHelper(card: Card, identity: String, completion: @escaping (Error?) -> ()) {
+        self.set(selfCard: card)
         do {
             let entry = try self.keyStorage.loadKeyEntry(withName: identity)
-            guard let key = self.crypto.importPrivateKey(from: entry.value) else {
-                throw VirgilHelperError.importingKeyFailed
-            }
-           self.setPrivateKey(key)
-
-            dispatchGroup.enter()
-            self.initializePFS(withIdentity: identity, card: card, privateKey: key) { error in
-                //FIXME
-                //resultError = error
-                dispatchGroup.leave()
-            }
+            let key = try self.crypto.importPrivateKey(from: entry.value)
+            self.set(privateKey: key)
+            self.setCardManager(identity: identity)
         } catch {
-            resultError = error
+            Log.error("\(error.localizedDescription)")
+            completion(error)
         }
 
-        dispatchGroup.notify(queue: .main) {
-            if let error = resultError {
+        self.initializeTwilio(cardId: card.identifier, identity: identity) { error in
+            if let error = error {
                 Log.error("Signing in: \(error.localizedDescription)")
             }
             DispatchQueue.main.async {
-                completion(resultError)
+                completion(error)
             }
         }
+    }
+
+    /// Returns card with given identity using backend
+    ///
+    /// - Parameters:
+    ///   - identity: identity of user
+    ///   - cardManager: Card Manager instance
+    /// - Returns: Card
+    /// - Throws: corresponding error if fails
+    private func requestSignIn(identity: String, cardManager: CardManager) throws -> Card {
+        let request = try ServiceRequest(url: URL(string: self.signUpEndpoint)!,
+                                         method: ServiceRequest.Method.post,
+                                         headers: ["Content-Type": "application/json"],
+                                         params: ["identity" : identity])
+        let response = try self.connection.send(request)
+
+        guard let responseBody = response.body,
+            let json = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any] else {
+                Log.error("Json parsing failed")
+                throw VirgilHelperError.jsonParsingFailed
+        }
+
+        guard let exportedCard = json["virgil_card"] as? [String: Any] else {
+            Log.error("Error while signing up: server didn't return card")
+            throw VirgilHelperError.jsonParsingFailed
+        }
+
+        return try cardManager.importCard(fromJson: exportedCard)
     }
 }

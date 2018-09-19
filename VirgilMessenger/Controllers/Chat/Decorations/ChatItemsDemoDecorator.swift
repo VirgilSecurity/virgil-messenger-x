@@ -72,7 +72,7 @@ final class ChatItemsDemoDecorator: ChatItemsDecoratorProtocol {
                     decoratedChatItems.append(dateTimeStamp)
                 }
             }
-
+            
             decoratedChatItems.append(
                 DecoratedChatItem(
                     chatItem: chatItem,

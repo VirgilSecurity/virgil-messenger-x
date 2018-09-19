@@ -28,7 +28,9 @@ import ChattoAdditions
 
 class MessageFactory {
     class func createTextMessageModel(_ uid: String, text: String, isIncoming: Bool, status: MessageStatus, date: Date) -> DemoTextMessageModel {
-        let messageModel = createMessageModel(uid, isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: status, date: date)
+        let messageModel = createMessageModel(uid, isIncoming: isIncoming,
+                                              type: TextMessageModel<MessageModel>.chatItemType,
+                                              status: status, date: date)
         let textMessageModel = DemoTextMessageModel(messageModel: messageModel, text: text)
         return textMessageModel
     }
@@ -36,15 +38,28 @@ class MessageFactory {
     class func createMessageModel(_ uid: String, isIncoming: Bool, type: String, status: MessageStatus, date: Date) -> MessageModel {
         let senderId = isIncoming ? "1" : "2"
         let messageStatus = status
-        let messageModel = MessageModel(uid: uid, senderId: senderId, type: type, isIncoming: isIncoming, date: date, status: messageStatus)
+        let messageModel = MessageModel(uid: uid, senderId: senderId,
+                                        type: type, isIncoming: isIncoming,
+                                        date: date, status: messageStatus)
         return messageModel
     }
 
     class func createPhotoMessageModel(_ uid: String, image: UIImage, size: CGSize, isIncoming: Bool, status: MessageStatus, date: Date) -> DemoPhotoMessageModel {
-        let messageModel = createMessageModel(uid, isIncoming: isIncoming, type: PhotoMessageModel<MessageModel>.chatItemType, status: status, date: date)
+        let messageModel = createMessageModel(uid, isIncoming: isIncoming,
+                                              type: PhotoMessageModel<MessageModel>.chatItemType,
+                                              status: status, date: date)
         let photoMessageModel = DemoPhotoMessageModel(messageModel: messageModel, imageSize: size, image: image)
 
         return photoMessageModel
+    }
+
+    class func createAudioMessageModel(_ uid: String, audio: Data, duration: TimeInterval, isIncoming: Bool, status: MessageStatus, date: Date) -> DemoAudioMessageModel {
+        let messageModel = createMessageModel(uid, isIncoming: isIncoming,
+                                              type: AudioMessageModel<MessageModel>.chatItemType,
+                                              status: status, date: date)
+        let audioMessageModel = DemoAudioMessageModel(messageModel: messageModel, audio: audio, duration: duration)
+
+        return audioMessageModel
     }
 }
 
@@ -57,5 +72,11 @@ extension TextMessageModel {
 extension PhotoMessageModel {
     static var chatItemType: ChatItemType {
         return "photo"
+    }
+}
+
+extension AudioMessageModel {
+    static var chatItemType: ChatItemType {
+        return "audio"
     }
 }

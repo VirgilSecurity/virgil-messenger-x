@@ -6,7 +6,6 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import UIKit
 import PKHUD
 
@@ -23,7 +22,7 @@ class StartViewController: ViewController {
 
             guard currentReachabilityStatus != .notReachable else {
                 PKHUD.sharedHUD.hide() { _ in
-                    let controller = UIAlertController(title: self.title, message: "Please check your network connection", preferredStyle: .alert)
+                    let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
                     controller.addAction(UIAlertAction(title: "OK", style: .default))
 
                     self.present(controller, animated: true)
@@ -33,7 +32,15 @@ class StartViewController: ViewController {
                 return
             }
 
-            VirgilHelper.sharedInstance.signIn(identity: username) { error in
+            guard CoreDataHelper.sharedInstance.loadAccount(withIdentity: username) else {
+                PKHUD.sharedHUD.hide() { _ in
+                    self.goToLogin()
+                }
+                return
+            }
+            let exportedCard = CoreDataHelper.sharedInstance.getAccountCard()
+
+            VirgilHelper.sharedInstance.signIn(identity: username, card: exportedCard) { error in
                 guard error == nil else {
                     PKHUD.sharedHUD.hide(true) { _ in
                         self.goToLogin()
