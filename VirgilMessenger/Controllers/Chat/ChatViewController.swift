@@ -32,6 +32,15 @@ class ChatViewController: BaseChatViewController {
     var messageSender: MessageSender!
     private var soundPlayer: AVAudioPlayer?
     weak private var cachedAudioModel: DemoAudioMessageViewModel?
+    private var statusBarHidden: Bool = false {
+        didSet {
+            self.setNeedsStatusBarAppearanceUpdate()
+        }
+    }
+
+    override var prefersStatusBarHidden: Bool {
+        return statusBarHidden
+    }
 
     var dataSource: DataSource! {
         didSet {
@@ -392,13 +401,13 @@ extension ChatViewController: PhotoObserverProtocol {
 
         self.view.addSubview(newImageView)
         self.navigationController?.isNavigationBarHidden = true
-        UIApplication.shared.isStatusBarHidden = true
+        self.statusBarHidden = true
     }
 
     @objc private func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
         self.navigationController?.isNavigationBarHidden = false
         sender.view?.removeFromSuperview()
-        UIApplication.shared.isStatusBarHidden = false
+        self.statusBarHidden = false
     }
 
     func showSaveImageAlert(_ image: UIImage) {
