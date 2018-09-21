@@ -98,7 +98,6 @@
 		4280C0E31F97364F00075B3A /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0E21F97364F00075B3A /* ChatViewController.swift */; };
 		429228B61F96261000DCECDF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228B51F96261000DCECDF /* AppDelegate.swift */; };
 		429228B81F96261000DCECDF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228B71F96261000DCECDF /* ViewController.swift */; };
-		429228BB1F96261000DCECDF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228B91F96261000DCECDF /* Main.storyboard */; };
 		429228BD1F96261000DCECDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 429228BC1F96261000DCECDF /* Assets.xcassets */; };
 		429228C01F96261000DCECDF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228BE1F96261000DCECDF /* LaunchScreen.storyboard */; };
 		429228CD1F96287B00DCECDF /* Chatto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228C91F96287A00DCECDF /* Chatto.framework */; };
@@ -224,7 +223,6 @@
 		429228B21F96261000DCECDF /* VirgilMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirgilMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		429228B51F96261000DCECDF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		429228B71F96261000DCECDF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		429228BA1F96261000DCECDF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		429228BC1F96261000DCECDF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		429228BF1F96261000DCECDF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		429228C11F96261000DCECDF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -567,7 +565,6 @@
 				16961B50203ADFBA0084086E /* Utils */,
 				429228B51F96261000DCECDF /* AppDelegate.swift */,
 				429228B71F96261000DCECDF /* ViewController.swift */,
-				429228B91F96261000DCECDF /* Main.storyboard */,
 				429228BC1F96261000DCECDF /* Assets.xcassets */,
 				429228BE1F96261000DCECDF /* LaunchScreen.storyboard */,
 				429228C11F96261000DCECDF /* Info.plist */,
@@ -685,7 +682,6 @@
 				423BDA791F97600A00C3EE9B /* ChatListCell.xib in Resources */,
 				164E173A20AB1C6400AB1AAD /* Audio.xcassets in Resources */,
 				1658BA211FD9B08F005EF9C1 /* InputBar.xib in Resources */,
-				429228BB1F96261000DCECDF /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -826,14 +822,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		429228B91F96261000DCECDF /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				429228BA1F96261000DCECDF /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		429228BE1F96261000DCECDF /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
