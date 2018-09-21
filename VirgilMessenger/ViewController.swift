@@ -14,6 +14,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
         Log.debug(self.description)
     }
 
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+
     func switchNavigationStack(to navigationController: UINavigationController) {
         let window = UIApplication.shared.keyWindow!
 

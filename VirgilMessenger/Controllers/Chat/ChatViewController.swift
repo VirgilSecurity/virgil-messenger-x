@@ -56,10 +56,12 @@ class ChatViewController: BaseChatViewController {
         super.viewDidLoad()
         super.chatItemsDecorator = ChatItemsDemoDecorator()
 
+        super.inputContainer.backgroundColor = UIColor(rgb: 0x20232B)
+        super.bottomSpaceView.backgroundColor = UIColor(rgb: 0x20232B)
+        super.collectionView.backgroundColor = UIColor(rgb: 0x2B303B)
+
         self.navigationItem.title = self.title
         self.navigationController?.navigationBar.tintColor = .white
-
-        self.view.backgroundColor = UIColor(rgb: 0x2B303B)
 
         self.view.isUserInteractionEnabled = false
         let indicator = UIActivityIndicatorView()
