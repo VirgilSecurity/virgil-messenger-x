@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Pa0-Wk-Tob">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Pa0-Wk-Tob">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Navigation Controller-->
+        <!--Settings-->
         <scene sceneID="6SS-Lv-hS1">
             <objects>
                 <navigationController id="Pa0-Wk-Tob" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Settings" image="icon-settings" id="4R2-qN-VBb"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" barStyle="black" translucent="NO" id="3qz-gm-c4o">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -34,18 +35,18 @@
             <objects>
                 <viewController id="0FS-Ih-wjM" customClass="SettingsViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7iE-m9-29w">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="xtZ-Li-IqN">
-                                <rect key="frame" x="0.0" y="264" width="375" height="403"/>
+                                <rect key="frame" x="0.0" y="200" width="375" height="354"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <color key="separatorColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="sectionIndexBackgroundColor" red="0.12549019607843137" green="0.13725490196078433" blue="0.16862745098039217" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="sectionIndexTrackingBackgroundColor" red="0.12549019610000001" green="0.13725490200000001" blue="0.16862745100000001" alpha="1" colorSpace="calibratedRGB"/>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XxT-H0-eNl">
-                                <rect key="frame" x="47.5" y="191" width="280" height="32.5"/>
+                                <rect key="frame" x="47.5" y="127.5" width="280" height="32.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="280" id="Dpm-GM-aOL"/>
                                 </constraints>
@@ -54,7 +55,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ShH-zQ-6aD" customClass="GradientView" customModule="VirgilMessenger" customModuleProvider="target">
-                                <rect key="frame" x="147.5" y="101" width="80" height="80"/>
+                                <rect key="frame" x="147.5" y="37.5" width="80" height="80"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="L" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PrE-E8-Kez">
                                         <rect key="frame" x="30.5" y="19.5" width="19" height="41"/>
@@ -92,7 +93,6 @@
                         <viewLayoutGuide key="safeArea" id="g8I-As-ObO"/>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="is9-09-Jna"/>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="avatarView" destination="ShH-zQ-6aD" id="6UH-Gr-F9a"/>
                         <outlet property="letterLabel" destination="PrE-E8-Kez" id="YJv-xJ-iFI"/>
@@ -110,11 +110,11 @@
             <objects>
                 <viewController id="nZ7-hb-bMR" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dm4-83-emc">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qcn-Ea-Rfq">
-                                <rect key="frame" x="16" y="98" width="343" height="221"/>
+                                <rect key="frame" x="16" y="34" width="343" height="221"/>
                                 <attributedString key="attributedText">
                                     <fragment>
                                         <string key="content">Built by Virgil Security, Inc.
@@ -147,4 +147,7 @@ Technologies: Virgil SDK, Virgil’s Card Service, Twilio Programmable Chat, etc
             <point key="canvasLocation" x="916.875" y="133.09859154929578"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="icon-settings" width="24" height="24"/>
+    </resources>
 </document>
