@@ -128,7 +128,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
     private func goToChatList() {
         NotificationCenter.default.removeObserver(self)
 
-        let vc = UIStoryboard(name: "ChatList", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
+        let vc = UIStoryboard(name: "TabBar", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
         self.switchNavigationStack(to: vc)
     }
 

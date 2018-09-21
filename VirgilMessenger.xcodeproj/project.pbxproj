@@ -51,6 +51,7 @@
 		16CA51061FC468370042AF9D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51051FC468370042AF9D /* Constants.swift */; };
 		16CA51101FC5D9960042AF9D /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA510F1FC5D9960042AF9D /* Settings.storyboard */; };
 		16CA51131FC5DA3B0042AF9D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51121FC5DA3B0042AF9D /* SettingsViewController.swift */; };
+		16CC9B7B21552D5800935AEC /* TabBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CC9B7A21552D5800935AEC /* TabBar.storyboard */; };
 		16CDE19E20C95B5F00D6430B /* VSCCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16CDE19D20C95B5F00D6430B /* VSCCrypto.framework */; };
 		16D6CB3A1FDFEECC00302A05 /* Registration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16D6CB391FDFEECC00302A05 /* Registration.storyboard */; };
 		16D70729214C05D300452A16 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D70728214C05D300452A16 /* Crashlytics.framework */; };
@@ -179,6 +180,7 @@
 		16CA51051FC468370042AF9D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		16CA510F1FC5D9960042AF9D /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		16CA51121FC5DA3B0042AF9D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		16CC9B7A21552D5800935AEC /* TabBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBar.storyboard; sourceTree = "<group>"; };
 		16CDE19D20C95B5F00D6430B /* VSCCrypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCCrypto.framework; path = Carthage/Build/iOS/VSCCrypto.framework; sourceTree = "<group>"; };
 		16D6CB391FDFEECC00302A05 /* Registration.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Registration.storyboard; sourceTree = "<group>"; };
 		16D70726214BF60E00452A16 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -368,6 +370,7 @@
 		16961B4F203ADEDE0084086E /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				16CC9B7921552D3800935AEC /* TabBar */,
 				16CA51001FC45E840042AF9D /* Start */,
 				16B69E061FA9D2CA00FE8A8D /* Authentication */,
 				423BDA761F97600A00C3EE9B /* ChatList */,
@@ -446,6 +449,14 @@
 				16CA51121FC5DA3B0042AF9D /* SettingsViewController.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		16CC9B7921552D3800935AEC /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				16CC9B7A21552D5800935AEC /* TabBar.storyboard */,
+			);
+			path = TabBar;
 			sourceTree = "<group>";
 		};
 		16E22D871FA896BE008D32D9 /* Chat */ = {
@@ -665,6 +676,7 @@
 				16D6CB3A1FDFEECC00302A05 /* Registration.storyboard in Resources */,
 				161F9B8F20C5350C00878515 /* ChatParticipants.storyboard in Resources */,
 				16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */,
+				16CC9B7B21552D5800935AEC /* TabBar.storyboard in Resources */,
 				423BDA7A1F97600A00C3EE9B /* ChatList.storyboard in Resources */,
 				16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */,
 				429228C01F96261000DCECDF /* LaunchScreen.storyboard in Resources */,

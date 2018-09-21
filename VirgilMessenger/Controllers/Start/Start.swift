@@ -58,7 +58,7 @@ class StartViewController: ViewController {
     }
 
     private func goToChatList() {
-        let vc = UIStoryboard(name: "ChatList", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
+        let vc = UIStoryboard(name: "TabBar", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
 
         self.switchNavigationStack(to: vc)
     }
