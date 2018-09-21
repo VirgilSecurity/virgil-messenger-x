@@ -30,7 +30,7 @@ extension VirgilHelper {
         }
     }
 
-    private func getTwilioToken(identity: String, completion: @escaping (String?, Error?) -> ()) {
+    func getTwilioToken(identity: String, completion: @escaping (String?, Error?) -> ()) {
         self.queue.async {
             guard let authHeader = self.makeAuthHeader() else {
                 completion(nil, VirgilHelperError.gettingTwilioTokenFailed)

@@ -8,6 +8,7 @@
 
 import Foundation
 import TwilioChatClient
+import TwilioAccessManager
 
 class TwilioHelper: NSObject {
     private(set) static var sharedInstance: TwilioHelper!
@@ -15,6 +16,7 @@ class TwilioHelper: NSObject {
     private(set) var channels: TCHChannels!
     private(set) var users: TCHUsers!
     private(set) var currentChannel: TCHChannel!
+    private(set) var accessManager: TwilioAccessManager!
 
     let username: String
     let queue = DispatchQueue(label: "TwilioHelper")
@@ -54,7 +56,10 @@ class TwilioHelper: NSObject {
         Log.debug("Initializing Twilio")
 
         self.queue.async {
-            TwilioChatClient.chatClient(withToken: token, properties: nil, delegate: self) { result, client in
+
+            self.accessManager = TwilioAccessManager(token: token, delegate: self)
+
+            TwilioChatClient.chatClient(withToken: self.accessManager.currentToken!, properties: nil, delegate: self) { result, client in
                 guard let client = client, result.isSuccessful() else {
                     Log.error("Error while initializing Twilio: \(result.error?.localizedDescription ?? "")")
                     completion(TwilioHelperError.initFailed)
@@ -73,10 +78,17 @@ class TwilioHelper: NSObject {
                     return
                 }
 
-                Log.debug("Successfully initialized Twilio")
                 self.client = client
                 self.channels = channels
                 self.users = users
+
+                self.accessManager?.registerClient(client, forUpdates: { [weak client = self.client] (token) in
+                    client?.updateToken(token) { (result) in
+                        // FIXME
+                    }
+                })
+
+                Log.debug("Successfully initialized Twilio")
 
                 for channel in channels.subscribedChannels() {
                     self.join(channel: channel)

@@ -1,5 +1,5 @@
 //
-//  TwilioHelper+Delegate.swift
+//  TwilioHelper+Delegates.swift
 //  VirgilMessenger
 //
 //  Created by Oleksandr Deundiak on 10/17/17.
@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 import Foundation
 import TwilioChatClient
+import TwilioAccessManager
 
 extension TwilioHelper: TwilioChatClientDelegate {
     enum Notifications: String {
@@ -180,6 +181,19 @@ extension TwilioHelper: TwilioChatClientDelegate {
                 userInfo: [
                     TwilioHelper.NotificationKeys.Message.rawValue: message
                 ])
+        }
+    }
+}
+
+extension TwilioHelper: TwilioAccessManagerDelegate {
+    func accessManagerTokenWillExpire(_ accessManager: TwilioAccessManager) {
+        VirgilHelper.sharedInstance.getTwilioToken(identity: self.username) { token, error in
+            guard let token = token, error == nil else {
+                //FIXME
+                return
+            }
+
+            accessManager.updateToken(token)
         }
     }
 }
