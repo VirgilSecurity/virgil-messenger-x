@@ -1,5 +1,5 @@
 //
-//  UITextView+ZeroPaddings.swift
+//  UITextViewZeroPaddings.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 7/26/18.

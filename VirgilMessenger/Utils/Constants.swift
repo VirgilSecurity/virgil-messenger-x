@@ -36,9 +36,3 @@ class ColorPair {
         self.second = second.cgColor
     }
 }
-
-extension UIApplication {
-    var statusBarView: UIView? {
-        return value(forKey: "statusBar") as? UIView
-    }
-}

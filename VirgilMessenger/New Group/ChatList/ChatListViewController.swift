@@ -270,15 +270,6 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.backgroundColor = UIColor(rgb: 0x2B303B)
     }
-
-//     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-//         if editingStyle == .delete {
-//             CoreDataHelper.sharedInstance.deleteChannel(withName: TwilioHelper.sharedInstance.getCompanion(ofChannel: indexPath.row))
-//             TwilioHelper.sharedInstance.destroyChannel(indexPath.row) {
-//             self.tableView.reloadData()
-//             }
-//         }
-//     }
 }
 
 extension ChatListViewController: CellTapDelegate {
