@@ -59,7 +59,7 @@ class TwilioHelper: NSObject {
 
             self.accessManager = TwilioAccessManager(token: token, delegate: self)
 
-            TwilioChatClient.chatClient(withToken: self.accessManager.currentToken!, properties: nil, delegate: self) { result, client in
+            TwilioChatClient.chatClient(withToken: token, properties: nil, delegate: self) { result, client in
                 guard let client = client, result.isSuccessful() else {
                     Log.error("Error while initializing Twilio: \(result.error?.localizedDescription ?? "")")
                     completion(TwilioHelperError.initFailed)
@@ -84,7 +84,10 @@ class TwilioHelper: NSObject {
 
                 self.accessManager?.registerClient(client, forUpdates: { [weak client = self.client] (token) in
                     client?.updateToken(token) { (result) in
-                        // FIXME
+                        guard result.error == nil else {
+                            Log.error("Update Twilio Token failed: \(result.error?.localizedDescription ?? "unknown error")")
+                            return
+                        }
                     }
                 })
 

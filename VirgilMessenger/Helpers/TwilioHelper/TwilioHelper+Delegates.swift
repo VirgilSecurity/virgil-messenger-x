@@ -189,7 +189,7 @@ extension TwilioHelper: TwilioAccessManagerDelegate {
     func accessManagerTokenWillExpire(_ accessManager: TwilioAccessManager) {
         VirgilHelper.sharedInstance.getTwilioToken(identity: self.username) { token, error in
             guard let token = token, error == nil else {
-                //FIXME
+                Log.error("Update Twilio Token failed: \(error?.localizedDescription ?? "unknown error")")
                 return
             }
 

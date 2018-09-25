@@ -68,8 +68,9 @@ extension SettingsViewController: UITableViewDelegate {
 
             self.present(alert, animated: true)
         } else if indexPath.section == 2 {
-            let alertController = UIAlertController(title: "Delete account", message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.", preferredStyle: .alert)
-
+            let alertController = UIAlertController(title: "Delete account",
+                                                    message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.",
+                                                    preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
                 UserDefaults.standard.set(nil, forKey: "last_username")
 
