@@ -1,0 +1,6 @@
+framework module TwilioAccessManager {
+  umbrella header "TwilioAccessManager.h"
+
+  export *
+  module * { export * }
+}

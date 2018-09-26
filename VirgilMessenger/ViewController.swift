@@ -10,8 +10,45 @@ import UIKit
 import CoreData
 
 class ViewController: UIViewController, UITextFieldDelegate {
+    enum Notifications: String {
+        case Error = "ViewController.Notifications.Error"
+    }
+
+    enum NotificationKeys: String {
+        case Error = "ViewController.NotificationKeys.Error"
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+
+    var isRootViewController: Bool {
+        return self.navigationController?.viewControllers.count ?? 1 == 1
+    }
+
+    override func viewDidLoad() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.processError(notification:)),
+                                               name: Notification.Name(rawValue: ViewController.Notifications.Error.rawValue),
+                                               object: nil)
+
+        super.viewDidLoad()
+    }
+
     deinit {
+        NotificationCenter.default.removeObserver(self,
+                                                  name: Notification.Name(rawValue: ViewController.Notifications.Error.rawValue),
+                                                  object: nil)
         Log.debug(self.description)
+    }
+
+    @objc private func processError(notification: Notification) {
+        guard  let userInfo = notification.userInfo,
+            let error = userInfo[ViewController.NotificationKeys.Error.rawValue] as? Error else {
+                return
+        }
+
+        self.alert(error.localizedDescription)
     }
 
     func switchNavigationStack(to navigationController: UINavigationController) {
@@ -20,10 +57,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         UIView.transition(with: window, duration: UIConstants.TransitionAnimationDuration, options: .transitionCrossDissolve, animations: {
             window.rootViewController = navigationController
         })
-    }
-
-    var isRootViewController: Bool {
-        return self.navigationController?.viewControllers.count ?? 1 == 1
     }
 
     func alert(_ message: String) {
