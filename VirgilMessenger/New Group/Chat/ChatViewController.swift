@@ -58,7 +58,7 @@ class ChatViewController: BaseChatViewController {
 
         super.inputContainer.backgroundColor = UIColor(rgb: 0x20232B)
         super.bottomSpaceView.backgroundColor = UIColor(rgb: 0x20232B)
-        super.collectionView.backgroundColor = UIColor(rgb: 0x2B303B)
+        super.collectionView?.backgroundColor = UIColor(rgb: 0x2B303B)
 
         self.navigationItem.title = self.title
         self.navigationController?.navigationBar.tintColor = .white
