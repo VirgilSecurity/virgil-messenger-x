@@ -99,13 +99,9 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
 
         self.configureView1(inside: view)
         self.configureHoldToRecordLabel(inside: view)
-        self.configureView2(inside: view)
         self.configureTimerLabel(inside: view)
-        self.configureView3(inside: view)
         self.configureRecordButton(inside: view)
-        self.configureView4(inside: view)
         self.configureCancelLabel(inside: view)
-        self.configureView5(inside: view)
 
         self.configureViewsProportions()
     }
@@ -155,6 +151,8 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
                                               attribute: .notAnAttribute, multiplier: 1, constant: 200))
         self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel, attribute: .height, relatedBy: .equal, toItem: nil,
                                               attribute: .notAnAttribute, multiplier: 1, constant: 25))
+
+        self.configureView2(inside: view)
     }
 
     private func configureView2(inside view: UIView) {
@@ -189,6 +187,8 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
                                               attribute: .notAnAttribute, multiplier: 1, constant: 200))
         self.addConstraint(NSLayoutConstraint(item: self.timerLabel, attribute: .height, relatedBy: .equal, toItem: nil,
                                               attribute: .notAnAttribute, multiplier: 1, constant: 25))
+
+        self.configureView3(inside: view)
     }
 
     private func configureView3(inside view: UIView) {
@@ -225,6 +225,8 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
                                               attribute: .notAnAttribute, multiplier: 1, constant: 100))
         self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .height, relatedBy: .equal, toItem: nil,
                                               attribute: .notAnAttribute, multiplier: 1, constant: 100))
+
+        self.configureView4(inside: view)
     }
 
     private func configureView4(inside view: UIView) {
@@ -259,6 +261,8 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
                                               attribute: .notAnAttribute, multiplier: 1, constant: 30))
         self.addConstraint(NSLayoutConstraint(item: self.cancelLabel, attribute: .top, relatedBy: .equal, toItem: self.view4,
                                               attribute: .bottom, multiplier: 1, constant: 0))
+
+        self.configureView5(inside: view)
     }
 
     private func configureView5(inside view: UIView) {
