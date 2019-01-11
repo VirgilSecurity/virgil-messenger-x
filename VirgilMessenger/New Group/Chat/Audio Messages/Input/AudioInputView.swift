@@ -22,6 +22,7 @@ protocol AudioInputViewDelegate: class {
 class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
     weak var delegate: AudioInputViewDelegate?
     weak var presentingController: UIViewController?
+
     private var recordButton: UIButton!
     private var holdToRecordLabel: UILabel!
     private var timerLabel: UILabel!
@@ -49,8 +50,6 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
     }
 
     private func commonInit() {
-        self.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        self.translatesAutoresizingMaskIntoConstraints = false
         self.backgroundColor = UIColor(rgb: 0x202124)
         self.configureAudio()
     }
@@ -63,7 +62,7 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
             recordingSession.requestRecordPermission() { [unowned self] allowed in
                 DispatchQueue.main.async {
                     if allowed {
-                         self.configureView()
+                        self.configureView()
                     } else {
                         Log.error("Permission to record audio was not granted")
                     }
@@ -80,14 +79,16 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
         view.translatesAutoresizingMaskIntoConstraints = false
 
         self.addSubview(view)
-        self.addConstraint(NSLayoutConstraint(item: view, attribute: .leading, relatedBy: .equal, toItem: self,
-                                              attribute: .leading, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: self,
-                                              attribute: .trailing, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: view, attribute: .top, relatedBy: .equal, toItem: self,
-                                              attribute: .top, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: self,
-                                              attribute: .bottom, multiplier: 1, constant: 0))
+
+        let horizontalConstraint = NSLayoutConstraint(item: view, attribute: .top, relatedBy: .equal, toItem: self,
+                                                      attribute: .top, multiplier: 1, constant: 0)
+        let verticalConstraint = NSLayoutConstraint(item: view, attribute: .leading, relatedBy: .equal, toItem: self,
+                                                    attribute: .leading, multiplier: 1, constant: 0)
+        let widthConstraint = NSLayoutConstraint(item: view, attribute: .width, relatedBy: .equal, toItem: self,
+                                                 attribute: .width, multiplier: 1, constant: 0)
+        let heightConstraint = NSLayoutConstraint(item: view, attribute: .height, relatedBy: .equal, toItem: self,
+                                                  attribute: .height, multiplier: 1, constant: 0)
+        self.addConstraints([horizontalConstraint, verticalConstraint, widthConstraint, heightConstraint])
 
         self.configureLineView(inside: view)
         self.configureCancelLabel(inside: view)
@@ -99,6 +100,7 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
     private func configureLineView(inside view: UIView) {
         self.lineView = UIView(frame: CGRect.zero)
         self.lineView.translatesAutoresizingMaskIntoConstraints = false
+
         view.addSubview(self.lineView)
 
         self.addConstraint(NSLayoutConstraint(item: self.lineView, attribute: .centerX, relatedBy: .equal, toItem: view,
@@ -160,6 +162,7 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
         self.timerLabel.text = self.timeString(0)
         self.timerLabel.textColor = .white
         self.timerLabel.font = UIFont.boldSystemFont(ofSize: 18)
+
         view.addSubview(self.timerLabel)
 
         self.addConstraint(NSLayoutConstraint(item: self.timerLabel, attribute: .centerX, relatedBy: .equal, toItem: view,
@@ -179,6 +182,7 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
         self.holdToRecordLabel.text = "Hold to record"
         self.holdToRecordLabel.textColor = UIColor(rgb: 0x909092)
         self.holdToRecordLabel.font = UIFont.systemFont(ofSize: 20)
+
         view.addSubview(self.holdToRecordLabel)
 
         self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel, attribute: .centerX, relatedBy: .equal, toItem: view,
