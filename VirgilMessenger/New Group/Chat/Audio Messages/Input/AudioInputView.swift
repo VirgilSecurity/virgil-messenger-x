@@ -27,7 +27,6 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
     private var holdToRecordLabel: UILabel!
     private var timerLabel: UILabel!
     private var cancelLabel: UILabel!
-    private var lineView: UIView!
     private var recordingSession: AVAudioSession!
     private var audioRecorder: AVAudioRecorder!
     private var timer = Timer()
@@ -90,27 +89,10 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
                                                   attribute: .height, multiplier: 1, constant: 0)
         self.addConstraints([horizontalConstraint, verticalConstraint, widthConstraint, heightConstraint])
 
-        self.configureLineView(inside: view)
         self.configureCancelLabel(inside: view)
         self.configureRecordButton(inside: view)
         self.configureTimerLabel(inside: view)
         self.configureHoldToRecordLabel(inside: view)
-    }
-
-    private func configureLineView(inside view: UIView) {
-        self.lineView = UIView(frame: CGRect.zero)
-        self.lineView.translatesAutoresizingMaskIntoConstraints = false
-
-        view.addSubview(self.lineView)
-
-        self.addConstraint(NSLayoutConstraint(item: self.lineView, attribute: .centerX, relatedBy: .equal, toItem: view,
-                                              attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.lineView, attribute: .width, relatedBy: .equal, toItem: nil,
-                                              attribute: .notAnAttribute, multiplier: 1, constant: 100))
-        self.addConstraint(NSLayoutConstraint(item: self.lineView, attribute: .height, relatedBy: .equal, toItem: nil,
-                                              attribute: .notAnAttribute, multiplier: 1, constant: 100))
-        self.addConstraint(NSLayoutConstraint(item: self.lineView, attribute: .bottom, relatedBy: .equal, toItem: view,
-                                              attribute: .bottom, multiplier: 1, constant: 30))
     }
 
     private func configureCancelLabel(inside view: UIView) {
@@ -129,8 +111,8 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
                                               attribute: .notAnAttribute, multiplier: 1, constant: 300))
         self.addConstraint(NSLayoutConstraint(item: self.cancelLabel, attribute: .height, relatedBy: .equal, toItem: nil,
                                               attribute: .notAnAttribute, multiplier: 1, constant: 50))
-        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel, attribute: .bottom, relatedBy: .equal, toItem: self.lineView,
-                                              attribute: .bottom, multiplier: 1, constant: -30))
+        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel, attribute: .bottom, relatedBy: .equal, toItem: view,
+                                              attribute: .bottom, multiplier: 1, constant: 0))
     }
 
     private func configureRecordButton(inside view: UIView) {
