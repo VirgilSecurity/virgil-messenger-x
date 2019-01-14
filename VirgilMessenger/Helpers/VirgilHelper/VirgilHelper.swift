@@ -16,7 +16,6 @@ class VirgilHelper {
     let cardCrypto: VirgilCardCrypto
     let keyStorage: KeyStorage
     let queue: DispatchQueue
-    let connection: ServiceConnection
     let verifier: VirgilCardVerifier
 
     private(set) var privateKey: VirgilPrivateKey?
@@ -24,15 +23,14 @@ class VirgilHelper {
     private(set) var cardManager: CardManager?
     private var channelKeys: [VirgilPublicKey] = []
 
-    let virgilJwtEndpoint = "https://messenger.virgilsecurity.com/get-virgil-jwt/"
-    let twilioJwtEndpoint = "https://messenger.virgilsecurity.com/get-twilio-jwt/"
-    let signUpEndpoint = "https://messenger.virgilsecurity.com/signup/"
+    let virgilJwtEndpoint = "https://messenger-dev.virgilsecurity.com/get-virgil-jwt/"
+    let twilioJwtEndpoint = "https://messenger-dev.virgilsecurity.com/get-twilio-jwt/"
+    let signUpEndpoint = "https://messenger-dev.virgilsecurity.com/signup/"
 
     private init() {
         self.crypto = VirgilCrypto()
         self.keyStorage = KeyStorage()
         self.queue = DispatchQueue(label: "virgil-help-queue")
-        self.connection = ServiceConnection()
         self.cardCrypto = VirgilCardCrypto()
         self.verifier = VirgilCardVerifier(cardCrypto: self.cardCrypto)!
     }

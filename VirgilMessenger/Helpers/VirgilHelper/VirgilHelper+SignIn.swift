@@ -84,21 +84,20 @@ extension VirgilHelper {
     /// - Returns: Card
     /// - Throws: corresponding error if fails
     private func requestSignIn(identity: String, cardManager: CardManager) throws -> Card {
-        let request = try ServiceRequest(url: URL(string: self.signUpEndpoint)!,
-                                         method: ServiceRequest.Method.post,
-                                         headers: ["Content-Type": "application/json"],
-                                         params: ["identity" : identity])
-        let response = try self.connection.send(request)
+        let connection = HttpConnection()
+        let requestURL = URL(string: self.signUpEndpoint)!
+        let headers = ["Content-Type": "application/json"]
+        let params = ["identity": identity]
+        let body = try JSONSerialization.data(withJSONObject: params, options: [])
+
+        let request = Request(url: requestURL, method: .post, headers: headers, body: body)
+        let response = try connection.send(request)
 
         guard let responseBody = response.body,
-            let json = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any] else {
+            let json = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
+            let exportedCard = json["virgil_card"] as? [String: Any] else {
                 Log.error("Json parsing failed")
                 throw VirgilHelperError.jsonParsingFailed
-        }
-
-        guard let exportedCard = json["virgil_card"] as? [String: Any] else {
-            Log.error("Error while signing up: server didn't return card")
-            throw VirgilHelperError.jsonParsingFailed
         }
 
         return try cardManager.importCard(fromJson: exportedCard)

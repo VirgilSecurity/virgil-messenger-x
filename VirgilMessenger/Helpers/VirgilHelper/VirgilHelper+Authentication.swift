@@ -38,21 +38,23 @@ extension VirgilHelper {
             }
 
             do {
-                let requestForTwilioToken = try ServiceRequest(url: URL(string: self.twilioJwtEndpoint)!,
-                                                               method: ServiceRequest.Method.post,
-                                                               headers: ["Content-Type": "application/json",
-                                                                         "Authorization": authHeader],
-                                                               params: ["identity": identity])
-                let responseWithTwilioToken = try self.connection.send(requestForTwilioToken)
+                let connection = HttpConnection()
+                let requestURL = URL(string: self.twilioJwtEndpoint)!
+                let headers = ["Content-Type": "application/json",
+                               "Authorization": authHeader]
+                let params = ["identity": identity]
+                let body = try JSONSerialization.data(withJSONObject: params, options: [])
 
-                guard let responseWithTwilioTokenBody = responseWithTwilioToken.body,
-                    let twilioTokenJson = try JSONSerialization.jsonObject(with: responseWithTwilioTokenBody, options: []) as? [String: Any],
-                    let twilioToken = twilioTokenJson["token"] as? String
-                    else {
+                let request = Request(url: requestURL, method: .post, headers: headers, body: body)
+                let response = try connection.send(request)
+
+                guard let responseBody = response.body,
+                    let tokenJson = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
+                    let token = tokenJson["token"] as? String else {
                         throw VirgilHelperError.gettingTwilioTokenFailed
                 }
 
-                completion(twilioToken, nil)
+                completion(token, nil)
             } catch {
                 Log.error("Error while getting twilio token: \(error.localizedDescription)")
                 completion(nil, error)
@@ -66,21 +68,28 @@ extension VirgilHelper {
                 completion(nil, VirgilHelperError.gettingJwtFailed)
                 return
             }
-            let jwtRequest = try? ServiceRequest(url: URL(string: self.virgilJwtEndpoint)!,
-                                                 method: ServiceRequest.Method.post,
-                                                 headers: ["Content-Type": "application/json",
-                                                           "Authorization": authHeader],
-                                                 params: ["identity": identity])
-            guard let request = jwtRequest,
-                let jwtResponse = try? self.connection.send(request),
-                let responseBody = jwtResponse.body,
-                let json = try? JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
-                let jwtStr = json?["token"] as? String else {
-                    Log.error("Getting JWT failed")
-                    completion(nil, VirgilHelperError.gettingJwtFailed)
-                    return
+
+            do {
+                let connection = HttpConnection()
+                let requestURL = URL(string: self.virgilJwtEndpoint)!
+                let headers = ["Content-Type": "application/json",
+                               "Authorization": authHeader]
+                let params = ["identity": identity]
+                let body = try JSONSerialization.data(withJSONObject: params, options: [])
+
+                let request = Request(url: requestURL, method: .post, headers: headers, body: body)
+                let response = try connection.send(request)
+
+                guard let responseBody = response.body,
+                    let tokenJson = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
+                    let token = tokenJson["token"] as? String else {
+                        throw VirgilHelperError.gettingJwtFailed
+                }
+
+                completion(token, nil)
+            } catch {
+                completion(nil, VirgilHelperError.gettingJwtFailed)
             }
-            completion(jwtStr, nil)
         })
 
         let cardCrypto = VirgilCardCrypto()

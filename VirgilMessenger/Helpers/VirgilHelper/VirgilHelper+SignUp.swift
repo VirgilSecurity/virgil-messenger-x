@@ -74,17 +74,21 @@ extension VirgilHelper {
     private func requestSignUp(rawCard: RawSignedModel, cardManager: CardManager) throws -> Card {
         let exportedRawCard = try rawCard.exportAsJson()
 
-        let request = try ServiceRequest(url: URL(string: self.signUpEndpoint)!,
-                                         method: ServiceRequest.Method.post,
-                                         headers: ["Content-Type": "application/json"],
-                                         params: ["rawCard" : exportedRawCard])
-        let response = try self.connection.send(request)
+        let connection = HttpConnection()
+        let requestURL = URL(string: self.signUpEndpoint)!
+        let headers = ["Content-Type": "application/json"]
+        let params = ["rawCard" : exportedRawCard]
+        let body = try JSONSerialization.data(withJSONObject: params, options: [])
+
+        let request = Request(url: requestURL, method: .post, headers: headers, body: body)
+        let response = try connection.send(request)
 
         if let body = response.body,
             let text = String(data: body, encoding: .utf8),
             text == "Card with this identity already exists" {
                 throw UserFriendlyError.usernameAlreadyUsed
         }
+
         guard let responseBody = response.body,
             let json = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any] else {
                 Log.error("Json parsing failed")

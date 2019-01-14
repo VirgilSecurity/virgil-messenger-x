@@ -21,7 +21,6 @@ class TwilioHelper: NSObject {
     let username: String
     let queue = DispatchQueue(label: "TwilioHelper")
     private let device: String
-    private let connection = ServiceConnection()
 
     enum TwilioHelperError: Int, Error {
         case initFailed
