@@ -8,7 +8,7 @@
 
 import Foundation
 import VirgilSDK
-import VirgilCryptoApiImpl
+import VirgilCrypto
 
 extension VirgilHelper {
     /// Creates Key Pair, stores private key, publishes Virgil Card
@@ -41,7 +41,7 @@ extension VirgilHelper {
                 self.set(selfCard: card)
 
                 let exportedCard = try cardManager.exportCardAsBase64EncodedString(card)
-                let exportedPrivateKey = try VirgilPrivateKeyExporter().exportPrivateKey(privateKey: keyPair.privateKey)
+                let exportedPrivateKey = try VirgilPrivateKeyExporter(virgilCrypto: self.crypto).exportPrivateKey(privateKey: keyPair.privateKey)
 
                 let keyEntry = KeyEntry(name: identity, value: exportedPrivateKey)
                 try? self.keyStorage.deleteKeyEntry(withName: identity)

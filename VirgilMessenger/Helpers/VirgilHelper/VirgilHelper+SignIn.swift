@@ -59,7 +59,7 @@ extension VirgilHelper {
         do {
             let entry = try self.keyStorage.loadKeyEntry(withName: identity)
             let key = try self.crypto.importPrivateKey(from: entry.value)
-            self.set(privateKey: key)
+            self.set(privateKey: key.privateKey)
             self.setCardManager(identity: identity)
         } catch {
             Log.error("\(error.localizedDescription)")

@@ -8,7 +8,7 @@
 
 import Foundation
 import VirgilSDK
-import VirgilCryptoApiImpl
+import VirgilCrypto
 
 class VirgilHelper {
     static let sharedInstance = VirgilHelper()
@@ -28,10 +28,11 @@ class VirgilHelper {
     let signUpEndpoint = "https://messenger-dev.virgilsecurity.com/signup/"
 
     private init() {
-        self.crypto = VirgilCrypto()
+        // FIXME
+        self.crypto = try! VirgilCrypto()
         self.keyStorage = KeyStorage()
         self.queue = DispatchQueue(label: "virgil-help-queue")
-        self.cardCrypto = VirgilCardCrypto()
+        self.cardCrypto = VirgilCardCrypto(virgilCrypto: self.crypto)
         self.verifier = VirgilCardVerifier(cardCrypto: self.cardCrypto)!
     }
 

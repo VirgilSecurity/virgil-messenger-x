@@ -8,7 +8,7 @@
 
 import Foundation
 import VirgilSDK
-import VirgilCryptoApiImpl
+import VirgilCrypto
 
 extension VirgilHelper {
     /// Initializes Twilio SDK
@@ -92,7 +92,7 @@ extension VirgilHelper {
             }
         })
 
-        let cardCrypto = VirgilCardCrypto()
+        let cardCrypto = VirgilCardCrypto(virgilCrypto: self.crypto)
         guard let verifier = VirgilCardVerifier(cardCrypto: cardCrypto) else {
             Log.error("VirgilCardVerifier init failed")
             return

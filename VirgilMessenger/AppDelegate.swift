@@ -9,7 +9,6 @@
 import UIKit
 import CoreData
 import VirgilSDK
-import VirgilCryptoApiImpl
 import Fabric
 import Crashlytics
 
