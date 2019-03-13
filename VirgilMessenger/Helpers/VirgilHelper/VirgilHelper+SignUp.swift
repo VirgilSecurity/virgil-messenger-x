@@ -17,10 +17,11 @@ extension VirgilHelper {
     ///   - identity: identity of user
     ///   - completion: completion handler, called with error if failed
     func signUp(identity: String, completion: @escaping (String?, Error?) -> ()) {
-        self.queue.async {
+//        self.queue.async {
             Log.debug("Signing up")
 
             self.setCardManager(identity: identity)
+
             do {
                 guard let cardManager = self.cardManager else {
                     throw VirgilHelperError.missingCardManager
@@ -39,6 +40,8 @@ extension VirgilHelper {
                                                               identity: identity)
                 let card = try self.requestSignUp(rawCard: rawCard, cardManager: cardManager)
                 self.set(selfCard: card)
+
+                try self.initializePFS(identity: identity, cardId: card.identifier, privateKey: keyPair.privateKey).startSync().getResult()
 
                 let exportedCard = try cardManager.exportCardAsBase64EncodedString(card)
                 let exportedPrivateKey = try VirgilPrivateKeyExporter(virgilCrypto: self.crypto).exportPrivateKey(privateKey: keyPair.privateKey)
@@ -61,7 +64,7 @@ extension VirgilHelper {
                     completion(nil, error)
                 }
             }
-        }
+//        }
     }
 
     /// Publishes card with given identity using backend

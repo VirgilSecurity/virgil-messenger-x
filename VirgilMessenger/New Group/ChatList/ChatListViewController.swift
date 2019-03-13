@@ -284,7 +284,8 @@ extension ChatListViewController: CellTapDelegate {
                     return
             }
 
-            VirgilHelper.sharedInstance.setChannelKeys(channel.cards)
+            // FIXME
+            VirgilHelper.sharedInstance.setChannelCard(channel.cards.first!)
 
             TwilioHelper.sharedInstance.currentChannel.getMessagesCount { result, count in
                 guard result.isSuccessful() else {

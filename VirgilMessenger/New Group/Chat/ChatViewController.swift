@@ -169,7 +169,8 @@ class ChatViewController: BaseChatViewController {
                             HUD.flash(.error)
                             return
                         }
-                        VirgilHelper.sharedInstance.setChannelKeys(cards)
+
+                        VirgilHelper.sharedInstance.setChannelCard(cards.first!)
                         HUD.flash(.success)
                     } else {
                         HUD.flash(.error)

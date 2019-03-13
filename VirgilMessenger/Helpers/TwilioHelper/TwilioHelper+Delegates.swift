@@ -105,11 +105,14 @@ extension TwilioHelper: TwilioChatClientDelegate {
                         return
                     }
                     CoreDataHelper.sharedInstance.addMember(card: exportedCard, to: coreChannel)
-                    guard let cards = CoreDataHelper.sharedInstance.currentChannel?.cards else {
+
+                    // FIXME
+                    guard let card = CoreDataHelper.sharedInstance.currentChannel?.cards.first else {
                         Log.error("Fetching current channel cards failed")
                         return
                     }
-                    VirgilHelper.sharedInstance.setChannelKeys(cards)
+                    
+                    VirgilHelper.sharedInstance.setChannelCard(card)
                 }
         }
     }

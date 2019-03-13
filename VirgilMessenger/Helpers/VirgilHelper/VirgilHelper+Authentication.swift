@@ -63,40 +63,15 @@ extension VirgilHelper {
     }
 
     func setCardManager(identity: String) {
-        let accessTokenProvider = CachingJwtProvider(renewTokenCallback: { tokenContext, completion in
-            guard let authHeader = self.makeAuthHeader() else {
-                completion(nil, VirgilHelperError.gettingJwtFailed)
-                return
-            }
-
-            do {
-                let connection = HttpConnection()
-                let requestURL = URL(string: self.virgilJwtEndpoint)!
-                let headers = ["Content-Type": "application/json",
-                               "Authorization": authHeader]
-                let params = ["identity": identity]
-                let body = try JSONSerialization.data(withJSONObject: params, options: [])
-
-                let request = Request(url: requestURL, method: .post, headers: headers, body: body)
-                let response = try connection.send(request)
-
-                guard let responseBody = response.body,
-                    let tokenJson = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
-                    let token = tokenJson["token"] as? String else {
-                        throw VirgilHelperError.gettingJwtFailed
-                }
-
-                completion(token, nil)
-            } catch {
-                completion(nil, VirgilHelperError.gettingJwtFailed)
-            }
-        })
+        let accessTokenProvider = self.makeAccessTokenProvider(identity: identity)
 
         let cardCrypto = VirgilCardCrypto(virgilCrypto: self.crypto)
+
         guard let verifier = VirgilCardVerifier(cardCrypto: cardCrypto) else {
             Log.error("VirgilCardVerifier init failed")
             return
         }
+
         let params = CardManagerParams(cardCrypto: cardCrypto,
                                        accessTokenProvider: accessTokenProvider,
                                        cardVerifier: verifier)
@@ -106,7 +81,7 @@ extension VirgilHelper {
     /// Returns authentication header for requests to backend
     ///
     /// - Returns: string in CardId.Timestamp.Signature(CardId.Timestamp) format if succed, nil otherwise
-    private func makeAuthHeader() -> String? {
+    func makeAuthHeader() -> String? {
         guard let cardId = self.selfCard?.identifier else {
             Log.error("Missing self card")
             return nil

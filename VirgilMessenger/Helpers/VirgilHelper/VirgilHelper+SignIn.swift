@@ -16,10 +16,11 @@ extension VirgilHelper {
     ///   - identity: identity of user
     ///   - completion: completion handler, called with error if failed
     func signIn(identity: String, card exportedCard: String?, completion: @escaping (Error?) -> ()) {
-        self.queue.async {
+//        self.queue.async {
             Log.debug("Signing in")
 
             self.setCardManager(identity: identity)
+        
             do {
                 guard let cardManager = self.cardManager else {
                     throw VirgilHelperError.missingCardManager
@@ -51,16 +52,18 @@ extension VirgilHelper {
                     completion(error)
                 }
             }
-        }
+//        }
     }
 
     private func signInHelper(card: Card, identity: String, completion: @escaping (Error?) -> ()) {
         self.set(selfCard: card)
+
         do {
             let entry = try self.keyStorage.loadKeyEntry(withName: identity)
             let key = try self.crypto.importPrivateKey(from: entry.value)
             self.set(privateKey: key.privateKey)
-            self.setCardManager(identity: identity)
+
+            try self.initializePFS(identity: identity, cardId: card.identifier, privateKey: key.privateKey).startSync().getResult()
         } catch {
             Log.error("\(error.localizedDescription)")
             completion(error)
