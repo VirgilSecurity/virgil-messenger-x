@@ -8,23 +8,41 @@
 
 import Foundation
 
-class Log {
-    class func debug(_ closure: @autoclosure () -> String, functionName: String = #function, file: String = #file, line: UInt = #line) {
+/// Class used for logging
+public enum Log {
+    /// Log with DEBUG level
+    ///
+    /// - Parameters:
+    ///   - closure: fake closure to caprute loging details
+    ///   - functionName: functionName
+    ///   - file: file
+    ///   - line: line
+    public static func debug(_ closure: @autoclosure () -> String, functionName: String = #function,
+                             file: String = #file, line: UInt = #line) {
         #if DEBUG
-            self.log("<DEBUG>: \(closure())", functionName: functionName, file: file, line: line)
+        self.log("<DEBUG>: \(closure())", functionName: functionName, file: file, line: line)
         #endif
     }
 
-    class func error( _ closure: @autoclosure () -> String, functionName: String = #function, file: String = #file, line: UInt = #line) {
+    /// Log with ERROR level
+    ///
+    /// - Parameters:
+    ///   - closure: fake closure to caprute loging details
+    ///   - functionName: functionName
+    ///   - file: file
+    ///   - line: line
+    public static func error(_ closure: @autoclosure () -> String, functionName: String = #function,
+                             file: String = #file, line: UInt = #line) {
         self.log("<ERROR>: \(closure())", functionName: functionName, file: file, line: line)
     }
 
-    private class func log(_ closure: @autoclosure () -> String, functionName: String = #function, file: String = #file, line: UInt = #line) {
+    private static func log(_ closure: @autoclosure () -> String, functionName: String = #function,
+                            file: String = #file, line: UInt = #line) {
         let str = "VIRGILMESSENGER_LOG: \(functionName) : \(closure())"
         Log.writeInLog(str)
     }
 
-    private class func writeInLog(_ message: String) {
+    private static func writeInLog(_ message: String) {
         NSLogv("%@", getVaList([message]))
     }
 }

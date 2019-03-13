@@ -26,10 +26,6 @@ class VirgilHelper {
     private(set) var secureChat: SecureChat?
     private var channelCard: Card?
 
-    let virgilJwtEndpoint = "https://messenger-dev.virgilsecurity.com/get-virgil-jwt/"
-    let twilioJwtEndpoint = "https://messenger-dev.virgilsecurity.com/get-twilio-jwt/"
-    let signUpEndpoint = "https://messenger-dev.virgilsecurity.com/signup/"
-
     private init() {
         // FIXME
         self.crypto = try! VirgilCrypto()
@@ -62,7 +58,7 @@ class VirgilHelper {
 
             do {
                 let connection = HttpConnection()
-                let requestURL = URL(string: self.virgilJwtEndpoint)!
+                let requestURL = URLConstansts.virgilJwtEndpoint
                 let headers = ["Content-Type": "application/json",
                                "Authorization": authHeader]
                 let params = ["identity": identity]

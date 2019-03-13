@@ -39,7 +39,7 @@ extension VirgilHelper {
 
             do {
                 let connection = HttpConnection()
-                let requestURL = URL(string: self.twilioJwtEndpoint)!
+                let requestURL = URLConstansts.twilioJwtEndpoint
                 let headers = ["Content-Type": "application/json",
                                "Authorization": authHeader]
                 let params = ["identity": identity]

@@ -79,6 +79,8 @@ extension VirgilHelper {
         }
     }
 
+    // FIXME
+
     /// Returns card with given identity using backend
     ///
     /// - Parameters:
@@ -88,7 +90,7 @@ extension VirgilHelper {
     /// - Throws: corresponding error if fails
     private func requestSignIn(identity: String, cardManager: CardManager) throws -> Card {
         let connection = HttpConnection()
-        let requestURL = URL(string: self.signUpEndpoint)!
+        let requestURL = URLConstansts.signUpEndpoint
         let headers = ["Content-Type": "application/json"]
         let params = ["identity": identity]
         let body = try JSONSerialization.data(withJSONObject: params, options: [])

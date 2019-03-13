@@ -78,7 +78,7 @@ extension VirgilHelper {
         let exportedRawCard = try rawCard.exportAsJson()
 
         let connection = HttpConnection()
-        let requestURL = URL(string: self.signUpEndpoint)!
+        let requestURL = URLConstansts.signUpEndpoint
         let headers = ["Content-Type": "application/json"]
         let params = ["rawCard" : exportedRawCard]
         let body = try JSONSerialization.data(withJSONObject: params, options: [])
