@@ -10,13 +10,13 @@ import Foundation
 import CoreData
 
 extension CoreDataHelper {
-    func createAccount(withIdentity identity: String, exportedCard: String) {
+    func createAccount(withIdentity identity: String, exportedCard: String) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Entities.account.rawValue, in: self.managedContext) else {
-            Log.error("Core Data: entity not found: " + Entities.account.rawValue)
-            return
+            throw CoreDataHelperError.entityNotFound
         }
 
         let account = Account(entity: entity, insertInto: self.managedContext)
+
         account.identity = identity
         account.card = exportedCard
         account.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
@@ -24,24 +24,17 @@ extension CoreDataHelper {
         self.append(account: account)
         self.setCurrent(account: account)
 
-        Log.debug("Core Data: account created")
-
         self.appDelegate.saveContext()
     }
 
-    func loadAccount(withIdentity username: String) -> Bool {
-        Log.debug("Core Data: Search for " + username)
-        for account in self.accounts {
-            if let identity = account.identity, identity == username {
-                self.setCurrent(account: account)
-                Log.debug("Core Data: found account: " + identity)
-                let channels = account.channel
-                Log.debug("Core Data: it has " + String(describing: channels?.count) + " channels")
-                return true
-            }
+    func loadAccount(withIdentity username: String) throws {
+        let account = self.accounts.first { $0.identity == username }
+
+        guard let accountToLoad = account else {
+            throw CoreDataHelperError.accountNotFound
         }
-        Log.debug("Core Data: Searching for account ended")
-        return false
+
+        self.setCurrent(account: accountToLoad)
     }
 
     func getAccount(withIdentity username: String) -> Account? {
@@ -53,13 +46,12 @@ extension CoreDataHelper {
         return nil
     }
 
-    func getAccountCard() -> String? {
-        if let account = currentAccount, let card = account.card {
-            return card
-        } else {
-            Log.error("Core Data: missing account")
-            return nil
+    func getAccountCard() throws -> String {
+        guard let account = self.currentAccount, let card = account.card else {
+            throw CoreDataHelperError.nilCurrentAccount
         }
+
+        return card
     }
 
     func deleteAccount() {

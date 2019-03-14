@@ -10,6 +10,8 @@ import UIKit
 import PKHUD
 
 class CollectionViewController: UICollectionViewController {
+    private let userAuthorizer: UserAuthorizer = UserAuthorizer()
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -54,18 +56,11 @@ extension CollectionViewController {
 
                 self.present(controller, animated: true)
             }
+
             return
         }
 
-        guard CoreDataHelper.sharedInstance.loadAccount(withIdentity: username) else {
-            PKHUD.sharedHUD.hide() { _ in
-                self.alert(VirgilHelper.UserFriendlyError.noUserOnDevice.localizedDescription)
-            }
-            return
-        }
-        let exportedCard = CoreDataHelper.sharedInstance.getAccountCard()
-
-        VirgilHelper.sharedInstance.signIn(identity: username, card: exportedCard) { error in
+        self.userAuthorizer.signIn(identity: username) { error in
             guard error == nil else {
                 let message = error is VirgilHelper.UserFriendlyError ? error!.localizedDescription : "Something went wrong"
                 PKHUD.sharedHUD.hide() { _ in
@@ -75,7 +70,6 @@ extension CollectionViewController {
                 return
             }
 
-            UserDefaults.standard.set(username, forKey: "last_username")
             PKHUD.sharedHUD.hide(true) { _ in
                 self.goToChatList()
             }

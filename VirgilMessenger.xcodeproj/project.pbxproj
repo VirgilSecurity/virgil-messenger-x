@@ -73,7 +73,7 @@
 		16AE1D7B2044315B005DF777 /* DemoPhotoMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */; };
 		16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
 		16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */; };
-		16CA51021FC45E9A0042AF9D /* Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51011FC45E9A0042AF9D /* Start.swift */; };
+		16CA51021FC45E9A0042AF9D /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51011FC45E9A0042AF9D /* StartViewController.swift */; };
 		16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA51031FC45EA40042AF9D /* Start.storyboard */; };
 		16CA51061FC468370042AF9D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51051FC468370042AF9D /* Constants.swift */; };
 		16CA51101FC5D9960042AF9D /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA510F1FC5D9960042AF9D /* Settings.storyboard */; };
@@ -87,6 +87,7 @@
 		16D7072E214C060B00452A16 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D7072D214C060B00452A16 /* libz.tbd */; };
 		16D70730214C061400452A16 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D7072F214C061400452A16 /* libc++.tbd */; };
 		16D70732214C061C00452A16 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D70731214C061C00452A16 /* SystemConfiguration.framework */; };
+		16D8B0EA223A6FD200D7FA67 /* UserAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */; };
 		16F30D4B1FDAE190006C3DEB /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */; };
 		16F30D4D1FDAE6E6006C3DEB /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */; };
 		16F30D4F1FDAE91D006C3DEB /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */; };
@@ -195,31 +196,25 @@
 		16961B57203B04790084086E /* VirgilHelper+SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VirgilHelper+SignIn.swift"; sourceTree = "<group>"; };
 		16961B59203B04A90084086E /* VirgilHelper+SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VirgilHelper+SignUp.swift"; sourceTree = "<group>"; };
 		1696ADC620A0766600EF8C0D /* Utils+SafeSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Utils+SafeSubscript.swift"; sourceTree = "<group>"; };
-		1698B29222392338003B8CBA /* VirgilCryptoApiImpl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCryptoApiImpl.framework; path = Carthage/Build/iOS/VirgilCryptoApiImpl.framework; sourceTree = "<group>"; };
 		1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilSDKRatchet.framework; path = Carthage/Build/iOS/VirgilSDKRatchet.framework; sourceTree = "<group>"; };
 		1698B29422392339003B8CBA /* VSCFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCFoundation.framework; path = Carthage/Build/iOS/VSCFoundation.framework; sourceTree = "<group>"; };
 		1698B29522392339003B8CBA /* VSCCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCCommon.framework; path = Carthage/Build/iOS/VSCCommon.framework; sourceTree = "<group>"; };
 		1698B29622392339003B8CBA /* VSCPythia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCPythia.framework; path = Carthage/Build/iOS/VSCPythia.framework; sourceTree = "<group>"; };
 		1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCryptoRatchet.framework; path = Carthage/Build/iOS/VirgilCryptoRatchet.framework; sourceTree = "<group>"; };
 		1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCryptoFoundation.framework; path = Carthage/Build/iOS/VirgilCryptoFoundation.framework; sourceTree = "<group>"; };
-		1698B29922392339003B8CBA /* VirgilCryptoCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCryptoCommon.framework; path = Carthage/Build/iOS/VirgilCryptoCommon.framework; sourceTree = "<group>"; };
-		1698B29A22392339003B8CBA /* VirgilSDKKeyknox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilSDKKeyknox.framework; path = Carthage/Build/iOS/VirgilSDKKeyknox.framework; sourceTree = "<group>"; };
 		1698B29B22392339003B8CBA /* VSCRatchet.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCRatchet.framework; path = Carthage/Build/iOS/VSCRatchet.framework; sourceTree = "<group>"; };
-		1698B29C22392339003B8CBA /* VirgilSDKPythia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilSDKPythia.framework; path = Carthage/Build/iOS/VirgilSDKPythia.framework; sourceTree = "<group>"; };
 		1698B29D22392339003B8CBA /* VirgilCryptoPythia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCryptoPythia.framework; path = Carthage/Build/iOS/VirgilCryptoPythia.framework; sourceTree = "<group>"; };
-		1698B29E22392339003B8CBA /* VirgilE3Kit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilE3Kit.framework; path = Carthage/Build/iOS/VirgilE3Kit.framework; sourceTree = "<group>"; };
 		16AE1D772044315B005DF777 /* DemoPhotoMessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageModel.swift; sourceTree = "<group>"; };
 		16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageHandler.swift; sourceTree = "<group>"; };
 		16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
 		16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
-		16CA51011FC45E9A0042AF9D /* Start.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Start.swift; sourceTree = "<group>"; };
+		16CA51011FC45E9A0042AF9D /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 		16CA51031FC45EA40042AF9D /* Start.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Start.storyboard; sourceTree = "<group>"; };
 		16CA51051FC468370042AF9D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		16CA510F1FC5D9960042AF9D /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		16CA51121FC5DA3B0042AF9D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		16CC9B7A21552D5800935AEC /* TabBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBar.storyboard; sourceTree = "<group>"; };
 		16CC9B86215549AC00935AEC /* TwilioAccessManager.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwilioAccessManager.framework; path = Frameworks/TwilioAccessManager.framework; sourceTree = "<group>"; };
-		16CDE19D20C95B5F00D6430B /* VSCCrypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCCrypto.framework; path = Carthage/Build/iOS/VSCCrypto.framework; sourceTree = "<group>"; };
 		16D6CB391FDFEECC00302A05 /* Registration.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Registration.storyboard; sourceTree = "<group>"; };
 		16D70726214BF60E00452A16 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		16D70728214C05D300452A16 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
@@ -227,6 +222,7 @@
 		16D7072D214C060B00452A16 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		16D7072F214C061400452A16 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		16D70731214C061C00452A16 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthorizer.swift; sourceTree = "<group>"; };
 		16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
@@ -394,7 +390,6 @@
 				16961B5B203B04E00084086E /* VirgilHelper */,
 				16277240203C60BE0086127C /* CoreDataHelper */,
 				16FB2DCF204D843300346FA0 /* TwilioHelper */,
-				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -447,7 +442,7 @@
 		16CA51001FC45E840042AF9D /* Start */ = {
 			isa = PBXGroup;
 			children = (
-				16CA51011FC45E9A0042AF9D /* Start.swift */,
+				16CA51011FC45E9A0042AF9D /* StartViewController.swift */,
 			);
 			path = Start;
 			sourceTree = "<group>";
@@ -499,6 +494,8 @@
 		16D8B0E5223A6DA700D7FA67 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
+				16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -513,6 +510,21 @@
 				16CA51111FC5DA1F0042AF9D /* Settings */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		16D8B0E8223A6EFF00D7FA67 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				166D3E5C1FB495DA0032BAAD /* CoreData */,
+				16961B4E203ADE850084086E /* Helpers */,
+				16D8B0E5223A6DA700D7FA67 /* Models */,
+				16CC9B7C21553C6100935AEC /* Views */,
+				16D8B0E7223A6E7500D7FA67 /* Controllers */,
+				16961B50203ADFBA0084086E /* Utils */,
+				429228B51F96261000DCECDF /* AppDelegate.swift */,
+				429228B71F96261000DCECDF /* ViewController.swift */,
+			);
+			path = Source;
 			sourceTree = "<group>";
 		};
 		16E22D871FA896BE008D32D9 /* Chat */ = {
@@ -587,6 +599,7 @@
 			isa = PBXGroup;
 			children = (
 				429228B41F96261000DCECDF /* VirgilMessenger */,
+				16D8B0E8223A6EFF00D7FA67 /* Source */,
 				429228B31F96261000DCECDF /* Products */,
 				429228C71F96287A00DCECDF /* Frameworks */,
 			);
@@ -603,14 +616,6 @@
 		429228B41F96261000DCECDF /* VirgilMessenger */ = {
 			isa = PBXGroup;
 			children = (
-				16D8B0E7223A6E7500D7FA67 /* Controllers */,
-				166D3E5C1FB495DA0032BAAD /* CoreData */,
-				16961B4E203ADE850084086E /* Helpers */,
-				16D8B0E5223A6DA700D7FA67 /* Models */,
-				16CC9B7C21553C6100935AEC /* Views */,
-				16961B50203ADFBA0084086E /* Utils */,
-				429228B51F96261000DCECDF /* AppDelegate.swift */,
-				429228B71F96261000DCECDF /* ViewController.swift */,
 				429228BC1F96261000DCECDF /* Assets.xcassets */,
 				429228C11F96261000DCECDF /* Info.plist */,
 			);
@@ -620,14 +625,9 @@
 		429228C71F96287A00DCECDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1698B29222392338003B8CBA /* VirgilCryptoApiImpl.framework */,
-				1698B29922392339003B8CBA /* VirgilCryptoCommon.framework */,
 				1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */,
 				1698B29D22392339003B8CBA /* VirgilCryptoPythia.framework */,
 				1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */,
-				1698B29E22392339003B8CBA /* VirgilE3Kit.framework */,
-				1698B29A22392339003B8CBA /* VirgilSDKKeyknox.framework */,
-				1698B29C22392339003B8CBA /* VirgilSDKPythia.framework */,
 				1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */,
 				1698B29522392339003B8CBA /* VSCCommon.framework */,
 				1698B29422392339003B8CBA /* VSCFoundation.framework */,
@@ -637,7 +637,6 @@
 				16D7072F214C061400452A16 /* libc++.tbd */,
 				16D7072D214C060B00452A16 /* libz.tbd */,
 				16D70726214BF60E00452A16 /* Security.framework */,
-				16CDE19D20C95B5F00D6430B /* VSCCrypto.framework */,
 				1627E4CF20BD522400D0AF36 /* VirgilCryptoAPI.framework */,
 				42E8F8731F978A51007CB39F /* PKHUD.framework */,
 				16D7072A214C05E500452A16 /* Fabric.framework */,
@@ -788,6 +787,7 @@
 				423BDA7C1F97601700C3EE9B /* ChatListViewController.swift in Sources */,
 				167C68451FADDB7800E6E448 /* VirgilHelper.swift in Sources */,
 				4280C0CC1F97340B00075B3A /* MessageFactory.swift in Sources */,
+				16D8B0EA223A6FD200D7FA67 /* UserAuthorizer.swift in Sources */,
 				16F30D4D1FDAE6E6006C3DEB /* CollectionViewController.swift in Sources */,
 				427D1E551F965569002F2CF3 /* SlidingDatasSource.swift in Sources */,
 				4280C0E11F9734DD00075B3A /* TimeSeparatorCollectionViewCell.swift in Sources */,
@@ -814,7 +814,7 @@
 				168E54CC22395DDC00B6E822 /* ColorPair.swift in Sources */,
 				1627723F203C5FB00086127C /* CoreDataHelper+Account.swift in Sources */,
 				16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */,
-				16CA51021FC45E9A0042AF9D /* Start.swift in Sources */,
+				16CA51021FC45E9A0042AF9D /* StartViewController.swift in Sources */,
 				429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */,
 				164E173820AB1BED00AB1AAD /* AudioChatInputItem.swift in Sources */,
 				1644C07B20B85AC500073D99 /* DemoPhotosChatInputItem.swift in Sources */,

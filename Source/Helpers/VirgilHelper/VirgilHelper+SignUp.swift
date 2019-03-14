@@ -11,24 +11,12 @@ import VirgilSDK
 import VirgilCrypto
 
 extension VirgilHelper {
-    /// Creates Key Pair, stores private key, publishes Virgil Card
-    ///
-    /// - Parameters:
-    ///   - identity: identity of user
-    ///   - completion: completion handler, called with error if failed
-    func signUp(identity: String, completion: @escaping (String?, Error?) -> ()) {
-//        self.queue.async {
-            Log.debug("Signing up")
-
-            self.setCardManager(identity: identity)
-
+    func signUp(identity: String) -> GenericOperation<String> {
+        return CallbackOperation { _, completion in
             do {
-                guard let cardManager = self.cardManager else {
-                    throw VirgilHelperError.missingCardManager
-                }
+                let cardManager = try self.setCardManager(identity: identity)
 
                 if self.keyStorage.existsKeyEntry(withName: identity) {
-                    Log.debug("Key already stored for this identity")
                     throw UserFriendlyError.usernameAlreadyUsed
                 }
 
@@ -41,8 +29,6 @@ extension VirgilHelper {
                 let card = try self.requestSignUp(rawCard: rawCard, cardManager: cardManager)
                 self.set(selfCard: card)
 
-                try self.initializePFS(identity: identity, cardId: card.identifier, privateKey: keyPair.privateKey).startSync().getResult()
-
                 let exportedCard = try cardManager.exportCardAsBase64EncodedString(card)
                 let exportedPrivateKey = try VirgilPrivateKeyExporter(virgilCrypto: self.crypto).exportPrivateKey(privateKey: keyPair.privateKey)
 
@@ -50,21 +36,26 @@ extension VirgilHelper {
                 try? self.keyStorage.deleteKeyEntry(withName: identity)
                 try self.keyStorage.store(keyEntry)
 
-                self.initializeTwilio(cardId: card.identifier, identity: identity) { error in
-                    if let error = error {
-                        Log.error("Signing up: \(error.localizedDescription)")
-                    }
-                    DispatchQueue.main.async {
-                        completion(exportedCard, error)
-                    }
+                let initPFSOperation = self.makeInitPFSOperation(identity: identity,
+                                                                 cardId: card.identifier,
+                                                                 privateKey: keyPair.privateKey)
+                let initTwilioOperation = self.makeInitTwilioOperation(cardId: card.identifier, identity: identity)
+
+                let operations = [initPFSOperation, initTwilioOperation]
+                let completionOperation = OperationUtils.makeCompletionOperation(completion: { (_: Void?, error: Error?) in
+                    completion(exportedCard, error)
+                })
+
+                operations.forEach {
+                    completionOperation.addDependency($0)
                 }
+
+                let queue = OperationQueue()
+                queue.addOperations(operations + [completionOperation], waitUntilFinished: true)
             } catch {
-                Log.error("Signing up: \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    completion(nil, error)
-                }
+                completion(nil, error)
             }
-//        }
+        }
     }
 
     /// Publishes card with given identity using backend

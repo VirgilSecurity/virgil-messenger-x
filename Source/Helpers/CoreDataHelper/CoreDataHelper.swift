@@ -10,6 +10,12 @@ import UIKit
 import Foundation
 import CoreData
 
+enum CoreDataHelperError: String, Error {
+    case accountNotFound
+    case nilCurrentAccount
+    case entityNotFound
+}
+
 class CoreDataHelper {
     let queue: DispatchQueue
     let appDelegate = UIApplication.shared.delegate as! AppDelegate

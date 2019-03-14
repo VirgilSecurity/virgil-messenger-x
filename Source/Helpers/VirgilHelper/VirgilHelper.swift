@@ -47,6 +47,7 @@ class VirgilHelper {
         case gettingJwtFailed = "Getting JWT failed"
         case jsonParsingFailed
         case cardWasNotVerified
+        case cardVerifierInitFailed
     }
 
     func makeAccessTokenProvider(identity: String) -> AccessTokenProvider {
@@ -82,23 +83,21 @@ class VirgilHelper {
         return accessTokenProvider
     }
 
-    internal func initializePFS(identity: String, cardId: String, privateKey: VirgilPrivateKey) -> GenericOperation<Void> {
+    internal func makeInitPFSOperation(identity: String, cardId: String, privateKey: VirgilPrivateKey) -> GenericOperation<Void> {
         return CallbackOperation { _, completion in
-            self.queue.async {
-                do {
-                    let provider = self.makeAccessTokenProvider(identity: identity)
-                    let context = SecureChatContext(identity: identity, identityCardId: cardId, identityPrivateKey: privateKey, accessTokenProvider: provider)
-                    let secureChat = try SecureChat(context: context)
+            do {
+                let provider = self.makeAccessTokenProvider(identity: identity)
+                let context = SecureChatContext(identity: identity, identityCardId: cardId, identityPrivateKey: privateKey, accessTokenProvider: provider)
+                let secureChat = try SecureChat(context: context)
 
-                    let rotationLog = try secureChat.rotateKeys().startSync().getResult()
-                    Log.debug(rotationLog.description)
+                let rotationLog = try secureChat.rotateKeys().startSync().getResult()
+                Log.debug(rotationLog.description)
 
-                    self.secureChat = secureChat
+                self.secureChat = secureChat
 
-                    completion((), nil)
-                } catch {
-                    completion(nil, error)
-                }
+                completion((), nil)
+            } catch {
+                completion(nil, error)
             }
         }
     }

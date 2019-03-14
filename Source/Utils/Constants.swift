@@ -12,6 +12,9 @@ enum URLConstansts {
     static let virgilJwtEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/get-virgil-jwt/")!
     static let twilioJwtEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/get-twilio-jwt/")!
     static let signUpEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/signup/")!
+
+    static let termsAndConditionsURL = "https://virgilsecurity.com/terms-of-service"
+    static let privacyURL = "https://virgilsecurity.com/privacy-policy"
 }
 
 enum ChatConstants {

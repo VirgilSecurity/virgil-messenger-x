@@ -14,8 +14,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
     @IBOutlet weak var privacyLabel: UITextView!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
 
-    let termsAndConditionsURL = "https://virgilsecurity.com/terms-of-service"
-    let privacyURL = "https://virgilsecurity.com/privacy-policy"
+    private let userAuthorizer: UserAuthorizer = UserAuthorizer()
 
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
@@ -33,9 +32,9 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
         attriString.addAttribute(NSAttributedString.Key.font, value: UIFont(name: privacyLabel.font!.fontName, size: 13)!, range: range)
 
         let range1 = (text as NSString).range(of: "Terms of Service")
-        attriString.addAttribute(NSAttributedString.Key.link, value: termsAndConditionsURL, range: range1)
+        attriString.addAttribute(NSAttributedString.Key.link, value: URLConstansts.termsAndConditionsURL, range: range1)
         let range2 = (text as NSString).range(of: "Privacy Policy")
-        attriString.addAttribute(NSAttributedString.Key.link, value: privacyURL, range: range2)
+        attriString.addAttribute(NSAttributedString.Key.link, value: URLConstansts.privacyURL, range: range2)
 
         privacyLabel.attributedText = attriString
     }
@@ -101,8 +100,8 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
             return
         }
 
-        VirgilHelper.sharedInstance.signUp(identity: username) { exportedCard, error in
-            guard error == nil, let exportedCard = exportedCard else {
+        self.userAuthorizer.signUp(identity: username) { error in
+            guard error == nil else {
                 var message = "Something went wrong"
                 if let err = error as? VirgilHelper.UserFriendlyError {
                     message = err.rawValue
@@ -114,10 +113,9 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
 
                     self.present(controller, animated: true)
                 }
+
                 return
             }
-            CoreDataHelper.sharedInstance.createAccount(withIdentity: username, exportedCard: exportedCard)
-            UserDefaults.standard.set(username, forKey: "last_username")
 
             PKHUD.sharedHUD.hide(true) { _ in
                 self.goToChatList()

@@ -11,27 +11,8 @@ import VirgilSDK
 import VirgilCrypto
 
 extension VirgilHelper {
-    /// Initializes Twilio SDK
-    ///
-    /// - Parameters:
-    ///   - cardId: Virgil card identifier
-    ///   - identity: identity of user
-    ///   - completion: completion handler, called with error if failed
-    func initializeTwilio(cardId: String, identity: String, completion: @escaping (Error?) -> ()) {
-        self.getTwilioToken(identity: identity) { token, error in
-            guard let token = token, error == nil else {
-                completion(error)
-                return
-            }
-            TwilioHelper.authorize(username: identity, device: "iPhone")
-            TwilioHelper.sharedInstance.initialize(token: token) { error in
-                completion(error)
-            }
-        }
-    }
-
-    func getTwilioToken(identity: String, completion: @escaping (String?, Error?) -> ()) {
-        self.queue.async {
+    func makeInitTwilioOperation(cardId: String, identity: String) -> GenericOperation<Void> {
+        return CallbackOperation { _, completion in
             guard let authHeader = self.makeAuthHeader() else {
                 completion(nil, VirgilHelperError.gettingTwilioTokenFailed)
                 return
@@ -54,7 +35,14 @@ extension VirgilHelper {
                         throw VirgilHelperError.gettingTwilioTokenFailed
                 }
 
-                completion(token, nil)
+                TwilioHelper.authorize(username: identity, device: "iPhone")
+                TwilioHelper.sharedInstance.initialize(token: token) { error in
+                    if let error = error {
+                        completion(nil, error)
+                    } else {
+                        completion((), error)
+                    }
+                }
             } catch {
                 Log.error("Error while getting twilio token: \(error.localizedDescription)")
                 completion(nil, error)
@@ -62,20 +50,29 @@ extension VirgilHelper {
         }
     }
 
-    func setCardManager(identity: String) {
+    func getTwilioToken(identity: String, completion: @escaping (String?, Error?) -> ()) {
+        self.queue.async {
+
+        }
+    }
+
+    func setCardManager(identity: String) throws -> CardManager {
         let accessTokenProvider = self.makeAccessTokenProvider(identity: identity)
 
         let cardCrypto = VirgilCardCrypto(virgilCrypto: self.crypto)
 
         guard let verifier = VirgilCardVerifier(cardCrypto: cardCrypto) else {
-            Log.error("VirgilCardVerifier init failed")
-            return
+            throw VirgilHelperError.cardVerifierInitFailed
         }
 
         let params = CardManagerParams(cardCrypto: cardCrypto,
                                        accessTokenProvider: accessTokenProvider,
                                        cardVerifier: verifier)
-        self.set(cardManager: CardManager(params: params))
+        let cardManager = CardManager(params: params)
+
+        self.set(cardManager: cardManager)
+
+        return cardManager
     }
 
     /// Returns authentication header for requests to backend
