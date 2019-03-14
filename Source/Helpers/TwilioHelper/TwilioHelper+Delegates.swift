@@ -190,13 +190,13 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
 extension TwilioHelper: TwilioAccessManagerDelegate {
     func accessManagerTokenWillExpire(_ accessManager: TwilioAccessManager) {
-        VirgilHelper.sharedInstance.getTwilioToken(identity: self.username) { token, error in
-            guard let token = token, error == nil else {
-                Log.error("Update Twilio Token failed: \(error?.localizedDescription ?? "unknown error")")
-                return
-            }
+        do {
+            let token = try VirgilHelper.sharedInstance.getTwilioToken(identity: self.username)
 
             accessManager.updateToken(token)
+        } catch {
+            Log.error("Update Twilio Token failed: \(error.localizedDescription)")
         }
+
     }
 }

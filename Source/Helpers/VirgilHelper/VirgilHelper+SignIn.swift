@@ -14,14 +14,11 @@ extension VirgilHelper {
         return CallbackOperation { _, completion in
             self.queue.async {
                 do {
-                    let cardManager = try self.setCardManager(identity: identity)
-
                     if !self.keyStorage.existsKeyEntry(withName: identity) {
                         throw UserFriendlyError.noUserOnDevice
                     }
 
-                    let card = try cardManager.importCard(fromBase64Encoded: exportedCard)
-
+                    let card = try self.importCard(fromBase64Encoded: exportedCard)
                     self.set(selfCard: card)
 
                     let entry = try self.keyStorage.loadKeyEntry(withName: identity)

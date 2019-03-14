@@ -14,15 +14,17 @@ import VirgilCryptoRatchet
 
 class VirgilHelper {
     static let sharedInstance = VirgilHelper()
+
     let crypto: VirgilCrypto
     let cardCrypto: VirgilCardCrypto
     let keyStorage: KeyStorage
-    let queue = DispatchQueue(label: "virgil-help-queue")
     let verifier: VirgilCardVerifier
+
+    let client = Client()
+    let queue = DispatchQueue(label: "virgil-help-queue")
 
     private(set) var privateKey: VirgilPrivateKey?
     private(set) var selfCard: Card?
-    private(set) var cardManager: CardManager?
     private(set) var secureChat: SecureChat?
     private var channelCard: Card?
 
@@ -50,43 +52,17 @@ class VirgilHelper {
         case cardVerifierInitFailed
     }
 
-    func makeAccessTokenProvider(identity: String) -> AccessTokenProvider {
-        let accessTokenProvider = CachingJwtProvider(renewTokenCallback: { tokenContext, completion in
-            guard let authHeader = self.makeAuthHeader() else {
-                completion(nil, VirgilHelperError.gettingJwtFailed)
-                return
-            }
-
-            do {
-                let connection = HttpConnection()
-                let requestURL = URLConstansts.virgilJwtEndpoint
-                let headers = ["Content-Type": "application/json",
-                               "Authorization": authHeader]
-                let params = ["identity": identity]
-                let body = try JSONSerialization.data(withJSONObject: params, options: [])
-
-                let request = Request(url: requestURL, method: .post, headers: headers, body: body)
-                let response = try connection.send(request)
-
-                guard let responseBody = response.body,
-                    let tokenJson = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
-                    let token = tokenJson["token"] as? String else {
-                        throw VirgilHelperError.gettingJwtFailed
-                }
-
-                completion(token, nil)
-            } catch {
-                completion(nil, VirgilHelperError.gettingJwtFailed)
-            }
-        })
-
-        return accessTokenProvider
-    }
-
     internal func makeInitPFSOperation(identity: String, cardId: String, privateKey: VirgilPrivateKey) -> GenericOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                let provider = self.makeAccessTokenProvider(identity: identity)
+                guard let cardId = self.selfCard?.identifier, let privateKey = self.privateKey else {
+                    throw NSError()
+                }
+
+                let provider = self.client.makeAccessTokenProvider(identity: identity,
+                                                                   cardId: cardId,
+                                                                   crypto: self.crypto,
+                                                                   privateKey: privateKey)
                 let context = SecureChatContext(identity: identity, identityCardId: cardId, identityPrivateKey: privateKey, accessTokenProvider: provider)
                 let secureChat = try SecureChat(context: context)
 
@@ -181,24 +157,24 @@ class VirgilHelper {
     }
 
     func getExportedCard(identity: String, completion: @escaping (String?, Error?) -> ()) {
-        self.getCard(identity: identity) { card, error in
-            guard let card = card, error == nil else {
-                DispatchQueue.main.async {
-                    completion(nil, error)
-                }
-                return
-            }
-            do {
-                let exportedCard = try card.getRawCard().exportAsBase64EncodedString()
-                DispatchQueue.main.async {
-                    completion(exportedCard, nil)
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    completion(nil, error)
-                }
-            }
-        }
+//        self.getCard(identity: identity) { card, error in
+//            guard let card = card, error == nil else {
+//                DispatchQueue.main.async {
+//                    completion(nil, error)
+//                }
+//                return
+//            }
+//            do {
+//                let exportedCard = try card.getRawCard().exportAsBase64EncodedString()
+//                DispatchQueue.main.async {
+//                    completion(exportedCard, nil)
+//                }
+//            } catch {
+//                DispatchQueue.main.async {
+//                    completion(nil, error)
+//                }
+//            }
+//        }
     }
 
     /// Returns Virgil Card with given identity
@@ -206,21 +182,22 @@ class VirgilHelper {
     /// - Parameters:
     ///   - identity: identity to search
     ///   - completion: completion handler, called with card if succeded and error otherwise
-    private func getCard(identity: String, completion: @escaping (Card?, Error?) -> ()) {
-        guard let cardManager = self.cardManager else {
-            Log.error("Missing CardManager")
-            completion(nil, VirgilHelperError.missingCardManager)
-            return
-        }
-        cardManager.searchCards(identity: identity) { cards, error in
-            guard error == nil, let card = cards?.first else {
-                Log.error("Getting Virgil Card failed")
-                completion(nil, VirgilHelperError.getCardFailed)
-                return
-            }
-            completion(card, nil)
-        }
-    }
+//    private func getCard(identity: String, completion: @escaping (Card?, Error?) -> ()) {
+//        guard let cardManager = self.cardManager else {
+//            Log.error("Missing CardManager")
+//            completion(nil, VirgilHelperError.missingCardManager)
+//            return
+//        }
+//
+//        cardManager.searchCards(identity: identity) { cards, error in
+//            guard error == nil, let card = cards?.first else {
+//                Log.error("Getting Virgil Card failed")
+//                completion(nil, VirgilHelperError.getCardFailed)
+//                return
+//            }
+//            completion(card, nil)
+//        }
+//    }
 
     func deleteStorageEntry(entry: String) {
         do {
@@ -230,13 +207,10 @@ class VirgilHelper {
         }
     }
 
-    func buildCard(_ exportedCard: String) -> Card? {
-        guard let cardManager = self.cardManager else {
-            Log.error("Missing CardManager")
-            return nil
-        }
+    func buildCard(_ card: String) -> Card? {
         do {
-            return try cardManager.importCard(fromBase64Encoded: exportedCard)
+            let card = try self.importCard(fromBase64Encoded: card)
+            return card
         } catch {
             Log.error("Importing Card failed with: \(error.localizedDescription)")
 
@@ -244,28 +218,41 @@ class VirgilHelper {
         }
     }
 
-    func setChannelCard(_ exportedCard: String) {
-        guard let cardManager = self.cardManager else {
-            Log.error("Missing CardManager")
-            return
-        }
-
+    func setChannelCard(_ card: String) {
         do {
-            let importedCard = try cardManager.importCard(fromBase64Encoded: exportedCard)
+            let importedCard = try self.importCard(fromBase64Encoded: card)
+
             self.channelCard = importedCard
         } catch {
             Log.error("Importing Card failed with: \(error.localizedDescription)")
         }
     }
 
+    func importCard(fromBase64Encoded card: String) throws -> Card {
+        return try CardManager.importCard(fromBase64Encoded: card,
+                                          cardCrypto: self.cardCrypto,
+                                          cardVerifier: self.verifier)
+    }
+
+    func importCard(fromJson card: Any) throws -> Card {
+        return try CardManager.importCard(fromJson: card,
+                                          cardCrypto: self.cardCrypto,
+                                          cardVerifier: self.verifier)
+    }
+
+    func export(card: Card) throws -> String {
+        return try CardManager.exportCardAsBase64EncodedString(card)
+    }
+
     /// Exports self Card
     ///
     /// - Returns: exported self Card
     func getExportedSelfCard() -> String? {
-        guard let card = self.selfCard, let cardManager = self.cardManager else {
+        guard let card = self.selfCard else {
             return nil
         }
-        return try? cardManager.exportCardAsBase64EncodedString(card)
+
+        return try? self.export(card: card)
     }
 }
 
@@ -277,9 +264,5 @@ extension VirgilHelper {
 
     func set(selfCard: Card) {
         self.selfCard = selfCard
-    }
-
-    func set(cardManager: CardManager) {
-        self.cardManager = cardManager
     }
 }

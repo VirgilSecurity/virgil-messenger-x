@@ -88,6 +88,7 @@
 		16D70730214C061400452A16 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D7072F214C061400452A16 /* libc++.tbd */; };
 		16D70732214C061C00452A16 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D70731214C061C00452A16 /* SystemConfiguration.framework */; };
 		16D8B0EA223A6FD200D7FA67 /* UserAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */; };
+		16D8B0EF223A8FCF00D7FA67 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D8B0EE223A8FCF00D7FA67 /* Client.swift */; };
 		16F30D4B1FDAE190006C3DEB /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */; };
 		16F30D4D1FDAE6E6006C3DEB /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */; };
 		16F30D4F1FDAE91D006C3DEB /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */; };
@@ -223,6 +224,7 @@
 		16D7072F214C061400452A16 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		16D70731214C061C00452A16 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthorizer.swift; sourceTree = "<group>"; };
+		16D8B0EE223A8FCF00D7FA67 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
@@ -496,6 +498,7 @@
 			children = (
 				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
 				16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */,
+				16D8B0EE223A8FCF00D7FA67 /* Client.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -825,6 +828,7 @@
 				16FCF27E1FE46756000348BC /* Channel+CoreDataClass.swift in Sources */,
 				16013C7D20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift in Sources */,
 				164E173C20AB297900AB1AAD /* AudioInputView.swift in Sources */,
+				16D8B0EF223A8FCF00D7FA67 /* Client.swift in Sources */,
 				16F30D4B1FDAE190006C3DEB /* AuthenticationViewController.swift in Sources */,
 				1658BA1D1FD9A8BC005EF9C1 /* InputBar.swift in Sources */,
 				16AE1D7A2044315B005DF777 /* DemoPhotoMessageModel.swift in Sources */,
