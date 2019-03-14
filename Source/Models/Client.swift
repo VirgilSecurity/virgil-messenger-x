@@ -59,6 +59,19 @@ class Client {
 
 // MARK: - Queries
 extension Client {
+    func searchCards(withIdentity identity: String,
+                     selfIdentity: String,
+                     cardId: String,
+                     privateKey: VirgilPrivateKey,
+                     verifier: VirgilCardVerifier, completion: @escaping ([Card]?, Error?) -> Void) {
+        let provider = self.makeAccessTokenProvider(identity: selfIdentity, cardId: cardId, privateKey: privateKey)
+
+        let params = CardManagerParams(cardCrypto: self.cardCrypto, accessTokenProvider: provider, cardVerifier: verifier)
+        let cardManager = CardManager(params: params)
+
+        cardManager.searchCards(identity: identity, completion: completion)
+    }
+
     func signUp(identity: String,
                 keyPair: VirgilKeyPair,
                 verifier: VirgilCardVerifier) throws -> Card {

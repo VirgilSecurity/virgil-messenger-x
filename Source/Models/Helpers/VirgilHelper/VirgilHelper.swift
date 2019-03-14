@@ -34,7 +34,6 @@ class VirgilHelper {
         self.keyStorage = KeyStorage()
         self.cardCrypto = VirgilCardCrypto(virgilCrypto: self.crypto)
         self.verifier = VirgilCardVerifier(cardCrypto: self.cardCrypto)!
-
         self.client = Client(crypto: self.crypto, cardCrypto: self.cardCrypto)
     }
 
@@ -158,47 +157,30 @@ class VirgilHelper {
     }
 
     func getExportedCard(identity: String, completion: @escaping (String?, Error?) -> ()) {
-//        self.getCard(identity: identity) { card, error in
-//            guard let card = card, error == nil else {
-//                DispatchQueue.main.async {
-//                    completion(nil, error)
-//                }
-//                return
-//            }
-//            do {
-//                let exportedCard = try card.getRawCard().exportAsBase64EncodedString()
-//                DispatchQueue.main.async {
-//                    completion(exportedCard, nil)
-//                }
-//            } catch {
-//                DispatchQueue.main.async {
-//                    completion(nil, error)
-//                }
-//            }
-//        }
-    }
+        guard let selfCard = self.selfCard, let privateKey = self.privateKey else {
+            completion(nil, NSError())
+            return
+        }
 
-    /// Returns Virgil Card with given identity
-    ///
-    /// - Parameters:
-    ///   - identity: identity to search
-    ///   - completion: completion handler, called with card if succeded and error otherwise
-//    private func getCard(identity: String, completion: @escaping (Card?, Error?) -> ()) {
-//        guard let cardManager = self.cardManager else {
-//            Log.error("Missing CardManager")
-//            completion(nil, VirgilHelperError.missingCardManager)
-//            return
-//        }
-//
-//        cardManager.searchCards(identity: identity) { cards, error in
-//            guard error == nil, let card = cards?.first else {
-//                Log.error("Getting Virgil Card failed")
-//                completion(nil, VirgilHelperError.getCardFailed)
-//                return
-//            }
-//            completion(card, nil)
-//        }
-//    }
+        self.client.searchCards(withIdentity: identity,
+                                selfIdentity: selfCard.identity,
+                                cardId: selfCard.identifier,
+                                privateKey: privateKey,
+                                verifier: self.verifier)
+        { cards, error in
+            do {
+                guard let card = cards?.first, error == nil else {
+                    throw VirgilHelperError.getCardFailed
+                }
+
+                let exportedCard = try card.getRawCard().exportAsBase64EncodedString()
+
+                completion(exportedCard, nil)
+            } catch {
+                completion(nil, error)
+            }
+        }
+    }
 
     func deleteStorageEntry(entry: String) {
         do {
