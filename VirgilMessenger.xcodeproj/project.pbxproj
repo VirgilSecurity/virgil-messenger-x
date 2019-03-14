@@ -475,19 +475,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		16CC9B7D21553C6D00935AEC /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				16CA51001FC45E840042AF9D /* Start */,
-				16B69E061FA9D2CA00FE8A8D /* Authentication */,
-				423BDA761F97600A00C3EE9B /* ChatList */,
-				16E22D871FA896BE008D32D9 /* Chat */,
-				16CA51111FC5DA1F0042AF9D /* Settings */,
-			);
-			name = Controllers;
-			path = "New Group";
-			sourceTree = "<group>";
-		};
 		16CC9B7F21553D0400935AEC /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -507,6 +494,25 @@
 				16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		16D8B0E5223A6DA700D7FA67 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		16D8B0E7223A6E7500D7FA67 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				16CA51001FC45E840042AF9D /* Start */,
+				16B69E061FA9D2CA00FE8A8D /* Authentication */,
+				423BDA761F97600A00C3EE9B /* ChatList */,
+				16E22D871FA896BE008D32D9 /* Chat */,
+				16CA51111FC5DA1F0042AF9D /* Settings */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		16E22D871FA896BE008D32D9 /* Chat */ = {
@@ -597,10 +603,11 @@
 		429228B41F96261000DCECDF /* VirgilMessenger */ = {
 			isa = PBXGroup;
 			children = (
+				16D8B0E7223A6E7500D7FA67 /* Controllers */,
 				166D3E5C1FB495DA0032BAAD /* CoreData */,
 				16961B4E203ADE850084086E /* Helpers */,
+				16D8B0E5223A6DA700D7FA67 /* Models */,
 				16CC9B7C21553C6100935AEC /* Views */,
-				16CC9B7D21553C6D00935AEC /* Controllers */,
 				16961B50203ADFBA0084086E /* Utils */,
 				429228B51F96261000DCECDF /* AppDelegate.swift */,
 				429228B71F96261000DCECDF /* ViewController.swift */,
