@@ -20,7 +20,7 @@ class VirgilHelper {
     let keyStorage: KeyStorage
     let verifier: VirgilCardVerifier
 
-    let client = Client()
+    let client: Client
     let queue = DispatchQueue(label: "virgil-help-queue")
 
     private(set) var privateKey: VirgilPrivateKey?
@@ -34,6 +34,8 @@ class VirgilHelper {
         self.keyStorage = KeyStorage()
         self.cardCrypto = VirgilCardCrypto(virgilCrypto: self.crypto)
         self.verifier = VirgilCardVerifier(cardCrypto: self.cardCrypto)!
+
+        self.client = Client(crypto: self.crypto, cardCrypto: self.cardCrypto)
     }
 
     enum UserFriendlyError: String, Error {
@@ -61,7 +63,6 @@ class VirgilHelper {
 
                 let provider = self.client.makeAccessTokenProvider(identity: identity,
                                                                    cardId: cardId,
-                                                                   crypto: self.crypto,
                                                                    privateKey: privateKey)
                 let context = SecureChatContext(identity: identity, identityCardId: cardId, identityPrivateKey: privateKey, accessTokenProvider: provider)
                 let secureChat = try SecureChat(context: context)

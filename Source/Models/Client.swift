@@ -18,16 +18,21 @@ enum ClientError: String, Error {
 
 class Client {
     private let connection = HttpConnection()
+    private let crypto: VirgilCrypto
+    private let cardCrypto: VirgilCardCrypto
+
+    init(crypto: VirgilCrypto, cardCrypto: VirgilCardCrypto) {
+        self.crypto = crypto
+        self.cardCrypto = cardCrypto
+    }
 
     func makeAccessTokenProvider(identity: String,
                                  cardId: String,
-                                 crypto: VirgilCrypto,
                                  privateKey: VirgilPrivateKey) -> AccessTokenProvider {
         let accessTokenProvider = CachingJwtProvider(renewTokenCallback: { _, completion in
             do {
                 let token = try self.getVirgilToken(identity: identity,
                                                     cardId: cardId,
-                                                    crypto: crypto,
                                                     privateKey: privateKey)
                 completion(token, nil)
             } catch {
@@ -39,7 +44,6 @@ class Client {
     }
 
     private func makeAuthHeader(cardId: String,
-                                crypto: VirgilCrypto,
                                 privateKey: VirgilPrivateKey) throws -> String {
         let stringToSign = "\(cardId).\(Int(Date().timeIntervalSince1970))"
 
@@ -55,7 +59,15 @@ class Client {
 
 // MARK: - Queries
 extension Client {
-    func signUp(rawCard: RawSignedModel, cardCrypto: VirgilCardCrypto, verifier: VirgilCardVerifier) throws -> Card {
+    func signUp(identity: String,
+                keyPair: VirgilKeyPair,
+                verifier: VirgilCardVerifier) throws -> Card {
+        let modelSigner = ModelSigner(cardCrypto: self.cardCrypto)
+        let rawCard = try CardManager.generateRawCard(cardCrypto: self.cardCrypto,
+                                                      modelSigner: modelSigner,
+                                                      privateKey: keyPair.privateKey,
+                                                      publicKey: keyPair.publicKey,
+                                                      identity: identity)
         let exportedRawCard = try rawCard.exportAsJson()
 
         let requestURL = URLConstansts.signUpEndpoint
@@ -93,7 +105,7 @@ extension Client {
                         cardId: String,
                         crypto: VirgilCrypto,
                         privateKey: VirgilPrivateKey) throws -> String {
-        let authHeader = try self.makeAuthHeader(cardId: cardId, crypto: crypto, privateKey: privateKey)
+        let authHeader = try self.makeAuthHeader(cardId: cardId, privateKey: privateKey)
 
         let requestURL = URLConstansts.twilioJwtEndpoint
         let headers = ["Content-Type": "application/json",
@@ -115,9 +127,8 @@ extension Client {
 
     func getVirgilToken(identity: String,
                         cardId: String,
-                        crypto: VirgilCrypto,
                         privateKey: VirgilPrivateKey) throws -> String {
-        let authHeader = try self.makeAuthHeader(cardId: cardId, crypto: crypto, privateKey: privateKey)
+        let authHeader = try self.makeAuthHeader(cardId: cardId, privateKey: privateKey)
 
         let requestURL = URLConstansts.virgilJwtEndpoint
         let headers = ["Content-Type": "application/json",

@@ -20,15 +20,8 @@ extension VirgilHelper {
 
                 let keyPair = try self.crypto.generateKeyPair()
 
-                let modelSigner = ModelSigner(cardCrypto: self.cardCrypto)
-                let rawCard = try CardManager.generateRawCard(cardCrypto: self.cardCrypto,
-                                                              modelSigner: modelSigner,
-                                                              privateKey: keyPair.privateKey,
-                                                              publicKey: keyPair.publicKey,
-                                                              identity: identity)
-                let card = try self.client.signUp(rawCard: rawCard,
-                                                  cardCrypto: self.cardCrypto,
-                                                  verifier: self.verifier)
+                let card = try self.client.signUp(identity: identity, keyPair: keyPair, verifier: self.verifier)
+
                 self.set(privateKey: keyPair.privateKey)
                 self.set(selfCard: card)
 
