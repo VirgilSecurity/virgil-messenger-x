@@ -21,7 +21,7 @@ class CoreDataHelper {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let managedContext: NSManagedObjectContext
 
-    static private(set) var sharedInstance: CoreDataHelper!
+    static private(set) var shared: CoreDataHelper!
     private(set) var accounts: [Account] = []
     private(set) var currentChannel: Channel?
     private(set) var currentAccount: Account?
@@ -49,7 +49,7 @@ class CoreDataHelper {
     ]
 
     static func initialize() {
-        sharedInstance = CoreDataHelper()
+        shared = CoreDataHelper()
     }
 
     private init() {

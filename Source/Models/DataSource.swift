@@ -92,9 +92,9 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func updateMessages(completion: @escaping () -> ()) {
-        TwilioHelper.sharedInstance.updateMessages(count: self.count) { needToUpdate, _ in
+        TwilioHelper.shared.updateMessages(count: self.count) { needToUpdate, _ in
             if needToUpdate > 0 {
-                guard let channel = CoreDataHelper.sharedInstance.currentChannel,
+                guard let channel = CoreDataHelper.shared.currentChannel,
                     let messages = channel.message else {
                         Log.error("Missing Core Data current channel")
                         completion()
@@ -116,12 +116,12 @@ class DataSource: ChatDataSourceProtocol {
             let messageDate = message.dateUpdatedAsDate else {
             return
         }
-        let isIncoming = message.author == TwilioHelper.sharedInstance.username ? false : true
+        let isIncoming = message.author == TwilioHelper.shared.username ? false : true
 
         if message.hasMedia() {
            self.processMedia(message: message, date: messageDate, isIncoming: isIncoming)
         } else if let messageBody = message.body {
-            guard let decryptedBody = VirgilHelper.sharedInstance.decrypt(messageBody) else {
+            guard let decryptedBody = VirgilHelper.shared.decrypt(messageBody) else {
                 return
             }
             Log.debug("Receiving " + decryptedBody)
@@ -129,7 +129,7 @@ class DataSource: ChatDataSourceProtocol {
             let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: messageDate)
             let decryptedMessage = DemoTextMessageModel(messageModel: model, text: decryptedBody)
 
-            CoreDataHelper.sharedInstance.createTextMessage(withBody: decryptedMessage.body, isIncoming: true, date: messageDate)
+            CoreDataHelper.shared.createTextMessage(withBody: decryptedMessage.body, isIncoming: true, date: messageDate)
 
             self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
             self.nextMessageId += 1
@@ -144,10 +144,10 @@ class DataSource: ChatDataSourceProtocol {
             Log.error("Missing mediaType")
             return
         }
-        TwilioHelper.sharedInstance.getMedia(from: message) { encryptedData in
+        TwilioHelper.shared.getMedia(from: message) { encryptedData in
             guard let encryptedData = encryptedData,
                 let encryptedString = String(data: encryptedData, encoding: .utf8),
-                let decryptedString = VirgilHelper.sharedInstance.decrypt(encryptedString),
+                let decryptedString = VirgilHelper.shared.decrypt(encryptedString),
                 let decryptedData = Data(base64Encoded: decryptedString) else {
                     Log.error("decryption process of media message failed")
                     return
@@ -159,7 +159,7 @@ class DataSource: ChatDataSourceProtocol {
                     Log.error("Building image from decrypted data failed")
                     return
                 }
-                CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: true,
+                CoreDataHelper.shared.createMediaMessage(with: decryptedData, isIncoming: true,
                                                                  date: date, type: .photo)
                 let decryptedMessage = MessageFactory.createPhotoMessageModel("\(self.nextMessageId)", image: image,
                                                                    size: image.size, isIncoming: isIncoming,
@@ -170,7 +170,7 @@ class DataSource: ChatDataSourceProtocol {
                     Log.error("Getting audio duration failed")
                     return
                 }
-                CoreDataHelper.sharedInstance.createMediaMessage(with: decryptedData, isIncoming: true,
+                CoreDataHelper.shared.createMediaMessage(with: decryptedData, isIncoming: true,
                                                                  date: date, type: .audio)
                 let decryptedMessage = MessageFactory.createAudioMessageModel("\(self.nextMessageId)", audio: decryptedData,
                                                                               duration: duration, isIncoming: isIncoming,

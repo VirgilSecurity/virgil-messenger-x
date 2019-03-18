@@ -79,16 +79,16 @@ class ChatViewController: BaseChatViewController {
 
         self.navigationItem.titleView = titleView
         self.dataSource.updateMessages {
-            if CoreDataHelper.sharedInstance.currentChannel?.type == ChannelType.group.rawValue {
+            if CoreDataHelper.shared.currentChannel?.type == ChannelType.group.rawValue {
                 titleButton.addTarget(self, action: #selector(self.showParticipants), for: .touchUpInside)
             }
-            titleButton.setTitle(CoreDataHelper.sharedInstance.currentChannel?.name ?? "Error name", for: .normal)
+            titleButton.setTitle(CoreDataHelper.shared.currentChannel?.name ?? "Error name", for: .normal)
             self.navigationItem.titleView = titleButton
             self.view.isUserInteractionEnabled = true
             indicator.stopAnimating()
         }
 
-        if CoreDataHelper.sharedInstance.currentChannel?.type == ChannelType.group.rawValue {
+        if CoreDataHelper.shared.currentChannel?.type == ChannelType.group.rawValue {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self,
                                                                      action: #selector(self.didTapAdd(_:)))
         }
@@ -97,8 +97,8 @@ class ChatViewController: BaseChatViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if let title = CoreDataHelper.sharedInstance.currentChannel?.name {
-            TwilioHelper.sharedInstance.setChannel(withName: title)
+        if let title = CoreDataHelper.shared.currentChannel?.name {
+            TwilioHelper.shared.setChannel(withName: title)
         }
         NotificationCenter.default.removeObserver(self.dataSource)
         self.dataSource.addObserver()
@@ -140,37 +140,37 @@ class ChatViewController: BaseChatViewController {
     private func addMember(_ username: String) {
         let username = username.lowercased()
 
-        guard username != TwilioHelper.sharedInstance.username else {
+        guard username != TwilioHelper.shared.username else {
             self.alert("You need to communicate with other people :)")
             return
         }
 
-        guard let currentChannel = CoreDataHelper.sharedInstance.currentChannel else {
+        guard let currentChannel = CoreDataHelper.shared.currentChannel else {
             Log.error("Missing current channel")
             return
         }
 
         if (currentChannel.cards.contains {
-            VirgilHelper.sharedInstance.buildCard($0)?.identity == username
+            VirgilHelper.shared.buildCard($0)?.identity == username
         }) {
             self.alert("This user is already member of channel")
         } else {
             HUD.show(.progress)
-            VirgilHelper.sharedInstance.getExportedCard(identity: username) { exportedCard, error in
+            VirgilHelper.shared.getExportedCard(identity: username) { exportedCard, error in
                 guard error == nil, let exportedCard = exportedCard else {
                     HUD.flash(.error)
                     return
                 }
-                TwilioHelper.sharedInstance.invite(member: username) { error in
+                TwilioHelper.shared.invite(member: username) { error in
                     if error == nil {
-                        CoreDataHelper.sharedInstance.addMember(card: exportedCard)
-                        guard let cards = CoreDataHelper.sharedInstance.currentChannel?.cards else {
+                        CoreDataHelper.shared.addMember(card: exportedCard)
+                        guard let cards = CoreDataHelper.shared.currentChannel?.cards else {
                             Log.error("Can't fetch Core Data Cards. Card was not added to encrypt for")
                             HUD.flash(.error)
                             return
                         }
 
-                        VirgilHelper.sharedInstance.setChannelCard(cards.first!)
+                        VirgilHelper.shared.setChannelCard(cards.first!)
                         HUD.flash(.success)
                     } else {
                         HUD.flash(.error)

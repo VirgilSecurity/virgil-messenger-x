@@ -56,7 +56,7 @@ public class SlidingDataSource<Element> {
 
     private func showItems(_ count: Int, position: InsertPosition) {
         guard count > 0 else { return }
-        guard let channel = CoreDataHelper.sharedInstance.currentChannel,
+        guard let channel = CoreDataHelper.shared.currentChannel,
             let messages = channel.message else {
                 Log.error("Missing Core Data current channel")
                 return

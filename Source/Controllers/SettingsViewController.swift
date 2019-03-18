@@ -28,12 +28,12 @@ class SettingsViewController: ViewController {
         self.tableView.backgroundColor = UIColor(rgb: 0x2B303B)
         self.view.backgroundColor = UIColor(rgb: 0x2B303B)
 
-        self.usernameLabel.text = TwilioHelper.sharedInstance.username
+        self.usernameLabel.text = TwilioHelper.shared.username
 
-        let up = TwilioHelper.sharedInstance.username.uppercased().first!
+        let up = TwilioHelper.shared.username.uppercased().first!
         self.letterLabel.text = String(describing: up)
 
-        if let account = CoreDataHelper.sharedInstance.currentAccount {
+        if let account = CoreDataHelper.shared.currentAccount {
             let num = Int(account.numColorPair)
             let f = UIConstants.colorPairs[num].first
             let s = UIConstants.colorPairs[num].second
@@ -74,8 +74,8 @@ extension SettingsViewController: UITableViewDelegate {
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
                 UserDefaults.standard.set(nil, forKey: "last_username")
 
-                CoreDataHelper.sharedInstance.deleteAccount()
-                VirgilHelper.sharedInstance.deleteStorageEntry(entry: TwilioHelper.sharedInstance.username)
+                CoreDataHelper.shared.deleteAccount()
+                VirgilHelper.shared.deleteStorageEntry(entry: TwilioHelper.shared.username)
 
                 let vc = UIStoryboard(name: "Authentication", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
 

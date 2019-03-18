@@ -17,13 +17,13 @@ class CollectionViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return CoreDataHelper.sharedInstance.accounts.count
+        return CoreDataHelper.shared.accounts.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionCell", for: indexPath) as! CollectionViewCell
 
-        let account = CoreDataHelper.sharedInstance.accounts[indexPath.row] as Account
+        let account = CoreDataHelper.shared.accounts[indexPath.row] as Account
 
         cell.usernameLabel.text = account.identity
 
@@ -36,7 +36,7 @@ class CollectionViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let username = CoreDataHelper.sharedInstance.accounts[indexPath.row].identity else {
+        guard let username = CoreDataHelper.shared.accounts[indexPath.row].identity else {
             Log.error("nil account")
             return
         }

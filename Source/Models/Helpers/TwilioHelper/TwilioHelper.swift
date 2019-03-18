@@ -11,7 +11,7 @@ import TwilioChatClient
 import TwilioAccessManager
 
 class TwilioHelper: NSObject {
-    private(set) static var sharedInstance: TwilioHelper!
+    private(set) static var shared: TwilioHelper!
     private(set) var client: TwilioChatClient!
     private(set) var channels: TCHChannels!
     private(set) var users: TCHUsers!
@@ -41,7 +41,7 @@ class TwilioHelper: NSObject {
     }
 
     static func authorize(username: String, device: String) {
-        self.sharedInstance = TwilioHelper(username: username, device: device)
+        self.shared = TwilioHelper(username: username, device: device)
     }
 
     private init(username: String, device: String) {

@@ -46,10 +46,10 @@ public class MessageSender {
             let textMessage = message as! DemoTextMessageModel
 
             var text = textMessage.body
-            if CoreDataHelper.sharedInstance.currentChannel?.type == ChannelType.group.rawValue {
-                text = "\(TwilioHelper.sharedInstance.username): \(textMessage.body)"
+            if CoreDataHelper.shared.currentChannel?.type == ChannelType.group.rawValue {
+                text = "\(TwilioHelper.shared.username): \(textMessage.body)"
             }
-            if let encrypted = VirgilHelper.sharedInstance.encrypt(text) {
+            if let encrypted = VirgilHelper.shared.encrypt(text) {
                 self.messageStatus(ciphertext: encrypted, message: textMessage)
             }
         case is DemoPhotoMessageModel:
@@ -58,7 +58,7 @@ public class MessageSender {
                 Log.error("Converting image to JPEG failed")
                 return
             }
-            if let encrypted = VirgilHelper.sharedInstance.encrypt(photoData.base64EncodedString()) {
+            if let encrypted = VirgilHelper.shared.encrypt(photoData.base64EncodedString()) {
                 guard let cipherData = encrypted.data(using: .utf8) else {
                     Log.error("String to Data failed")
                     return
@@ -68,7 +68,7 @@ public class MessageSender {
             }
         case is DemoAudioMessageModel:
             let audioMessage = message as! DemoAudioMessageModel
-            if let encrypted = VirgilHelper.sharedInstance.encrypt(audioMessage.audio.base64EncodedString()) {
+            if let encrypted = VirgilHelper.shared.encrypt(audioMessage.audio.base64EncodedString()) {
                 guard let cipherData = encrypted.data(using: .utf8) else {
                     Log.error("String to Data failed")
                     return
@@ -89,13 +89,13 @@ public class MessageSender {
             self.updateMessage(message, status: .sending)
             self.messageStatus(ciphertext: ciphertext, message: message)
         case .sending:
-            if let messages = TwilioHelper.sharedInstance.currentChannel.messages {
+            if let messages = TwilioHelper.shared.currentChannel.messages {
                 let options = TCHMessageOptions().withBody(ciphertext)
                 Log.debug("sending \(ciphertext)")
                 messages.sendMessage(with: options) { result, msg in
                     if result.isSuccessful() {
                         self.updateMessage(message, status: .success)
-                        CoreDataHelper.sharedInstance.createTextMessage(withBody: message.body, isIncoming: false,
+                        CoreDataHelper.shared.createTextMessage(withBody: message.body, isIncoming: false,
                                                                         date: message.date)
                     } else {
                         Log.error("error sending: Twilio cause")
@@ -116,7 +116,7 @@ public class MessageSender {
             self.updateMessage(message, status: .sending)
             self.messageStatus(of: message, with: cipherphoto)
         case .sending:
-            if let messages = TwilioHelper.sharedInstance.currentChannel.messages {
+            if let messages = TwilioHelper.shared.currentChannel.messages {
                 let inputStream = InputStream(data: cipherphoto)
                 let options = TCHMessageOptions().withMediaStream(inputStream,
                                                                   contentType: TwilioHelper.MediaType.photo.rawValue,
@@ -138,7 +138,7 @@ public class MessageSender {
                             Log.error("failed getting data from image")
                             return
                         }
-                        CoreDataHelper.sharedInstance.createMediaMessage(with: imageData, isIncoming: false,
+                        CoreDataHelper.shared.createMediaMessage(with: imageData, isIncoming: false,
                                                                          date: message.date, type: .photo)
                     } else {
                         if let error = result.error {
@@ -163,7 +163,7 @@ public class MessageSender {
             self.updateMessage(message, status: .sending)
             self.messageStatus(of: message, with: cipherdata)
         case .sending:
-            if let messages = TwilioHelper.sharedInstance.currentChannel.messages {
+            if let messages = TwilioHelper.shared.currentChannel.messages {
                 let inputStream = InputStream(data: cipherdata)
                 let options = TCHMessageOptions().withMediaStream(inputStream,
                                                                   contentType: TwilioHelper.MediaType.audio.rawValue,
@@ -181,7 +181,7 @@ public class MessageSender {
                     if result.isSuccessful() {
                         self.updateMessage(message, status: .success)
 
-                        CoreDataHelper.sharedInstance.createMediaMessage(with: message.audio, isIncoming: false,
+                        CoreDataHelper.shared.createMediaMessage(with: message.audio, isIncoming: false,
                                                                          date: message.date, type: .audio)
                     } else {
                         if let error = result.error {

@@ -94,25 +94,25 @@ extension TwilioHelper: TwilioChatClientDelegate {
     func chatClient(_ client: TwilioChatClient, channel: TCHChannel, memberJoined member: TCHMember) {
         if self.getType(of: channel) == ChannelType.group,
             let name = self.getName(of: channel),
-            let coreChannel = CoreDataHelper.sharedInstance.getChannel(withName: name) {
+            let coreChannel = CoreDataHelper.shared.getChannel(withName: name) {
                 Log.debug("New member joined")
                 guard let identity = member.identity else {
                     Log.error("Member identity is unaccessable")
                     return
                 }
-                VirgilHelper.sharedInstance.getExportedCard(identity: identity) { exportedCard, error in
+                VirgilHelper.shared.getExportedCard(identity: identity) { exportedCard, error in
                     guard error == nil, let exportedCard = exportedCard else {
                         return
                     }
-                    CoreDataHelper.sharedInstance.addMember(card: exportedCard, to: coreChannel)
+                    CoreDataHelper.shared.addMember(card: exportedCard, to: coreChannel)
 
                     // FIXME
-                    guard let card = CoreDataHelper.sharedInstance.currentChannel?.cards.first else {
+                    guard let card = CoreDataHelper.shared.currentChannel?.cards.first else {
                         Log.error("Fetching current channel cards failed")
                         return
                     }
                     
-                    VirgilHelper.sharedInstance.setChannelCard(card)
+                    VirgilHelper.shared.setChannelCard(card)
                 }
         }
     }
@@ -125,7 +125,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
         guard let channelName = self.getName(of: channel) else {
             return
         }
-        guard let coreDataChannel = CoreDataHelper.sharedInstance.getChannel(withName: channelName) else {
+        guard let coreDataChannel = CoreDataHelper.shared.getChannel(withName: channelName) else {
             Log.error("Can't get core data channel")
             return
         }
@@ -134,7 +134,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
             self.getMedia(from: message) { encryptedData in
                 guard let encryptedData = encryptedData,
                     let encryptedString = String(data: encryptedData, encoding: .utf8),
-                    let decryptedString = VirgilHelper.sharedInstance.decrypt(encryptedString),
+                    let decryptedString = VirgilHelper.shared.decrypt(encryptedString),
                     let decryptedData = Data(base64Encoded: decryptedString) else {
                         Log.error("Decryption process of media message failed")
                         return
@@ -144,14 +144,14 @@ extension TwilioHelper: TwilioChatClientDelegate {
                 if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
                     switch message.mediaType {
                     case MediaType.photo.rawValue:
-                        coreDataChannel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.photo.rawValue]
+                        coreDataChannel.lastMessagesBody = CoreDataHelper.shared.lastMessageIdentifier[CoreDataHelper.MessageType.photo.rawValue]
                             ?? "corrupted type"
-                        CoreDataHelper.sharedInstance.createMediaMessage(for: coreDataChannel, with: decryptedData,
+                        CoreDataHelper.shared.createMediaMessage(for: coreDataChannel, with: decryptedData,
                                                                          isIncoming: true, date: messageDate, type: .photo)
                     case MediaType.audio.rawValue:
-                        coreDataChannel.lastMessagesBody = CoreDataHelper.sharedInstance.lastMessageIdentifier[CoreDataHelper.MessageType.audio.rawValue]
+                        coreDataChannel.lastMessagesBody = CoreDataHelper.shared.lastMessageIdentifier[CoreDataHelper.MessageType.audio.rawValue]
                             ?? "corrupted type"
-                        CoreDataHelper.sharedInstance.createMediaMessage(for: coreDataChannel, with: decryptedData,
+                        CoreDataHelper.shared.createMediaMessage(for: coreDataChannel, with: decryptedData,
                                                                          isIncoming: true, date: messageDate, type: .audio)
                     default:
                         Log.error("Missing or unknown mediaType")
@@ -166,7 +166,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                     ])
             }
         } else if let messageBody = message.body {
-            guard let decryptedMessageBody = VirgilHelper.sharedInstance.decrypt(messageBody) else {
+            guard let decryptedMessageBody = VirgilHelper.shared.decrypt(messageBody) else {
                 return
             }
 
@@ -174,7 +174,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
             coreDataChannel.lastMessagesDate = messageDate
 
             if (coreDataChannel.message?.count == 0 || (Int(truncating: message.index ?? 0) >= (coreDataChannel.message?.count ?? 0))) {
-                CoreDataHelper.sharedInstance.createTextMessage(for: coreDataChannel, withBody: decryptedMessageBody,
+                CoreDataHelper.shared.createTextMessage(for: coreDataChannel, withBody: decryptedMessageBody,
                                                                 isIncoming: true, date: messageDate)
             }
             Log.debug("Receiving " + decryptedMessageBody)
@@ -191,7 +191,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
 extension TwilioHelper: TwilioAccessManagerDelegate {
     func accessManagerTokenWillExpire(_ accessManager: TwilioAccessManager) {
         do {
-            let token = try VirgilHelper.sharedInstance.getTwilioToken(identity: self.username)
+            let token = try VirgilHelper.shared.getTwilioToken(identity: self.username)
 
             accessManager.updateToken(token)
         } catch {

@@ -24,7 +24,7 @@ extension VirgilHelper {
                                                            privateKey: privateKey)
 
                 TwilioHelper.authorize(username: identity, device: "iPhone")
-                TwilioHelper.sharedInstance.initialize(token: token) { error in
+                TwilioHelper.shared.initialize(token: token) { error in
                     if let error = error {
                         completion(nil, error)
                     } else {

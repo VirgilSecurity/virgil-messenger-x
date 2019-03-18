@@ -26,11 +26,11 @@ public class UserAuthorizer {
                     throw UserAuthorizerError.noIdentityAtDefaults
                 }
 
-                try CoreDataHelper.sharedInstance.loadAccount(withIdentity: identity)
+                try CoreDataHelper.shared.loadAccount(withIdentity: identity)
 
-                let exportedCard = try CoreDataHelper.sharedInstance.getAccountCard()
+                let exportedCard = try CoreDataHelper.shared.getAccountCard()
 
-                try VirgilHelper.sharedInstance.signIn(identity: identity, card: exportedCard).startSync().getResult()
+                try VirgilHelper.shared.signIn(identity: identity, card: exportedCard).startSync().getResult()
 
                 DispatchQueue.main.async {
                     completion(nil)
@@ -46,10 +46,10 @@ public class UserAuthorizer {
     func signIn(identity: String, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                try CoreDataHelper.sharedInstance.loadAccount(withIdentity: identity)
-                let exportedCard = try CoreDataHelper.sharedInstance.getAccountCard()
+                try CoreDataHelper.shared.loadAccount(withIdentity: identity)
+                let exportedCard = try CoreDataHelper.shared.getAccountCard()
 
-                try VirgilHelper.sharedInstance.signIn(identity: identity, card: exportedCard).startSync().getResult()
+                try VirgilHelper.shared.signIn(identity: identity, card: exportedCard).startSync().getResult()
 
                 UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
@@ -71,9 +71,9 @@ public class UserAuthorizer {
     func signUp(identity: String, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                let exportedCard = try VirgilHelper.sharedInstance.signUp(identity: identity).startSync().getResult()
+                let exportedCard = try VirgilHelper.shared.signUp(identity: identity).startSync().getResult()
 
-                try CoreDataHelper.sharedInstance.createAccount(withIdentity: identity, exportedCard: exportedCard)
+                try CoreDataHelper.shared.createAccount(withIdentity: identity, exportedCard: exportedCard)
 
                 UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 

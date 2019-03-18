@@ -104,7 +104,7 @@ extension CoreDataHelper {
 
     func doesHave(channel: Channel, member: String) -> Bool {
         for exportedCard in channel.cards {
-            let card = VirgilHelper.sharedInstance.buildCard(exportedCard)
+            let card = VirgilHelper.shared.buildCard(exportedCard)
             if card?.identity == member {
                 return true
             }

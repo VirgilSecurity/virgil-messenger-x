@@ -60,8 +60,8 @@ class ChatListViewController: ViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        TwilioHelper.sharedInstance.deselectChannel()
-        noChatsView.isHidden = TwilioHelper.sharedInstance.channels.subscribedChannels().isEmpty ? false : true
+        TwilioHelper.shared.deselectChannel()
+        noChatsView.isHidden = TwilioHelper.shared.channels.subscribedChannels().isEmpty ? false : true
         self.tableView.reloadData()
     }
 
@@ -73,15 +73,15 @@ class ChatListViewController: ViewController {
     }
 
     private func configure(completion: @escaping () -> ()) {
-        let channels = TwilioHelper.sharedInstance.channels.subscribedChannels()
+        let channels = TwilioHelper.shared.channels.subscribedChannels()
         let group = DispatchGroup()
 
         for i in 0..<channels.count {
             let channel = channels[i]
-            guard let channelName = TwilioHelper.sharedInstance.getName(of: channel) else {
+            guard let channelName = TwilioHelper.shared.getName(of: channel) else {
                 continue
             }
-            if let coreChannel = CoreDataHelper.sharedInstance.getChannel(withName: channelName) {
+            if let coreChannel = CoreDataHelper.shared.getChannel(withName: channelName) {
                 while channel.messages == nil { sleep(1) }
 
                 group.enter()
@@ -106,8 +106,8 @@ class ChatListViewController: ViewController {
 
     private func setLastMessages(twilioChannel: TCHChannel, coreChannel: Channel, completion: @escaping () -> ()) {
         if let messages = twilioChannel.messages {
-            CoreDataHelper.sharedInstance.setLastMessage(for: coreChannel)
-            TwilioHelper.sharedInstance.setLastMessage(of: messages, channel: coreChannel) {
+            CoreDataHelper.shared.setLastMessage(for: coreChannel)
+            TwilioHelper.shared.setLastMessage(of: messages, channel: coreChannel) {
                 completion()
             }
         } else {
@@ -118,7 +118,7 @@ class ChatListViewController: ViewController {
 
     private func updateGroupChannelMembers(twilioChannel: TCHChannel, coreChannel: Channel, completion: @escaping () -> ()) {
         if coreChannel.type == ChannelType.group.rawValue {
-            TwilioHelper.sharedInstance.updateMembers(of: twilioChannel, coreChannel: coreChannel) {
+            TwilioHelper.shared.updateMembers(of: twilioChannel, coreChannel: coreChannel) {
                 completion()
             }
         } else {
@@ -170,27 +170,27 @@ class ChatListViewController: ViewController {
 
         let username = username.lowercased()
 
-        guard username != TwilioHelper.sharedInstance.username else {
+        guard username != TwilioHelper.shared.username else {
             self.alert("You need to communicate with other people :)")
             return
         }
 
-        if (CoreDataHelper.sharedInstance.getChannels().contains {
+        if (CoreDataHelper.shared.getChannels().contains {
             ($0 as! Channel).name == username
         }) {
             self.alert("You already have this channel")
         } else {
             HUD.show(.progress)
-            VirgilHelper.sharedInstance.getExportedCard(identity: username) { exportedCard, error in
+            VirgilHelper.shared.getExportedCard(identity: username) { exportedCard, error in
                 guard let exportedCard = exportedCard, error == nil else {
                     Log.error("Getting card failed")
                     self.alert("User not found")
                     HUD.hide()
                     return
                 }
-                TwilioHelper.sharedInstance.createSingleChannel(with: username) { error in
+                TwilioHelper.shared.createSingleChannel(with: username) { error in
                     if error == nil {
-                        _ = CoreDataHelper.sharedInstance.createChannel(type: .single,
+                        _ = CoreDataHelper.shared.createChannel(type: .single,
                                                                         name: username,
                                                                         cards: [exportedCard])
                         self.noChatsView.isHidden = true
@@ -215,7 +215,7 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
 
-        let channels = CoreDataHelper.sharedInstance.getChannels()
+        let channels = CoreDataHelper.shared.getChannels()
         let count = channels.count
 
         cell.tag = count - indexPath.row - 1
@@ -255,7 +255,7 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let account = CoreDataHelper.sharedInstance.currentAccount,
+        guard let account = CoreDataHelper.shared.currentAccount,
               let channels = account.channel else {
                 Log.error("Can't form row: Core Data account or channels corrupted")
                 return 0
@@ -275,19 +275,19 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
 extension ChatListViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         if let username = (cell as! ChatListCell).usernameLabel.text {
-            TwilioHelper.sharedInstance.setChannel(withName: username)
+            TwilioHelper.shared.setChannel(withName: username)
             self.view.isUserInteractionEnabled = false
 
-            guard CoreDataHelper.sharedInstance.loadChannel(withName: username),
-                let channel = CoreDataHelper.sharedInstance.currentChannel else {
+            guard CoreDataHelper.shared.loadChannel(withName: username),
+                let channel = CoreDataHelper.shared.currentChannel else {
                     Log.error("Channel do not exist in Core Data")
                     return
             }
 
             // FIXME
-            VirgilHelper.sharedInstance.setChannelCard(channel.cards.first!)
+            VirgilHelper.shared.setChannelCard(channel.cards.first!)
 
-            TwilioHelper.sharedInstance.currentChannel.getMessagesCount { result, count in
+            TwilioHelper.shared.currentChannel.getMessagesCount { result, count in
                 guard result.isSuccessful() else {
                     Log.error("Can't get Twilio messages count")
                     return

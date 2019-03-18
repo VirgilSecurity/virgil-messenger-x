@@ -11,7 +11,7 @@ import TwilioChatClient
 
 extension TwilioHelper {
     func createSingleChannel(with username: String, completion: @escaping (Error?) -> ()) {
-        TwilioHelper.sharedInstance.channels.createChannel(options: [
+        TwilioHelper.shared.channels.createChannel(options: [
             TCHChannelOptionType: TCHChannelType.private.rawValue,
             TCHChannelOptionAttributes: [
                 Keys.initiator.rawValue: self.username,
@@ -66,7 +66,7 @@ extension TwilioHelper {
     }
 
     func createGlobalChannel(withName name: String, completion: @escaping (Error?) -> ()) {
-        TwilioHelper.sharedInstance.channels.createChannel(options: [
+        TwilioHelper.shared.channels.createChannel(options: [
             TCHChannelOptionType: TCHChannelType.private.rawValue,
             TCHChannelOptionFriendlyName: name,
             TCHChannelOptionAttributes: [
@@ -116,7 +116,7 @@ extension TwilioHelper {
                     switch type {
                     case .single:
                         let identity = self.getCompanion(of: channel)
-                        VirgilHelper.sharedInstance.getExportedCard(identity: identity) { exportedCard, error in
+                        VirgilHelper.shared.getExportedCard(identity: identity) { exportedCard, error in
                             guard let exportedCard = exportedCard, error == nil else {
                                 Log.error("Getting new channel Card failed")
                                 return
@@ -141,7 +141,7 @@ extension TwilioHelper {
                                     return
                                 }
                                 group.enter()
-                                VirgilHelper.sharedInstance.getExportedCard(identity: identity) { exportedCard, error in
+                                VirgilHelper.shared.getExportedCard(identity: identity) { exportedCard, error in
                                     guard error == nil, let exportedCard = exportedCard else {
                                         return
                                     }
@@ -163,7 +163,7 @@ extension TwilioHelper {
     }
 
     func joinChannelHelper(name: String, messages: TCHMessages, type: ChannelType, cards: [String]) {
-        guard let channelCore = CoreDataHelper.sharedInstance.createChannel(type: type, name: name, cards: cards) else {
+        guard let channelCore = CoreDataHelper.shared.createChannel(type: type, name: name, cards: cards) else {
             return
         }
         self.setLastMessage(of: messages, channel: channelCore) {
@@ -205,11 +205,11 @@ extension TwilioHelper {
                     Log.error("Member identity is unaccessable")
                     continue
                 }
-                if !CoreDataHelper.sharedInstance.doesHave(channel: coreChannel, member: identity) {
+                if !CoreDataHelper.shared.doesHave(channel: coreChannel, member: identity) {
                     group.enter()
-                    VirgilHelper.sharedInstance.getExportedCard(identity: identity) { exportedCard, error in
+                    VirgilHelper.shared.getExportedCard(identity: identity) { exportedCard, error in
                         if error == nil, let exportedCard = exportedCard {
-                            CoreDataHelper.sharedInstance.addMember(card: exportedCard, to: coreChannel)
+                            CoreDataHelper.shared.addMember(card: exportedCard, to: coreChannel)
                         }
                         group.leave()
                     }

@@ -13,7 +13,7 @@ import VirgilSDKRatchet
 import VirgilCryptoRatchet
 
 class VirgilHelper {
-    static let sharedInstance = VirgilHelper()
+    static let shared = VirgilHelper()
 
     let crypto: VirgilCrypto
     let cardCrypto: VirgilCardCrypto
