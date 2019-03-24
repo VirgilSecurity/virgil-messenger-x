@@ -10,42 +10,43 @@ import UIKit
 import TwilioChatClient
 
 extension TwilioHelper {
-    func setLastMessage(of messages: TCHMessages, channel: Channel, completion: @escaping () -> ()) {
-        messages.getLastWithCount(UInt(1)) { result, messages in
-            guard result.isSuccessful(),
-                let messages = messages,
-                let message = messages.last,
-                let date = message.dateUpdatedAsDate else {
-                    Log.error("get last twilio message failed with: \(result.error?.localizedDescription ?? "unknown error")")
-                    completion()
-                    return
-            }
-            channel.lastMessagesDate = date
-
-            if message.hasMedia() {
-                switch message.mediaType {
-                case MediaType.photo.rawValue:
-                    channel.lastMessagesBody = CoreDataHelper.shared.lastMessageIdentifier[CoreDataHelper.MessageType.photo.rawValue] ?? "corrupted type"
-                case MediaType.audio.rawValue:
-                    channel.lastMessagesBody = CoreDataHelper.shared.lastMessageIdentifier[CoreDataHelper.MessageType.audio.rawValue] ?? "corrupted type"
-                default:
-                    Log.error("Missing or unknown media type")
-                }
-            } else if let body = message.body {
-                if message.author != TwilioHelper.shared.username {
-                    guard let decryptedBody = VirgilHelper.shared.decrypt(body) else {
-                        completion()
-                        return
-                    }
-                    channel.lastMessagesBody = decryptedBody
-                }
-            } else {
-                Log.error("Empty twilio message")
-            }
-
-            completion()
-        }
-    }
+//    func setLastMessage(of messages: TCHMessages, channel: Channel, completion: @escaping () -> ()) {
+//        messages.getLastWithCount(UInt(1)) { result, messages in
+//            guard result.isSuccessful(),
+//                let messages = messages,
+//                let message = messages.last,
+//                let date = message.dateUpdatedAsDate else {
+//                    Log.error("get last twilio message failed with: \(result.error?.localizedDescription ?? "unknown error")")
+//                    completion()
+//                    return
+//            }
+//            channel.lastMessagesDate = date
+//
+//            if message.hasMedia() {
+//                switch message.mediaType {
+//                case MediaType.photo.rawValue:
+//                    channel.lastMessagesBody = CoreDataHelper.shared.lastMessageIdentifier[CoreDataHelper.MessageType.photo.rawValue] ?? "corrupted type"
+//                case MediaType.audio.rawValue:
+//                    channel.lastMessagesBody = CoreDataHelper.shared.lastMessageIdentifier[CoreDataHelper.MessageType.audio.rawValue] ?? "corrupted type"
+//                default:
+//                    Log.error("Missing or unknown media type")
+//                }
+//            } else if let body = message.body {
+//                if message.author != TwilioHelper.shared.username {
+//                    guard let decryptedBody = VirgilHelper.shared.decrypt(body, withCard: channel.cards.first) else {
+//                        completion()
+//                        return
+//                    }
+//
+//                    channel.lastMessagesBody = decryptedBody
+//                }
+//            } else {
+//                Log.error("Empty twilio message")
+//            }
+//
+//            completion()
+//        }
+//    }
 
     func updateMessages(count: Int, completion: @escaping (Int, Error?) -> ()) {
         guard let coreMessagesCount = CoreDataHelper.shared.currentChannel?.message?.count else {

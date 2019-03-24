@@ -81,6 +81,7 @@ class ChatListViewController: ViewController {
             guard let channelName = TwilioHelper.shared.getName(of: channel) else {
                 continue
             }
+
             if let coreChannel = CoreDataHelper.shared.getChannel(withName: channelName) {
                 while channel.messages == nil { sleep(1) }
 
@@ -105,15 +106,14 @@ class ChatListViewController: ViewController {
     }
 
     private func setLastMessages(twilioChannel: TCHChannel, coreChannel: Channel, completion: @escaping () -> ()) {
-        if let messages = twilioChannel.messages {
+//        if let messages = twilioChannel.messages {
             CoreDataHelper.shared.setLastMessage(for: coreChannel)
-            TwilioHelper.shared.setLastMessage(of: messages, channel: coreChannel) {
-                completion()
-            }
-        } else {
-            Log.error("Get Messages failed")
             completion()
-        }
+            // TwilioHelper.shared.setLastMessage(of: messages, channel: coreChannel, completion: completion)
+//        } else {
+//            Log.error("Get Messages failed")
+//            completion()
+//        }
     }
 
     private func updateGroupChannelMembers(twilioChannel: TCHChannel, coreChannel: Channel, completion: @escaping () -> ()) {

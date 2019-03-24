@@ -6,7 +6,6 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import VirgilSDK
 import VirgilCrypto
 import VirgilSDKRatchet
@@ -96,12 +95,7 @@ class VirgilHelper {
         return session
     }
 
-    private func getSessionAsReceiver(message: RatchetMessage) throws -> SecureSession {
-        guard let card = self.channelCard else {
-            Log.error("channel card not found")
-            throw NSError()
-        }
-
+    private func getSessionAsReceiver(message: RatchetMessage, receiverCard card: Card) throws -> SecureSession {
         guard let secureChat = self.secureChat else {
             Log.error("nil Secure Chat")
             throw NSError()
@@ -128,9 +122,14 @@ class VirgilHelper {
             throw NSError()
         }
 
+        guard let card = self.channelCard else {
+            Log.error("channel card not found")
+            throw NSError()
+        }
+
         let ratchetMessage = try RatchetMessage.deserialize(input: data)
 
-        let session = try self.getSessionAsReceiver(message: ratchetMessage)
+        let session = try self.getSessionAsReceiver(message: ratchetMessage, receiverCard: card)
 
         return try session.decryptString(from: ratchetMessage)
     }
@@ -143,17 +142,34 @@ class VirgilHelper {
         return ratchetMessage.serialize().base64EncodedString()
     }
 
-    func decrypt(_ encrypted: String) -> String? {
+    func decrypt(_ encrypted: String, withCard: String? = nil) -> String? {
         guard let data = Data(base64Encoded: encrypted) else {
             Log.error("Converting utf8 string to data failed")
             return nil
         }
 
-        let ratchetMessage = try! RatchetMessage.deserialize(input: data)
+        let tryCard: Card?
+        if let receiverCard = withCard {
+            tryCard = self.buildCard(receiverCard)
+        } else {
+            tryCard = self.channelCard
+        }
 
-        let session = try! self.getSessionAsReceiver(message: ratchetMessage)
+        guard let card = tryCard else {
+            Log.error("No card")
+            return nil
+        }
 
-        return try! session.decryptString(from: ratchetMessage)
+        do {
+            let ratchetMessage = try RatchetMessage.deserialize(input: data)
+
+            let session = try self.getSessionAsReceiver(message: ratchetMessage, receiverCard: card)
+
+            return try session.decryptString(from: ratchetMessage)
+        } catch {
+            Log.error("\(error.localizedDescription)")
+            return nil
+        }
     }
 
     func getExportedCard(identity: String, completion: @escaping (String?, Error?) -> ()) {

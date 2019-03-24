@@ -62,6 +62,7 @@ extension CoreDataHelper {
                 return channel
             }
         }
+
         Log.error("Core Data: channel not found")
         return nil
     }

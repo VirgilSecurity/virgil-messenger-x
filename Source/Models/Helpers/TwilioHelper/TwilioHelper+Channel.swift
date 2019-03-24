@@ -166,12 +166,13 @@ extension TwilioHelper {
         guard let channelCore = CoreDataHelper.shared.createChannel(type: type, name: name, cards: cards) else {
             return
         }
-        self.setLastMessage(of: messages, channel: channelCore) {
-            NotificationCenter.default.post(
-                name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-                object: self,
-                userInfo: [:])
-        }
+//        
+//        self.setLastMessage(of: messages, channel: channelCore) {
+//            NotificationCenter.default.post(
+//                name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+//                object: self,
+//                userInfo: [:])
+//        }
 
         NotificationCenter.default.post(
             name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),

@@ -134,7 +134,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
             self.getMedia(from: message) { encryptedData in
                 guard let encryptedData = encryptedData,
                     let encryptedString = String(data: encryptedData, encoding: .utf8),
-                    let decryptedString = VirgilHelper.shared.decrypt(encryptedString),
+                    let decryptedString = VirgilHelper.shared.decrypt(encryptedString, withCard: coreDataChannel.cards.first),
                     let decryptedData = Data(base64Encoded: decryptedString) else {
                         Log.error("Decryption process of media message failed")
                         return
@@ -166,7 +166,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                     ])
             }
         } else if let messageBody = message.body {
-            guard let decryptedMessageBody = VirgilHelper.shared.decrypt(messageBody) else {
+            guard let decryptedMessageBody = VirgilHelper.shared.decrypt(messageBody, withCard: coreDataChannel.cards.first) else {
                 return
             }
 
