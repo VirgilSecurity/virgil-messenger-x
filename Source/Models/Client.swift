@@ -95,7 +95,7 @@ extension Client {
         if let body = response.body,
             let text = String(data: body, encoding: .utf8),
             text == "Card with this identity already exists" {
-            throw VirgilHelper.UserFriendlyError.usernameAlreadyUsed
+            throw UserFriendlyError.usernameAlreadyUsed
         }
 
         guard let responseBody = response.body,
@@ -106,7 +106,7 @@ extension Client {
 
         guard let exportedCard = json["virgil_card"] as? [String: Any] else {
             Log.error("Error while signing up: server didn't return card")
-            throw VirgilHelper.UserFriendlyError.usernameAlreadyUsed
+            throw UserFriendlyError.usernameAlreadyUsed
         }
 
         return try CardManager.importCard(fromJson: exportedCard,

@@ -62,7 +62,7 @@ extension CollectionViewController {
 
         self.userAuthorizer.signIn(identity: username) { error in
             guard error == nil else {
-                let message = error is VirgilHelper.UserFriendlyError ? error!.localizedDescription : "Something went wrong"
+                let message = error is UserFriendlyError ? error!.localizedDescription : "Something went wrong"
                 PKHUD.sharedHUD.hide() { _ in
                     self.alert(message)
                 }

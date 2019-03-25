@@ -47,6 +47,8 @@
 		1693678B2248FA0800EF9A42 /* ChattoAdditions.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228C81F96287A00DCECDF /* ChattoAdditions.framework */; };
 		1693678C2248FA0800EF9A42 /* VirgilCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CA1F96287A00DCECDF /* VirgilCrypto.framework */; };
 		1693678D2248FA0800EF9A42 /* VirgilSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CB1F96287A00DCECDF /* VirgilSDK.framework */; };
+		1693679022490BA000EF9A42 /* VirgilAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1693678F22490BA000EF9A42 /* VirgilAuthorizer.swift */; };
+		16936792224916D100EF9A42 /* UserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16936791224916D100EF9A42 /* UserFriendlyError.swift */; };
 		16961B56203B03720084086E /* VirgilHelper+Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16961B55203B03720084086E /* VirgilHelper+Authentication.swift */; };
 		16961B58203B04790084086E /* VirgilHelper+SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16961B57203B04790084086E /* VirgilHelper+SignIn.swift */; };
 		16961B5A203B04A90084086E /* VirgilHelper+SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16961B59203B04A90084086E /* VirgilHelper+SignUp.swift */; };
@@ -160,6 +162,8 @@
 		166D3E5D1FB495F90032BAAD /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
 		167C68441FADDB7800E6E448 /* VirgilHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirgilHelper.swift; sourceTree = "<group>"; };
 		168E54CB22395DDC00B6E822 /* ColorPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPair.swift; sourceTree = "<group>"; };
+		1693678F22490BA000EF9A42 /* VirgilAuthorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirgilAuthorizer.swift; sourceTree = "<group>"; };
+		16936791224916D100EF9A42 /* UserFriendlyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFriendlyError.swift; sourceTree = "<group>"; };
 		16961B55203B03720084086E /* VirgilHelper+Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VirgilHelper+Authentication.swift"; sourceTree = "<group>"; };
 		16961B57203B04790084086E /* VirgilHelper+SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VirgilHelper+SignIn.swift"; sourceTree = "<group>"; };
 		16961B59203B04A90084086E /* VirgilHelper+SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VirgilHelper+SignUp.swift"; sourceTree = "<group>"; };
@@ -441,9 +445,10 @@
 				166D3E5C1FB495DA0032BAAD /* CoreData */,
 				16961B4E203ADE850084086E /* Helpers */,
 				16D8B0F0223AAC7200D7FA67 /* Chat */,
-				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
 				16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */,
+				1693678F22490BA000EF9A42 /* VirgilAuthorizer.swift */,
 				16D8B0EE223A8FCF00D7FA67 /* Client.swift */,
+				16936791224916D100EF9A42 /* UserFriendlyError.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -599,6 +604,7 @@
 		429228EE1F96454400DCECDF /* TextMessage */ = {
 			isa = PBXGroup;
 			children = (
+				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
 				4280C0D81F97341A00075B3A /* DemoTextMessageModel.swift */,
 				427D1E561F9656BB002F2CF3 /* DemoTextMessageViewModel.swift */,
 				4280C0D71F97341A00075B3A /* DemoTextMessageHandler.swift */,
@@ -791,10 +797,12 @@
 				16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */,
 				16CA51021FC45E9A0042AF9D /* StartViewController.swift in Sources */,
 				429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */,
+				1693679022490BA000EF9A42 /* VirgilAuthorizer.swift in Sources */,
 				164E173820AB1BED00AB1AAD /* AudioChatInputItem.swift in Sources */,
 				1644C07B20B85AC500073D99 /* DemoPhotosChatInputItem.swift in Sources */,
 				4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */,
 				16FB2DD5204D87F200346FA0 /* UIColor+RGB.swift in Sources */,
+				16936792224916D100EF9A42 /* UserFriendlyError.swift in Sources */,
 				429228E51F963DBE00DCECDF /* TwilioHelper+Delegates.swift in Sources */,
 				16FB2DCE204D832F00346FA0 /* TwilioHelper+Channel.swift in Sources */,
 				16FCF27E1FE46756000348BC /* Channel+CoreDataClass.swift in Sources */,

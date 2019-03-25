@@ -103,7 +103,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
         self.userAuthorizer.signUp(identity: username) { error in
             guard error == nil else {
                 var message = "Something went wrong"
-                if let err = error as? VirgilHelper.UserFriendlyError {
+                if let err = error as? UserFriendlyError {
                     message = err.rawValue
                 }
 

@@ -12,7 +12,7 @@ import VirgilSDKRatchet
 import VirgilCryptoRatchet
 
 class VirgilHelper {
-    static let shared = VirgilHelper()
+    private(set) static var shared: VirgilHelper!
 
     let crypto: VirgilCrypto
     let cardCrypto: VirgilCardCrypto
@@ -27,18 +27,33 @@ class VirgilHelper {
     private(set) var secureChat: SecureChat?
     private var channelCard: Card?
 
-    private init() {
-        // FIXME
-        self.crypto = try! VirgilCrypto()
-        self.keyStorage = KeyStorage()
-        self.cardCrypto = VirgilCardCrypto(virgilCrypto: self.crypto)
-        self.verifier = VirgilCardVerifier(cardCrypto: self.cardCrypto)!
-        self.client = Client(crypto: self.crypto, cardCrypto: self.cardCrypto)
+    private init(crypto: VirgilCrypto,
+                 keyStorage: KeyStorage,
+                 cardCrypto: VirgilCardCrypto,
+                 verifier: VirgilCardVerifier,
+                 client: Client) {
+        self.crypto = crypto
+        self.keyStorage = keyStorage
+        self.cardCrypto = cardCrypto
+        self.verifier = verifier
+        self.client = client
     }
 
-    enum UserFriendlyError: String, Error {
-        case noUserOnDevice = "User not found on this device"
-        case usernameAlreadyUsed = "Username is already in use"
+    public static func initialize() throws {
+        let crypto = try VirgilCrypto()
+        let keyStorage = KeyStorage()
+        let cardCrypto = VirgilCardCrypto(virgilCrypto: crypto)
+        let client = Client(crypto: crypto, cardCrypto: cardCrypto)
+
+        guard let verifier = VirgilCardVerifier(cardCrypto: cardCrypto) else {
+            throw VirgilHelperError.cardVerifierInitFailed
+        }
+
+        self.shared = VirgilHelper(crypto: crypto,
+                                   keyStorage: keyStorage,
+                                   cardCrypto: cardCrypto,
+                                   verifier: verifier,
+                                   client: client)
     }
 
     enum VirgilHelperError: String, Error {

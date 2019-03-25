@@ -21,7 +21,7 @@ class CoreDataHelper {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let managedContext: NSManagedObjectContext
 
-    static private(set) var shared: CoreDataHelper!
+    private(set) static var shared: CoreDataHelper = CoreDataHelper()
     private(set) var accounts: [Account] = []
     private(set) var currentChannel: Channel?
     private(set) var currentAccount: Account?
@@ -47,10 +47,6 @@ class CoreDataHelper {
         MessageType.photo.rawValue: "image.jpg",
         MessageType.audio.rawValue: "audio.mp4"
     ]
-
-    static func initialize() {
-        shared = CoreDataHelper()
-    }
 
     private init() {
         managedContext = self.appDelegate.persistentContainer.viewContext

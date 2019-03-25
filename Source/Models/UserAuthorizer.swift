@@ -58,7 +58,7 @@ public class UserAuthorizer {
                 }
             } catch CoreDataHelperError.accountNotFound {
                 DispatchQueue.main.async {
-                    completion(VirgilHelper.UserFriendlyError.noUserOnDevice)
+                    completion(UserFriendlyError.noUserOnDevice)
                 }
             } catch {
                 DispatchQueue.main.async {
