@@ -17,32 +17,22 @@ class StartViewController: ViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        PKHUD.sharedHUD.contentView = PKHUDProgressView()
-        PKHUD.sharedHUD.show()
-
         guard currentReachabilityStatus != .notReachable else {
-            PKHUD.sharedHUD.hide() { _ in
-                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-                controller.addAction(UIAlertAction(title: "OK", style: .default))
+            UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
-                self.present(controller, animated: true)
-                UserDefaults.standard.set(nil, forKey: "last_username")
-                self.goToLogin()
-            }
+            let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
+            controller.addAction(UIAlertAction(title: "OK", style: .default))
 
+            self.present(controller, animated: true)
             return
         }
 
         do {
             try self.userAuthorizer.signIn()
 
-            PKHUD.sharedHUD.hide(true) { _ in
-                self.goToChatList()
-            }
+            self.goToChatList()
         } catch {
-            PKHUD.sharedHUD.hide(true) { _ in
-                self.goToLogin()
-            }
+            self.goToLogin()
         }
     }
 

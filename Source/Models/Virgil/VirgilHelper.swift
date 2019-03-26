@@ -11,6 +11,17 @@ import VirgilCrypto
 import VirgilSDKRatchet
 import VirgilCryptoRatchet
 
+public enum VirgilHelperError: String, Error {
+    case gettingTwilioTokenFailed = "Getting Twilio Token Failed"
+    case getCardFailed = "Getting Virgil Card Failed"
+    case keyIsNotVirgil = "Converting Public or Private Key to Virgil one failed"
+    case missingCardManager = "Missing Card Manager"
+    case gettingJwtFailed = "Getting JWT failed"
+    case jsonParsingFailed
+    case cardWasNotVerified
+    case cardVerifierInitFailed
+}
+
 class VirgilHelper {
     private(set) static var shared: VirgilHelper!
 
@@ -70,17 +81,6 @@ class VirgilHelper {
                                    client: client,
                                    localKeyManager: localKeyManager,
                                    secureChat: secureChat)
-    }
-
-    enum VirgilHelperError: String, Error {
-        case gettingTwilioTokenFailed = "Getting Twilio Token Failed"
-        case getCardFailed = "Getting Virgil Card Failed"
-        case keyIsNotVirgil = "Converting Public or Private Key to Virgil one failed"
-        case missingCardManager = "Missing Card Manager"
-        case gettingJwtFailed = "Getting JWT failed"
-        case jsonParsingFailed
-        case cardWasNotVerified
-        case cardVerifierInitFailed
     }
 
     public func makeInitPFSOperation(identity: String) -> GenericOperation<Void> {

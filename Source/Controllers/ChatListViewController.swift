@@ -68,7 +68,7 @@ class ChatListViewController: ViewController {
         super.viewWillAppear(animated)
         // FIXME
 //        TwilioHelper.shared.deselectChannel()
-//        noChatsView.isHidden = TwilioHelper.shared.channels.subscribedChannels().isEmpty ? false : true
+        noChatsView.isHidden = CoreDataHelper.shared.currentAccount?.channel?.count ?? 0 > 0 ? true : false
         self.tableView.reloadData()
     }
 

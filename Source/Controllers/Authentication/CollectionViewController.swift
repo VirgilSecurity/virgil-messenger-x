@@ -46,32 +46,22 @@ class CollectionViewController: UICollectionViewController {
 
 extension CollectionViewController {
     private func signIn(username: String) {
-        PKHUD.sharedHUD.contentView = PKHUDProgressView()
-        PKHUD.sharedHUD.show()
-
         guard currentReachabilityStatus != .notReachable else {
-            PKHUD.sharedHUD.hide() { _ in
-                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-                controller.addAction(UIAlertAction(title: "OK", style: .default))
+            let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
+            controller.addAction(UIAlertAction(title: "OK", style: .default))
 
-                self.present(controller, animated: true)
-            }
-
+            self.present(controller, animated: true)
             return
         }
 
         do {
             try self.userAuthorizer.signIn(identity: username)
 
-            PKHUD.sharedHUD.hide(true) { _ in
-                self.goToChatList()
-            }
+            self.goToChatList()
         } catch {
             let message = error is UserFriendlyError ? error.localizedDescription : "Something went wrong"
 
-            PKHUD.sharedHUD.hide() { _ in
-                self.alert(message)
-            }
+            self.alert(message)
         }
     }
 
