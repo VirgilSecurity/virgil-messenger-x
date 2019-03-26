@@ -31,7 +31,6 @@ public class VirgilAuthorizer {
         self.verifier = verifier
     }
 
-
     public func signIn(identity: String, card: String) throws {
         let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
 

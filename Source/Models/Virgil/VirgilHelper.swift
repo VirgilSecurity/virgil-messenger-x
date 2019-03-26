@@ -12,29 +12,23 @@ import VirgilSDKRatchet
 import VirgilCryptoRatchet
 
 public enum VirgilHelperError: String, Error {
-    case gettingTwilioTokenFailed = "Getting Twilio Token Failed"
     case getCardFailed = "Getting Virgil Card Failed"
-    case keyIsNotVirgil = "Converting Public or Private Key to Virgil one failed"
-    case missingCardManager = "Missing Card Manager"
-    case gettingJwtFailed = "Getting JWT failed"
-    case jsonParsingFailed
-    case cardWasNotVerified
     case cardVerifierInitFailed
 }
 
-class VirgilHelper {
+public class VirgilHelper {
     private(set) static var shared: VirgilHelper!
 
     let crypto: VirgilCrypto
     let cardCrypto: VirgilCardCrypto
     let verifier: VirgilCardVerifier
     let localKeyManager: LocalKeyManager
-
     let client: Client
+    let secureChat: SecureChat
+
     let queue = DispatchQueue(label: "VirgilHelperQueue")
 
-    private(set) var secureChat: SecureChat
-    private var channelCard: Card?
+    private(set) var channelCard: Card?
 
     private init(crypto: VirgilCrypto,
                  cardCrypto: VirgilCardCrypto,
@@ -96,91 +90,6 @@ class VirgilHelper {
         }
     }
 
-    private func getSessionAsSender() throws -> SecureSession {
-        guard let card = self.channelCard else {
-            Log.error("channel card not found")
-            throw NSError()
-        }
-        
-        guard let session = secureChat.existingSession(withParticpantIdentity: card.identity) else {
-            return try secureChat.startNewSessionAsSender(receiverCard: card).startSync().getResult()
-        }
-
-        return session
-    }
-
-    private func getSessionAsReceiver(message: RatchetMessage, receiverCard card: Card) throws -> SecureSession {
-        guard let session = secureChat.existingSession(withParticpantIdentity: card.identity) else {
-            return try secureChat.startNewSessionAsReceiver(senderCard: card, ratchetMessage: message)
-        }
-
-        return session
-    }
-
-    func encryptPFS(_ text: String) throws -> String {
-        let session = try self.getSessionAsSender()
-
-        let ratchetMessage = try session.encrypt(string: text)
-
-        return ratchetMessage.serialize().base64EncodedString()
-    }
-
-    func decryptPFS(_ encrypted: String) throws -> String {
-        guard let data = Data(base64Encoded: encrypted) else {
-            Log.error("Converting utf8 string to data failed")
-            throw NSError()
-        }
-
-        guard let card = self.channelCard else {
-            Log.error("channel card not found")
-            throw NSError()
-        }
-
-        let ratchetMessage = try RatchetMessage.deserialize(input: data)
-
-        let session = try self.getSessionAsReceiver(message: ratchetMessage, receiverCard: card)
-
-        return try session.decryptString(from: ratchetMessage)
-    }
-
-    func encrypt(_ text: String) -> String? {
-        let session = try! self.getSessionAsSender()
-
-        let ratchetMessage = try! session.encrypt(string: text)
-
-        return ratchetMessage.serialize().base64EncodedString()
-    }
-
-    func decrypt(_ encrypted: String, withCard: String? = nil) -> String? {
-        guard let data = Data(base64Encoded: encrypted) else {
-            Log.error("Converting utf8 string to data failed")
-            return nil
-        }
-
-        let tryCard: Card?
-        if let receiverCard = withCard {
-            tryCard = self.buildCard(receiverCard)
-        } else {
-            tryCard = self.channelCard
-        }
-
-        guard let card = tryCard else {
-            Log.error("No card")
-            return nil
-        }
-
-        do {
-            let ratchetMessage = try RatchetMessage.deserialize(input: data)
-
-            let session = try self.getSessionAsReceiver(message: ratchetMessage, receiverCard: card)
-
-            return try session.decryptString(from: ratchetMessage)
-        } catch {
-            Log.error("\(error.localizedDescription)")
-            return nil
-        }
-    }
-
     func getExportedCard(identity: String, completion: @escaping (String?, Error?) -> ()) {
         guard let user = localKeyManager.retrieveUserData() else {
             completion(nil, NSError())
@@ -218,6 +127,12 @@ class VirgilHelper {
         }
     }
 
+    func importCard(fromBase64Encoded card: String) throws -> Card {
+        return try CardManager.importCard(fromBase64Encoded: card,
+                                          cardCrypto: self.cardCrypto,
+                                          cardVerifier: self.verifier)
+    }
+
     func setChannelCard(_ card: String) {
         do {
             let importedCard = try self.importCard(fromBase64Encoded: card)
@@ -226,25 +141,5 @@ class VirgilHelper {
         } catch {
             Log.error("Importing Card failed with: \(error.localizedDescription)")
         }
-    }
-
-    func importCard(fromBase64Encoded card: String) throws -> Card {
-        return try CardManager.importCard(fromBase64Encoded: card,
-                                          cardCrypto: self.cardCrypto,
-                                          cardVerifier: self.verifier)
-    }
-
-    func importCard(fromJson card: Any) throws -> Card {
-        return try CardManager.importCard(fromJson: card,
-                                          cardCrypto: self.cardCrypto,
-                                          cardVerifier: self.verifier)
-    }
-
-    func export(card: Card) throws -> String {
-        return try CardManager.exportCardAsBase64EncodedString(card)
-    }
-
-    func getTwilioToken(identity: String) throws -> String {
-        return try self.client.getTwilioToken(identity: identity)
     }
 }

@@ -191,7 +191,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
 extension TwilioHelper: TwilioAccessManagerDelegate {
     func accessManagerTokenWillExpire(_ accessManager: TwilioAccessManager) {
         do {
-            let token = try VirgilHelper.shared.getTwilioToken(identity: self.username)
+            let token = try VirgilHelper.shared.client.getTwilioToken(identity: self.username)
 
             accessManager.updateToken(token)
         } catch {

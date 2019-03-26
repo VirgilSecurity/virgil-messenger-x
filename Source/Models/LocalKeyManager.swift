@@ -33,15 +33,6 @@ public class LocalKeyManager {
         self.keychainStorage = KeychainStorage(storageParams: storageParams)
     }
 
-    public func retrieveKeyPair() -> VirgilKeyPair? {
-        guard let keyEntry = try? self.keychainStorage.retrieveEntry(withName: self.identity),
-            let keyPair = try? self.crypto.importPrivateKey(from: keyEntry.data) else {
-                return nil
-        }
-
-        return keyPair
-    }
-
     public func retrieveUserData() -> UserData? {
         guard let keyEntry = try? self.keychainStorage.retrieveEntry(withName: self.identity),
             let keyPair = try? self.crypto.importPrivateKey(from: keyEntry.data),
