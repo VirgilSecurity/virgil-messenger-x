@@ -60,18 +60,17 @@ extension CollectionViewController {
             return
         }
 
-        self.userAuthorizer.signIn(identity: username) { error in
-            guard error == nil else {
-                let message = error is UserFriendlyError ? error!.localizedDescription : "Something went wrong"
-                PKHUD.sharedHUD.hide() { _ in
-                    self.alert(message)
-                }
-
-                return
-            }
+        do {
+            try self.userAuthorizer.signIn(identity: username)
 
             PKHUD.sharedHUD.hide(true) { _ in
                 self.goToChatList()
+            }
+        } catch {
+            let message = error is UserFriendlyError ? error.localizedDescription : "Something went wrong"
+
+            PKHUD.sharedHUD.hide() { _ in
+                self.alert(message)
             }
         }
     }

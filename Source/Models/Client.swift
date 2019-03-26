@@ -16,7 +16,7 @@ enum ClientError: String, Error {
     case gettingJWTFailed
 }
 
-class Client {
+public class Client {
     private let connection = HttpConnection()
     private let crypto: VirgilCrypto
     private let cardCrypto: VirgilCardCrypto
@@ -59,11 +59,12 @@ class Client {
 
 // MARK: - Queries
 extension Client {
-    func searchCards(withIdentity identity: String,
-                     selfIdentity: String,
-                     cardId: String,
-                     privateKey: VirgilPrivateKey,
-                     verifier: VirgilCardVerifier, completion: @escaping ([Card]?, Error?) -> Void) {
+    public func searchCards(withIdentity identity: String,
+                            selfIdentity: String,
+                            cardId: String,
+                            privateKey: VirgilPrivateKey,
+                            verifier: VirgilCardVerifier,
+                            completion: @escaping ([Card]?, Error?) -> Void) {
         let provider = self.makeAccessTokenProvider(identity: selfIdentity, cardId: cardId, privateKey: privateKey)
 
         let params = CardManagerParams(cardCrypto: self.cardCrypto, accessTokenProvider: provider, cardVerifier: verifier)
@@ -72,9 +73,9 @@ extension Client {
         cardManager.searchCards(identity: identity, completion: completion)
     }
 
-    func signUp(identity: String,
-                keyPair: VirgilKeyPair,
-                verifier: VirgilCardVerifier) throws -> Card {
+    public func signUp(identity: String,
+                       keyPair: VirgilKeyPair,
+                       verifier: VirgilCardVerifier) throws -> Card {
         let modelSigner = ModelSigner(cardCrypto: self.cardCrypto)
         let rawCard = try CardManager.generateRawCard(cardCrypto: self.cardCrypto,
                                                       modelSigner: modelSigner,
@@ -114,11 +115,15 @@ extension Client {
                                           cardVerifier: verifier)
     }
 
-    func getTwilioToken(identity: String,
-                        cardId: String,
-                        crypto: VirgilCrypto,
-                        privateKey: VirgilPrivateKey) throws -> String {
-        let authHeader = try self.makeAuthHeader(cardId: cardId, privateKey: privateKey)
+    public func getTwilioToken(identity: String) throws -> String {
+        let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
+
+        guard let user = localKeyManager.retrieveUserData() else {
+            throw NSError()
+        }
+
+        let authHeader = try self.makeAuthHeader(cardId: user.card.identifier,
+                                                 privateKey: user.privateKey)
 
         let requestURL = URLConstansts.twilioJwtEndpoint
         let headers = ["Content-Type": "application/json",
@@ -138,9 +143,9 @@ extension Client {
         return token
     }
 
-    func getVirgilToken(identity: String,
-                        cardId: String,
-                        privateKey: VirgilPrivateKey) throws -> String {
+    public func getVirgilToken(identity: String,
+                               cardId: String,
+                               privateKey: VirgilPrivateKey) throws -> String {
         let authHeader = try self.makeAuthHeader(cardId: cardId, privateKey: privateKey)
 
         let requestURL = URLConstansts.virgilJwtEndpoint

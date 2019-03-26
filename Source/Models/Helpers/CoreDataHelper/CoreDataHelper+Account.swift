@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 extension CoreDataHelper {
-    func createAccount(withIdentity identity: String, exportedCard: String) throws {
+    func createAccount(withIdentity identity: String, card: String) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Entities.account.rawValue, in: self.managedContext) else {
             throw CoreDataHelperError.entityNotFound
         }
@@ -18,7 +18,7 @@ extension CoreDataHelper {
         let account = Account(entity: entity, insertInto: self.managedContext)
 
         account.identity = identity
-        account.card = exportedCard
+        account.card = card
         account.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
 
         self.append(account: account)
@@ -27,14 +27,20 @@ extension CoreDataHelper {
         self.appDelegate.saveContext()
     }
 
-    func loadAccount(withIdentity username: String) throws {
+    func loadAccount(withIdentity username: String) throws -> String {
         let account = self.accounts.first { $0.identity == username }
 
         guard let accountToLoad = account else {
-            throw CoreDataHelperError.accountNotFound
+            throw UserFriendlyError.noUserOnDevice
+        }
+
+        guard let card = accountToLoad.card else {
+            throw CoreDataHelperError.entityCorrupted
         }
 
         self.setCurrent(account: accountToLoad)
+
+        return card
     }
 
     func getAccount(withIdentity username: String) -> Account? {
@@ -44,14 +50,6 @@ extension CoreDataHelper {
             }
         }
         return nil
-    }
-
-    func getAccountCard() throws -> String {
-        guard let account = self.currentAccount, let card = account.card else {
-            throw CoreDataHelperError.nilCurrentAccount
-        }
-
-        return card
     }
 
     func deleteAccount() {

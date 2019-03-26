@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import PKHUD
 import TwilioChatClient
+import VirgilSDK
 
 class ChatListViewController: ViewController {
     @IBOutlet weak var noChatsView: UIView!
@@ -34,11 +35,16 @@ class ChatListViewController: ViewController {
         titleView.spacing = 5
 
         self.navigationItem.titleView = titleView
-        self.configure {
-            self.navigationItem.titleView = nil
-            self.title = "Chats"
-            self.view.isUserInteractionEnabled = true
-            indicator.stopAnimating()
+
+        let configurator = Configurator()
+        configurator.configure().start { _, error in
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                self.navigationItem.titleView = nil
+                self.title = "Chats"
+                self.view.isUserInteractionEnabled = true
+                indicator.stopAnimating()
+            }
         }
 
         self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main),
@@ -60,8 +66,9 @@ class ChatListViewController: ViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        TwilioHelper.shared.deselectChannel()
-        noChatsView.isHidden = TwilioHelper.shared.channels.subscribedChannels().isEmpty ? false : true
+        // FIXME
+//        TwilioHelper.shared.deselectChannel()
+//        noChatsView.isHidden = TwilioHelper.shared.channels.subscribedChannels().isEmpty ? false : true
         self.tableView.reloadData()
     }
 
@@ -69,60 +76,6 @@ class ChatListViewController: ViewController {
         DispatchQueue.main.async {
             self.tableView.reloadData()
             self.noChatsView.isHidden = true
-        }
-    }
-
-    private func configure(completion: @escaping () -> ()) {
-        let channels = TwilioHelper.shared.channels.subscribedChannels()
-        let group = DispatchGroup()
-
-        for i in 0..<channels.count {
-            let channel = channels[i]
-            guard let channelName = TwilioHelper.shared.getName(of: channel) else {
-                continue
-            }
-
-            if let coreChannel = CoreDataHelper.shared.getChannel(withName: channelName) {
-                while channel.messages == nil { sleep(1) }
-
-                group.enter()
-                self.setLastMessages(twilioChannel: channel, coreChannel: coreChannel) {
-                    group.leave()
-                }
-
-                group.enter()
-                self.updateGroupChannelMembers(twilioChannel: channel, coreChannel: coreChannel) {
-                    group.leave()
-                }
-            } else {
-                Log.error("Get Channel failed")
-            }
-        }
-
-        group.notify(queue: .main) {
-            self.tableView.reloadData()
-            completion()
-        }
-    }
-
-    private func setLastMessages(twilioChannel: TCHChannel, coreChannel: Channel, completion: @escaping () -> ()) {
-//        if let messages = twilioChannel.messages {
-            CoreDataHelper.shared.setLastMessage(for: coreChannel)
-            completion()
-            // TwilioHelper.shared.setLastMessage(of: messages, channel: coreChannel, completion: completion)
-//        } else {
-//            Log.error("Get Messages failed")
-//            completion()
-//        }
-    }
-
-    private func updateGroupChannelMembers(twilioChannel: TCHChannel, coreChannel: Channel, completion: @escaping () -> ()) {
-        if coreChannel.type == ChannelType.group.rawValue {
-            TwilioHelper.shared.updateMembers(of: twilioChannel, coreChannel: coreChannel) {
-                completion()
-            }
-        } else {
-            completion()
         }
     }
 

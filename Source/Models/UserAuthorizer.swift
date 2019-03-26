@@ -17,63 +17,40 @@ enum UserAuthorizerError: String, Error {
 public class UserAuthorizer {
     public static let UserDefaultsIdentityKey = "last_username"
 
-    private let queue = DispatchQueue(label: "UserAuthorizerQueue")
+    public let virgilAuthorizer: VirgilAuthorizer
 
-    func signIn(completion: @escaping(Error?) -> Void) {
-        self.queue.async {
-            do {
-                guard let identity = UserDefaults.standard.string(forKey: UserAuthorizer.UserDefaultsIdentityKey), !identity.isEmpty else {
-                    throw UserAuthorizerError.noIdentityAtDefaults
-                }
+    private var queue: DispatchQueue?
 
-                try CoreDataHelper.shared.loadAccount(withIdentity: identity)
-
-                let exportedCard = try CoreDataHelper.shared.getAccountCard()
-
-                try VirgilHelper.shared.signIn(identity: identity, card: exportedCard).startSync().getResult()
-
-                DispatchQueue.main.async {
-                    completion(nil)
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    completion(error)
-                }
-            }
-        }
+    public init() {
+        self.virgilAuthorizer = try! VirgilAuthorizer()
     }
 
-    func signIn(identity: String, completion: @escaping (Error?) -> Void) {
-        self.queue.async {
-            do {
-                try CoreDataHelper.shared.loadAccount(withIdentity: identity)
-                let exportedCard = try CoreDataHelper.shared.getAccountCard()
-
-                try VirgilHelper.shared.signIn(identity: identity, card: exportedCard).startSync().getResult()
-
-                UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
-
-                DispatchQueue.main.async {
-                    completion(nil)
-                }
-            } catch CoreDataHelperError.accountNotFound {
-                DispatchQueue.main.async {
-                    completion(UserFriendlyError.noUserOnDevice)
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    completion(error)
-                }
-            }
+    public func signIn() throws {
+        guard let identity = UserDefaults.standard.string(forKey: UserAuthorizer.UserDefaultsIdentityKey), !identity.isEmpty else {
+            throw UserAuthorizerError.noIdentityAtDefaults
         }
+
+        let card = try CoreDataHelper.shared.loadAccount(withIdentity: identity)
+
+        try self.virgilAuthorizer.signIn(identity: identity, card: card)
     }
 
-    func signUp(identity: String, completion: @escaping (Error?) -> Void) {
-        self.queue.async {
-            do {
-                let exportedCard = try VirgilHelper.shared.signUp(identity: identity).startSync().getResult()
+    public func signIn(identity: String) throws {
+        let card = try CoreDataHelper.shared.loadAccount(withIdentity: identity)
 
-                try CoreDataHelper.shared.createAccount(withIdentity: identity, exportedCard: exportedCard)
+        try self.virgilAuthorizer.signIn(identity: identity, card: card)
+
+        UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+    }
+
+   public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
+        self.queue = DispatchQueue(label: "UserAuthorizerQueue")
+
+        self.queue!.async {
+            do {
+                let card = try self.virgilAuthorizer.signUp(identity: identity)
+
+                try CoreDataHelper.shared.createAccount(withIdentity: identity, card: card)
 
                 UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
@@ -86,6 +63,14 @@ public class UserAuthorizer {
                 }
             }
         }
+    }
+
+    public func logOut() {
+        UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+
+        CoreDataHelper.shared.deleteAccount()
+
+        self.virgilAuthorizer.logOut(identity: TwilioHelper.shared.username)
     }
 }
 

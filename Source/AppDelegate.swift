@@ -22,8 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UIApplication.shared.delegate?.window??.rootViewController = UIStoryboard(name: StartViewController.name, bundle: Bundle.main).instantiateInitialViewController()!
 
-        try! VirgilHelper.initialize()
-
         if UserDefaults.standard.string(forKey: "first_launch")?.isEmpty ?? true {
             let context = persistentContainer.viewContext
             let fetchRequest =

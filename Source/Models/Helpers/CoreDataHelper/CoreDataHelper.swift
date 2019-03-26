@@ -14,6 +14,7 @@ enum CoreDataHelperError: String, Error {
     case accountNotFound
     case nilCurrentAccount
     case entityNotFound
+    case entityCorrupted
 }
 
 class CoreDataHelper {

@@ -9,6 +9,7 @@
 import Foundation
 import TwilioChatClient
 import TwilioAccessManager
+import VirgilSDK
 
 class TwilioHelper: NSObject {
     private(set) static var shared: TwilioHelper!
@@ -51,7 +52,27 @@ class TwilioHelper: NSObject {
         super.init()
     }
 
-    func initialize(token: String, completion: @escaping (Error?) -> ()) {
+    public static func makeInitTwilioOperation(identity: String, client: Client) -> GenericOperation<Void> {
+        return CallbackOperation { _, completion in
+            do {
+                let token = try client.getTwilioToken(identity: identity)
+
+                TwilioHelper.authorize(username: identity, device: "iPhone")
+                TwilioHelper.shared.initialize(token: token) { error in
+                    if let error = error {
+                        completion(nil, error)
+                    } else {
+                        completion((), error)
+                    }
+                }
+            } catch {
+                Log.error("Error while init twilio: \(error.localizedDescription)")
+                completion(nil, error)
+            }
+        }
+    }
+
+    func initialize(token: String, completion: @escaping (Error?) -> Void) {
         Log.debug("Initializing Twilio")
 
         self.queue.async {

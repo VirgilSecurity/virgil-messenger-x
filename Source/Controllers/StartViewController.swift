@@ -33,17 +33,15 @@ class StartViewController: ViewController {
             return
         }
 
-        self.userAuthorizer.signIn { error in
-            guard error == nil else {
-                PKHUD.sharedHUD.hide(true) { _ in
-                    self.goToLogin()
-                }
-
-                return
-            }
+        do {
+            try self.userAuthorizer.signIn()
 
             PKHUD.sharedHUD.hide(true) { _ in
                 self.goToChatList()
+            }
+        } catch {
+            PKHUD.sharedHUD.hide(true) { _ in
+                self.goToLogin()
             }
         }
     }

@@ -16,44 +16,60 @@ class VirgilHelper {
 
     let crypto: VirgilCrypto
     let cardCrypto: VirgilCardCrypto
-    let keyStorage: KeyStorage
     let verifier: VirgilCardVerifier
+    let localKeyManager: LocalKeyManager
 
     let client: Client
-    let queue = DispatchQueue(label: "virgil-help-queue")
+    let queue = DispatchQueue(label: "VirgilHelperQueue")
 
-    private(set) var privateKey: VirgilPrivateKey?
-    private(set) var selfCard: Card?
-    private(set) var secureChat: SecureChat?
+    private(set) var secureChat: SecureChat
     private var channelCard: Card?
 
     private init(crypto: VirgilCrypto,
-                 keyStorage: KeyStorage,
                  cardCrypto: VirgilCardCrypto,
                  verifier: VirgilCardVerifier,
-                 client: Client) {
+                 client: Client,
+                 localKeyManager: LocalKeyManager,
+                 secureChat: SecureChat) {
         self.crypto = crypto
-        self.keyStorage = keyStorage
         self.cardCrypto = cardCrypto
         self.verifier = verifier
         self.client = client
+        self.localKeyManager = localKeyManager
+        self.secureChat = secureChat
     }
 
-    public static func initialize() throws {
+    public static func initialize(identity: String) throws {
         let crypto = try VirgilCrypto()
-        let keyStorage = KeyStorage()
         let cardCrypto = VirgilCardCrypto(virgilCrypto: crypto)
         let client = Client(crypto: crypto, cardCrypto: cardCrypto)
+        let localKeyManager = try LocalKeyManager(identity: identity, crypto: crypto)
 
         guard let verifier = VirgilCardVerifier(cardCrypto: cardCrypto) else {
             throw VirgilHelperError.cardVerifierInitFailed
         }
 
+        guard let user = localKeyManager.retrieveUserData() else {
+            throw NSError()
+        }
+
+        let provider = client.makeAccessTokenProvider(identity: identity,
+                                                      cardId: user.card.identifier,
+                                                      privateKey: user.privateKey)
+
+        let context = SecureChatContext(identity: identity,
+                                        identityCardId: user.card.identifier,
+                                        identityPrivateKey: user.privateKey,
+                                        accessTokenProvider: provider)
+
+        let secureChat = try SecureChat(context: context)
+
         self.shared = VirgilHelper(crypto: crypto,
-                                   keyStorage: keyStorage,
                                    cardCrypto: cardCrypto,
                                    verifier: verifier,
-                                   client: client)
+                                   client: client,
+                                   localKeyManager: localKeyManager,
+                                   secureChat: secureChat)
     }
 
     enum VirgilHelperError: String, Error {
@@ -67,23 +83,11 @@ class VirgilHelper {
         case cardVerifierInitFailed
     }
 
-    internal func makeInitPFSOperation(identity: String, cardId: String, privateKey: VirgilPrivateKey) -> GenericOperation<Void> {
+    public func makeInitPFSOperation(identity: String) -> GenericOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                guard let cardId = self.selfCard?.identifier, let privateKey = self.privateKey else {
-                    throw NSError()
-                }
-
-                let provider = self.client.makeAccessTokenProvider(identity: identity,
-                                                                   cardId: cardId,
-                                                                   privateKey: privateKey)
-                let context = SecureChatContext(identity: identity, identityCardId: cardId, identityPrivateKey: privateKey, accessTokenProvider: provider)
-                let secureChat = try SecureChat(context: context)
-
-                let rotationLog = try secureChat.rotateKeys().startSync().getResult()
+                let rotationLog = try self.secureChat.rotateKeys().startSync().getResult()
                 Log.debug(rotationLog.description)
-
-                self.secureChat = secureChat
 
                 completion((), nil)
             } catch {
@@ -97,11 +101,6 @@ class VirgilHelper {
             Log.error("channel card not found")
             throw NSError()
         }
-
-        guard let secureChat = self.secureChat else {
-            Log.error("nil Secure Chat")
-            throw NSError()
-        }
         
         guard let session = secureChat.existingSession(withParticpantIdentity: card.identity) else {
             return try secureChat.startNewSessionAsSender(receiverCard: card).startSync().getResult()
@@ -111,11 +110,6 @@ class VirgilHelper {
     }
 
     private func getSessionAsReceiver(message: RatchetMessage, receiverCard card: Card) throws -> SecureSession {
-        guard let secureChat = self.secureChat else {
-            Log.error("nil Secure Chat")
-            throw NSError()
-        }
-
         guard let session = secureChat.existingSession(withParticpantIdentity: card.identity) else {
             return try secureChat.startNewSessionAsReceiver(senderCard: card, ratchetMessage: message)
         }
@@ -188,15 +182,15 @@ class VirgilHelper {
     }
 
     func getExportedCard(identity: String, completion: @escaping (String?, Error?) -> ()) {
-        guard let selfCard = self.selfCard, let privateKey = self.privateKey else {
+        guard let user = localKeyManager.retrieveUserData() else {
             completion(nil, NSError())
             return
         }
 
         self.client.searchCards(withIdentity: identity,
-                                selfIdentity: selfCard.identity,
-                                cardId: selfCard.identifier,
-                                privateKey: privateKey,
+                                selfIdentity: user.card.identity,
+                                cardId: user.card.identifier,
+                                privateKey: user.privateKey,
                                 verifier: self.verifier)
         { cards, error in
             do {
@@ -210,14 +204,6 @@ class VirgilHelper {
             } catch {
                 completion(nil, error)
             }
-        }
-    }
-
-    func deleteStorageEntry(entry: String) {
-        do {
-            try self.keyStorage.deleteKeyEntry(withName: entry)
-        } catch {
-            Log.error("Can't delete from key storage: \(error.localizedDescription)")
         }
     }
 
@@ -258,25 +244,7 @@ class VirgilHelper {
         return try CardManager.exportCardAsBase64EncodedString(card)
     }
 
-    /// Exports self Card
-    ///
-    /// - Returns: exported self Card
-    func getExportedSelfCard() -> String? {
-        guard let card = self.selfCard else {
-            return nil
-        }
-
-        return try? self.export(card: card)
-    }
-}
-
-/// Setters
-extension VirgilHelper {
-    func set(privateKey: VirgilPrivateKey) {
-        self.privateKey = privateKey
-    }
-
-    func set(selfCard: Card) {
-        self.selfCard = selfCard
+    func getTwilioToken(identity: String) throws -> String {
+        return try self.client.getTwilioToken(identity: identity)
     }
 }

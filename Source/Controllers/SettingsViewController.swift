@@ -28,9 +28,10 @@ class SettingsViewController: ViewController {
         self.tableView.backgroundColor = UIColor(rgb: 0x2B303B)
         self.view.backgroundColor = UIColor(rgb: 0x2B303B)
 
-        self.usernameLabel.text = TwilioHelper.shared.username
+        let identity = CoreDataHelper.shared.currentAccount!.identity!
+        self.usernameLabel.text = identity
 
-        let up = TwilioHelper.shared.username.uppercased().first!
+        let up = identity.uppercased().first!
         self.letterLabel.text = String(describing: up)
 
         if let account = CoreDataHelper.shared.currentAccount {
@@ -72,10 +73,9 @@ extension SettingsViewController: UITableViewDelegate {
                                                     message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.",
                                                     preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-                UserDefaults.standard.set(nil, forKey: "last_username")
-
-                CoreDataHelper.shared.deleteAccount()
-                VirgilHelper.shared.deleteStorageEntry(entry: TwilioHelper.shared.username)
+                let userAuthorizer = UserAuthorizer()
+                
+                userAuthorizer.logOut()
 
                 let vc = UIStoryboard(name: "Authentication", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
 
