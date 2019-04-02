@@ -91,32 +91,6 @@ extension TwilioHelper: TwilioChatClientDelegate {
         }
     }
 
-    func chatClient(_ client: TwilioChatClient, channel: TCHChannel, memberJoined member: TCHMember) {
-        if self.getType(of: channel) == ChannelType.group,
-            let name = self.getName(of: channel),
-            let coreChannel = CoreDataHelper.shared.getChannel(withName: name) {
-                Log.debug("New member joined")
-                guard let identity = member.identity else {
-                    Log.error("Member identity is unaccessable")
-                    return
-                }
-                VirgilHelper.shared.getExportedCard(identity: identity) { exportedCard, error in
-                    guard error == nil, let exportedCard = exportedCard else {
-                        return
-                    }
-                    CoreDataHelper.shared.addMember(card: exportedCard, to: coreChannel)
-
-                    // FIXME
-                    guard let card = CoreDataHelper.shared.currentChannel?.cards.first else {
-                        Log.error("Fetching current channel cards failed")
-                        return
-                    }
-                    
-                    VirgilHelper.shared.setChannelCard(card)
-                }
-        }
-    }
-
     private func processMessage(channel: TCHChannel, message: TCHMessage) {
         guard let messageDate = message.dateUpdatedAsDate else {
             Log.error("Got corrupted message")

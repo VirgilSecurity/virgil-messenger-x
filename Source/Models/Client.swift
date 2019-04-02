@@ -63,14 +63,13 @@ extension Client {
                             selfIdentity: String,
                             cardId: String,
                             privateKey: VirgilPrivateKey,
-                            verifier: VirgilCardVerifier,
-                            completion: @escaping ([Card]?, Error?) -> Void) {
+                            verifier: VirgilCardVerifier) throws -> [Card] {
         let provider = self.makeAccessTokenProvider(identity: selfIdentity, cardId: cardId, privateKey: privateKey)
 
         let params = CardManagerParams(cardCrypto: self.cardCrypto, accessTokenProvider: provider, cardVerifier: verifier)
         let cardManager = CardManager(params: params)
 
-        cardManager.searchCards(identity: identity, completion: completion)
+        return try cardManager.searchCards(identities: [identity]).startSync().getResult()
     }
 
     public func signUp(identity: String,

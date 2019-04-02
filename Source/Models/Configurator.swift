@@ -8,36 +8,30 @@
 
 import VirgilSDK
 
-public class Configurator {
-    private let queue = DispatchQueue(label: "ConfiguratorQueue")
-
-    public func configure() -> GenericOperation<Void> {
-        return CallbackOperation { _, completion in
-            self.queue.async {
-                do {
-                    guard let identity = CoreDataHelper.shared.currentAccount?.identity else {
-                        throw NSError()
-                    }
-
-                    try VirgilHelper.initialize(identity: identity)
-
-                    let initPFSOperation = VirgilHelper.shared.makeInitPFSOperation(identity: identity)
-                    let initTwilioOperation = TwilioHelper.makeInitTwilioOperation(identity: identity,
-                                                                                   client: VirgilHelper.shared.client)
-
-                    let operations = [initPFSOperation, initTwilioOperation]
-                    let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-
-                    operations.forEach {
-                        completionOperation.addDependency($0)
-                    }
-
-                    let queue = OperationQueue()
-                    queue.addOperations(operations + [completionOperation], waitUntilFinished: true)
-                } catch {
-                    completion(nil, error)
-                }
+public enum Configurator {
+    public static func configure(completion: @escaping (Error?) -> Void) {
+        do {
+            guard let identity = CoreDataHelper.shared.currentAccount?.identity else {
+                throw NSError()
             }
+
+            try VirgilHelper.initialize(identity: identity)
+
+            let initPFSOperation = VirgilHelper.shared.makeInitPFSOperation(identity: identity)
+            let initTwilioOperation = TwilioHelper.makeInitTwilioOperation(identity: identity,
+                                                                           client: VirgilHelper.shared.client)
+
+            let operations = [initPFSOperation, initTwilioOperation]
+            let completionOperation = OperationUtils.makeCompletionOperation(completion: { (_: Void?, error: Error?) in completion(error) })
+
+            operations.forEach {
+                completionOperation.addDependency($0)
+            }
+
+            let queue = OperationQueue()
+            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+        } catch {
+            completion(error)
         }
     }
 }

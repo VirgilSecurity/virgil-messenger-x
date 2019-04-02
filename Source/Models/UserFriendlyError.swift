@@ -11,4 +11,7 @@ import Foundation
 enum UserFriendlyError: String, Error {
     case noUserOnDevice = "User not found on this device"
     case usernameAlreadyUsed = "Username is already in use"
+    case createSelfChatForbidded = "You need to communicate with other people :)"
+    case douleChannelForbidded = "You already have this channel"
+    case userNotFound = "User not found"
 }

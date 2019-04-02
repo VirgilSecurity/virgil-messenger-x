@@ -8,17 +8,33 @@
 
 import Foundation
 import CoreData
+import VirgilSDK
 
 extension CoreDataHelper {
-    func createChannel(type: ChannelType, name: String, cards: [String]) -> Channel? {
+    func createChannel(identity: String) -> CallbackOperation<Void> {
+        return CallbackOperation<Void> { operation, completion in
+            do {
+                let card: String = try operation.findDependencyResult()
+
+                self.createChannel(name: identity, cards: [card])
+
+                completion((), nil)
+            }
+            catch {
+                completion(nil, error)
+            }
+        }
+    }
+
+    func createChannel(type: ChannelType = .single, name: String, cards: [String]) {
         guard let account = self.currentAccount else {
             Log.error("Core Data: missing current account")
-            return nil
+            return
         }
 
         guard let entity = NSEntityDescription.entity(forEntityName: Entities.channel.rawValue, in: self.managedContext) else {
             Log.error("Core Data: entity not found: " + Entities.channel.rawValue)
-            return nil
+            return
         }
 
         let channel = Channel(entity: entity, insertInto: self.managedContext)
@@ -33,8 +49,6 @@ extension CoreDataHelper {
 
         Log.debug("Core Data: new channel added. Count: \(channels.count)")
         self.appDelegate.saveContext()
-
-        return channel
     }
 
     func loadChannel(withName username: String) -> Bool {
@@ -68,56 +82,37 @@ extension CoreDataHelper {
     }
 
     func deleteChannel(type typetoDelete: ChannelType, name nameToDelete: String) {
-        self.queue.async {
-            guard let account = self.currentAccount, let channels = account.channel else {
-                Log.error("Core Data: missing account")
+        guard let account = self.currentAccount, let channels = account.channel else {
+            Log.error("Core Data: missing account")
+            return
+        }
+
+        for channel in channels {
+            guard let channel = channel as? Channel,
+                let name = channel.name,
+                let type = channel.type else {
+                    Log.error("Core Data: can't get account channels")
+                    return
+            }
+
+            Log.debug("Core Data name: " + name)
+            if type == typetoDelete.rawValue, name == nameToDelete {
+                Log.debug("Core Data: found channel in core data: " + name)
+                self.managedContext.delete(channel)
+                Log.debug("Core Data: channel deleted")
                 return
             }
-
-            for channel in channels {
-                guard let channel = channel as? Channel,
-                    let name = channel.name,
-                    let type = channel.type else {
-                        Log.error("Core Data: can't get account channels")
-                        return
-                }
-
-                Log.debug("Core Data name: " + name)
-                if type == typetoDelete.rawValue, name == nameToDelete {
-                    Log.debug("Core Data: found channel in core data: " + name)
-                    self.managedContext.delete(channel)
-                    Log.debug("Core Data: channel deleted")
-                    return
-                }
-            }
-            Log.error("Core Data: channel not found")
-            self.appDelegate.saveContext()
         }
+        Log.error("Core Data: channel not found")
+        self.appDelegate.saveContext()
     }
 
-    func getChannels() -> NSOrderedSet {
+    func getChannels() -> [Channel] {
         guard let channels = self.currentAccount?.channel else {
             Log.error("Core Data: missing current account or channels")
-            return NSOrderedSet()
+            return []
         }
-        return channels
-    }
 
-    func doesHave(channel: Channel, member: String) -> Bool {
-        for exportedCard in channel.cards {
-            let card = VirgilHelper.shared.buildCard(exportedCard)
-            if card?.identity == member {
-                return true
-            }
-        }
-        return false
-    }
-
-    func addMember(card: String, to channel: Channel? = nil) {
-        let channel = channel ?? self.currentChannel
-        if let channel = channel, !channel.cards.contains(card) {
-            channel.cards.append(card)
-            self.appDelegate.saveContext()
-        }
+        return channels.map { $0 as! Channel }
     }
 }

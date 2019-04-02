@@ -26,8 +26,6 @@ public class VirgilHelper {
     let client: Client
     let secureChat: SecureChat
 
-    let queue = DispatchQueue(label: "VirgilHelperQueue")
-
     private(set) var channelCard: Card?
 
     private init(crypto: VirgilCrypto,
@@ -90,21 +88,21 @@ public class VirgilHelper {
         }
     }
 
-    func getExportedCard(identity: String, completion: @escaping (String?, Error?) -> ()) {
-        guard let user = localKeyManager.retrieveUserData() else {
-            completion(nil, NSError())
-            return
-        }
-
-        self.client.searchCards(withIdentity: identity,
-                                selfIdentity: user.card.identity,
-                                cardId: user.card.identifier,
-                                privateKey: user.privateKey,
-                                verifier: self.verifier)
-        { cards, error in
+    func getCard(identity: String) -> GenericOperation<String> {
+        return CallbackOperation { _, completion in
             do {
-                guard let card = cards?.first, error == nil else {
-                    throw VirgilHelperError.getCardFailed
+                guard let user = self.localKeyManager.retrieveUserData() else {
+                    throw NSError()
+                }
+
+                let cards = try self.client.searchCards(withIdentity: identity,
+                                                        selfIdentity: user.card.identity,
+                                                        cardId: user.card.identifier,
+                                                        privateKey: user.privateKey,
+                                                        verifier: self.verifier)
+
+                guard let card = cards.first else {
+                    throw UserFriendlyError.userNotFound
                 }
 
                 let exportedCard = try card.getRawCard().exportAsBase64EncodedString()

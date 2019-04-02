@@ -8,57 +8,64 @@
 
 import Foundation
 import TwilioChatClient
+import VirgilSDK
 
 extension TwilioHelper {
-    func createSingleChannel(with username: String, completion: @escaping (Error?) -> ()) {
-        TwilioHelper.shared.channels.createChannel(options: [
-            TCHChannelOptionType: TCHChannelType.private.rawValue,
-            TCHChannelOptionAttributes: [
-                Keys.initiator.rawValue: self.username,
-                Keys.responder.rawValue: username,
-                Keys.type.rawValue: ChannelType.single.rawValue
-            ]
-        ]) { result, channel in
-            guard let channel = channel, result.isSuccessful() else {
-                Log.error("Error while creating chat with \(username): \(result.error?.localizedDescription ?? "")")
-                DispatchQueue.main.async {
-                    completion(result.error)
-                }
-                return
-            }
-
-            channel.members?.invite(byIdentity: username) { result in
+    private func makeInviteOperation(channel: TCHChannel, identity: String) -> GenericOperation<Void> {
+        return CallbackOperation { _, completion in
+            channel.members?.invite(byIdentity: identity) { result in
                 guard result.isSuccessful() else {
-                    Log.error("Error while inviting member \(username): \(result.error?.localizedDescription ?? "")")
-                    DispatchQueue.main.async {
-                        completion(result.error)
-                    }
-                    channel.destroy { result in
-                        guard result.isSuccessful() else {
-                            Log.error("can't destroy channel")
-                            return
-                        }
-                    }
+                    completion(nil, result.error)
                     return
                 }
-            }
 
-            channel.join { channelResult in
-                if channelResult.isSuccessful() {
-                    Log.debug("Channel joined.")
-                    DispatchQueue.main.async {
-                        completion(nil)
+                completion((), nil)
+            }
+        }
+    }
+
+    private func makeJoinOperation(channel: TCHChannel) -> GenericOperation<Void> {
+        return CallbackOperation { _, completion in
+            channel.join { result in
+                guard result.isSuccessful() else {
+                    completion(nil, TwilioHelperError.joiningFailed)
+                    return
+                }
+
+                completion((), nil)
+            }
+        }
+    }
+
+    func createSingleChannel(with identity: String) -> GenericOperation<Void> {
+        return CallbackOperation { _, completion in
+            let attributes = [Keys.initiator.rawValue: self.username,
+                              Keys.responder.rawValue: identity,
+                              Keys.type.rawValue: ChannelType.single.rawValue]
+
+            let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
+                                          TCHChannelOptionAttributes: attributes]
+
+            self.channels.createChannel(options: options) { result, channel in
+                guard let channel = channel, result.isSuccessful() else {
+                    Log.error("Twilio: Error while creating chat with \(identity): \(result.error?.localizedDescription ?? "")")
+                    completion(nil, result.error)
+                    return
+                }
+
+                channel.members?.invite(byIdentity: identity) { result in
+                    guard result.isSuccessful() else {
+                        completion(nil, result.error)
+                        return
                     }
-                } else {
-                    Log.error("Channel NOT joined.")
-                    DispatchQueue.main.async {
-                        completion(TwilioHelperError.joiningFailed)
-                    }
-                    channel.destroy { result in
+
+                    channel.join { result in
                         guard result.isSuccessful() else {
-                            Log.error("can't destroy channel")
+                            completion(nil, TwilioHelperError.joiningFailed)
                             return
                         }
+
+                        completion((), nil)
                     }
                 }
             }
@@ -116,13 +123,8 @@ extension TwilioHelper {
                     switch type {
                     case .single:
                         let identity = self.getCompanion(of: channel)
-                        VirgilHelper.shared.getExportedCard(identity: identity) { exportedCard, error in
-                            guard let exportedCard = exportedCard, error == nil else {
-                                Log.error("Getting new channel Card failed")
-                                return
-                            }
-                            self.joinChannelHelper(name: identity, messages: messages, type: type, cards: [exportedCard])
-                        }
+                        let card = try! VirgilHelper.shared.getCard(identity: identity).startSync().getResult()
+                        self.joinChannelHelper(name: identity, messages: messages, type: type, cards: [card])
                     case .group:
                         guard let name = channel.friendlyName else {
                             Log.error("Missing global name of channel")
@@ -134,25 +136,17 @@ extension TwilioHelper {
                                 return
                             }
                             var cards: [String] = []
-                            let group = DispatchGroup()
                             for member in membersPaginator.items() {
                                 guard let identity = member.identity else {
                                     Log.error("Member identity is unaccessable")
                                     return
                                 }
-                                group.enter()
-                                VirgilHelper.shared.getExportedCard(identity: identity) { exportedCard, error in
-                                    guard error == nil, let exportedCard = exportedCard else {
-                                        return
-                                    }
-                                    cards.append(exportedCard)
-                                    group.leave()
-                                }
+
+                                let card = try! VirgilHelper.shared.getCard(identity: identity).startSync().getResult()
+                                cards.append(card)
                             }
 
-                            group.notify(queue: .main) {
-                                self.joinChannelHelper(name: name, messages: messages, type: type, cards: cards)
-                            }
+                            self.joinChannelHelper(name: name, messages: messages, type: type, cards: cards)
                         }
                     }
                 } else {
@@ -190,36 +184,6 @@ extension TwilioHelper {
             return self.getCompanion(of: channel)
         case .group:
             return channel.friendlyName ?? "Error name"
-        }
-    }
-
-    func updateMembers(of channel: TCHChannel, coreChannel: Channel, completion: @escaping () -> ()) {
-        channel.members?.members { result, membersPaginator in
-            guard result.isSuccessful(), let membersPaginator = membersPaginator else {
-                Log.error("Fetching members failed with: \(result.error?.localizedDescription ?? "unknown error")")
-                completion()
-                return
-            }
-            let group = DispatchGroup()
-            for member in membersPaginator.items() {
-                guard let identity = member.identity else {
-                    Log.error("Member identity is unaccessable")
-                    continue
-                }
-                if !CoreDataHelper.shared.doesHave(channel: coreChannel, member: identity) {
-                    group.enter()
-                    VirgilHelper.shared.getExportedCard(identity: identity) { exportedCard, error in
-                        if error == nil, let exportedCard = exportedCard {
-                            CoreDataHelper.shared.addMember(card: exportedCard, to: coreChannel)
-                        }
-                        group.leave()
-                    }
-                }
-            }
-
-            group.notify(queue: .main) {
-                completion()
-            }
         }
     }
 

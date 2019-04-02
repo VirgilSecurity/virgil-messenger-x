@@ -18,7 +18,6 @@ enum CoreDataHelperError: String, Error {
 }
 
 class CoreDataHelper {
-    let queue: DispatchQueue
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let managedContext: NSManagedObjectContext
 
@@ -34,14 +33,14 @@ class CoreDataHelper {
     }
 
     enum Keys: String {
-        case account = "account"
-        case channel = "channel"
-        case message = "message"
-        case identity = "identity"
-        case name = "name"
-        case body = "body"
-        case isIncoming = "isIncoming"
-        case type = "type"
+        case account
+        case channel
+        case message
+        case identity
+        case name
+        case body
+        case isIncoming
+        case type
     }
 
     let lastMessageIdentifier = [
@@ -50,14 +49,16 @@ class CoreDataHelper {
     ]
 
     private init() {
-        managedContext = self.appDelegate.persistentContainer.viewContext
-        self.queue = DispatchQueue(label: "core-data-help-queue")
+        self.managedContext = self.appDelegate.persistentContainer.viewContext
+
         guard let accounts = self.fetch() else {
             Log.error("Core Data: fetch error")
             return
         }
+
         self.accounts = accounts
         Log.debug("Core Data: accounts fetched. Count: \(self.accounts.count)")
+        
         for account in self.accounts {
             let identity = account.identity ?? "not found"
             Log.debug(identity)

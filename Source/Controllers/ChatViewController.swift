@@ -79,18 +79,10 @@ class ChatViewController: BaseChatViewController {
 
         self.navigationItem.titleView = titleView
         self.dataSource.updateMessages {
-            if CoreDataHelper.shared.currentChannel?.type == ChannelType.group.rawValue {
-                titleButton.addTarget(self, action: #selector(self.showParticipants), for: .touchUpInside)
-            }
             titleButton.setTitle(CoreDataHelper.shared.currentChannel?.name ?? "Error name", for: .normal)
             self.navigationItem.titleView = titleButton
             self.view.isUserInteractionEnabled = true
             indicator.stopAnimating()
-        }
-
-        if CoreDataHelper.shared.currentChannel?.type == ChannelType.group.rawValue {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self,
-                                                                     action: #selector(self.didTapAdd(_:)))
         }
     }
 
@@ -102,82 +94,6 @@ class ChatViewController: BaseChatViewController {
         }
         NotificationCenter.default.removeObserver(self.dataSource)
         self.dataSource.addObserver()
-    }
-
-    @objc func showParticipants() {
-        self.performSegue(withIdentifier: "goToChatParticipants", sender: self)
-    }
-
-    @objc func didTapAdd(_ sender: Any) {
-        guard currentReachabilityStatus != .notReachable else {
-            let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-            controller.addAction(UIAlertAction(title: "OK", style: .default))
-            self.present(controller, animated: true)
-
-            return
-        }
-
-        let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
-
-        alertController.addTextField(configurationHandler: {
-            $0.placeholder = "Username"
-            $0.delegate = self
-            $0.keyboardAppearance = UIKeyboardAppearance.dark
-        })
-
-        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-            guard let username = alertController.textFields?.first?.text else {
-                return
-            }
-            self.addMember(username)
-        }))
-
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in }))
-
-        self.present(alertController, animated: true)
-    }
-
-    private func addMember(_ username: String) {
-        let username = username.lowercased()
-
-        guard username != TwilioHelper.shared.username else {
-            self.alert("You need to communicate with other people :)")
-            return
-        }
-
-        guard let currentChannel = CoreDataHelper.shared.currentChannel else {
-            Log.error("Missing current channel")
-            return
-        }
-
-        if (currentChannel.cards.contains {
-            VirgilHelper.shared.buildCard($0)?.identity == username
-        }) {
-            self.alert("This user is already member of channel")
-        } else {
-            HUD.show(.progress)
-            VirgilHelper.shared.getExportedCard(identity: username) { exportedCard, error in
-                guard error == nil, let exportedCard = exportedCard else {
-                    HUD.flash(.error)
-                    return
-                }
-                TwilioHelper.shared.invite(member: username) { error in
-                    if error == nil {
-                        CoreDataHelper.shared.addMember(card: exportedCard)
-                        guard let cards = CoreDataHelper.shared.currentChannel?.cards else {
-                            Log.error("Can't fetch Core Data Cards. Card was not added to encrypt for")
-                            HUD.flash(.error)
-                            return
-                        }
-
-                        VirgilHelper.shared.setChannelCard(cards.first!)
-                        HUD.flash(.success)
-                    } else {
-                        HUD.flash(.error)
-                    }
-                }
-            }
-        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {

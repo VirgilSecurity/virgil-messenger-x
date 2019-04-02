@@ -36,8 +36,7 @@ class ChatListViewController: ViewController {
 
         self.navigationItem.titleView = titleView
 
-        let configurator = Configurator()
-        configurator.configure().start { _, error in
+        Configurator.configure { error in
             DispatchQueue.main.async {
                 self.tableView.reloadData()
                 self.navigationItem.titleView = nil
@@ -92,71 +91,56 @@ class ChatListViewController: ViewController {
             return
         }
 
-        let alertController = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
 
-        alertController.addTextField(configurationHandler: {
+        alert.addTextField {
             $0.placeholder = "Username"
             $0.delegate = self
             $0.keyboardAppearance = UIKeyboardAppearance.dark
-        })
+        }
 
-        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-            guard let username = alertController.textFields?.first?.text, !username.isEmpty else {
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            guard let username = alert.textFields?.first?.text, !username.isEmpty else {
                 return
             }
-            self.addChat(withUsername: username)
-        }))
 
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in }))
+            guard self.currentReachabilityStatus != .notReachable else {
+                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
+                controller.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(controller, animated: true)
 
-        self.present(alertController, animated: true)
-    }
+                return
+            }
 
-    private func addChat(withUsername username: String) {
-        guard currentReachabilityStatus != .notReachable else {
-            let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-            controller.addAction(UIAlertAction(title: "OK", style: .default))
-            self.present(controller, animated: true)
-
-            return
-        }
-
-        let username = username.lowercased()
-
-        guard username != TwilioHelper.shared.username else {
-            self.alert("You need to communicate with other people :)")
-            return
-        }
-
-        if (CoreDataHelper.shared.getChannels().contains {
-            ($0 as! Channel).name == username
-        }) {
-            self.alert("You already have this channel")
-        } else {
-            HUD.show(.progress)
-            VirgilHelper.shared.getExportedCard(identity: username) { exportedCard, error in
-                guard let exportedCard = exportedCard, error == nil else {
-                    Log.error("Getting card failed")
-                    self.alert("User not found")
-                    HUD.hide()
-                    return
+            let hudShow = {
+                DispatchQueue.main.async {
+                    HUD.show(.progress)
                 }
-                TwilioHelper.shared.createSingleChannel(with: username) { error in
-                    if error == nil {
-                        _ = CoreDataHelper.shared.createChannel(type: .single,
-                                                                        name: username,
-                                                                        cards: [exportedCard])
+            }
+
+            ChatsManager.addChat(with: username, startProgressBar: hudShow) { error in
+                DispatchQueue.main.async {
+                    if let error = error as? UserFriendlyError {
+                        HUD.hide()
+                        self.alert("\(error.rawValue)")
+                    } else if error != nil {
+                        self.alert("Something went wrong")
+                        Log.error("\(error!.localizedDescription)")
+                    } else {
                         self.noChatsView.isHidden = true
                         self.tableView.reloadData()
-                        
                         HUD.flash(.success)
-                    } else {
-                        self.alert("Something went wrong")
-                        HUD.hide()
                     }
                 }
             }
         }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+
+        self.present(alert, animated: true)
     }
 
     deinit {
@@ -174,7 +158,7 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
         cell.tag = count - indexPath.row - 1
         cell.delegate = self
 
-        guard let channel = channels[safe: count - indexPath.row - 1] as? Channel else {
+        guard let channel = channels[safe: count - indexPath.row - 1] else {
             Log.error("Can't form row: Core Data channel wrong index")
             return cell
         }
