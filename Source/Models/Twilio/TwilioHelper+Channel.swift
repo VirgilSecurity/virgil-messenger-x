@@ -157,9 +157,8 @@ extension TwilioHelper {
     }
 
     func joinChannelHelper(name: String, messages: TCHMessages, type: ChannelType, cards: [String]) {
-        guard CoreDataHelper.shared.createChannel(type: type, name: name, cards: cards) != nil else {
-            return
-        }
+        CoreDataHelper.shared.createChannel(type: type, name: name, cards: cards)
+
 //
 //        self.setLastMessage(of: messages, channel: channelCore) {
 //            NotificationCenter.default.post(

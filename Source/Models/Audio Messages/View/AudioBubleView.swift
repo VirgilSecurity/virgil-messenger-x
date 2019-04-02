@@ -197,6 +197,8 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
     }
 
     @objc private func updateTimer() {
+        defer { self.textView.attributedText = self.formattedDisplayTime }
+
         if self.displayTime < 1 {
             self.displayTime = self.audioMessageViewModel.duration
             self.audioMessageViewModel.state.value = .stopped
@@ -205,7 +207,6 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
             return
         }
         self.displayTime -= 1
-        defer { self.textView.attributedText = self.formattedDisplayTime }
     }
 
     private func stopTimer() {

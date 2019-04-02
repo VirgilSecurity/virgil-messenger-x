@@ -42,6 +42,8 @@ extension TwilioHelper: TwilioChatClientDelegate {
             case .connecting: self = .connecting
             case .denied: self = .denied
             case .error: self = .error
+            @unknown default:
+                self = .unknown
             }
         }
     }

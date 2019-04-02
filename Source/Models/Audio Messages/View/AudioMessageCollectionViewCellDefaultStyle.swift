@@ -153,7 +153,7 @@ open class AudioMessageCollectionViewCellDefaultStyle: AudioBubbleViewStyleProto
 }
 
 public extension AudioMessageCollectionViewCellDefaultStyle { // Default values
-    static public func createDefaultBubbleImages() -> BubbleImages {
+    static func createDefaultBubbleImages() -> BubbleImages {
         return BubbleImages(
             incomingTail: UIImage(named: "bubble-incoming-tail",
                                   in: Bundle(for: TextMessageCollectionViewCellDefaultStyle.self),
@@ -170,7 +170,7 @@ public extension AudioMessageCollectionViewCellDefaultStyle { // Default values
         )
     }
 
-    static public func createDefaultTextStyle() -> TextStyle {
+    static func createDefaultTextStyle() -> TextStyle {
         return TextStyle(
             font: UIFont.systemFont(ofSize: 16),
             incomingColor: UIColor.black,

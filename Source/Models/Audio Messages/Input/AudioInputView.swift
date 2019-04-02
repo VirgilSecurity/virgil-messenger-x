@@ -107,13 +107,13 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
     }
 
     private func configureViewsProportions() {
-        let constraint1 = NSLayoutConstraint(item: self.view1, attribute: .height, relatedBy: .equal,
+        let constraint1 = NSLayoutConstraint(item: self.view1!, attribute: .height, relatedBy: .equal,
                                              toItem: self.view2, attribute: .height, multiplier: 2, constant: 0)
-        let constraint2 = NSLayoutConstraint(item: self.view1, attribute: .height, relatedBy: .equal,
+        let constraint2 = NSLayoutConstraint(item: self.view1!, attribute: .height, relatedBy: .equal,
                                              toItem: self.view3, attribute: .height, multiplier: 1, constant: 0)
-        let constraint3 = NSLayoutConstraint(item: self.view1, attribute: .height, relatedBy: .equal,
+        let constraint3 = NSLayoutConstraint(item: self.view1!, attribute: .height, relatedBy: .equal,
                                              toItem: self.view4, attribute: .height, multiplier: 1, constant: 0)
-        let constraint4 = NSLayoutConstraint(item: self.view1, attribute: .height, relatedBy: .equal,
+        let constraint4 = NSLayoutConstraint(item: self.view1!, attribute: .height, relatedBy: .equal,
                                              toItem: self.view5, attribute: .height, multiplier: 1, constant: 0)
 
         self.addConstraints([constraint1, constraint2, constraint3, constraint4])
@@ -125,11 +125,11 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
 
         self.addSubview(self.view1)
 
-        self.addConstraint(NSLayoutConstraint(item: self.view1, attribute: .centerX, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.view1!, attribute: .centerX, relatedBy: .equal, toItem: view,
                                               attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.view1, attribute: .top, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.view1!, attribute: .top, relatedBy: .equal, toItem: view,
                                               attribute: .top, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.view1, attribute: .width, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.view1!, attribute: .width, relatedBy: .equal, toItem: view,
                                               attribute: .width, multiplier: 1, constant: 0))
     }
 
@@ -143,13 +143,13 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
 
         view.addSubview(self.holdToRecordLabel)
 
-        self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel, attribute: .top, relatedBy: .equal, toItem: self.view1,
+        self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel!, attribute: .top, relatedBy: .equal, toItem: self.view1,
                                               attribute: .bottom, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel, attribute: .centerX, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel!, attribute: .centerX, relatedBy: .equal, toItem: view,
                                               attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel, attribute: .width, relatedBy: .equal, toItem: nil,
+        self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel!, attribute: .width, relatedBy: .equal, toItem: nil,
                                               attribute: .notAnAttribute, multiplier: 1, constant: 200))
-        self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel, attribute: .height, relatedBy: .equal, toItem: nil,
+        self.addConstraint(NSLayoutConstraint(item: self.holdToRecordLabel!, attribute: .height, relatedBy: .equal, toItem: nil,
                                               attribute: .notAnAttribute, multiplier: 1, constant: 25))
 
         self.configureView2(inside: view)
@@ -161,11 +161,11 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
 
         self.addSubview(self.view2)
 
-        self.addConstraint(NSLayoutConstraint(item: self.view2, attribute: .centerX, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.view2!, attribute: .centerX, relatedBy: .equal, toItem: view,
                                               attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.view2, attribute: .top, relatedBy: .equal, toItem: self.holdToRecordLabel,
+        self.addConstraint(NSLayoutConstraint(item: self.view2!, attribute: .top, relatedBy: .equal, toItem: self.holdToRecordLabel,
                                               attribute: .bottom, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.view2, attribute: .width, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.view2!, attribute: .width, relatedBy: .equal, toItem: view,
                                               attribute: .width, multiplier: 1, constant: 0))
     }
 
@@ -179,13 +179,13 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
 
         view.addSubview(self.timerLabel)
 
-        self.addConstraint(NSLayoutConstraint(item: self.timerLabel, attribute: .top, relatedBy: .equal, toItem: self.view2,
+        self.addConstraint(NSLayoutConstraint(item: self.timerLabel!, attribute: .top, relatedBy: .equal, toItem: self.view2,
                                               attribute: .bottom, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.timerLabel, attribute: .centerX, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.timerLabel!, attribute: .centerX, relatedBy: .equal, toItem: view,
                                               attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.timerLabel, attribute: .width, relatedBy: .equal, toItem: nil,
+        self.addConstraint(NSLayoutConstraint(item: self.timerLabel!, attribute: .width, relatedBy: .equal, toItem: nil,
                                               attribute: .notAnAttribute, multiplier: 1, constant: 200))
-        self.addConstraint(NSLayoutConstraint(item: self.timerLabel, attribute: .height, relatedBy: .equal, toItem: nil,
+        self.addConstraint(NSLayoutConstraint(item: self.timerLabel!, attribute: .height, relatedBy: .equal, toItem: nil,
                                               attribute: .notAnAttribute, multiplier: 1, constant: 25))
 
         self.configureView3(inside: view)
@@ -197,11 +197,11 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
 
         self.addSubview(self.view3)
 
-        self.addConstraint(NSLayoutConstraint(item: self.view3, attribute: .centerX, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.view3!, attribute: .centerX, relatedBy: .equal, toItem: view,
                                               attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.view3, attribute: .top, relatedBy: .equal, toItem: self.timerLabel,
+        self.addConstraint(NSLayoutConstraint(item: self.view3!, attribute: .top, relatedBy: .equal, toItem: self.timerLabel,
                                               attribute: .bottom, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.view3, attribute: .width, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.view3!, attribute: .width, relatedBy: .equal, toItem: view,
                                               attribute: .width, multiplier: 1, constant: 0))
     }
 
@@ -217,13 +217,13 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
         self.recordButton.addTarget(self, action: #selector(didCancelRecord(_:)), for: .touchDragExit)
         view.addSubview(self.recordButton)
 
-        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .centerX, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton!, attribute: .centerX, relatedBy: .equal, toItem: view,
                                               attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .top, relatedBy: .equal, toItem: self.view3,
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton!, attribute: .top, relatedBy: .equal, toItem: self.view3,
                                               attribute: .bottom, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .width, relatedBy: .equal, toItem: nil,
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton!, attribute: .width, relatedBy: .equal, toItem: nil,
                                               attribute: .notAnAttribute, multiplier: 1, constant: 100))
-        self.addConstraint(NSLayoutConstraint(item: self.recordButton, attribute: .height, relatedBy: .equal, toItem: nil,
+        self.addConstraint(NSLayoutConstraint(item: self.recordButton!, attribute: .height, relatedBy: .equal, toItem: nil,
                                               attribute: .notAnAttribute, multiplier: 1, constant: 100))
 
         self.configureView4(inside: view)
@@ -235,11 +235,11 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
 
         self.addSubview(self.view4)
 
-        self.addConstraint(NSLayoutConstraint(item: self.view4, attribute: .centerX, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.view4!, attribute: .centerX, relatedBy: .equal, toItem: view,
                                               attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.view4, attribute: .top, relatedBy: .equal, toItem: self.recordButton,
+        self.addConstraint(NSLayoutConstraint(item: self.view4!, attribute: .top, relatedBy: .equal, toItem: self.recordButton,
                                               attribute: .bottom, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.view4, attribute: .width, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.view4!, attribute: .width, relatedBy: .equal, toItem: view,
                                               attribute: .width, multiplier: 1, constant: 0))
     }
 
@@ -253,13 +253,13 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
         self.cancelLabel.isHidden = false
         view.addSubview(self.cancelLabel)
 
-        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel, attribute: .centerX, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel!, attribute: .centerX, relatedBy: .equal, toItem: view,
                                               attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel, attribute: .width, relatedBy: .equal, toItem: nil,
+        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel!, attribute: .width, relatedBy: .equal, toItem: nil,
                                               attribute: .notAnAttribute, multiplier: 1, constant: 300))
-        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel, attribute: .height, relatedBy: .equal, toItem: nil,
+        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel!, attribute: .height, relatedBy: .equal, toItem: nil,
                                               attribute: .notAnAttribute, multiplier: 1, constant: 30))
-        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel, attribute: .top, relatedBy: .equal, toItem: self.view4,
+        self.addConstraint(NSLayoutConstraint(item: self.cancelLabel!, attribute: .top, relatedBy: .equal, toItem: self.view4,
                                               attribute: .bottom, multiplier: 1, constant: 0))
 
         self.configureView5(inside: view)
@@ -271,13 +271,13 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
 
         self.addSubview(self.view5)
 
-        self.addConstraint(NSLayoutConstraint(item: self.view5, attribute: .centerX, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.view5!, attribute: .centerX, relatedBy: .equal, toItem: view,
                                               attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.view5, attribute: .top, relatedBy: .equal, toItem: self.cancelLabel,
+        self.addConstraint(NSLayoutConstraint(item: self.view5!, attribute: .top, relatedBy: .equal, toItem: self.cancelLabel,
                                               attribute: .bottom, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.view5, attribute: .width, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.view5!, attribute: .width, relatedBy: .equal, toItem: view,
                                               attribute: .width, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.view5, attribute: .bottom, relatedBy: .equal, toItem: view,
+        self.addConstraint(NSLayoutConstraint(item: self.view5!, attribute: .bottom, relatedBy: .equal, toItem: view,
                                               attribute: .bottom, multiplier: 1, constant: 0))
     }
 

@@ -92,12 +92,19 @@ class ChatViewController: BaseChatViewController {
         if let title = CoreDataHelper.shared.currentChannel?.name {
             TwilioHelper.shared.setChannel(withName: title)
         }
-        NotificationCenter.default.removeObserver(self.dataSource)
+
+        if let dataSource = self.dataSource {
+            NotificationCenter.default.removeObserver(dataSource)
+        }
+        
         self.dataSource.addObserver()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self.dataSource)
+        if let dataSource = self.dataSource {
+            NotificationCenter.default.removeObserver(dataSource)
+        }
+
         NotificationCenter.default.removeObserver(self)
     }
 

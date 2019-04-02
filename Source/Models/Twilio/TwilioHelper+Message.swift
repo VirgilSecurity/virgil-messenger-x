@@ -157,23 +157,28 @@ extension TwilioHelper {
                                      onCompleted: { (mediaSid) in
                                         Log.debug("Media upload completed")
                 }) { result in
+                    defer { group.leave() }
+
                     guard result.isSuccessful() else {
                         Log.error("getting media message failed: \(result.error?.localizedDescription ?? "unknown error")")
                         completion(nil)
                         return
                     }
+
                     let url = URL(fileURLWithPath: tempFilename)
+
                     guard let data = try? Data(contentsOf: url) else {
                         Log.error("reading media from temp directory failed")
                         completion(nil)
                         return
                     }
+
                     completion(data)
-                    defer { group.leave() }
                 }
             } else {
                 Log.error("outputStream failed")
             }
+
             group.wait()
         }
     }
@@ -196,19 +201,22 @@ extension TwilioHelper {
                                  onCompleted: { (mediaSid) in
                                     Log.debug("Media upload completed")
             }) { result in
+                defer { group.leave() }
+                
                 guard result.isSuccessful() else {
                     Log.error("getting media message failed: \(result.error?.localizedDescription ?? "unknown error")")
                     completion(nil)
                     return
                 }
+
                 let url = URL(fileURLWithPath: tempFilename)
                 guard let data = try? Data(contentsOf: url) else {
                     Log.error("reading media from temp directory failed")
                     completion(nil)
                     return
                 }
+
                 completion(data)
-                defer { group.leave() }
             }
         } else {
             Log.error("outputStream failed")
