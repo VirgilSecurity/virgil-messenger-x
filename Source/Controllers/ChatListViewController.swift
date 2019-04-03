@@ -112,13 +112,9 @@ class ChatListViewController: ViewController {
 
             ChatsManager.addChat(with: username, startProgressBar: hudShow) { error in
                 DispatchQueue.main.async {
-                    if let error = error as? UserFriendlyError {
+                    if let error = error {
                         HUD.hide()
-                        self.alert("\(error.rawValue)")
-                    } else if error != nil {
-                        HUD.hide()
-                        self.alert("Something went wrong")
-                        Log.error("\(error!.localizedDescription)")
+                        self.alert(error)
                     } else {
                         self.noChatsView.isHidden = true
                         self.tableView.reloadData()

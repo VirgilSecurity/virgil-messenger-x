@@ -14,4 +14,7 @@ enum UserFriendlyError: String, Error {
     case createSelfChatForbidded = "You need to communicate with other people :)"
     case douleChannelForbidded = "You already have this channel"
     case userNotFound = "User not found"
+    case noConnection = "Please check your network connection"
+    case unknownError = "Something went wrong"
+    case playingError = "Playing error"
 }

@@ -277,7 +277,7 @@ extension ChatViewController: AudioPlayableProtocol {
             self.cachedAudioModel = model
         } catch {
             Log.error("AVAudioPlayer error: \(error.localizedDescription)")
-            self.alert("Playing error")
+            self.alert(UserFriendlyError.playingError)
         }
     }
 

@@ -55,9 +55,7 @@ extension CollectionViewController {
 
             self.goToChatList()
         } catch {
-            let message = error is UserFriendlyError ? error.localizedDescription : "Something went wrong"
-
-            self.alert(message)
+            self.alert(error)
         }
     }
 

@@ -95,21 +95,12 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
         PKHUD.sharedHUD.show()
 
         self.userAuthorizer.signUp(identity: username) { error in
-            guard error == nil else {
-                var message = "Something went wrong"
-                if let err = error as? UserFriendlyError {
-                    message = err.rawValue
+            PKHUD.sharedHUD.hide() { _ in
+                if let error = error {
+                    self.alert(title: self.title, error: error)
+                } else {
+                    self.goToChatList()
                 }
-
-                PKHUD.sharedHUD.hide() { _ in
-                    self.alert(title: self.title, message: message)
-                }
-
-                return
-            }
-
-            PKHUD.sharedHUD.hide(true) { _ in
-                self.goToChatList()
             }
         }
     }
