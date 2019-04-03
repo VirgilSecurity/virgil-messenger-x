@@ -59,13 +59,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         })
     }
 
-    func alert(_ message: String) {
-        let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-
-        self.present(alert, animated: true)
-    }
-
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else { return true }
         if string.rangeOfCharacter(from: ChatConstants.characterSet.inverted) != nil {

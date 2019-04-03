@@ -159,13 +159,6 @@ class ChatViewController: BaseChatViewController {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-
-    private func alert(_ message: String) {
-        let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-
-        self.present(alert, animated: true)
-    }
 }
 
 /// Presenters creators
@@ -230,15 +223,14 @@ extension ChatViewController {
 extension ChatViewController {
     private func createTextInputItem() -> TextChatInputItem {
         let item = TextChatInputItem()
+
         item.textInputHandler = { [weak self] text in
-            if self?.currentReachabilityStatus == .notReachable {
-                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-                controller.addAction(UIAlertAction(title: "OK", style: .default))
-                self?.present(controller, animated: true)
-            } else if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                self?.dataSource.addTextMessage(text)
+            if self?.checkReachability() ?? false,
+                !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    self?.dataSource.addTextMessage(text)
             }
         }
+
         return item
     }
 
@@ -251,11 +243,7 @@ extension ChatViewController {
                                        inputViewAppearance: photosAppearence)
 
         item.photoInputHandler = { [weak self] image in
-            if self?.currentReachabilityStatus == .notReachable {
-                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-                controller.addAction(UIAlertAction(title: "OK", style: .default))
-                self?.present(controller, animated: true)
-            } else {
+            if self?.checkReachability() ?? false {
                 self?.dataSource.addPhotoMessage(image)
             }
         }
@@ -265,11 +253,7 @@ extension ChatViewController {
     private func createAudioInputItem() -> AudioChatInputItem {
         let item = AudioChatInputItem(presentingController: self)
         item.audioInputHandler = { [weak self] audioData in
-            if self?.currentReachabilityStatus == .notReachable {
-                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-                controller.addAction(UIAlertAction(title: "OK", style: .default))
-                self?.present(controller, animated: true)
-            } else {
+            if self?.checkReachability() ?? false {
                 self?.dataSource.addAudioMessage(audioData)
             }
         }

@@ -83,11 +83,7 @@ class ChatListViewController: ViewController {
     }
 
     @IBAction func didTapAdd(_ sender: Any) {
-        guard currentReachabilityStatus != .notReachable else {
-            let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-            controller.addAction(UIAlertAction(title: "OK", style: .default))
-            self.present(controller, animated: true)
-
+        guard self.checkReachability() else {
             return
         }
 
@@ -96,7 +92,7 @@ class ChatListViewController: ViewController {
         alert.addTextField {
             $0.placeholder = "Username"
             $0.delegate = self
-            $0.keyboardAppearance = UIKeyboardAppearance.dark
+            $0.keyboardAppearance = .dark
         }
 
         let okAction = UIAlertAction(title: "OK", style: .default) { _ in
@@ -104,11 +100,7 @@ class ChatListViewController: ViewController {
                 return
             }
 
-            guard self.currentReachabilityStatus != .notReachable else {
-                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-                controller.addAction(UIAlertAction(title: "OK", style: .default))
-                self.present(controller, animated: true)
-
+            guard self.checkReachability() else {
                 return
             }
 
@@ -124,6 +116,7 @@ class ChatListViewController: ViewController {
                         HUD.hide()
                         self.alert("\(error.rawValue)")
                     } else if error != nil {
+                        HUD.hide()
                         self.alert("Something went wrong")
                         Log.error("\(error!.localizedDescription)")
                     } else {

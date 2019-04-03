@@ -1,5 +1,5 @@
 //
-//  NSObject+Reachibility.swift
+//  UIViewController+Reachibility.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 1/3/17.
@@ -9,29 +9,29 @@
 import UIKit
 import SystemConfiguration
 
-extension NSObject {
+extension UIViewController {
     enum ReachabilityStatus {
         case notReachable
         case reachableViaWWAN
         case reachableViaWiFi
     }
 
-    var currentReachabilityStatus: ReachabilityStatus {
+    internal var reachabilityStatus: ReachabilityStatus {
         var zeroAddress = sockaddr_in()
         zeroAddress.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
         zeroAddress.sin_family = sa_family_t(AF_INET)
 
-        guard let defaultRouteReachability = withUnsafePointer(to: &zeroAddress, {
+        let defaultRouteReachabilityOptional = withUnsafePointer(to: &zeroAddress) {
             $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
                 SCNetworkReachabilityCreateWithAddress(nil, $0)
             }
-        }) else {
-            return .notReachable
         }
 
         var flags: SCNetworkReachabilityFlags = []
-        if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
-            return .notReachable
+
+        guard let defaultRouteReachability = defaultRouteReachabilityOptional,
+            SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) else {
+                return .notReachable
         }
 
         if flags.contains(.reachable) == false {
@@ -49,5 +49,14 @@ extension NSObject {
         } else {
             return .notReachable
         }
+    }
+
+    internal func checkReachability() -> Bool {
+        guard self.reachabilityStatus != .notReachable else {
+            self.alertNoConnection()
+            return false
+        }
+
+        return true
     }
 }

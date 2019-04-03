@@ -17,13 +17,8 @@ class StartViewController: ViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        guard currentReachabilityStatus != .notReachable else {
+        guard self.checkReachability() else {
             UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
-
-            let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-            controller.addAction(UIAlertAction(title: "OK", style: .default))
-
-            self.present(controller, animated: true)
             return
         }
 

@@ -87,18 +87,12 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
         }
         self.view.endEditing(true)
 
-        PKHUD.sharedHUD.contentView = PKHUDProgressView()
-        PKHUD.sharedHUD.show()
-
-        guard currentReachabilityStatus != .notReachable else {
-            PKHUD.sharedHUD.hide() { _ in
-                let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-                controller.addAction(UIAlertAction(title: "OK", style: .default))
-
-                self.present(controller, animated: true)
-            }
+        guard self.checkReachability() else {
             return
         }
+
+        PKHUD.sharedHUD.contentView = PKHUDProgressView()
+        PKHUD.sharedHUD.show()
 
         self.userAuthorizer.signUp(identity: username) { error in
             guard error == nil else {
@@ -108,10 +102,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
                 }
 
                 PKHUD.sharedHUD.hide() { _ in
-                    let controller = UIAlertController(title: self.title, message: message, preferredStyle: .alert)
-                    controller.addAction(UIAlertAction(title: "OK", style: .default))
-
-                    self.present(controller, animated: true)
+                    self.alert(title: self.title, message: message)
                 }
 
                 return

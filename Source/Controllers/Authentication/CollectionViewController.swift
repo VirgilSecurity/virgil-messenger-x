@@ -46,11 +46,7 @@ class CollectionViewController: UICollectionViewController {
 
 extension CollectionViewController {
     private func signIn(username: String) {
-        guard currentReachabilityStatus != .notReachable else {
-            let controller = UIAlertController(title: nil, message: "Please check your network connection", preferredStyle: .alert)
-            controller.addAction(UIAlertAction(title: "OK", style: .default))
-
-            self.present(controller, animated: true)
+        guard self.checkReachability() else {
             return
         }
 
@@ -63,13 +59,6 @@ extension CollectionViewController {
 
             self.alert(message)
         }
-    }
-
-    private func alert(_ message: String) {
-        let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-
-        self.present(alert, animated: true)
     }
 
     private func goToChatList() {
