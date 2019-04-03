@@ -6,9 +6,7 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import UIKit
-import AVFoundation
 
 class SettingsViewController: ViewController {
     @IBOutlet weak var avatarView: GradientView!
@@ -74,7 +72,7 @@ extension SettingsViewController: UITableViewDelegate {
                                                     preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
                 let userAuthorizer = UserAuthorizer()
-                
+
                 userAuthorizer.logOut()
 
                 let vc = UIStoryboard(name: "Authentication", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController

@@ -25,4 +25,22 @@ extension Date {
     func seconds(from date: Date) -> Int {
         return abs(Calendar.current.dateComponents([.second], from: date, to: self).second ?? 0)
     }
+
+    func shortString() -> String {
+        let dateFormatter = DateFormatter()
+
+        if self.minutes(from: Date()) < 2 {
+            return "now"
+        } else if self.days(from: Date()) < 1 {
+            dateFormatter.dateStyle = DateFormatter.Style.none
+            dateFormatter.timeStyle = DateFormatter.Style.short
+        } else {
+            dateFormatter.dateStyle = DateFormatter.Style.short
+            dateFormatter.timeStyle = DateFormatter.Style.none
+        }
+
+        let shortString = dateFormatter.string(from: self)
+
+        return shortString
+    }
 }

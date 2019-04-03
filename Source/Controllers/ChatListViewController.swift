@@ -6,11 +6,8 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import UIKit
 import PKHUD
-import TwilioChatClient
-import VirgilSDK
 
 class ChatListViewController: ViewController {
     @IBOutlet weak var noChatsView: UIView!
@@ -151,33 +148,16 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
             Log.error("Can't form row: Core Data channel wrong index")
             return cell
         }
+
         cell.usernameLabel.text = channel.name
         cell.letterLabel.text = channel.letter
         cell.avatarView.gradientLayer.colors = [channel.colorPair.first, channel.colorPair.second]
         cell.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
 
         cell.lastMessageLabel.text = channel.lastMessagesBody
-        cell.lastMessageDateLabel.text = channel.lastMessagesDate != nil ? calcDateString(messageDate: channel.lastMessagesDate!) : ""
+        cell.lastMessageDateLabel.text = channel.lastMessagesDate?.shortString() ?? ""
 
         return cell
-    }
-
-    private func calcDateString(messageDate: Date) -> String {
-
-        let dateFormatter = DateFormatter()
-        if messageDate.minutes(from: Date()) < 2 {
-            return "now"
-        } else if messageDate.days(from: Date()) < 1 {
-            dateFormatter.dateStyle = DateFormatter.Style.none
-            dateFormatter.timeStyle = DateFormatter.Style.short
-        } else {
-            dateFormatter.dateStyle = DateFormatter.Style.short
-            dateFormatter.timeStyle = DateFormatter.Style.none
-        }
-
-        let messageDateString = dateFormatter.string(from: messageDate)
-
-        return messageDateString
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

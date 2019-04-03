@@ -97,7 +97,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
         self.userAuthorizer.signUp(identity: username) { error in
             PKHUD.sharedHUD.hide() { _ in
                 if let error = error {
-                    self.alert(title: self.title, error: error)
+                    self.alert(title: self.title, error)
                 } else {
                     self.goToChatList()
                 }
