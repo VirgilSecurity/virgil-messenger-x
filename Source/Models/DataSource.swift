@@ -91,24 +91,6 @@ class DataSource: ChatDataSourceProtocol {
                                                object: nil)
     }
 
-    func updateMessages(completion: @escaping () -> ()) {
-        TwilioHelper.shared.updateMessages(count: self.count) { needToUpdate, _ in
-            if needToUpdate > 0 {
-                guard let channel = CoreDataHelper.shared.currentChannel,
-                    let messages = channel.message else {
-                        Log.error("Missing Core Data current channel")
-                        completion()
-                        return
-                }
-                for i in (0..<needToUpdate).reversed() {
-                    self.slidingWindow.insertItem(self.slidingWindow.itemGenerator(messages.count - i - 1, messages), position: .bottom)
-                }
-                self.delegate?.chatDataSourceDidUpdate(self)
-            }
-            completion()
-        }
-    }
-
     @objc private func processMessage(notification: Notification) {
         guard let userInfo = notification.userInfo,
             let message = userInfo[TwilioHelper.NotificationKeys.Message.rawValue] as? Message else {

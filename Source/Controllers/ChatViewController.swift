@@ -63,10 +63,10 @@ class ChatViewController: BaseChatViewController {
         self.navigationItem.title = self.title
         self.navigationController?.navigationBar.tintColor = .white
 
-        self.view.isUserInteractionEnabled = false
-        let indicator = UIActivityIndicatorView()
-        indicator.hidesWhenStopped = false
-        indicator.startAnimating()
+//        self.view.isUserInteractionEnabled = false
+//        let indicator = UIActivityIndicatorView()
+//        indicator.hidesWhenStopped = false
+//        indicator.startAnimating()
 
         let titleButton = UIButton(type: .custom)
         titleButton.frame = CGRect(x: 0, y: 0, width: 200, height: 21)
@@ -74,16 +74,16 @@ class ChatViewController: BaseChatViewController {
         titleButton.setTitle("Updating", for: .normal)
         titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
 
-        let titleView = UIStackView(arrangedSubviews: [indicator, titleButton])
-        titleView.spacing = 5
+//        let titleView = UIStackView(arrangedSubviews: [indicator, titleButton])
+//        titleView.spacing = 5
 
-        self.navigationItem.titleView = titleView
-        self.dataSource.updateMessages {
+//        self.navigationItem.titleView = titleView
+//        self.dataSource.updateMessages {
             titleButton.setTitle(CoreDataHelper.shared.currentChannel?.name ?? "Error name", for: .normal)
             self.navigationItem.titleView = titleButton
-            self.view.isUserInteractionEnabled = true
-            indicator.stopAnimating()
-        }
+//            self.view.isUserInteractionEnabled = true
+//            indicator.stopAnimating()
+//        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

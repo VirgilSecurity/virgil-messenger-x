@@ -20,10 +20,13 @@ public enum Configurator {
             let initPFSOperation = VirgilHelper.shared.makeInitPFSOperation(identity: identity)
             let initTwilioOperation = TwilioHelper.makeInitTwilioOperation(identity: identity,
                                                                            client: VirgilHelper.shared.client)
-            
+            let updateChannelsOperation = ChatsManager.makeUpdateChannelsOperation()
 
-            let operations = [initPFSOperation, initTwilioOperation]
+            let operations = [initPFSOperation, initTwilioOperation, updateChannelsOperation]
             let completionOperation = OperationUtils.makeCompletionOperation(completion: { (_: Void?, error: Error?) in completion(error) })
+
+            updateChannelsOperation.addDependency(initPFSOperation)
+            updateChannelsOperation.addDependency(initTwilioOperation)
 
             operations.forEach {
                 completionOperation.addDependency($0)

@@ -25,9 +25,15 @@ class MessageProcessor {
         channel.lastMessagesDate = date
 
         if message.hasMedia() {
-            return try self.processMedia(message: message, date: date, isIncoming: isIncoming, channel: channel)
+            return try self.processMedia(message: message,
+                                         date: date,
+                                         isIncoming: isIncoming,
+                                         channel: channel)
         } else if let body = message.body {
-            return try self.processText(message: message, body: body, date: date, isIncoming: isIncoming, channel: channel)
+            return try self.processText(message: message,
+                                        body: body, date: date,
+                                        isIncoming: isIncoming,
+                                        channel: channel)
         } else {
             throw NSError()
         }
