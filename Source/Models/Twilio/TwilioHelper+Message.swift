@@ -8,6 +8,7 @@
 
 import UIKit
 import TwilioChatClient
+import VirgilSDK
 
 extension TwilioHelper {
 //    func setLastMessage(of messages: TCHMessages, channel: Channel, completion: @escaping () -> ()) {
@@ -81,33 +82,25 @@ extension TwilioHelper {
                         let isIncoming = message.author == TwilioHelper.shared.username ? false : true
                         guard let messageDate = message.dateUpdatedAsDate else {
                             Log.error("wrong message atributes")
-                            CoreDataHelper.shared.createTextMessage(withBody: "Message corrupted",
-                                                                            isIncoming: isIncoming, date: Date())
+                            try! CoreDataHelper.shared.saveTextMessage("Message corrupted", isIncoming: isIncoming)
                             continue
                         }
                         let makeCorruptedMessage = {
-                            CoreDataHelper.shared.createTextMessage(withBody: "Message encrypted",
-                                                                            isIncoming: isIncoming, date: messageDate)
+                            try! CoreDataHelper.shared.saveTextMessage("Message corrupted", isIncoming: isIncoming, date: messageDate)
                         }
 
                         if message.hasMedia() {
-                            TwilioHelper.shared.getMediaSync(from: message) { encryptedData in
-                                guard let encryptedData = encryptedData,
-                                    let encryptedString = String(data: encryptedData, encoding: .utf8),
-                                    let decryptedString = VirgilHelper.shared.decrypt(encryptedString),
-                                    let decryptedData = Data(base64Encoded: decryptedString) else {
-                                        Log.error("decryption of media message failed")
-                                        makeCorruptedMessage()
-                                        return
+                            TwilioHelper.shared.getMediaSync(from: message) { data in
+                                guard let data = data else {
+                                    makeCorruptedMessage()
+                                    return
                                 }
 
                                 switch message.mediaType {
                                 case MediaType.photo.rawValue:
-                                    CoreDataHelper.shared.createMediaMessage(with: decryptedData, isIncoming: isIncoming,
-                                                                                     date: messageDate, type: .photo)
+                                    try! CoreDataHelper.shared.saveMediaMessage(data, isIncoming: isIncoming, date: messageDate, type: .photo)
                                 case MediaType.audio.rawValue:
-                                    CoreDataHelper.shared.createMediaMessage(with: decryptedData, isIncoming: isIncoming,
-                                                                                     date: messageDate, type: .audio)
+                                    try! CoreDataHelper.shared.saveMediaMessage(data, isIncoming: isIncoming, date: messageDate, type: .audio)
                                 default:
                                     Log.error("Missing or unknown mediaType")
                                     makeCorruptedMessage()
@@ -115,14 +108,13 @@ extension TwilioHelper {
                                 }
                             }
                         } else if let messageBody = message.body {
-                            guard let decryptedMessageBody = VirgilHelper.shared.decrypt(messageBody) else {
+                            guard let decryptedMessageBody = try? VirgilHelper.shared.decrypt(messageBody) else {
                                 makeCorruptedMessage()
                                 continue
                             }
-                            CoreDataHelper.shared.createTextMessage(withBody: decryptedMessageBody,
-                                                                            isIncoming: isIncoming, date: messageDate)
+
+                            try! CoreDataHelper.shared.saveTextMessage(decryptedMessageBody, isIncoming: isIncoming, date: messageDate)
                         } else {
-                            Log.error("Corrupted Message")
                             makeCorruptedMessage()
                         }
                     }
@@ -134,6 +126,37 @@ extension TwilioHelper {
         } else {
             DispatchQueue.main.async {
                 completion(0, nil)
+            }
+        }
+    }
+
+    func makeGetMediaOperation(message: TCHMessage) -> CallbackOperation<Data> {
+        return CallbackOperation<Data> { _, completion in
+            let tempFilename = (NSTemporaryDirectory() as NSString).appendingPathComponent(message.mediaFilename ?? "file.dat")
+            let outputStream = OutputStream(toFileAtPath: tempFilename, append: false)
+
+            if let outputStream = outputStream {
+                message.getMediaWith(outputStream,
+                                     onStarted: { Log.debug("Media upload started") },
+                                     onProgress: { Log.debug("Media upload progress: \($0)") },
+                                     onCompleted: { _ in Log.debug("Media upload completed") })
+                { result in
+                    if let error = result.error {
+                        completion(nil, error)
+                        return
+                    }
+
+                    let url = URL(fileURLWithPath: tempFilename)
+
+                    guard let data = try? Data(contentsOf: url) else {
+                        completion(nil, NSError())
+                        return
+                    }
+
+                    completion(data, nil)
+                }
+            } else {
+                completion(nil, NSError())
             }
         }
     }
@@ -202,7 +225,7 @@ extension TwilioHelper {
                                     Log.debug("Media upload completed")
             }) { result in
                 defer { group.leave() }
-                
+
                 guard result.isSuccessful() else {
                     Log.error("getting media message failed: \(result.error?.localizedDescription ?? "unknown error")")
                     completion(nil)
@@ -210,6 +233,7 @@ extension TwilioHelper {
                 }
 
                 let url = URL(fileURLWithPath: tempFilename)
+
                 guard let data = try? Data(contentsOf: url) else {
                     Log.error("reading media from temp directory failed")
                     completion(nil)
@@ -221,6 +245,7 @@ extension TwilioHelper {
         } else {
             Log.error("outputStream failed")
         }
+
         group.wait()
     }
 }

@@ -14,11 +14,13 @@ import CoreData
 public class Channel: NSManagedObject {
     var lastMessagesBody: String = ""
     var lastMessagesDate: Date?
+
     var letter: String {
         get {
             return String(describing: self.name!.uppercased().first!)
         }
     }
+
     var colorPair: ColorPair {
         get {
             return UIConstants.colorPairs[Int(self.numColorPair)]

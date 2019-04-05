@@ -44,8 +44,8 @@ class CoreDataHelper {
     }
 
     let lastMessageIdentifier = [
-        MessageType.photo.rawValue: "image.jpg",
-        MessageType.audio.rawValue: "audio.mp4"
+        MessageType.photo.rawValue: "Photo",
+        MessageType.audio.rawValue: "Voice Message"
     ]
 
     private init() {

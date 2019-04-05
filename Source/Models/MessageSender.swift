@@ -1,28 +1,3 @@
-/*
- The MIT License (MIT)
-
- Copyright (c) 2015-present Badoo Trading Limited.
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
-*/
-
-import Foundation
 import Chatto
 import ChattoAdditions
 import TwilioChatClient
@@ -33,22 +8,14 @@ public protocol DemoMessageModelProtocol: MessageModelProtocol {
 
 public class MessageSender {
     public var onMessageChanged: ((_ message: DemoMessageModelProtocol) -> ())?
-
-    public func sendMessages(_ messages: [DemoMessageModelProtocol]) {
-        for message in messages {
-            self.sendMessage(message)
-        }
-    }
-
+    
     public func sendMessage(_ message: DemoMessageModelProtocol) {
         switch message {
         case is DemoTextMessageModel:
             let textMessage = message as! DemoTextMessageModel
 
-            var text = textMessage.body
-            if CoreDataHelper.shared.currentChannel?.type == ChannelType.group.rawValue {
-                text = "\(TwilioHelper.shared.username): \(textMessage.body)"
-            }
+            let text = textMessage.body
+
             if let encrypted = VirgilHelper.shared.encrypt(text) {
                 self.messageStatus(ciphertext: encrypted, message: textMessage)
             }
@@ -58,6 +25,7 @@ public class MessageSender {
                 Log.error("Converting image to JPEG failed")
                 return
             }
+            
             if let encrypted = VirgilHelper.shared.encrypt(photoData.base64EncodedString()) {
                 guard let cipherData = encrypted.data(using: .utf8) else {
                     Log.error("String to Data failed")
@@ -80,7 +48,9 @@ public class MessageSender {
             Log.error("Unknown message model")
         }
     }
+}
 
+extension MessageSender {
     private func messageStatus(ciphertext: String, message: DemoTextMessageModel) {
         switch message.status {
         case .success:
@@ -95,8 +65,7 @@ public class MessageSender {
                 messages.sendMessage(with: options) { result, msg in
                     if result.isSuccessful() {
                         self.updateMessage(message, status: .success)
-                        CoreDataHelper.shared.createTextMessage(withBody: message.body, isIncoming: false,
-                                                                        date: message.date)
+                        try! CoreDataHelper.shared.saveTextMessage(message.body, isIncoming: false, date: message.date)
                     } else {
                         Log.error("error sending: Twilio cause")
                         self.updateMessage(message, status: .failed)
@@ -138,8 +107,8 @@ public class MessageSender {
                             Log.error("failed getting data from image")
                             return
                         }
-                        CoreDataHelper.shared.createMediaMessage(with: imageData, isIncoming: false,
-                                                                         date: message.date, type: .photo)
+
+                        try! CoreDataHelper.shared.saveMediaMessage(imageData, isIncoming: false, date: message.date, type: .photo)
                     } else {
                         if let error = result.error {
                             Log.error("error sending: \(error.localizedDescription) with \(error.code)")
@@ -181,8 +150,7 @@ public class MessageSender {
                     if result.isSuccessful() {
                         self.updateMessage(message, status: .success)
 
-                        CoreDataHelper.shared.createMediaMessage(with: message.audio, isIncoming: false,
-                                                                         date: message.date, type: .audio)
+                        try! CoreDataHelper.shared.saveMediaMessage(message.audio, isIncoming: false, date: message.date, type: .audio)
                     } else {
                         if let error = result.error {
                             Log.error("error sending: \(error.localizedDescription) with \(error.code)")
@@ -207,7 +175,7 @@ public class MessageSender {
 
     private func notifyMessageChanged(_ message: DemoMessageModelProtocol) {
         DispatchQueue.main.async {
-             self.onMessageChanged?(message)
+            self.onMessageChanged?(message)
         }
     }
 }

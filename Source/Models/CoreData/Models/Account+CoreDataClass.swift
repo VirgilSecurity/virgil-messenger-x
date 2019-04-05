@@ -17,6 +17,7 @@ public class Account: NSManagedObject {
             return String(describing: self.identity!.uppercased().first!)
         }
     }
+
     var colorPair: ColorPair {
         get {
             return UIConstants.colorPairs[Int(self.numColorPair)]

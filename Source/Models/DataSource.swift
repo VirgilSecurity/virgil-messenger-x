@@ -110,79 +110,16 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     @objc private func processMessage(notification: Notification) {
-        Log.debug("processing message")
-        guard  let userInfo = notification.userInfo,
-            let message = userInfo[TwilioHelper.NotificationKeys.Message.rawValue] as? TCHMessage,
-            let messageDate = message.dateUpdatedAsDate else {
-            return
-        }
-        let isIncoming = message.author == TwilioHelper.shared.username ? false : true
-
-        if message.hasMedia() {
-           self.processMedia(message: message, date: messageDate, isIncoming: isIncoming)
-        } else if let messageBody = message.body {
-            guard let decryptedBody = VirgilHelper.shared.decrypt(messageBody) else {
+        guard let userInfo = notification.userInfo,
+            let message = userInfo[TwilioHelper.NotificationKeys.Message.rawValue] as? Message else {
                 return
-            }
-            Log.debug("Receiving " + decryptedBody)
-
-            let model = MessageFactory.createMessageModel("\(self.nextMessageId)", isIncoming: isIncoming, type: TextMessageModel<MessageModel>.chatItemType, status: .success, date: messageDate)
-            let decryptedMessage = DemoTextMessageModel(messageModel: model, text: decryptedBody)
-
-            CoreDataHelper.shared.createTextMessage(withBody: decryptedMessage.body, isIncoming: true, date: messageDate)
-
-            self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
-            self.nextMessageId += 1
-        } else {
-            Log.error("Empty Twilio message")
         }
+
+        self.nextMessageId += 1
+        let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
+
+        self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
-    }
-
-    private func processMedia(message: TCHMessage, date: Date, isIncoming: Bool) {
-        guard let type = message.mediaType else {
-            Log.error("Missing mediaType")
-            return
-        }
-        TwilioHelper.shared.getMedia(from: message) { encryptedData in
-            guard let encryptedData = encryptedData,
-                let encryptedString = String(data: encryptedData, encoding: .utf8),
-                let decryptedString = VirgilHelper.shared.decrypt(encryptedString),
-                let decryptedData = Data(base64Encoded: decryptedString) else {
-                    Log.error("decryption process of media message failed")
-                    return
-            }
-
-            switch type {
-            case TwilioHelper.MediaType.photo.rawValue:
-                guard let image = UIImage(data: decryptedData) else {
-                    Log.error("Building image from decrypted data failed")
-                    return
-                }
-                CoreDataHelper.shared.createMediaMessage(with: decryptedData, isIncoming: true,
-                                                                 date: date, type: .photo)
-                let decryptedMessage = MessageFactory.createPhotoMessageModel("\(self.nextMessageId)", image: image,
-                                                                   size: image.size, isIncoming: isIncoming,
-                                                                   status: .success, date: date)
-                self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
-            case TwilioHelper.MediaType.audio.rawValue:
-                guard let duration = try? AVAudioPlayer(data: decryptedData).duration else {
-                    Log.error("Getting audio duration failed")
-                    return
-                }
-                CoreDataHelper.shared.createMediaMessage(with: decryptedData, isIncoming: true,
-                                                                 date: date, type: .audio)
-                let decryptedMessage = MessageFactory.createAudioMessageModel("\(self.nextMessageId)", audio: decryptedData,
-                                                                              duration: duration, isIncoming: isIncoming,
-                                                                              status: .success, date: date)
-                self.slidingWindow.insertItem(decryptedMessage, position: .bottom)
-            default:
-                Log.error("Unknown media type")
-                return
-            }
-            self.nextMessageId += 1
-            self.delegate?.chatDataSourceDidUpdate(self)
-        }
     }
 
     lazy var messageSender: MessageSender = {

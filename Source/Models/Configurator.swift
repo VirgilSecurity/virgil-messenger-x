@@ -20,6 +20,7 @@ public enum Configurator {
             let initPFSOperation = VirgilHelper.shared.makeInitPFSOperation(identity: identity)
             let initTwilioOperation = TwilioHelper.makeInitTwilioOperation(identity: identity,
                                                                            client: VirgilHelper.shared.client)
+            
 
             let operations = [initPFSOperation, initTwilioOperation]
             let completionOperation = OperationUtils.makeCompletionOperation(completion: { (_: Void?, error: Error?) in completion(error) })

@@ -11,39 +11,57 @@ import UIKit
 import CoreData
 
 extension CoreDataHelper {
-
     enum MessageType: String {
         case text
         case photo
         case audio
-    }
 
-    func createTextMessage(withBody body: String, isIncoming: Bool, date: Date) {
-        guard let channel = self.currentChannel else {
-            Log.error("Core Data: missing selected channel")
-            return
+        init?(_ type: TwilioHelper.MediaType) {
+            switch type {
+            case .photo:
+                self = .photo
+            case .audio:
+                self = .audio
+            }
         }
-        channel.lastMessagesBody = body
-        channel.lastMessagesDate = date
-
-        self.createTextMessage(for: channel, withBody: body, isIncoming: isIncoming, date: date)
     }
 
-    func createMediaMessage(with data: Data, isIncoming: Bool, date: Date, type: MessageType) {
-        guard let channel = self.currentChannel else {
-            Log.error("Core Data: nil selected channel")
-            return
+    func saveMessage(_ message: Message, to channel: Channel) throws {
+        let messages = channel.mutableOrderedSetValue(forKey: Keys.message.rawValue)
+        messages.add(message)
+
+        Log.debug("Core Data: new message added. Count: \(messages.count)")
+        self.appDelegate.saveContext()
+    }
+
+    func saveTextMessage(_ body: String, to channel: Channel? = nil, isIncoming: Bool, date: Date = Date()) throws {
+        guard let channel = channel ?? self.currentChannel else {
+            throw CoreDataHelperError.nilCurrentAccount
         }
-        channel.lastMessagesBody = self.lastMessageIdentifier[type.rawValue] ?? "unknown media message"
-        channel.lastMessagesDate = date
 
-        self.createMediaMessage(for: channel, with: data, isIncoming: isIncoming, date: date, type: type)
+        let message = try self.createTextMessage(body, in: channel, isIncoming: isIncoming, date: date)
+
+        try self.saveMessage(message, to: channel)
     }
 
-    func createTextMessage(for channel: Channel, withBody body: String, isIncoming: Bool, date: Date) {
+    func saveMediaMessage(_ data: Data, to channel: Channel? = nil, isIncoming: Bool, date: Date = Date(), type: MessageType) throws {
+        guard let channel = channel ?? self.currentChannel else {
+            throw CoreDataHelperError.nilCurrentAccount
+        }
+
+        let message = try self.createMediaMessage(data, in: channel, isIncoming: isIncoming, date: date, type: type)
+
+        try self.saveMessage(message, to: channel)
+    }
+
+    func createTextMessage(_ body: String, in channel: Channel? = nil, isIncoming: Bool, date: Date = Date()) throws -> Message {
+        guard let channel = channel ?? self.currentChannel else {
+            throw CoreDataHelperError.nilCurrentAccount
+        }
+
         guard let entity = NSEntityDescription.entity(forEntityName: Entities.message.rawValue, in: self.managedContext) else {
             Log.error("Core Data: entity not found: " + Entities.message.rawValue)
-            return
+            throw NSError()
         }
 
         let message = Message(entity: entity, insertInto: self.managedContext)
@@ -53,17 +71,20 @@ extension CoreDataHelper {
         message.date = date
         message.type = MessageType.text.rawValue
 
-        let messages = channel.mutableOrderedSetValue(forKey: Keys.message.rawValue)
-        messages.add(message)
+        channel.lastMessagesBody = body
+        channel.lastMessagesDate = date
 
-        Log.debug("Core Data: new message added. Count: \(messages.count)")
-        self.appDelegate.saveContext()
+        return message
     }
 
-    func createMediaMessage(for channel: Channel, with data: Data, isIncoming: Bool, date: Date, type: MessageType) {
+    func createMediaMessage(_ data: Data, in channel: Channel? = nil, isIncoming: Bool, date: Date = Date(), type: MessageType) throws -> Message {
+        guard let channel = channel ?? self.currentChannel else {
+            throw CoreDataHelperError.nilCurrentAccount
+        }
+
         guard let entity = NSEntityDescription.entity(forEntityName: Entities.message.rawValue, in: self.managedContext) else {
             Log.error("Core Data: entity not found: " + Entities.message.rawValue)
-            return
+            throw NSError()
         }
 
         let message = Message(entity: entity, insertInto: self.managedContext)
@@ -73,13 +94,11 @@ extension CoreDataHelper {
         message.date = date
         message.type = type.rawValue
 
-        let messages = channel.mutableOrderedSetValue(forKey: Keys.message.rawValue)
-        messages.add(message)
+        channel.lastMessagesBody = self.lastMessageIdentifier[type.rawValue] ?? ""
+        channel.lastMessagesDate = date
 
-        Log.debug("Core Data: new message added. Count: \(messages.count)")
-        self.appDelegate.saveContext()
+        return message
     }
-
 
     func setLastMessage(for channel: Channel) {
         if let messages = channel.message,

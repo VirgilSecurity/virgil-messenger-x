@@ -33,44 +33,23 @@ extension VirgilHelper {
         return session
     }
 
-    func encryptPFS(_ text: String) throws -> String {
-        let session = try self.getSessionAsSender()
-
-        let ratchetMessage = try session.encrypt(string: text)
-
-        return ratchetMessage.serialize().base64EncodedString()
-    }
-
-    func decryptPFS(_ encrypted: String) throws -> String {
-        guard let data = Data(base64Encoded: encrypted) else {
-            Log.error("Converting utf8 string to data failed")
-            throw NSError()
-        }
-
-        guard let card = self.channelCard else {
-            Log.error("channel card not found")
-            throw NSError()
-        }
-
-        let ratchetMessage = try RatchetMessage.deserialize(input: data)
-
-        let session = try self.getSessionAsReceiver(message: ratchetMessage, receiverCard: card)
-
-        return try session.decryptString(from: ratchetMessage)
-    }
-
+    // FIXME
     func encrypt(_ text: String) -> String? {
-        let session = try! self.getSessionAsSender()
+        do {
+            let session = try self.getSessionAsSender()
 
-        let ratchetMessage = try! session.encrypt(string: text)
+            let ratchetMessage = try session.encrypt(string: text)
 
-        return ratchetMessage.serialize().base64EncodedString()
+            return ratchetMessage.serialize().base64EncodedString()
+        } catch {
+            return nil
+        }
     }
 
-    func decrypt(_ encrypted: String, withCard: String? = nil) -> String? {
+    func decrypt(_ encrypted: String, withCard: String? = nil) throws -> String {
         guard let data = Data(base64Encoded: encrypted) else {
             Log.error("Converting utf8 string to data failed")
-            return nil
+            throw NSError()
         }
 
         let tryCard: Card?
@@ -82,18 +61,13 @@ extension VirgilHelper {
 
         guard let card = tryCard else {
             Log.error("No card")
-            return nil
+            throw NSError()
         }
 
-        do {
-            let ratchetMessage = try RatchetMessage.deserialize(input: data)
+        let ratchetMessage = try RatchetMessage.deserialize(input: data)
 
-            let session = try self.getSessionAsReceiver(message: ratchetMessage, receiverCard: card)
+        let session = try self.getSessionAsReceiver(message: ratchetMessage, receiverCard: card)
 
-            return try session.decryptString(from: ratchetMessage)
-        } catch {
-            Log.error("\(error.localizedDescription)")
-            return nil
-        }
+        return try session.decryptString(from: ratchetMessage)
     }
 }

@@ -85,7 +85,7 @@ extension Client {
 
         let requestURL = URLConstansts.signUpEndpoint
         let headers = ["Content-Type": "application/json"]
-        let params = ["rawCard" : exportedRawCard]
+        let params = ["rawCard": exportedRawCard]
         let body = try JSONSerialization.data(withJSONObject: params, options: [])
 
         let request = Request(url: requestURL, method: .post, headers: headers, body: body)
