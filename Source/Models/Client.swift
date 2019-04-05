@@ -26,14 +26,11 @@ public class Client {
         self.cardCrypto = cardCrypto
     }
 
-    func makeAccessTokenProvider(identity: String,
-                                 cardId: String,
-                                 privateKey: VirgilPrivateKey) -> AccessTokenProvider {
+    func makeAccessTokenProvider(identity: String) -> AccessTokenProvider {
         let accessTokenProvider = CachingJwtProvider(renewTokenCallback: { _, completion in
             do {
-                let token = try self.getVirgilToken(identity: identity,
-                                                    cardId: cardId,
-                                                    privateKey: privateKey)
+                let token = try self.getVirgilToken(identity: identity)
+
                 completion(token, nil)
             } catch {
                 completion(nil, error)
@@ -61,10 +58,8 @@ public class Client {
 extension Client {
     public func searchCards(withIdentity identity: String,
                             selfIdentity: String,
-                            cardId: String,
-                            privateKey: VirgilPrivateKey,
                             verifier: VirgilCardVerifier) throws -> [Card] {
-        let provider = self.makeAccessTokenProvider(identity: selfIdentity, cardId: cardId, privateKey: privateKey)
+        let provider = self.makeAccessTokenProvider(identity: selfIdentity)
 
         let params = CardManagerParams(cardCrypto: self.cardCrypto, accessTokenProvider: provider, cardVerifier: verifier)
         let cardManager = CardManager(params: params)
@@ -142,10 +137,14 @@ extension Client {
         return token
     }
 
-    public func getVirgilToken(identity: String,
-                               cardId: String,
-                               privateKey: VirgilPrivateKey) throws -> String {
-        let authHeader = try self.makeAuthHeader(cardId: cardId, privateKey: privateKey)
+    public func getVirgilToken(identity: String) throws -> String {
+        let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
+
+        guard let user = localKeyManager.retrieveUserData() else {
+            throw NSError()
+        }
+
+        let authHeader = try self.makeAuthHeader(cardId: user.card.identifier, privateKey: user.privateKey)
 
         let requestURL = URLConstansts.virgilJwtEndpoint
         let headers = ["Content-Type": "application/json",

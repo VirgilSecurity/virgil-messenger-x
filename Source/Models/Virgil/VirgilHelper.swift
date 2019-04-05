@@ -19,10 +19,10 @@ public enum VirgilHelperError: String, Error {
 public class VirgilHelper {
     private(set) static var shared: VirgilHelper!
 
+    let identity: String
     let crypto: VirgilCrypto
     let cardCrypto: VirgilCardCrypto
     let verifier: VirgilCardVerifier
-    let localKeyManager: LocalKeyManager
     let client: Client
     let secureChat: SecureChat
 
@@ -32,13 +32,13 @@ public class VirgilHelper {
                  cardCrypto: VirgilCardCrypto,
                  verifier: VirgilCardVerifier,
                  client: Client,
-                 localKeyManager: LocalKeyManager,
+                 identity: String,
                  secureChat: SecureChat) {
         self.crypto = crypto
         self.cardCrypto = cardCrypto
         self.verifier = verifier
         self.client = client
-        self.localKeyManager = localKeyManager
+        self.identity = identity
         self.secureChat = secureChat
     }
 
@@ -56,9 +56,7 @@ public class VirgilHelper {
             throw NSError()
         }
 
-        let provider = client.makeAccessTokenProvider(identity: identity,
-                                                      cardId: user.card.identifier,
-                                                      privateKey: user.privateKey)
+        let provider = client.makeAccessTokenProvider(identity: identity)
 
         let context = SecureChatContext(identity: identity,
                                         identityCardId: user.card.identifier,
@@ -71,7 +69,7 @@ public class VirgilHelper {
                                    cardCrypto: cardCrypto,
                                    verifier: verifier,
                                    client: client,
-                                   localKeyManager: localKeyManager,
+                                   identity: identity,
                                    secureChat: secureChat)
     }
 
@@ -91,14 +89,8 @@ public class VirgilHelper {
     func getCard(identity: String) -> GenericOperation<String> {
         return CallbackOperation { _, completion in
             do {
-                guard let user = self.localKeyManager.retrieveUserData() else {
-                    throw NSError()
-                }
-
                 let cards = try self.client.searchCards(withIdentity: identity,
-                                                        selfIdentity: user.card.identity,
-                                                        cardId: user.card.identifier,
-                                                        privateKey: user.privateKey,
+                                                        selfIdentity: self.identity,
                                                         verifier: self.verifier)
 
                 guard let card = cards.first else {
