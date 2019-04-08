@@ -29,14 +29,12 @@ public enum ChatsManager {
             startProgressBar()
 
             let getCardOperation = VirgilHelper.shared.getCard(identity: identity)
-            let createTwilioChannelOperation = TwilioHelper.shared.createSingleChannel(with: identity)
+            let createTwilioChannelOperation = TwilioHelper.shared.makeCreateChannelOperation(with: identity)
             let createCoreDataChannelOperation = CoreDataHelper.shared.createChannel(identity: identity)
             let completionOperation = OperationUtils.makeCompletionOperation { (_: Void?, error: Error?) in completion(error) }
 
             createCoreDataChannelOperation.addDependency(getCardOperation)
-            completionOperation.addDependency(getCardOperation)
-            completionOperation.addDependency(createTwilioChannelOperation)
-            completionOperation.addDependency(createCoreDataChannelOperation)
+            createTwilioChannelOperation.addDependency(getCardOperation)
 
             let operations = [getCardOperation,
                               createTwilioChannelOperation,

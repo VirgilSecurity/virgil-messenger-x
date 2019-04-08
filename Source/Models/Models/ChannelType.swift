@@ -6,7 +6,7 @@
 //  Copyright © 2018 VirgilSecurity. All rights reserved.
 //
 
-enum ChannelType: String {
+enum ChannelType: String, Codable {
     case single
     case group
 }

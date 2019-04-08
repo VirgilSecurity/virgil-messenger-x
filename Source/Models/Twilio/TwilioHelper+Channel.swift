@@ -11,20 +11,15 @@ import TwilioChatClient
 import VirgilSDK
 
 extension TwilioHelper {
-    private func makeInviteOperation(channel: TCHChannel, identity: String) -> GenericOperation<Void> {
-        return CallbackOperation { _, completion in
-            channel.members?.invite(byIdentity: identity) { result in
-                guard result.isSuccessful() else {
-                    completion(nil, result.error)
-                    return
-                }
-
-                completion((), nil)
-            }
+    func getAttributes(of channel: TCHChannel) throws -> ChannelAttributes {
+        guard let attributes = channel.attributes() else {
+            throw TwilioHelperError.missingChannelAttributes
         }
+
+        return try ChannelAttributes.import(attributes)
     }
 
-    private func makeJoinOperation(channel: TCHChannel) -> GenericOperation<Void> {
+    func makeJoinOperation(channel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             channel.join { result in
                 guard result.isSuccessful() else {
@@ -37,21 +32,35 @@ extension TwilioHelper {
         }
     }
 
-    func createSingleChannel(with identity: String) -> GenericOperation<Void> {
+    func makeJoinOperation() -> CallbackOperation<Void> {
+        return CallbackOperation { operation, completion in
+            do {
+                let channel: TCHChannel = try operation.findDependencyResult()
+
+                self.makeJoinOperation(channel: channel).start(completion: completion)
+            } catch {
+                completion(nil, error)
+            }
+        }
+    }
+
+    private func makeCreateChannelOperation(with options: [String: Any]) -> CallbackOperation<TCHChannel> {
         return CallbackOperation { _, completion in
-            let attributes = [Keys.initiator.rawValue: self.username,
-                              Keys.responder.rawValue: identity,
-                              Keys.type.rawValue: ChannelType.single.rawValue]
-
-            let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
-                                          TCHChannelOptionAttributes: attributes]
-
             self.channels.createChannel(options: options) { result, channel in
-                guard let channel = channel, result.isSuccessful() else {
-                    Log.error("Twilio: Error while creating chat with \(identity): \(result.error?.localizedDescription ?? "")")
+                guard result.isSuccessful() else {
                     completion(nil, result.error)
                     return
                 }
+
+                completion(channel, nil)
+            }
+        }
+    }
+
+    private func makeInviteOperation(identity: String) -> CallbackOperation<Void> {
+        return CallbackOperation { operation, completion in
+            do {
+                let channel: TCHChannel = try operation.findDependencyResult()
 
                 channel.members?.invite(byIdentity: identity) { result in
                     guard result.isSuccessful() else {
@@ -61,82 +70,50 @@ extension TwilioHelper {
 
                     completion((), nil)
                 }
+            } catch {
+                completion(nil, error)
             }
         }
     }
 
-    func createGlobalChannel(withName name: String, completion: @escaping (Error?) -> ()) {
-        TwilioHelper.shared.channels.createChannel(options: [
-            TCHChannelOptionType: TCHChannelType.private.rawValue,
-            TCHChannelOptionFriendlyName: name,
-            TCHChannelOptionAttributes: [
-                Keys.initiator.rawValue: self.username,
-                Keys.type.rawValue: ChannelType.group.rawValue
-            ]
-        ]) { result, channel in
-            guard let channel = channel, result.isSuccessful() else {
-                Log.error("Error while creating group chat: \(result.error?.localizedDescription ?? "")")
-                DispatchQueue.main.async {
-                    completion(result.error)
-                }
-                return
+    func makeCreateChannelOperation(with identity: String) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            let attributes = ChannelAttributes(initiator: self.username, responder: identity, type: .single)
+
+            let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
+                                          TCHChannelOptionAttributes: try! attributes.export()]
+
+            Log.debug("\(options)")
+            Log.debug("\(try! attributes.export())")
+
+            let createChannelOperation = self.makeCreateChannelOperation(with: options)
+            let inviteOperation = self.makeInviteOperation(identity: identity)
+            let joinOperation = self.makeJoinOperation()
+            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+            inviteOperation.addDependency(createChannelOperation)
+            joinOperation.addDependency(createChannelOperation)
+
+            let operations = [createChannelOperation,
+                              inviteOperation,
+                              joinOperation]
+
+            operations.forEach {
+                completionOperation.addDependency($0)
             }
 
-            channel.join(completion: { channelResult in
-                if channelResult.isSuccessful() {
-                    Log.debug("Channel joined.")
-                    DispatchQueue.main.async {
-                        completion(nil)
-                    }
-                } else {
-                    Log.error("Channel NOT joined.")
-                    DispatchQueue.main.async {
-                        completion(TwilioHelperError.joiningFailed)
-                    }
-                    channel.destroy { result in
-                        guard result.isSuccessful() else {
-                            Log.error("can't destroy channel")
-                            return
-                        }
-                    }
-                }
-            })
-        }
-    }
-
-    func makeJoinOperation(channel: TCHChannel) -> CallbackOperation<Void> {
-        return CallbackOperation<Void> { _, completion in
-            channel.join() { result in
-                guard result.error == nil else {
-                    completion(nil, result.error)
-                    return
-                }
-
-                let type = self.getType(of: channel)
-
-                switch type {
-                case .single:
-                    let identity = self.getCompanion(of: channel)
-                    let card = try! VirgilHelper.shared.getCard(identity: identity).startSync().getResult()
-
-                    CoreDataHelper.shared.createChannel(type: type, name: identity, cards: [card])
-                case .group:
-                    // TODO
-                    break
-                }
-
-                NotificationCenter.default.post(
-                    name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-                    object: self,
-                    userInfo: [:])
-            }
+            let queue = OperationQueue()
+            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
         }
     }
 
     func getName(of channel: TCHChannel) -> String {
-        let type = self.getType(of: channel)
+        // FIXME
+        guard let attributes = try? self.getAttributes(of: channel) else {
+            return "Error name"
+        }
 
-        switch type {
+        switch attributes.type {
         case .single:
             return self.getCompanion(of: channel)
         case .group:
@@ -144,25 +121,42 @@ extension TwilioHelper {
         }
     }
 
-    func invite(member username: String, completion: @escaping (Error?) -> ()) {
-        currentChannel.members?.invite(byIdentity: username) { result in
-            if !result.isSuccessful() {
-                Log.error("Error while inviting member \(username): \(result.error?.localizedDescription ?? "")")
-            }
-            DispatchQueue.main.async {
-                completion(result.error)
-            }
-        }
-    }
-
-    func destroyChannel(_ number: Int, completion: @escaping () -> ()) {
-        let channel = self.channels.subscribedChannels()[number]
-        channel.destroy { result in
-            completion()
-            guard result.isSuccessful() else {
-                Log.error("can't destroy channel")
-                return
-            }
-        }
-    }
+    //    func createGlobalChannel(withName name: String, completion: @escaping (Error?) -> ()) {
+    //        TwilioHelper.shared.channels.createChannel(options: [
+    //            TCHChannelOptionType: TCHChannelType.private.rawValue,
+    //            TCHChannelOptionFriendlyName: name,
+    //            TCHChannelOptionAttributes: [
+    //                Keys.initiator.rawValue: self.username,
+    //                Keys.type.rawValue: ChannelType.group.rawValue
+    //            ]
+    //        ]) { result, channel in
+    //            guard let channel = channel, result.isSuccessful() else {
+    //                Log.error("Error while creating group chat: \(result.error?.localizedDescription ?? "")")
+    //                DispatchQueue.main.async {
+    //                    completion(result.error)
+    //                }
+    //                return
+    //            }
+    //
+    //            channel.join(completion: { channelResult in
+    //                if channelResult.isSuccessful() {
+    //                    Log.debug("Channel joined.")
+    //                    DispatchQueue.main.async {
+    //                        completion(nil)
+    //                    }
+    //                } else {
+    //                    Log.error("Channel NOT joined.")
+    //                    DispatchQueue.main.async {
+    //                        completion(TwilioHelperError.joiningFailed)
+    //                    }
+    //                    channel.destroy { result in
+    //                        guard result.isSuccessful() else {
+    //                            Log.error("can't destroy channel")
+    //                            return
+    //                        }
+    //                    }
+    //                }
+    //            })
+    //        }
+    //    }
 }

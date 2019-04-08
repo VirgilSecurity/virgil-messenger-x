@@ -63,8 +63,26 @@ extension TwilioHelper: TwilioChatClientDelegate {
     }
 
     func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
-        self.makeJoinOperation(channel: channel).start { _, error in
-            if let error = error {
+        self.queue.async {
+            do {
+                let attributes = try self.getAttributes(of: channel)
+
+                guard self.username != attributes.initiator else {
+                    return
+                }
+
+                let identity = attributes.responder
+
+                try self.makeJoinOperation(channel: channel).startSync().getResult()
+
+                let card = try VirgilHelper.shared.getCard(identity: identity).startSync().getResult()
+                try CoreDataHelper.shared.createChannel(name: identity, cards: [card])
+
+                NotificationCenter.default.post(
+                    name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                    object: self,
+                    userInfo: [:])
+            } catch {
                 Log.error("\(error)")
             }
         }
@@ -75,21 +93,23 @@ extension TwilioHelper: TwilioChatClientDelegate {
             return
         }
 
-        // FIXME
-        let message = try! MessageProcessor.process(message: message, from: channel)
+        self.queue.async {
+            // FIXME
+            let message = try! MessageProcessor.process(message: message, from: channel)
 
-        let notification: String
+            let notification: String
 
-        if let currentChannel = self.currentChannel,
-            self.getName(of: channel) == self.getName(of: currentChannel) {
-                notification = Notifications.MessageAddedToSelectedChannel.rawValue
-        } else {
-            notification = Notifications.MessageAdded.rawValue
+            if let currentChannel = self.currentChannel,
+                self.getName(of: channel) == self.getName(of: currentChannel) {
+                    notification = Notifications.MessageAddedToSelectedChannel.rawValue
+            } else {
+                notification = Notifications.MessageAdded.rawValue
+            }
+
+            NotificationCenter.default.post(name: Notification.Name(rawValue: notification),
+                                            object: self,
+                                            userInfo: [NotificationKeys.Message.rawValue: message])
         }
-
-        NotificationCenter.default.post(name: Notification.Name(rawValue: notification),
-                                        object: self,
-                                        userInfo: [NotificationKeys.Message.rawValue: message])
     }
 }
 

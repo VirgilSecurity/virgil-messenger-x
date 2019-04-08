@@ -23,22 +23,17 @@ class TwilioHelper: NSObject {
     let queue = DispatchQueue(label: "TwilioHelper")
     private let device: String
 
-    enum TwilioHelperError: Int, Error {
+    enum TwilioHelperError: Error {
         case initFailed
         case initChannelsFailed
         case initUsersFailed
         case joiningFailed
+        case missingChannelAttributes
     }
 
     enum MediaType: String {
         case photo = "image/bmp"
         case audio = "audio/mp4"
-    }
-
-    enum Keys: String {
-        case initiator
-        case responder
-        case type
     }
 
     static func authorize(username: String, device: String) {
@@ -119,26 +114,15 @@ class TwilioHelper: NSObject {
     }
     
     func getCompanion(of channel: TCHChannel) -> String {
-        guard let attributes = channel.attributes(),
-            let initiator = attributes[Keys.initiator.rawValue] as? String,
-            let responder = attributes[Keys.responder.rawValue] as? String
-            else {
-                Log.error("Missing channel attributes")
-                return "Error name"
+        guard let attributes = try? self.getAttributes(of: channel) else {
+            Log.error("Missing channel attributes")
+            return "Error name"
         }
 
-        let result = initiator == self.username ? responder : initiator
-        return result
-    }
+        let initiator = attributes.initiator
+        let responder = attributes.responder
 
-    func getType(of channel: TCHChannel) -> ChannelType {
-        guard let attributes = channel.attributes(),
-            let rawType = attributes[Keys.type.rawValue] as? String,
-            let type = ChannelType(rawValue: rawType) else {
-                return .single
-        }
-
-        return type
+        return initiator == self.username ? responder : initiator
     }
 }
 

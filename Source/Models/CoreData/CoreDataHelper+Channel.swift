@@ -16,7 +16,7 @@ extension CoreDataHelper {
             do {
                 let card: String = try operation.findDependencyResult()
 
-                self.createChannel(name: identity, cards: [card])
+                try self.createChannel(name: identity, cards: [card])
 
                 completion((), nil)
             }
@@ -26,15 +26,13 @@ extension CoreDataHelper {
         }
     }
 
-    func createChannel(type: ChannelType = .single, name: String, cards: [String]) {
+    func createChannel(type: ChannelType = .single, name: String, cards: [String]) throws {
         guard let account = self.currentAccount else {
-            Log.error("Core Data: missing current account")
-            return
+            throw CoreDataHelperError.nilCurrentAccount
         }
 
         guard let entity = NSEntityDescription.entity(forEntityName: Entities.channel.rawValue, in: self.managedContext) else {
-            Log.error("Core Data: entity not found: " + Entities.channel.rawValue)
-            return
+            throw CoreDataHelperError.entityNotFound
         }
 
         let channel = Channel(entity: entity, insertInto: self.managedContext)
