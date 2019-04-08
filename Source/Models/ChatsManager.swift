@@ -116,16 +116,21 @@ public enum ChatsManager {
                     }
 
                     twilioChannel.messages?.getLastWithCount(toLoad) { result, messages in
-                        if let error = result.error {
-                            completion(nil, error)
+                        guard let messages = messages, result.isSuccessful() else {
+                            completion(nil, result.error)
                             return
                         }
 
-                        // FIXME
-                        for message in messages! {
-                            _ = try! MessageProcessor.process(message: message, from: twilioChannel)
+                        do {
+                            for message in messages {
+                                _ = try MessageProcessor.process(message: message, from: twilioChannel)
+                            }
+
                             completion((), nil)
+                        } catch {
+                            completion(nil, error)
                         }
+
                     }
                 }
             } catch {

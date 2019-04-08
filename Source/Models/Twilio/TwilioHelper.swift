@@ -110,11 +110,7 @@ class TwilioHelper: NSObject {
 
                 for channel in channels.subscribedChannels() {
                     // FIXME: Huge Twilio bug!!!
-                    while true {
-                        if channel.attributes() != nil {
-                            break
-                        }
-                    }
+                    while channel.messages == nil || channel.attributes() == nil { sleep(1) }
 
                     Log.debug(String(describing: channel.attributes()))
                 }
