@@ -95,20 +95,24 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
         self.queue.async {
             // FIXME
-            let message = try! MessageProcessor.process(message: message, from: channel)
+            do {
+                let message = try MessageProcessor.process(message: message, from: channel)
 
-            let notification: String
+                let notification: String
 
-            if let currentChannel = self.currentChannel,
-                self.getName(of: channel) == self.getName(of: currentChannel) {
-                    notification = Notifications.MessageAddedToSelectedChannel.rawValue
-            } else {
-                notification = Notifications.MessageAdded.rawValue
+                if let currentChannel = self.currentChannel,
+                    self.getName(of: channel) == self.getName(of: currentChannel) {
+                        notification = Notifications.MessageAddedToSelectedChannel.rawValue
+                } else {
+                    notification = Notifications.MessageAdded.rawValue
+                }
+
+                NotificationCenter.default.post(name: Notification.Name(rawValue: notification),
+                                                object: self,
+                                                userInfo: [NotificationKeys.Message.rawValue: message])
+            } catch {
+                Log.error("\(error)")
             }
-
-            NotificationCenter.default.post(name: Notification.Name(rawValue: notification),
-                                            object: self,
-                                            userInfo: [NotificationKeys.Message.rawValue: message])
         }
     }
 }

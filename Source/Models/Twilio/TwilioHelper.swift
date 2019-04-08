@@ -108,6 +108,17 @@ class TwilioHelper: NSObject {
 
                 Log.debug("Successfully initialized Twilio")
 
+                for channel in channels.subscribedChannels() {
+                    // FIXME: Huge Twilio bug!!!
+                    while true {
+                        if channel.attributes() != nil {
+                            break
+                        }
+                    }
+
+                    Log.debug(String(describing: channel.attributes()))
+                }
+
                 completion(nil)
             }
         }
