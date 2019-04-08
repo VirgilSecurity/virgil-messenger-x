@@ -32,18 +32,6 @@ extension TwilioHelper {
         }
     }
 
-    func makeJoinOperation() -> CallbackOperation<Void> {
-        return CallbackOperation { operation, completion in
-            do {
-                let channel: TCHChannel = try operation.findDependencyResult()
-
-                self.makeJoinOperation(channel: channel).start(completion: completion)
-            } catch {
-                completion(nil, error)
-            }
-        }
-    }
-
     private func makeCreateChannelOperation(with options: [String: Any]) -> CallbackOperation<TCHChannel> {
         return CallbackOperation { _, completion in
             self.channels.createChannel(options: options) { result, channel in
@@ -86,17 +74,15 @@ extension TwilioHelper {
             Log.debug("\(options)")
             Log.debug("\(try! attributes.export())")
 
+            // FIXME join operation
             let createChannelOperation = self.makeCreateChannelOperation(with: options)
             let inviteOperation = self.makeInviteOperation(identity: identity)
-            let joinOperation = self.makeJoinOperation()
             let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
             inviteOperation.addDependency(createChannelOperation)
-            joinOperation.addDependency(createChannelOperation)
 
             let operations = [createChannelOperation,
-                              inviteOperation,
-                              joinOperation]
+                              inviteOperation]
 
             operations.forEach {
                 completionOperation.addDependency($0)

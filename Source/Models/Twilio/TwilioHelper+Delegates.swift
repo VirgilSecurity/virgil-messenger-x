@@ -65,15 +65,15 @@ extension TwilioHelper: TwilioChatClientDelegate {
     func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
         self.queue.async {
             do {
+                try self.makeJoinOperation(channel: channel).startSync().getResult()
+
                 let attributes = try self.getAttributes(of: channel)
 
-                guard self.username != attributes.initiator else {
+                let identity = attributes.initiator
+
+                guard identity != self.username else {
                     return
                 }
-
-                let identity = attributes.responder
-
-                try self.makeJoinOperation(channel: channel).startSync().getResult()
 
                 let card = try VirgilHelper.shared.getCard(identity: identity).startSync().getResult()
                 try CoreDataHelper.shared.createChannel(name: identity, cards: [card])

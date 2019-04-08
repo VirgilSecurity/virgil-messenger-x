@@ -84,6 +84,9 @@ public enum ChatsManager {
             do {
                 if twilioChannel.status == TCHChannelStatus.invited {
                     try TwilioHelper.shared.makeJoinOperation(channel: twilioChannel).startSync().getResult()
+                    let name = TwilioHelper.shared.getName(of: twilioChannel)
+                    let card = try VirgilHelper.shared.getCard(identity: name).startSync().getResult()
+                    try CoreDataHelper.shared.createChannel(name: name, cards: [card])
                 }
 
                 let name = TwilioHelper.shared.getName(of: twilioChannel)
