@@ -16,7 +16,7 @@ class TwilioHelper: NSObject {
     private(set) var client: TwilioChatClient!
     private(set) var channels: TCHChannels!
     private(set) var users: TCHUsers!
-    private(set) var currentChannel: TCHChannel!
+    private(set) var currentChannel: TCHChannel?
     private(set) var accessManager: TwilioAccessManager!
 
     let username: String

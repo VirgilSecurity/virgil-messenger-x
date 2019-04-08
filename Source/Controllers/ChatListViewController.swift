@@ -63,7 +63,9 @@ class ChatListViewController: ViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // FIXME
-//        TwilioHelper.shared.deselectChannel()
+        if self.title == "Chats" {
+            TwilioHelper.shared.deselectChannel()
+        }
         noChatsView.isHidden = CoreDataHelper.shared.currentAccount?.channel?.count ?? 0 > 0 ? true : false
         self.tableView.reloadData()
     }

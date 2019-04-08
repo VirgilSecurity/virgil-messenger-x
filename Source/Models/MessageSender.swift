@@ -59,7 +59,7 @@ extension MessageSender {
             self.updateMessage(message, status: .sending)
             self.messageStatus(ciphertext: ciphertext, message: message)
         case .sending:
-            if let messages = TwilioHelper.shared.currentChannel.messages {
+            if let messages = TwilioHelper.shared.currentChannel?.messages {
                 let options = TCHMessageOptions().withBody(ciphertext)
                 Log.debug("sending \(ciphertext)")
                 messages.sendMessage(with: options) { result, msg in
@@ -85,7 +85,7 @@ extension MessageSender {
             self.updateMessage(message, status: .sending)
             self.messageStatus(of: message, with: cipherphoto)
         case .sending:
-            if let messages = TwilioHelper.shared.currentChannel.messages {
+            if let messages = TwilioHelper.shared.currentChannel?.messages {
                 let inputStream = InputStream(data: cipherphoto)
                 let options = TCHMessageOptions().withMediaStream(inputStream,
                                                                   contentType: TwilioHelper.MediaType.photo.rawValue,
@@ -132,7 +132,7 @@ extension MessageSender {
             self.updateMessage(message, status: .sending)
             self.messageStatus(of: message, with: cipherdata)
         case .sending:
-            if let messages = TwilioHelper.shared.currentChannel.messages {
+            if let messages = TwilioHelper.shared.currentChannel?.messages {
                 let inputStream = InputStream(data: cipherdata)
                 let options = TCHMessageOptions().withMediaStream(inputStream,
                                                                   contentType: TwilioHelper.MediaType.audio.rawValue,
