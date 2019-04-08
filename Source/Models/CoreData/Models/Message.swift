@@ -12,16 +12,12 @@ import AVFoundation
 extension Message {
     public func exportAsUIModel(withId id: Int) -> DemoMessageModelProtocol {
         let corruptedMessage = {
-            MessageFactory.createTextMessageModel("\(id)",
-                                                  text: "Corrupted Message",
-                                                  isIncoming: self.isIncoming,
-                                                  status: .failed,
-                                                  date: Date())
+            MessageFactory.createCorruptedMessageModel(uid: id, isIncoming: self.isIncoming)
         }
 
         guard let date = self.date,
             let type = self.type else {
-                return corruptedMessage()
+                return MessageFactory.createCorruptedMessageModel(uid: id, isIncoming: self.isIncoming)
         }
 
         let resultMessage: DemoMessageModelProtocol
@@ -32,7 +28,7 @@ extension Message {
                 return corruptedMessage()
             }
 
-            resultMessage = MessageFactory.createTextMessageModel("\(id)",
+            resultMessage = MessageFactory.createTextMessageModel(uid: id,
                                                                   text: body,
                                                                   isIncoming: self.isIncoming,
                                                                   status: .success,
@@ -42,7 +38,7 @@ extension Message {
                 return corruptedMessage()
             }
 
-            resultMessage = MessageFactory.createPhotoMessageModel("\(id)",
+            resultMessage = MessageFactory.createPhotoMessageModel(uid: id,
                                                                    image: image,
                                                                    size: image.size,
                                                                    isIncoming: self.isIncoming,
@@ -53,7 +49,7 @@ extension Message {
                 return corruptedMessage()
             }
 
-            resultMessage = MessageFactory.createAudioMessageModel("\(id)",
+            resultMessage = MessageFactory.createAudioMessageModel(uid: id,
                                                                    audio: media,
                                                                    duration: duration,
                                                                    isIncoming: self.isIncoming,

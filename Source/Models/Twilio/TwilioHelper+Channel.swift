@@ -59,14 +59,7 @@ extension TwilioHelper {
                         return
                     }
 
-                    channel.join { result in
-                        guard result.isSuccessful() else {
-                            completion(nil, TwilioHelperError.joiningFailed)
-                            return
-                        }
-
-                        completion((), nil)
-                    }
+                    completion((), nil)
                 }
             }
         }
@@ -111,72 +104,37 @@ extension TwilioHelper {
         }
     }
 
-    func join(channel: TCHChannel) {
-        if channel.status == TCHChannelStatus.invited {
-            channel.join() { channelResult in
-                if channelResult.isSuccessful(), let messages = channel.messages {
-                    guard let type = self.getType(of: channel) else {
-                        return
-                    }
-                    Log.debug("Successfully accepted invite to \(type.rawValue) channel")
-
-                    switch type {
-                    case .single:
-                        let identity = self.getCompanion(of: channel)
-                        let card = try! VirgilHelper.shared.getCard(identity: identity).startSync().getResult()
-                        self.joinChannelHelper(name: identity, messages: messages, type: type, cards: [card])
-                    case .group:
-                        guard let name = channel.friendlyName else {
-                            Log.error("Missing global name of channel")
-                            return
-                        }
-                        channel.members?.members { result, membersPaginator in
-                            guard result.isSuccessful(), let membersPaginator = membersPaginator else {
-                                Log.error("Fetching members failed with: \(result.error?.localizedDescription ?? "unknown error")")
-                                return
-                            }
-                            var cards: [String] = []
-                            for member in membersPaginator.items() {
-                                guard let identity = member.identity else {
-                                    Log.error("Member identity is unaccessable")
-                                    return
-                                }
-
-                                let card = try! VirgilHelper.shared.getCard(identity: identity).startSync().getResult()
-                                cards.append(card)
-                            }
-
-                            self.joinChannelHelper(name: name, messages: messages, type: type, cards: cards)
-                        }
-                    }
-                } else {
-                    Log.error("Accepting invite to channel failed")
+    func makeJoinOperation(channel: TCHChannel) -> CallbackOperation<Void> {
+        return CallbackOperation<Void> { _, completion in
+            channel.join() { result in
+                guard result.error == nil else {
+                    completion(nil, result.error)
+                    return
                 }
+
+                let type = self.getType(of: channel)
+
+                switch type {
+                case .single:
+                    let identity = self.getCompanion(of: channel)
+                    let card = try! VirgilHelper.shared.getCard(identity: identity).startSync().getResult()
+
+                    CoreDataHelper.shared.createChannel(type: type, name: identity, cards: [card])
+                case .group:
+                    // TODO
+                    break
+                }
+
+                NotificationCenter.default.post(
+                    name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                    object: self,
+                    userInfo: [:])
             }
         }
     }
 
-    func joinChannelHelper(name: String, messages: TCHMessages, type: ChannelType, cards: [String]) {
-        CoreDataHelper.shared.createChannel(type: type, name: name, cards: cards)
-
-//
-//        self.setLastMessage(of: messages, channel: channelCore) {
-//            NotificationCenter.default.post(
-//                name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-//                object: self,
-//                userInfo: [:])
-//        }
-
-        NotificationCenter.default.post(
-            name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-            object: self,
-            userInfo: [:])
-    }
-
-    func getName(of channel: TCHChannel) -> String? {
-        guard let type = self.getType(of: channel) else {
-            return "Error name"
-        }
+    func getName(of channel: TCHChannel) -> String {
+        let type = self.getType(of: channel)
 
         switch type {
         case .single:

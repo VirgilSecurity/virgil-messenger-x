@@ -103,21 +103,23 @@ extension CoreDataHelper {
     func setLastMessage(for channel: Channel) {
         if let messages = channel.message,
             let message = messages.lastObject as? Message,
-            let date = message.date {
-
-            switch message.type {
-            case MessageType.text.rawValue:
+            let date = message.date,
+            let rawType = message.type,
+            let type = MessageType(rawValue: rawType)
+        {
+            switch type {
+            case .text:
                 guard let body = message.body else {
                     Log.error("Missing message body")
                     return
                 }
+
                 channel.lastMessagesBody = body
-            case MessageType.photo.rawValue, MessageType.audio.rawValue:
+            case .photo, .audio:
                 channel.lastMessagesBody = self.lastMessageIdentifier[message.type!] ?? "unknown media message type"
-            default:
-                Log.error("Unknown message type")
-            }
+
             channel.lastMessagesDate = date
+            }
         }
     }
 }

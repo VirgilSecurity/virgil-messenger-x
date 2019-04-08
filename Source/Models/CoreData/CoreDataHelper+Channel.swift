@@ -51,12 +51,14 @@ extension CoreDataHelper {
         self.appDelegate.saveContext()
     }
 
-    func loadChannel(withName username: String) -> Bool {
-        if let channel = self.getChannel(withName: username) {
-            self.setCurrent(channel: channel)
-            return true
+    func loadChannel(withName username: String) -> Channel? {
+        guard let channel = self.getChannel(withName: username) else {
+            return nil
         }
-        return false
+
+        self.setCurrent(channel: channel)
+
+        return channel
     }
 
     func getChannel(withName username: String) -> Channel? {

@@ -40,47 +40,18 @@ class DataSource: ChatDataSourceProtocol {
         self.count = count
 
         self.slidingWindow = SlidingDataSource(count: count, pageSize: pageSize) { [weak self] (messageNumber, messages) -> ChatItemProtocol in
-            let corruptedMessage = {
-                return MessageFactory.createTextMessageModel("\(0)", text: "Corrupted Message", isIncoming: false,
-                                                             status: .success, date: Date())
-            }
-            guard let sSelf = self,
+            self?.nextMessageId += 1
+            let id = self?.nextMessageId ?? 0
+
+            guard self != nil,
                 let anyMessage = messages[safe: messageNumber],
-                let message = anyMessage as? Message,
-                let date = message.date,
-                let type = message.type else {
-                    return corruptedMessage()
+                let message = anyMessage as? Message else {
+                    return MessageFactory.createCorruptedMessageModel(uid: id)
             }
-            let resultMessage: DemoMessageModelProtocol
 
-            switch type {
-            case CoreDataHelper.MessageType.text.rawValue:
-                guard let body = message.body else {
-                    return corruptedMessage()
-                }
-                resultMessage = MessageFactory.createTextMessageModel("\(sSelf.nextMessageId)", text: body,
-                                                                      isIncoming: message.isIncoming, status: .success,
-                                                                      date: date)
-            case CoreDataHelper.MessageType.photo.rawValue:
-                guard let media = message.media, let image = UIImage(data: media) else {
-                    return corruptedMessage()
-                }
-                resultMessage = MessageFactory.createPhotoMessageModel("\(sSelf.nextMessageId)", image: image,
-                                                                       size: image.size, isIncoming: message.isIncoming,
-                                                                       status: .success, date: date)
-            case CoreDataHelper.MessageType.audio.rawValue:
-                guard let media = message.media, let duration = try? AVAudioPlayer(data: media).duration else {
-                    return corruptedMessage()
-                }
-                resultMessage = MessageFactory.createAudioMessageModel("\(sSelf.nextMessageId)", audio: media, duration: duration,
-                                                                       isIncoming: message.isIncoming, status: .success, date: date)
-            default:
-                return corruptedMessage()
-            }
-            sSelf.nextMessageId += 1
-
-            return resultMessage
+            return message.exportAsUIModel(withId: id)
         }
+
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
@@ -140,33 +111,49 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addTextMessage(_ text: String) {
-        let uid = "\(self.nextMessageId)"
         self.nextMessageId += 1
-        let message = MessageFactory.createTextMessageModel(uid, text: text, isIncoming: false, status: .sending, date: Date())
+        let id = self.nextMessageId
+        let message = MessageFactory.createTextMessageModel(uid: id,
+                                                            text: text,
+                                                            isIncoming: false,
+                                                            status: .sending)
         self.messageSender.sendMessage(message)
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
     func addPhotoMessage(_ image: UIImage) {
-        let uid = "\(self.nextMessageId)"
         self.nextMessageId += 1
-        let message = MessageFactory.createPhotoMessageModel(uid, image: image, size: image.size,
-                                                             isIncoming: false, status: .sending, date: Date())
+        let id = self.nextMessageId
+        let message = MessageFactory.createPhotoMessageModel(uid: id,
+                                                             image: image,
+                                                             size: image.size,
+                                                             isIncoming: false,
+                                                             status: .sending)
         self.messageSender.sendMessage(message)
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
     func addAudioMessage(_ audio: Data) {
-        guard let duration = try? AVAudioPlayer(data: audio).duration else {
+        self.nextMessageId += 1
+        let id = self.nextMessageId
+
+        let message: DemoMessageModelProtocol
+
+        // FIXME
+        if let duration = try? AVAudioPlayer(data: audio).duration {
+            message = MessageFactory.createAudioMessageModel(uid: id,
+                                                             audio: audio,
+                                                             duration: duration,
+                                                             isIncoming: false,
+                                                             status: .sending)
+        } else {
             Log.error("Getting audio duration failed")
+            message = MessageFactory.createCorruptedMessageModel(uid: id)
             return
         }
-        let uid = "\(self.nextMessageId)"
-        self.nextMessageId += 1
-        let message = MessageFactory.createAudioMessageModel(uid, audio: audio, duration: duration, isIncoming: false,
-                                                             status: .sending, date: Date())
+
         self.messageSender.sendMessage(message)
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)

@@ -19,6 +19,7 @@ class StartViewController: ViewController {
 
         guard self.checkReachability() else {
             UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+            self.goToLogin()
             return
         }
 

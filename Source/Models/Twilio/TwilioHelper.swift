@@ -113,10 +113,6 @@ class TwilioHelper: NSObject {
 
                 Log.debug("Successfully initialized Twilio")
 
-                for channel in channels.subscribedChannels() {
-                    self.join(channel: channel)
-                }
-
                 completion(nil)
             }
         }
@@ -135,22 +131,14 @@ class TwilioHelper: NSObject {
         return result
     }
 
-    func getType(of channel: TCHChannel) -> ChannelType? {
+    func getType(of channel: TCHChannel) -> ChannelType {
         guard let attributes = channel.attributes(),
-            let type = attributes[Keys.type.rawValue] as? String else {
-                Log.error("Missing channel attributes")
-                return nil
+            let rawType = attributes[Keys.type.rawValue] as? String,
+            let type = ChannelType(rawValue: rawType) else {
+                return .single
         }
 
-        switch type {
-        case ChannelType.single.rawValue:
-            return .single
-        case ChannelType.group.rawValue:
-            return .group
-        default:
-            Log.error("Unknown twilio channel type")
-            return nil
-        }
+        return type
     }
 }
 

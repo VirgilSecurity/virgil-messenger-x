@@ -57,37 +57,47 @@ public enum ChatsManager {
         return CallbackOperation<Void> { _, completion in
             let twilioChannels = TwilioHelper.shared.channels.subscribedChannels()
 
+            guard twilioChannels.count > 0 else {
+                completion((), nil)
+                return
+            }
+
             var operations: [CallbackOperation<Void>] = []
 
             for twilioChannel in twilioChannels {
-                guard let name = TwilioHelper.shared.getName(of: twilioChannel),
-                    let coreChannel = CoreDataHelper.shared.getChannel(withName: name) else {
-                        completion(nil, NSError())
-                        return
-                }
-
-                let operation = self.makeUpdateChannelOperation(coreChannel: coreChannel, twilioChannel: twilioChannel)
+                let operation = self.makeUpdateChannelOperation(twilioChannel: twilioChannel)
                 operations.append(operation)
-
-                let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-
-                operations.forEach {
-                    completionOperation.addDependency($0)
-                }
-
-                let queue = OperationQueue()
-                queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
             }
+
+            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+            operations.forEach {
+                completionOperation.addDependency($0)
+            }
+
+            let queue = OperationQueue()
+            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
         }
     }
 
     // FIXME
-    static func makeUpdateChannelOperation(coreChannel: Channel, twilioChannel: TCHChannel) -> CallbackOperation<Void> {
+    static func makeUpdateChannelOperation(twilioChannel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation<Void> { _, completion in
             do {
+                if twilioChannel.status == TCHChannelStatus.invited {
+                    try TwilioHelper.shared.makeJoinOperation(channel: twilioChannel).startSync().getResult()
+                }
+
+                let name = TwilioHelper.shared.getName(of: twilioChannel)
+
+                guard let coreChannel = CoreDataHelper.shared.getChannel(withName: name) else {
+                    throw NSError()
+                }
+
                 guard let count = coreChannel.message?.count else {
                     throw NSError()
                 }
+
                 let coreCount = UInt(count)
 
                 twilioChannel.getMessagesCount { result, twilioCount in
@@ -99,6 +109,7 @@ public enum ChatsManager {
                     let toLoad = twilioCount - coreCount
 
                     guard toLoad > 0 else {
+                        CoreDataHelper.shared.setLastMessage(for: coreChannel)
                         completion((), nil)
                         return
                     }

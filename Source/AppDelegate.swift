@@ -31,7 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     context.delete(object)
                 }
             }
-            try? KeyStorage().reset()
 
             UserDefaults.standard.set("happened", forKey: "first_launch")
             UserDefaults.standard.synchronize()

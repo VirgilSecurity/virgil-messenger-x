@@ -63,15 +63,11 @@ extension TwilioHelper: TwilioChatClientDelegate {
     }
 
     func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
-        Log.debug("Channel added")
-        self.join(channel: channel)
-    }
-
-    func chatClient(_ client: TwilioChatClient, channelDeleted channel: TCHChannel) {
-        NotificationCenter.default.post(
-            name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-            object: self,
-            userInfo: [:])
+        self.makeJoinOperation(channel: channel).start { _, error in
+            if let error = error {
+                Log.error("\(error)")
+            }
+        }
     }
 
     func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {

@@ -14,9 +14,9 @@ import AVFoundation
 class MessageProcessor {
     static func process(message: TCHMessage, from twilioChannel: TCHChannel) throws -> Message {
         let isIncoming = message.author == TwilioHelper.shared.username ? false : true
+        let name = TwilioHelper.shared.getName(of: twilioChannel)
 
         guard let date = message.dateUpdatedAsDate,
-            let name = TwilioHelper.shared.getName(of: twilioChannel),
             // FIXME
             let channel = CoreDataHelper.shared.getChannel(withName: name) else {
                 throw NSError()

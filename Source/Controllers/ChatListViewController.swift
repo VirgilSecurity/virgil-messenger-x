@@ -181,11 +181,11 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
 extension ChatListViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         if let username = (cell as! ChatListCell).usernameLabel.text {
-            TwilioHelper.shared.setChannel(withName: username)
-            self.view.isUserInteractionEnabled = false
 
-            guard CoreDataHelper.shared.loadChannel(withName: username),
-                let channel = CoreDataHelper.shared.currentChannel else {
+            TwilioHelper.shared.setChannel(withName: username)
+
+            guard let channel = CoreDataHelper.shared.loadChannel(withName: username),
+                let count = channel.message?.count else {
                     Log.error("Channel do not exist in Core Data")
                     return
             }
@@ -193,17 +193,9 @@ extension ChatListViewController: CellTapDelegate {
             // FIXME
             VirgilHelper.shared.setChannelCard(channel.cards.first!)
 
-            TwilioHelper.shared.currentChannel.getMessagesCount { result, count in
-                guard result.isSuccessful() else {
-                    Log.error("Can't get Twilio messages count")
-                    return
-                }
-                self.currentChannelMessegesCount = Int(count)
-                DispatchQueue.main.async {
-                    defer { self.view.isUserInteractionEnabled = true }
-                    self.performSegue(withIdentifier: "goToChat", sender: self)
-                }
-            }
+            self.currentChannelMessegesCount = count
+
+            self.performSegue(withIdentifier: "goToChat", sender: self)
         }
     }
 

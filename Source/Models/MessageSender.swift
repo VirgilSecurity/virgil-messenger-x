@@ -7,7 +7,7 @@ public protocol DemoMessageModelProtocol: MessageModelProtocol {
 }
 
 public class MessageSender {
-    public var onMessageChanged: ((_ message: DemoMessageModelProtocol) -> ())?
+    public var onMessageChanged: ((_ message: DemoMessageModelProtocol) -> Void)?
     
     public func sendMessage(_ message: DemoMessageModelProtocol) {
         switch message {
@@ -137,14 +137,9 @@ extension MessageSender {
                 let options = TCHMessageOptions().withMediaStream(inputStream,
                                                                   contentType: TwilioHelper.MediaType.audio.rawValue,
                                                                   defaultFilename: "audio.mp4",
-                                                                  onStarted: {
-                                                                    Log.debug("Media upload started")
-                },
-                                                                  onProgress: { (bytes) in
-                                                                    Log.debug("Media upload progress: \(bytes)")
-                }) { (mediaSid) in
-                    Log.debug("Media upload completed")
-                }
+                                                                  onStarted: { Log.debug("Media upload started") },
+                                                                  onProgress: { Log.debug("Media upload progress: \($0)") },
+                                                                  onCompleted: { _ in Log.debug("Media upload completed") })
                 Log.debug("sending audio")
                 messages.sendMessage(with: options) { result, msg in
                     if result.isSuccessful() {

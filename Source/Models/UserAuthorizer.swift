@@ -54,13 +54,9 @@ public class UserAuthorizer {
 
                 UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
-                DispatchQueue.main.async {
-                    completion(nil)
-                }
+                completion(nil)
             } catch {
-                DispatchQueue.main.async {
-                    completion(error)
-                }
+                completion(error)
             }
         }
     }
