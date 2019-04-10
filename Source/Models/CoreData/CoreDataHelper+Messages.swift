@@ -117,9 +117,9 @@ extension CoreDataHelper {
                 channel.lastMessagesBody = body
             case .photo, .audio:
                 channel.lastMessagesBody = self.lastMessageIdentifier[message.type!] ?? "unknown media message type"
+            }
 
             channel.lastMessagesDate = date
-            }
         }
     }
 }

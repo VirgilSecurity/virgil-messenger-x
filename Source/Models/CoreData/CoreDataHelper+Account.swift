@@ -40,6 +40,8 @@ extension CoreDataHelper {
 
         self.setCurrent(account: accountToLoad)
 
+        self.getChannels().forEach { self.setLastMessage(for: $0) }
+
         return card
     }
 
