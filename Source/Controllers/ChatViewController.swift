@@ -71,7 +71,7 @@ class ChatViewController: BaseChatViewController {
         let titleButton = UIButton(type: .custom)
         titleButton.frame = CGRect(x: 0, y: 0, width: 200, height: 21)
         titleButton.tintColor = .white
-        titleButton.setTitle("Updating", for: .normal)
+//        titleButton.setTitle("Updating", for: .normal)
         titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
 
 //        let titleView = UIStackView(arrangedSubviews: [indicator, titleButton])
@@ -338,17 +338,5 @@ extension ChatViewController: PhotoObserverProtocol {
         } else {
             HUD.flash(.success)
         }
-    }
-}
-
-extension ChatViewController: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let text = textField.text else { return true }
-        if string.rangeOfCharacter(from: ChatConstants.characterSet.inverted) != nil {
-            Log.debug("string contains special characters")
-            return false
-        }
-        let newLength = text.count + string.count - range.length
-        return newLength <= ChatConstants.limitLength
     }
 }

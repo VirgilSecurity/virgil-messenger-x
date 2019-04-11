@@ -21,6 +21,8 @@
 		1627723F203C5FB00086127C /* CoreDataHelper+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */; };
 		16277242203C60DB0086127C /* CoreDataHelper+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */; };
 		16277244203C62040086127C /* CoreDataHelper+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277243203C62040086127C /* CoreDataHelper+Messages.swift */; };
+		162E22E5225F3CA100AAE7C4 /* NewMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22E4225F3CA100AAE7C4 /* NewMessageViewController.swift */; };
+		162E22E7225F76BF00AAE7C4 /* NewMessageTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22E6225F76BF00AAE7C4 /* NewMessageTableViewController.swift */; };
 		163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */; };
 		1644C07920B720F000073D99 /* View.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1644C07820B720F000073D99 /* View.xcassets */; };
 		1644C07B20B85AC500073D99 /* DemoPhotosChatInputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1644C07A20B85AC500073D99 /* DemoPhotosChatInputItem.swift */; };
@@ -74,6 +76,7 @@
 		16D70732214C061C00452A16 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D70731214C061C00452A16 /* SystemConfiguration.framework */; };
 		16D8B0EA223A6FD200D7FA67 /* UserAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */; };
 		16D8B0EF223A8FCF00D7FA67 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D8B0EE223A8FCF00D7FA67 /* Client.swift */; };
+		16EF7146225E2E3C00854DBF /* NewMessage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16EF7145225E2E3C00854DBF /* NewMessage.storyboard */; };
 		16F30D4B1FDAE190006C3DEB /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */; };
 		16F30D4D1FDAE6E6006C3DEB /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */; };
 		16F30D4F1FDAE91D006C3DEB /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */; };
@@ -154,6 +157,8 @@
 		1627E4CF20BD522400D0AF36 /* VirgilCryptoAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCryptoAPI.framework; path = Carthage/Build/iOS/VirgilCryptoAPI.framework; sourceTree = "<group>"; };
 		162D2B462240F94300CE7FC2 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Frameworks/Crashlytics.framework; sourceTree = "<group>"; };
 		162D2B472240F94300CE7FC2 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Frameworks/Fabric.framework; sourceTree = "<group>"; };
+		162E22E4225F3CA100AAE7C4 /* NewMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageViewController.swift; sourceTree = "<group>"; };
+		162E22E6225F76BF00AAE7C4 /* NewMessageTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageTableViewController.swift; sourceTree = "<group>"; };
 		163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewZeroPaddings.swift; sourceTree = "<group>"; };
 		1644C07820B720F000073D99 /* View.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = View.xcassets; sourceTree = "<group>"; };
 		1644C07A20B85AC500073D99 /* DemoPhotosChatInputItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoPhotosChatInputItem.swift; sourceTree = "<group>"; };
@@ -199,6 +204,7 @@
 		16D70731214C061C00452A16 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthorizer.swift; sourceTree = "<group>"; };
 		16D8B0EE223A8FCF00D7FA67 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
+		16EF7145225E2E3C00854DBF /* NewMessage.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NewMessage.storyboard; sourceTree = "<group>"; };
 		16F30D4A1FDAE190006C3DEB /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		16F30D4C1FDAE6E6006C3DEB /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		16F30D4E1FDAE91D006C3DEB /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
@@ -399,6 +405,7 @@
 				16D6CB391FDFEECC00302A05 /* Registration.storyboard */,
 				16CC9B7A21552D5800935AEC /* TabBar.storyboard */,
 				423BDA781F97600A00C3EE9B /* ChatList.storyboard */,
+				16EF7145225E2E3C00854DBF /* NewMessage.storyboard */,
 				429228EA1F96405800DCECDF /* Chat.storyboard */,
 				16CA510F1FC5D9960042AF9D /* Settings.storyboard */,
 			);
@@ -452,6 +459,8 @@
 				16B69E061FA9D2CA00FE8A8D /* Authentication */,
 				16CA51011FC45E9A0042AF9D /* StartViewController.swift */,
 				423BDA7B1F97601700C3EE9B /* ChatListViewController.swift */,
+				162E22E4225F3CA100AAE7C4 /* NewMessageViewController.swift */,
+				162E22E6225F76BF00AAE7C4 /* NewMessageTableViewController.swift */,
 				4280C0E21F97364F00075B3A /* ChatViewController.swift */,
 				16CA51121FC5DA3B0042AF9D /* SettingsViewController.swift */,
 			);
@@ -695,6 +704,7 @@
 				16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */,
 				16CC9B7B21552D5800935AEC /* TabBar.storyboard in Resources */,
 				423BDA7A1F97600A00C3EE9B /* ChatList.storyboard in Resources */,
+				16EF7146225E2E3C00854DBF /* NewMessage.storyboard in Resources */,
 				16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */,
 				1644C07920B720F000073D99 /* View.xcassets in Resources */,
 				429228BD1F96261000DCECDF /* Assets.xcassets in Resources */,
@@ -725,7 +735,7 @@
 		};
 		1693678E2248FA2F00EF9A42 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -766,6 +776,7 @@
 				163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */,
 				166D3E5E1FB495F90032BAAD /* CoreDataHelper.swift in Sources */,
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
+				162E22E5225F3CA100AAE7C4 /* NewMessageViewController.swift in Sources */,
 				16013C7B20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift in Sources */,
 				164E173020AAEECD00AB1AAD /* DemoAudioMessageModel.swift in Sources */,
 				161BFB11225745CD00899C6F /* Message.swift in Sources */,
@@ -813,6 +824,7 @@
 				168E54CC22395DDC00B6E822 /* ColorPair.swift in Sources */,
 				16FE75F5224A479600B545AF /* VirgilHelper+Encryption.swift in Sources */,
 				1627723F203C5FB00086127C /* CoreDataHelper+Account.swift in Sources */,
+				162E22E7225F76BF00AAE7C4 /* NewMessageTableViewController.swift in Sources */,
 				16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */,
 				16CA51021FC45E9A0042AF9D /* StartViewController.swift in Sources */,
 				429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */,

@@ -47,7 +47,6 @@ class ChatListViewController: ViewController {
                                 forCellReuseIdentifier: ChatListCell.name)
         self.tableView.rowHeight = 94
         self.tableView.tableFooterView = UIView(frame: .zero)
-        self.tableView.backgroundColor = UIColor(rgb: 0x2B303B)
         self.tableView.dataSource = self
 
         NotificationCenter.default.addObserver(self,
@@ -82,53 +81,7 @@ class ChatListViewController: ViewController {
     }
 
     @IBAction func didTapAdd(_ sender: Any) {
-        guard self.checkReachability() else {
-            return
-        }
-
-        let alert = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
-
-        alert.addTextField {
-            $0.placeholder = "Username"
-            $0.delegate = self
-            $0.keyboardAppearance = .dark
-        }
-
-        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
-            guard let username = alert.textFields?.first?.text, !username.isEmpty else {
-                return
-            }
-
-            guard self.checkReachability() else {
-                return
-            }
-
-            let hudShow = {
-                DispatchQueue.main.async {
-                    HUD.show(.progress)
-                }
-            }
-
-            ChatsManager.addChat(with: username, startProgressBar: hudShow) { error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        HUD.hide()
-                        self.alert(error)
-                    } else {
-                        self.noChatsView.isHidden = true
-                        self.tableView.reloadData()
-                        HUD.flash(.success)
-                    }
-                }
-            }
-        }
-
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-
-        alert.addAction(okAction)
-        alert.addAction(cancelAction)
-
-        self.present(alert, animated: true)
+        self.performSegue(withIdentifier: "goToNewMessage", sender: self)
     }
 
     deinit {

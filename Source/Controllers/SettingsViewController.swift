@@ -23,9 +23,6 @@ class SettingsViewController: ViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
 
-        self.tableView.backgroundColor = UIColor(rgb: 0x2B303B)
-        self.view.backgroundColor = UIColor(rgb: 0x2B303B)
-
         let identity = CoreDataHelper.shared.currentAccount!.identity!
         self.usernameLabel.text = identity
 
@@ -71,9 +68,7 @@ extension SettingsViewController: UITableViewDelegate {
                                                     message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.",
                                                     preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-                let userAuthorizer = UserAuthorizer()
-
-                userAuthorizer.logOut()
+                UserAuthorizer().logOut()
 
                 let vc = UIStoryboard(name: "Authentication", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
 
