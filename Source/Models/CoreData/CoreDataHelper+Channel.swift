@@ -113,6 +113,7 @@ extension CoreDataHelper {
             return []
         }
 
+        // FIXME
         return channels.map { $0 as! Channel }
     }
 }

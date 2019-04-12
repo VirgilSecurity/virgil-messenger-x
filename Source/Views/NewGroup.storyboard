@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="zUg-x8-Gqv">
+    <device id="retina5_9" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--New Group-->
+        <scene sceneID="C6e-e0-Ad0">
+            <objects>
+                <viewController id="zUg-x8-Gqv" customClass="NewGroupViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="i41-bq-55h">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="1pN-FD-4WI">
+                                <rect key="frame" x="0.0" y="44" width="375" height="768"/>
+                                <color key="backgroundColor" red="0.16862745100000001" green="0.18823529410000001" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="separatorColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="1pN-FD-4WI" firstAttribute="leading" secondItem="bXy-SK-Z0d" secondAttribute="leading" id="6Cg-Gf-k6I"/>
+                            <constraint firstAttribute="bottom" secondItem="1pN-FD-4WI" secondAttribute="bottom" id="7fl-8j-iRL"/>
+                            <constraint firstItem="1pN-FD-4WI" firstAttribute="top" secondItem="bXy-SK-Z0d" secondAttribute="top" id="MYR-Sa-aGG"/>
+                            <constraint firstItem="1pN-FD-4WI" firstAttribute="trailing" secondItem="bXy-SK-Z0d" secondAttribute="trailing" id="dje-6p-NlI"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="bXy-SK-Z0d"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="New Group" id="VSt-Vq-yLz">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Next" id="eyc-xx-Afq">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="nextButton" destination="eyc-xx-Afq" id="Fm3-fK-pGI"/>
+                        <outlet property="tableView" destination="1pN-FD-4WI" id="tEp-Sc-ITB"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SzO-qd-r0X" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="124" y="195.81280788177341"/>
+        </scene>
+    </scenes>
+</document>

@@ -17,11 +17,7 @@ class AuthenticationViewController: ViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        if CoreDataHelper.shared.accounts.count == 1 {
-            collectionViewWidthConstraint.constant = 100
-        } else {
-            collectionViewWidthConstraint.constant = 225
-        }
+        self.collectionViewWidthConstraint.constant = CoreDataHelper.shared.accounts.count == 1 ? 100 : 225
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
         super.viewDidAppear(animated)
     }

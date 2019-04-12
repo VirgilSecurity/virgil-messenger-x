@@ -6,12 +6,7 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import UIKit
-
-protocol CellTapDelegate: class {
-    func didTapOn(_ cell: UITableViewCell)
-}
 
 class ChatListCell: UITableViewCell {
     static let name = "ChatListCell"
@@ -27,7 +22,7 @@ class ChatListCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        self.contentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ChatListCell.didTap)))
+        self.contentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTap)))
     }
 
     @objc func didTap() {

@@ -61,7 +61,6 @@ class TwilioHelper: NSObject {
                     }
                 }
             } catch {
-                Log.error("Error while init twilio: \(error.localizedDescription)")
                 completion(nil, error)
             }
         }

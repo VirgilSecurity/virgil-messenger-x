@@ -40,6 +40,7 @@ class CollectionViewController: UICollectionViewController {
             Log.error("nil account")
             return
         }
+
         self.signIn(username: username)
     }
 }

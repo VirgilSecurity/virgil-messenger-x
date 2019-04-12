@@ -63,27 +63,13 @@ class ChatViewController: BaseChatViewController {
         self.navigationItem.title = self.title
         self.navigationController?.navigationBar.tintColor = .white
 
-//        self.view.isUserInteractionEnabled = false
-//        let indicator = UIActivityIndicatorView()
-//        indicator.hidesWhenStopped = false
-//        indicator.startAnimating()
-
         let titleButton = UIButton(type: .custom)
         titleButton.frame = CGRect(x: 0, y: 0, width: 200, height: 21)
         titleButton.tintColor = .white
-//        titleButton.setTitle("Updating", for: .normal)
         titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
+        titleButton.setTitle(CoreDataHelper.shared.currentChannel?.name ?? "Error name", for: .normal)
 
-//        let titleView = UIStackView(arrangedSubviews: [indicator, titleButton])
-//        titleView.spacing = 5
-
-//        self.navigationItem.titleView = titleView
-//        self.dataSource.updateMessages {
-            titleButton.setTitle(CoreDataHelper.shared.currentChannel?.name ?? "Error name", for: .normal)
-            self.navigationItem.titleView = titleButton
-//            self.view.isUserInteractionEnabled = true
-//            indicator.stopAnimating()
-//        }
+        self.navigationItem.titleView = titleButton
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -322,18 +308,26 @@ extension ChatViewController: PhotoObserverProtocol {
 
     func showSaveImageAlert(_ image: UIImage) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Save to Camera Roll", style: .default) { _ in
+
+        let saveAction = UIAlertAction(title: "Save to Camera Roll", style: .default) { _ in
             UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
-        })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+        alert.addAction(saveAction)
+        alert.addAction(cancelAction)
 
         self.present(alert, animated: true)
     }
 
     @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
         if let error = error {
-            let ac = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
+            let ac = UIAlertController(title: "Save error",
+                                       message: error.localizedDescription,
+                                       preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
+
             self.present(ac, animated: true)
         } else {
             HUD.flash(.success)

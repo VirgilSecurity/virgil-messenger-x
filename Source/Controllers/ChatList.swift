@@ -34,6 +34,10 @@ class ChatListViewController: ViewController {
         self.navigationItem.titleView = titleView
 
         Configurator.configure { error in
+            if error != nil {
+                // FIXME: go to login
+            }
+
             DispatchQueue.main.async {
                 self.tableView.reloadData()
                 self.navigationItem.titleView = nil
@@ -43,9 +47,9 @@ class ChatListViewController: ViewController {
             }
         }
 
-        self.tableView.register(UINib(nibName: ChatListCell.name, bundle: Bundle.main),
-                                forCellReuseIdentifier: ChatListCell.name)
-        self.tableView.rowHeight = 94
+        let chatListCellNib = UINib(nibName: ChatListCell.name, bundle: Bundle.main)
+        self.tableView.register(chatListCellNib, forCellReuseIdentifier: ChatListCell.name)
+        self.tableView.rowHeight = 90
         self.tableView.tableFooterView = UIView(frame: .zero)
         self.tableView.dataSource = self
 
@@ -99,7 +103,7 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
         cell.tag = count - indexPath.row - 1
         cell.delegate = self
 
-        guard let channel = channels[safe: count - indexPath.row - 1] else {
+        guard let channel = channels[safe: cell.tag] else {
             Log.error("Can't form row: Core Data channel wrong index")
             return cell
         }
@@ -116,16 +120,7 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let account = CoreDataHelper.shared.currentAccount,
-              let channels = account.channel else {
-                Log.error("Can't form row: Core Data account or channels corrupted")
-                return 0
-        }
-        return channels.count
-    }
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return CoreDataHelper.shared.getChannels().count
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
