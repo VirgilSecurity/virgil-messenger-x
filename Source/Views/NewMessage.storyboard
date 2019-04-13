@@ -54,7 +54,7 @@
                         <viewLayoutGuide key="safeArea" id="pk7-RY-Hks"/>
                     </view>
                     <navigationItem key="navigationItem" title="NewMessage" id="iYj-7Y-xhJ">
-                        <barButtonItem key="backBarButtonItem" title="Back" id="Z4v-eo-Zca"/>
+                        <barButtonItem key="backBarButtonItem" title="Back" id="8c3-r0-P6w"/>
                     </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aMd-Fh-iUJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -134,7 +134,7 @@
                     </tableView>
                     <connections>
                         <outlet property="tableView" destination="3QK-yf-mmu" id="Ego-cf-K60"/>
-                        <segue destination="ODM-oV-yEe" kind="show" identifier="goToNewGroupChat" id="zwy-wZ-9L4"/>
+                        <segue destination="ODM-oV-yEe" kind="show" identifier="goToNewGroup" id="zwy-wZ-9L4"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="z1w-ko-M8e" userLabel="First Responder" sceneMemberID="firstResponder"/>

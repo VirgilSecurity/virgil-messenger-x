@@ -1,5 +1,5 @@
 //
-//  NewGroup.swift
+//  ChooseGroupMembers.swift
 //  VirgilMessenger
 //
 //  Created by Yevhen Pyvovarov on 4/11/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewGroupViewController: ViewController {
+class ChooseMembersViewController: ViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var nextButton: UIBarButtonItem!
 
@@ -21,22 +21,26 @@ class NewGroupViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let chatListCellNib = UINib(nibName: CheckContactsCell.name, bundle: Bundle.main)
-        self.tableView.register(chatListCellNib, forCellReuseIdentifier: CheckContactsCell.name)
+        let chatListCellNib = UINib(nibName: ChooseMembersCell.name, bundle: Bundle.main)
+        self.tableView.register(chatListCellNib, forCellReuseIdentifier: ChooseMembersCell.name)
 
         self.tableView.rowHeight = 60
         self.tableView.tableFooterView = UIView(frame: .zero)
         self.tableView.dataSource = self
     }
+
+    @IBAction func nextTapped(_ sender: Any) {
+        self.performSegue(withIdentifier: "goToNewGroup", sender: self)
+    }
 }
 
-extension NewGroupViewController: UITableViewDataSource {
+extension ChooseMembersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return CoreDataHelper.shared.getChannels().count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CheckContactsCell.name) as! CheckContactsCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: ChooseMembersCell.name) as! ChooseMembersCell
 
         let channels = CoreDataHelper.shared.getChannels()
         let count = channels.count
@@ -57,9 +61,9 @@ extension NewGroupViewController: UITableViewDataSource {
     }
 }
 
-extension NewGroupViewController: CellTapDelegate {
+extension ChooseMembersViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
-        if let cell = cell as? CheckContactsCell, let username = cell.usernameLabel.text {
+        if let cell = cell as? ChooseMembersCell, let username = cell.usernameLabel.text {
 
             if cell.isMember {
                 self.members.append(username)

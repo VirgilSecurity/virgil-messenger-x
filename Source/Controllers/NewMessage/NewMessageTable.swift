@@ -18,7 +18,7 @@ class NewMessageTableViewController: UITableViewController {
         }
 
         if indexPath.row == 0 {
-            self.performSegue(withIdentifier: "goToNewGroupChat", sender: self)
+            self.performSegue(withIdentifier: "goToNewGroup", sender: self)
         } else if indexPath.row == 1 {
             self.addContact()
         }

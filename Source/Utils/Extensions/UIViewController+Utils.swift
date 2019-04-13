@@ -20,7 +20,9 @@ extension UIViewController {
 }
 
 extension UIViewController: UITextFieldDelegate {
-    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    public func textField(_ textField: UITextField,
+                          shouldChangeCharactersIn range: NSRange,
+                          replacementString string: String) -> Bool {
         guard let text = textField.text else {
             return true
         }

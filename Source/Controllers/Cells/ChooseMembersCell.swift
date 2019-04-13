@@ -1,5 +1,5 @@
 //
-//  CheckContactsCell.swift
+//  ChooseMembersCell.swift
 //  VirgilMessenger
 //
 //  Created by Yevhen Pyvovarov on 4/11/19.
@@ -8,8 +8,10 @@
 
 import UIKit
 
-class CheckContactsCell: UITableViewCell {
-    static let name = "CheckContactsCell"
+class ChooseMembersCell: UITableViewCell {
+    static let name = "ChooseMembersCell"
+
+    weak var delegate: CellTapDelegate?
 
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var letterLabel: UILabel!
@@ -19,8 +21,6 @@ class CheckContactsCell: UITableViewCell {
     public var isMember: Bool {
         return !(self.radioButton.tag == 0)
     }
-
-    weak var delegate: CellTapDelegate?
 
     override func awakeFromNib() {
         super.awakeFromNib()

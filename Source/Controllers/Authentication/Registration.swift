@@ -22,19 +22,28 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
 
         privacyLabel.delegate = self
         privacyLabel.textContainerInset = UIEdgeInsets.zero
-        privacyLabel.linkTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor(rgb: 0x9E3621)]
+        privacyLabel.linkTextAttributes = [.foregroundColor: UIColor(rgb: 0x9E3621)]
 
         let text = (privacyLabel.text)!
         let attriString = NSMutableAttributedString(string: text)
 
         let range = (text as NSString).range(of: text)
-        attriString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor(rgb: 0x6B6B70), range: range)
-        attriString.addAttribute(NSAttributedString.Key.font, value: UIFont(name: privacyLabel.font!.fontName, size: 13)!, range: range)
+        attriString.addAttribute(.foregroundColor,
+                                 value: UIColor(rgb: 0x6B6B70),
+                                 range: range)
+        attriString.addAttribute(.font,
+                                 value: UIFont(name: privacyLabel.font!.fontName, size: 13)!,
+                                 range: range)
 
         let range1 = (text as NSString).range(of: "Terms of Service")
-        attriString.addAttribute(NSAttributedString.Key.link, value: URLConstansts.termsAndConditionsURL, range: range1)
+        attriString.addAttribute(.link,
+                                 value: URLConstansts.termsAndConditionsURL,
+                                 range: range1)
+
         let range2 = (text as NSString).range(of: "Privacy Policy")
-        attriString.addAttribute(NSAttributedString.Key.link, value: URLConstansts.privacyURL, range: range2)
+        attriString.addAttribute(.link,
+                                 value: URLConstansts.privacyURL,
+                                 range: range2)
 
         privacyLabel.attributedText = attriString
     }
@@ -42,9 +51,15 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(RegistrationViewController.keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.keyboardWillShow(notification:)),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(RegistrationViewController.keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.keyboardWillHide(notification:)),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
 
         self.usernameTextField.delegate = self
     }
@@ -119,7 +134,6 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
             UIApplication.shared.open(url as URL, options: [:], completionHandler: nil)
         }
     }
-
 }
 
 extension RegistrationViewController {
