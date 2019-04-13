@@ -8,8 +8,10 @@
 
 import VirgilSDK
 
-public enum Configurator {
-    public static func configure(completion: @escaping (Error?) -> Void) {
+public class Configurator {
+    private(set) var isConfigured: Bool = false
+
+    public func configure(completion: @escaping (Error?) -> Void) {
         do {
             guard let identity = CoreDataHelper.shared.currentAccount?.identity else {
                 throw NSError()
@@ -23,7 +25,10 @@ public enum Configurator {
             let updateChannelsOperation = ChatsManager.makeUpdateChannelsOperation()
 
             let operations = [initPFSOperation, initTwilioOperation, updateChannelsOperation]
-            let completionOperation = OperationUtils.makeCompletionOperation(completion: { (_: Void?, error: Error?) in completion(error) })
+            let completionOperation = OperationUtils.makeCompletionOperation(completion: { (_: Void?, error: Error?) in
+                self.isConfigured = true
+                completion(error)
+            })
 
             updateChannelsOperation.addDependency(initPFSOperation)
             updateChannelsOperation.addDependency(initTwilioOperation)

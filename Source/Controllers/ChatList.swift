@@ -17,6 +17,8 @@ class ChatListViewController: ViewController {
 
     private var currentChannelMessegesCount: Int = 0
 
+    private let configurator = Configurator()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -33,12 +35,12 @@ class ChatListViewController: ViewController {
 
         self.navigationItem.titleView = titleView
 
-        Configurator.configure { error in
-            if error != nil {
-                // FIXME: go to login
-            }
-
+        self.configurator.configure { error in
             DispatchQueue.main.async {
+                if error != nil {
+                    // FIXME: go to login
+                }
+
                 self.tableView.reloadData()
                 self.navigationItem.titleView = nil
                 self.title = "Chats"
@@ -65,11 +67,12 @@ class ChatListViewController: ViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // FIXME
-        if self.title == "Chats" {
+
+        if self.configurator.isConfigured {
             TwilioHelper.shared.deselectChannel()
         }
-        noChatsView.isHidden = CoreDataHelper.shared.currentAccount?.channel?.count ?? 0 > 0 ? true : false
+
+        self.noChatsView.isHidden = !CoreDataHelper.shared.getChannels().isEmpty
         self.tableView.reloadData()
     }
 
@@ -93,7 +96,7 @@ class ChatListViewController: ViewController {
     }
 }
 
-extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
+extension ChatListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
 
@@ -104,7 +107,6 @@ extension ChatListViewController: UITableViewDataSource, UITableViewDelegate {
         cell.delegate = self
 
         guard let channel = channels[safe: cell.tag] else {
-            Log.error("Can't form row: Core Data channel wrong index")
             return cell
         }
 
