@@ -14,9 +14,14 @@ public class MessageSender {
         case is DemoTextMessageModel:
             let textMessage = message as! DemoTextMessageModel
 
-            let text = textMessage.body
+            var text = textMessage.body
 
-            if let encrypted = VirgilHelper.shared.encrypt(text) {
+            // FIXME
+            if CoreDataHelper.shared.currentChannel?.type == ChannelType.group.rawValue {
+                text = "\(TwilioHelper.shared.username): \(textMessage.body)"
+
+                self.messageStatus(ciphertext: text, message: textMessage)
+            } else if let encrypted = VirgilHelper.shared.encrypt(text) {
                 self.messageStatus(ciphertext: encrypted, message: textMessage)
             }
         case is DemoPhotoMessageModel:

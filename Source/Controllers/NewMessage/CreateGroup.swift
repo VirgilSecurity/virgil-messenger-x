@@ -33,9 +33,9 @@ class CreateGroupViewController: ViewController {
             }
         }
 
-        ChatsManager.createGroup(with: self.members,
-                                 name: name,
-                                 startProgressBar: hudShow) { error in
+        ChatsManager.startGroup(with: self.members,
+                                name: name,
+                                startProgressBar: hudShow) { error in
             DispatchQueue.main.async {
                 if let error = error {
                     HUD.hide()

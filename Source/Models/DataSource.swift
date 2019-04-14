@@ -63,16 +63,18 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     @objc private func processMessage(notification: Notification) {
-        guard let userInfo = notification.userInfo,
-            let message = userInfo[TwilioHelper.NotificationKeys.Message.rawValue] as? Message else {
-                return
+        DispatchQueue.main.async {
+            guard let userInfo = notification.userInfo,
+                let message = userInfo[TwilioHelper.NotificationKeys.Message.rawValue] as? Message else {
+                    return
+            }
+
+            self.nextMessageId += 1
+            let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
+
+            self.slidingWindow.insertItem(uiModel, position: .bottom)
+            self.delegate?.chatDataSourceDidUpdate(self)
         }
-
-        self.nextMessageId += 1
-        let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
-
-        self.slidingWindow.insertItem(uiModel, position: .bottom)
-        self.delegate?.chatDataSourceDidUpdate(self)
     }
 
     lazy var messageSender: MessageSender = {

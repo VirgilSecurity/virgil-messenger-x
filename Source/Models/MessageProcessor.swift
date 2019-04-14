@@ -44,8 +44,13 @@ class MessageProcessor {
                                     date: Date,
                                     isIncoming: Bool,
                                     channel: Channel) throws -> Message  {
-        guard let decrypted = try? VirgilHelper.shared.decrypt(body, withCard: channel.cards.first) else {
-            throw NSError()
+        // FIXME
+        var decrypted: String = body
+        if let rawType = channel.type, let type = ChannelType(rawValue: rawType), type == .single {
+            guard let tmp = try? VirgilHelper.shared.decrypt(body, withCard: channel.cards.first) else {
+                throw NSError()
+            }
+            decrypted = tmp
         }
 
         let message = try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)

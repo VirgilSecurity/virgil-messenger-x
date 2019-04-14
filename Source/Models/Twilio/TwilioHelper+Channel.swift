@@ -80,7 +80,10 @@ extension TwilioHelper {
 
     func makeCreateSingleChannelOperation(with identity: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            let attributes = ChannelAttributes(initiator: self.username, members: [self.username, identity], type: .single)
+            let attributes = ChannelAttributes(initiator: self.username,
+                                               friendlyName: nil,
+                                               members: [self.username, identity],
+                                               type: .single)
 
             let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
                                           TCHChannelOptionAttributes: try! attributes.export()]
@@ -107,6 +110,7 @@ extension TwilioHelper {
     func makeCreateGroupChannelOperation(with members: [String], name: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             let attributes = ChannelAttributes(initiator: self.username,
+                                               friendlyName: name,
                                                members: [self.username] + members,
                                                type: .group)
 

@@ -10,10 +10,10 @@ import VirgilSDK
 import TwilioChatClient
 
 public enum ChatsManager {
-    public static func createGroup(with channels: [Channel],
-                                   name: String,
-                                   startProgressBar: @escaping () -> Void,
-                                   completion: @escaping (Error?) -> Void) {
+    public static func startGroup(with channels: [Channel],
+                                  name: String,
+                                  startProgressBar: @escaping () -> Void,
+                                  completion: @escaping (Error?) -> Void) {
         do {
             let name = name.lowercased()
 
@@ -34,7 +34,9 @@ public enum ChatsManager {
             let cards = channels.map { $0.cards.first! }
 
             let createTwilioChannelOperation = TwilioHelper.shared.makeCreateGroupChannelOperation(with: members, name: name)
-            let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateGroupChannelOperation(name: name, cards: cards)
+            let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateGroupChannelOperation(name: name,
+                                                                                                       members: members,
+                                                                                                       cards: cards)
 
             let operations = [createTwilioChannelOperation, createCoreDataChannelOperation]
 
@@ -46,16 +48,40 @@ public enum ChatsManager {
 
             let queue = OperationQueue()
             queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
-
-
         } catch {
             completion(error)
         }
     }
 
-    public static func createSingle(with identity: String,
-                                    startProgressBar: @escaping () -> Void,
-                                    completion: @escaping (Error?) -> Void) {
+    public static func joinGroup(with members: [String],
+                                 name: String) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            var getCardOperations: [CallbackOperation<String>] = []
+
+            let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateGroupChannelOperation(name: name, members: members)
+
+            members.forEach {
+                let getCardOperation = VirgilHelper.shared.makeGetCardOperation(identity: $0)
+                createCoreDataChannelOperation.addDependency(getCardOperation)
+                getCardOperations.append(getCardOperation)
+            }
+
+            let operations = getCardOperations + [createCoreDataChannelOperation]
+
+            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+            operations.forEach {
+                completionOperation.addDependency($0)
+            }
+
+            let queue = OperationQueue()
+            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+        }
+    }
+
+    public static func startSingle(with identity: String,
+                                   startProgressBar: @escaping () -> Void,
+                                   completion: @escaping (Error?) -> Void) {
         do {
             let identity = identity.lowercased()
 
@@ -94,7 +120,21 @@ public enum ChatsManager {
         }
     }
 
-    static func makeUpdateChannelsOperation() -> CallbackOperation<Void> {
+    public static func joinSingle(with identity: String) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            do {
+                let card = try VirgilHelper.shared.makeGetCardOperation(identity: identity).startSync().getResult()
+
+                try CoreDataHelper.shared.createChannel(type: .single, name: identity, cards: [card])
+
+                completion((), nil)
+            } catch {
+                completion(nil, error)
+            }
+        }
+    }
+
+    public static func makeUpdateChannelsOperation() -> CallbackOperation<Void> {
         return CallbackOperation<Void> { _, completion in
             let twilioChannels = TwilioHelper.shared.channels.subscribedChannels()
 
@@ -121,15 +161,41 @@ public enum ChatsManager {
         }
     }
 
+    public static func join(_ channel: TCHChannel) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            do {
+                let attributes = try TwilioHelper.shared.getAttributes(of: channel)
+                let name = TwilioHelper.shared.getName(of: channel)
+
+                let joinOperation: CallbackOperation<Void>
+                switch attributes.type {
+                case .single:
+                    joinOperation = self.joinSingle(with: name)
+                case .group:
+                    let members = attributes.members.filter { $0 != TwilioHelper.shared.username }
+
+                    joinOperation = self.joinGroup(with: members, name: name)
+                }
+
+                let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+                completionOperation.addDependency(joinOperation)
+
+                let queue = OperationQueue()
+                queue.addOperations([joinOperation, completionOperation], waitUntilFinished: false)
+            } catch {
+                completion(nil, error)
+            }
+        }
+    }
+
     // FIXME
-    static func makeUpdateChannelOperation(twilioChannel: TCHChannel) -> CallbackOperation<Void> {
-        return CallbackOperation<Void> { _, completion in
+    private static func makeUpdateChannelOperation(twilioChannel: TCHChannel) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
             do {
                 if twilioChannel.status == TCHChannelStatus.invited {
                     try TwilioHelper.shared.makeJoinOperation(channel: twilioChannel).startSync().getResult()
-                    let name = TwilioHelper.shared.getName(of: twilioChannel)
-                    let card = try VirgilHelper.shared.makeGetCardOperation(identity: name).startSync().getResult()
-                    try CoreDataHelper.shared.createChannel(type: .single, name: name, cards: [card])
+                    try self.join(twilioChannel).startSync().getResult()
                 }
 
                 let name = TwilioHelper.shared.getName(of: twilioChannel)

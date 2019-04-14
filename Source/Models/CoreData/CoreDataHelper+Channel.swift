@@ -11,9 +11,18 @@ import CoreData
 import VirgilSDK
 
 extension CoreDataHelper {
-    func makeCreateGroupChannelOperation(name: String, cards: [String]) -> CallbackOperation<Void> {
+    func makeCreateGroupChannelOperation(name: String, members: [String], cards: [String]? = nil) -> CallbackOperation<Void> {
         return CallbackOperation<Void> { operation, completion in
             do {
+                var cards: [String] = cards ?? []
+
+                if cards.isEmpty {
+                    for _ in members {
+                        let card: String = try operation.findDependencyResult()
+                        cards.append(card)
+                    }
+                }
+
                 try self.createChannel(type: .group, name: name, cards: cards)
 
                 completion((), nil)
