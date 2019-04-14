@@ -48,7 +48,7 @@ class NewMessageTableViewController: UITableViewController {
                 }
             }
 
-            ChatsManager.addChat(with: username, startProgressBar: hudShow) { error in
+            ChatsManager.createSingle(with: username, startProgressBar: hudShow) { error in
                 DispatchQueue.main.async {
                     if let error = error {
                         HUD.hide()

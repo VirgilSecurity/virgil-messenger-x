@@ -75,8 +75,8 @@ extension TwilioHelper: TwilioChatClientDelegate {
                     return
                 }
 
-                let card = try VirgilHelper.shared.getCard(identity: identity).startSync().getResult()
-                try CoreDataHelper.shared.createChannel(name: identity, cards: [card])
+                let card = try VirgilHelper.shared.makeGetCardOperation(identity: identity).startSync().getResult()
+                try CoreDataHelper.shared.createChannel(type: .single, name: identity, cards: [card])
 
                 NotificationCenter.default.post(
                     name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),

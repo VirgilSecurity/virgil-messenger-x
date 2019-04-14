@@ -125,10 +125,7 @@ class TwilioHelper: NSObject {
             return "Error name"
         }
 
-        let initiator = attributes.initiator
-        let responder = attributes.responder
-
-        return initiator == self.username ? responder : initiator
+        return attributes.members.first { $0 != self.username } ?? "Error name"
     }
 }
 

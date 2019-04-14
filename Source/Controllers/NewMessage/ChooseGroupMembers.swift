@@ -12,7 +12,7 @@ class ChooseMembersViewController: ViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var nextButton: UIBarButtonItem!
 
-    private var members: [String] = [] {
+    private var members: [Channel] = [] {
         didSet {
             self.nextButton.isEnabled = !self.members.isEmpty
         }
@@ -31,6 +31,14 @@ class ChooseMembersViewController: ViewController {
 
     @IBAction func nextTapped(_ sender: Any) {
         self.performSegue(withIdentifier: "goToNewGroup", sender: self)
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+
+        if let сontroller = segue.destination as? CreateGroupViewController {
+            сontroller.members = self.members
+        }
     }
 }
 
@@ -63,12 +71,13 @@ extension ChooseMembersViewController: UITableViewDataSource {
 
 extension ChooseMembersViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
-        if let cell = cell as? ChooseMembersCell, let username = cell.usernameLabel.text {
+        if let cell = cell as? ChooseMembersCell {
+            let channel = CoreDataHelper.shared.getChannels()[cell.tag]
 
             if cell.isMember {
-                self.members.append(username)
+                self.members.append(channel)
             } else {
-                self.members = self.members.filter { $0 != username }
+                self.members = self.members.filter { $0 != channel }
             }
         }
     }

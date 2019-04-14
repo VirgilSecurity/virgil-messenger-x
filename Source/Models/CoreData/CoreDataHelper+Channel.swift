@@ -11,12 +11,10 @@ import CoreData
 import VirgilSDK
 
 extension CoreDataHelper {
-    func createChannel(identity: String) -> CallbackOperation<Void> {
+    func makeCreateGroupChannelOperation(name: String, cards: [String]) -> CallbackOperation<Void> {
         return CallbackOperation<Void> { operation, completion in
             do {
-                let card: String = try operation.findDependencyResult()
-
-                try self.createChannel(name: identity, cards: [card])
+                try self.createChannel(type: .group, name: name, cards: cards)
 
                 completion((), nil)
             }
@@ -26,7 +24,22 @@ extension CoreDataHelper {
         }
     }
 
-    func createChannel(type: ChannelType = .single, name: String, cards: [String]) throws {
+    func makeCreateSingleChannelOperation(with identity: String) -> CallbackOperation<Void> {
+        return CallbackOperation<Void> { operation, completion in
+            do {
+                let card: String = try operation.findDependencyResult()
+
+                try self.createChannel(type: .single, name: identity, cards: [card])
+
+                completion((), nil)
+            }
+            catch {
+                completion(nil, error)
+            }
+        }
+    }
+
+    func createChannel(type: ChannelType, name: String, cards: [String]) throws {
         guard let account = self.currentAccount else {
             throw CoreDataHelperError.nilCurrentAccount
         }
@@ -79,32 +92,6 @@ extension CoreDataHelper {
 
         Log.error("Core Data: channel not found")
         return nil
-    }
-
-    func deleteChannel(type typetoDelete: ChannelType, name nameToDelete: String) {
-        guard let account = self.currentAccount, let channels = account.channel else {
-            Log.error("Core Data: missing account")
-            return
-        }
-
-        for channel in channels {
-            guard let channel = channel as? Channel,
-                let name = channel.name,
-                let type = channel.type else {
-                    Log.error("Core Data: can't get account channels")
-                    return
-            }
-
-            Log.debug("Core Data name: " + name)
-            if type == typetoDelete.rawValue, name == nameToDelete {
-                Log.debug("Core Data: found channel in core data: " + name)
-                self.managedContext.delete(channel)
-                Log.debug("Core Data: channel deleted")
-                return
-            }
-        }
-        Log.error("Core Data: channel not found")
-        self.appDelegate.saveContext()
     }
 
     func getChannels() -> [Channel] {

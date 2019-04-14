@@ -11,7 +11,7 @@ import Foundation
 extension TwilioHelper {
     struct ChannelAttributes: Codable {
         let initiator: String
-        let responder: String
+        let members: [String]
         let type: ChannelType
 
         static func `import`(_ json: [String: Any]) throws -> ChannelAttributes {

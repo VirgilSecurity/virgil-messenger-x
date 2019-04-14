@@ -10,9 +10,52 @@ import VirgilSDK
 import TwilioChatClient
 
 public enum ChatsManager {
-    public static func addChat(with identity: String,
-                               startProgressBar: @escaping () -> Void,
-                               completion: @escaping (Error?) -> Void) {
+    public static func createGroup(with channels: [Channel],
+                                   name: String,
+                                   startProgressBar: @escaping () -> Void,
+                                   completion: @escaping (Error?) -> Void) {
+        do {
+            let name = name.lowercased()
+
+            let exists = CoreDataHelper.shared.getChannels().contains { $0.name == name }
+
+            guard !exists else {
+                throw UserFriendlyError.doubleChannelForbidded
+            }
+
+            guard !channels.isEmpty else {
+                throw UserFriendlyError.unknownError
+            }
+
+            startProgressBar()
+
+            // FIXME
+            let members = channels.map { $0.name! }
+            let cards = channels.map { $0.cards.first! }
+
+            let createTwilioChannelOperation = TwilioHelper.shared.makeCreateGroupChannelOperation(with: members, name: name)
+            let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateGroupChannelOperation(name: name, cards: cards)
+
+            let operations = [createTwilioChannelOperation, createCoreDataChannelOperation]
+
+            let completionOperation = OperationUtils.makeCompletionOperation { (_: Void?, error: Error?) in completion(error) }
+
+            operations.forEach {
+                completionOperation.addDependency($0)
+            }
+
+            let queue = OperationQueue()
+            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+
+
+        } catch {
+            completion(error)
+        }
+    }
+
+    public static func createSingle(with identity: String,
+                                    startProgressBar: @escaping () -> Void,
+                                    completion: @escaping (Error?) -> Void) {
         do {
             let identity = identity.lowercased()
 
@@ -23,14 +66,14 @@ public enum ChatsManager {
             let exists = CoreDataHelper.shared.getChannels().contains { $0.name == identity }
 
             guard !exists else {
-                throw UserFriendlyError.douleChannelForbidded
+                throw UserFriendlyError.doubleChannelForbidded
             }
 
             startProgressBar()
 
-            let getCardOperation = VirgilHelper.shared.getCard(identity: identity)
-            let createTwilioChannelOperation = TwilioHelper.shared.makeCreateChannelOperation(with: identity)
-            let createCoreDataChannelOperation = CoreDataHelper.shared.createChannel(identity: identity)
+            let getCardOperation = VirgilHelper.shared.makeGetCardOperation(identity: identity)
+            let createTwilioChannelOperation = TwilioHelper.shared.makeCreateSingleChannelOperation(with: identity)
+            let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateSingleChannelOperation(with: identity)
             let completionOperation = OperationUtils.makeCompletionOperation { (_: Void?, error: Error?) in completion(error) }
 
             createCoreDataChannelOperation.addDependency(getCardOperation)
@@ -85,8 +128,8 @@ public enum ChatsManager {
                 if twilioChannel.status == TCHChannelStatus.invited {
                     try TwilioHelper.shared.makeJoinOperation(channel: twilioChannel).startSync().getResult()
                     let name = TwilioHelper.shared.getName(of: twilioChannel)
-                    let card = try VirgilHelper.shared.getCard(identity: name).startSync().getResult()
-                    try CoreDataHelper.shared.createChannel(name: name, cards: [card])
+                    let card = try VirgilHelper.shared.makeGetCardOperation(identity: name).startSync().getResult()
+                    try CoreDataHelper.shared.createChannel(type: .single, name: name, cards: [card])
                 }
 
                 let name = TwilioHelper.shared.getName(of: twilioChannel)

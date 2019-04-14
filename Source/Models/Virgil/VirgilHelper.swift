@@ -73,7 +73,7 @@ public class VirgilHelper {
                                    secureChat: secureChat)
     }
 
-    public func makeInitPFSOperation(identity: String) -> GenericOperation<Void> {
+    public func makeInitPFSOperation(identity: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 let rotationLog = try self.secureChat.rotateKeys().startSync().getResult()
@@ -86,7 +86,7 @@ public class VirgilHelper {
         }
     }
 
-    func getCard(identity: String) -> GenericOperation<String> {
+    func makeGetCardOperation(identity: String) -> CallbackOperation<String> {
         return CallbackOperation { _, completion in
             do {
                 let cards = try self.client.searchCards(withIdentity: identity,
