@@ -26,7 +26,7 @@ public class VirgilHelper {
     let client: Client
     let secureChat: SecureChat
 
-    private(set) var channelCard: Card?
+    private(set) var channelCards: [Card] = []
 
     private init(crypto: VirgilCrypto,
                  cardCrypto: VirgilCardCrypto,
@@ -59,7 +59,7 @@ public class VirgilHelper {
         let provider = client.makeAccessTokenProvider(identity: identity)
 
         let context = SecureChatContext(identity: identity,
-                                        identityCardId: user.card.identifier,
+                                        identityCard: user.card,
                                         identityPrivateKey: user.privateKey,
                                         accessTokenProvider: provider)
 
@@ -109,6 +109,7 @@ public class VirgilHelper {
     func buildCard(_ card: String) -> Card? {
         do {
             let card = try self.importCard(fromBase64Encoded: card)
+
             return card
         } catch {
             Log.error("Importing Card failed with: \(error.localizedDescription)")
@@ -123,11 +124,14 @@ public class VirgilHelper {
                                           cardVerifier: self.verifier)
     }
 
-    func setChannelCard(_ card: String) {
-        do {
-            let importedCard = try self.importCard(fromBase64Encoded: card)
+    func setChannelCards(_ rawCards: [String]) {
+        self.channelCards = []
 
-            self.channelCard = importedCard
+        do {
+            for rawCard in rawCards {
+                let card = try self.importCard(fromBase64Encoded: rawCard)
+                self.channelCards.append(card)
+            }
         } catch {
             Log.error("Importing Card failed with: \(error.localizedDescription)")
         }

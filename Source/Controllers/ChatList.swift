@@ -142,8 +142,7 @@ extension ChatListViewController: CellTapDelegate {
                     return
             }
 
-            // FIXME
-            VirgilHelper.shared.setChannelCard(channel.cards.first!)
+            VirgilHelper.shared.setChannelCards(channel.cards)
 
             self.currentChannelMessegesCount = count
 

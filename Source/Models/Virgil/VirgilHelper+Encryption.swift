@@ -13,7 +13,7 @@ import VirgilCryptoRatchet
 
 extension VirgilHelper {
     private func getSessionAsSender() throws -> SecureSession {
-        guard let card = self.channelCard else {
+        guard let card = self.channelCards.first else {
             Log.error("channel card not found")
             throw NSError()
         }
@@ -36,6 +36,11 @@ extension VirgilHelper {
     // FIXME
     func encrypt(_ text: String) -> String? {
         do {
+            guard !self.channelCards.isEmpty else {
+                Log.error("Virgil: Channel Card not found")
+                throw NSError()
+            }
+
             let session = try self.getSessionAsSender()
 
             let ratchetMessage = try session.encrypt(string: text)
@@ -56,7 +61,7 @@ extension VirgilHelper {
         if let receiverCard = withCard {
             tryCard = self.buildCard(receiverCard)
         } else {
-            tryCard = self.channelCard
+            tryCard = self.channelCards.first
         }
 
         guard let card = tryCard else {
