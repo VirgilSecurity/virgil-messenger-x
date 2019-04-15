@@ -28,4 +28,18 @@ class ChatListCell: UITableViewCell {
     @objc func didTap() {
         self.delegate?.didTapOn(self)
     }
+
+    public func configure(with channels: [Channel]) {
+        guard let channel = channels[safe: self.tag] else {
+            return
+        }
+
+        self.usernameLabel.text = channel.name
+        self.letterLabel.text = channel.letter
+        self.avatarView.gradientLayer.colors = [channel.colorPair.first, channel.colorPair.second]
+        self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+
+        self.lastMessageLabel.text = channel.lastMessagesBody
+        self.lastMessageDateLabel.text = channel.lastMessagesDate?.shortString() ?? ""
+    }
 }

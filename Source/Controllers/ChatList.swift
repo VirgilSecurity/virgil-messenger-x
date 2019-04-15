@@ -101,22 +101,11 @@ extension ChatListViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
 
         let channels = CoreDataHelper.shared.getChannels()
-        let count = channels.count
 
-        cell.tag = count - indexPath.row - 1
+        cell.tag = channels.count - indexPath.row - 1
         cell.delegate = self
 
-        guard let channel = channels[safe: cell.tag] else {
-            return cell
-        }
-
-        cell.usernameLabel.text = channel.name
-        cell.letterLabel.text = channel.letter
-        cell.avatarView.gradientLayer.colors = [channel.colorPair.first, channel.colorPair.second]
-        cell.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
-
-        cell.lastMessageLabel.text = channel.lastMessagesBody
-        cell.lastMessageDateLabel.text = channel.lastMessagesDate?.shortString() ?? ""
+        cell.configure(with: channels)
 
         return cell
     }
@@ -133,7 +122,6 @@ extension ChatListViewController: UITableViewDataSource {
 extension ChatListViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         if let username = (cell as! ChatListCell).usernameLabel.text {
-
             TwilioHelper.shared.setChannel(withName: username)
 
             guard let channel = CoreDataHelper.shared.loadChannel(withName: username),

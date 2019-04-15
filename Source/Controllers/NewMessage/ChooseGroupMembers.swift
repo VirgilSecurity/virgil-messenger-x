@@ -44,26 +44,18 @@ class ChooseMembersViewController: ViewController {
 
 extension ChooseMembersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return CoreDataHelper.shared.getChannels().count
+        return CoreDataHelper.shared.getSingleChannels().count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChooseMembersCell.name) as! ChooseMembersCell
 
-        let channels = CoreDataHelper.shared.getChannels()
-        let count = channels.count
+        let users = CoreDataHelper.shared.getSingleChannels()
 
-        cell.tag = count - indexPath.row - 1
+        cell.tag = users.count - indexPath.row - 1
         cell.delegate = self
 
-        guard let channel = channels[safe: cell.tag] else {
-            return cell
-        }
-
-        cell.usernameLabel.text = channel.name
-        cell.letterLabel.text = channel.letter
-        cell.avatarView.gradientLayer.colors = [channel.colorPair.first, channel.colorPair.second]
-        cell.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+        cell.configure(with: users)
 
         return cell
     }
@@ -72,7 +64,7 @@ extension ChooseMembersViewController: UITableViewDataSource {
 extension ChooseMembersViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         if let cell = cell as? ChooseMembersCell {
-            let channel = CoreDataHelper.shared.getChannels()[cell.tag]
+            let channel = CoreDataHelper.shared.getSingleChannels()[cell.tag]
 
             if cell.isMember {
                 self.members.append(channel)

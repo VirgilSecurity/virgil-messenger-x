@@ -85,6 +85,10 @@
 		16F30D4F1FDAE91D006C3DEB /* SignInCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4E1FDAE91D006C3DEB /* SignInCollectionCell.swift */; };
 		16F6FC721FAA235400158615 /* Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F6FC711FAA235300158615 /* Registration.swift */; };
 		16F8BC871FAA06040020094B /* TwilioChatClient.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 429228D11F96324B00DCECDF /* TwilioChatClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16F8F3B5226484C500143FB7 /* UsersList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16F8F3B4226484C500143FB7 /* UsersList.storyboard */; };
+		16F8F3B72264875F00143FB7 /* UsersList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3B62264875F00143FB7 /* UsersList.swift */; };
+		16F8F3B9226487BE00143FB7 /* UsersListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3B8226487BE00143FB7 /* UsersListCell.swift */; };
+		16F8F3BB22649A7F00143FB7 /* NewMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3BA22649A7F00143FB7 /* NewMessage.swift */; };
 		16FA91051FFC55A400FE98C7 /* UIViewController+Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FA91041FFC55A400FE98C7 /* UIViewController+Reachability.swift */; };
 		16FB2DCC204D806E00346FA0 /* DemoPhotoMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DCB204D806E00346FA0 /* DemoPhotoMessageViewModel.swift */; };
 		16FB2DCE204D832F00346FA0 /* TwilioHelper+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DCD204D832F00346FA0 /* TwilioHelper+Channel.swift */; };
@@ -217,6 +221,10 @@
 		16F30D4C1FDAE6E6006C3DEB /* SignInCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInCollection.swift; sourceTree = "<group>"; };
 		16F30D4E1FDAE91D006C3DEB /* SignInCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInCollectionCell.swift; sourceTree = "<group>"; };
 		16F6FC711FAA235300158615 /* Registration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Registration.swift; sourceTree = "<group>"; };
+		16F8F3B4226484C500143FB7 /* UsersList.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UsersList.storyboard; sourceTree = "<group>"; };
+		16F8F3B62264875F00143FB7 /* UsersList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersList.swift; sourceTree = "<group>"; };
+		16F8F3B8226487BE00143FB7 /* UsersListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListCell.swift; sourceTree = "<group>"; };
+		16F8F3BA22649A7F00143FB7 /* NewMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessage.swift; sourceTree = "<group>"; };
 		16FA91041FFC55A400FE98C7 /* UIViewController+Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Reachability.swift"; sourceTree = "<group>"; };
 		16FB2DCB204D806E00346FA0 /* DemoPhotoMessageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageViewModel.swift; sourceTree = "<group>"; };
 		16FB2DCD204D832F00346FA0 /* TwilioHelper+Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Channel.swift"; sourceTree = "<group>"; };
@@ -414,6 +422,7 @@
 				16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */,
 				16D6CB391FDFEECC00302A05 /* Registration.storyboard */,
 				16CC9B7A21552D5800935AEC /* TabBar.storyboard */,
+				16F8F3B4226484C500143FB7 /* UsersList.storyboard */,
 				423BDA781F97600A00C3EE9B /* ChatList.storyboard */,
 				16EF7145225E2E3C00854DBF /* NewMessage.storyboard */,
 				162E22E8225F7E4E00AAE7C4 /* NewGroup.storyboard */,
@@ -474,6 +483,7 @@
 				423BDA7B1F97601700C3EE9B /* ChatList.swift */,
 				4280C0E21F97364F00075B3A /* Chat.swift */,
 				16CA51121FC5DA3B0042AF9D /* Settings.swift */,
+				16F8F3B62264875F00143FB7 /* UsersList.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -515,6 +525,7 @@
 				16F30D4E1FDAE91D006C3DEB /* SignInCollectionCell.swift */,
 				423BDA7D1F97602F00C3EE9B /* ChatListCell.swift */,
 				162E22EC225F953D00AAE7C4 /* ChooseMembersCell.swift */,
+				16F8F3B8226487BE00143FB7 /* UsersListCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -535,6 +546,7 @@
 				162E22E6225F76BF00AAE7C4 /* NewMessageTable.swift */,
 				162E22EA225F8F6000AAE7C4 /* ChooseGroupMembers.swift */,
 				16FC679A2260D7860044CC70 /* CreateGroup.swift */,
+				16F8F3BA22649A7F00143FB7 /* NewMessage.swift */,
 			);
 			path = NewMessage;
 			sourceTree = "<group>";
@@ -736,6 +748,7 @@
 				4280C0D61F97341300075B3A /* SendingStatusCollectionViewCell.xib in Resources */,
 				429228EB1F96405800DCECDF /* Chat.storyboard in Resources */,
 				423BDA791F97600A00C3EE9B /* ChatListCell.xib in Resources */,
+				16F8F3B5226484C500143FB7 /* UsersList.storyboard in Resources */,
 				164E173A20AB1C6400AB1AAD /* Audio.xcassets in Resources */,
 				1658BA211FD9B08F005EF9C1 /* InputBar.xib in Resources */,
 			);
@@ -794,6 +807,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16F8F3B72264875F00143FB7 /* UsersList.swift in Sources */,
 				16FE75F7224A5CC400B545AF /* ChatsManager.swift in Sources */,
 				164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */,
 				16FB2DCC204D806E00346FA0 /* DemoPhotoMessageViewModel.swift in Sources */,
@@ -845,6 +859,7 @@
 				16FCF2801FE46756000348BC /* Account+CoreDataClass.swift in Sources */,
 				16FB2DD1204D846900346FA0 /* TwilioHelper+Message.swift in Sources */,
 				423BDA7E1F97602F00C3EE9B /* ChatListCell.swift in Sources */,
+				16F8F3B9226487BE00143FB7 /* UsersListCell.swift in Sources */,
 				4280C0D51F97341300075B3A /* SendingStatusCollectionViewCell.swift in Sources */,
 				4280C0E31F97364F00075B3A /* Chat.swift in Sources */,
 				168E54CC22395DDC00B6E822 /* ColorPair.swift in Sources */,
@@ -872,6 +887,7 @@
 				16F30D4B1FDAE190006C3DEB /* Authentication.swift in Sources */,
 				1658BA1D1FD9A8BC005EF9C1 /* InputBar.swift in Sources */,
 				16132FC6225514D0008FD754 /* MessageProcessor.swift in Sources */,
+				16F8F3BB22649A7F00143FB7 /* NewMessage.swift in Sources */,
 				16AE1D7A2044315B005DF777 /* DemoPhotoMessageModel.swift in Sources */,
 				16277244203C62040086127C /* CoreDataHelper+Messages.swift in Sources */,
 				16013C7F20B2C99C0043EA29 /* AudioMessagePresenter.swift in Sources */,

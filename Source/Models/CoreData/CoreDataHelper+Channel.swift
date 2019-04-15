@@ -112,4 +112,16 @@ extension CoreDataHelper {
         // FIXME
         return channels.map { $0 as! Channel }
     }
+
+    func getSingleChannels() -> [Channel] {
+        guard let set = self.currentAccount?.channel else {
+            Log.error("Core Data: missing current account or channels")
+            return []
+        }
+
+        let channels = set.map { $0 as! Channel }
+        let singleChannels = channels.filter { ChannelType(rawValue: $0.type!) == .single }
+        
+        return singleChannels
+    }
 }
