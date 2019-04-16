@@ -37,7 +37,8 @@ class ChatListViewController: ViewController {
 
         self.configurator.configure { error in
             DispatchQueue.main.async {
-                if error != nil {
+                if let error = error {
+                    Log.error("\(error.localizedDescription)")
                     // FIXME: go to login
                 }
 
@@ -124,14 +125,14 @@ extension ChatListViewController: CellTapDelegate {
         if let username = (cell as! ChatListCell).usernameLabel.text {
             TwilioHelper.shared.setChannel(withName: username)
 
-            guard let channel = CoreDataHelper.shared.loadChannel(withName: username),
-                let count = channel.message?.count else {
-                    Log.error("Channel do not exist in Core Data")
-                    return
+            guard let channel = CoreDataHelper.shared.loadChannel(withName: username) else {
+                Log.error("Channel do not exist in Core Data")
+                return
             }
 
             VirgilHelper.shared.setChannelCards(channel.cards)
 
+            let count = channel.messages.count
             self.currentChannelMessegesCount = count
 
             self.performSegue(withIdentifier: "goToChat", sender: self)

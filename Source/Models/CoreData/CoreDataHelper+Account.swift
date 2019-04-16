@@ -19,7 +19,7 @@ extension CoreDataHelper {
 
         account.identity = identity
         account.card = card
-        account.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
+        account.setupColorPair()
 
         self.append(account: account)
         self.setCurrent(account: account)
@@ -34,24 +34,13 @@ extension CoreDataHelper {
             throw UserFriendlyError.noUserOnDevice
         }
 
-        guard let card = accountToLoad.card else {
-            throw CoreDataHelperError.entityCorrupted
-        }
-
         self.setCurrent(account: accountToLoad)
 
-        self.getChannels().forEach { self.setLastMessage(for: $0) }
-
-        return card
+        return accountToLoad.card
     }
 
     func getAccount(withIdentity username: String) -> Account? {
-        for account in self.accounts {
-            if let identity = account.identity, identity == username {
-                return account
-            }
-        }
-        return nil
+        return accounts.first { $0.identity == username }
     }
 
     func deleteAccount() {

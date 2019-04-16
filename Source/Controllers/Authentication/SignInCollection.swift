@@ -36,10 +36,7 @@ class CollectionViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let username = CoreDataHelper.shared.accounts[indexPath.row].identity else {
-            Log.error("nil account")
-            return
-        }
+        let username = CoreDataHelper.shared.accounts[indexPath.row].identity
 
         self.signIn(username: username)
     }

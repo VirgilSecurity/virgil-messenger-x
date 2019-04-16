@@ -39,16 +39,15 @@ class NewMessageViewController: ViewController {
 extension NewMessageViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         if let _ = cell as? UsersListCell {
-            guard let user = self.users[safe: cell.tag],
-                let name = user.name,
-                let count = user.message?.count else {
+            guard let user = self.users[safe: cell.tag] else {
                     return
             }
 
-            TwilioHelper.shared.setChannel(withName: name)
+            TwilioHelper.shared.setChannel(withName: user.name)
             CoreDataHelper.shared.setCurrent(channel: user)
             VirgilHelper.shared.setChannelCards(user.cards)
 
+            let count = user.messages.count
             self.selectedChannelMessagesCount = count
 
             self.performSegue(withIdentifier: "goToChat", sender: self)

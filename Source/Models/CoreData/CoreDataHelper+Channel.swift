@@ -46,7 +46,8 @@ extension CoreDataHelper {
             throw CoreDataHelperError.nilCurrentAccount
         }
 
-        guard let entity = NSEntityDescription.entity(forEntityName: Entities.channel.rawValue, in: self.managedContext) else {
+        guard let entity = NSEntityDescription.entity(forEntityName: Entities.channel.rawValue,
+                                                      in: self.managedContext) else {
             throw CoreDataHelperError.entityNotFound
         }
 
@@ -54,10 +55,10 @@ extension CoreDataHelper {
 
         channel.name = name
         channel.cards = cards
-        channel.type = type.rawValue
-        channel.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
+        channel.type = type
+        channel.setupColorPair()
 
-        let channels = account.mutableOrderedSetValue(forKey: Keys.channel.rawValue)
+        let channels = account.mutableOrderedSetValue(forKey: Keys.channels.rawValue)
         channels.add(channel)
 
         Log.debug("Core Data: new channel added. Count: \(channels.count)")
@@ -75,45 +76,22 @@ extension CoreDataHelper {
     }
 
     func getChannel(withName username: String) -> Channel? {
-        guard let account = self.currentAccount, let channels = account.channel else {
-            Log.error("Core Data: nil account core data")
-            return nil
-        }
+        let channels = self.getChannels()
 
-        for channel in channels {
-            guard let channel = channel as? Channel, let name = channel.name  else {
-                Log.error("Core Data: can't get account channel")
-                return nil
-            }
-            Log.debug("Core Data name: " + name)
-            if name == username {
-                Log.debug("Core Data: found channel in core data: " + name)
-                return channel
-            }
-        }
-
-        Log.error("Core Data: channel not found")
-        return nil
+        return channels.first { $0.name == username }
     }
 
     func getChannels() -> [Channel] {
-        guard let channels = self.currentAccount?.channel else {
-            Log.error("Core Data: missing current account or channels")
-            return []
-        }
-
-        // FIXME
-        return channels.map { $0 as! Channel }
+        return self.currentAccount?.channels ?? []
     }
 
     func getSingleChannels() -> [Channel] {
-        guard let set = self.currentAccount?.channel else {
+        guard let channels = self.currentAccount?.channels else {
             Log.error("Core Data: missing current account or channels")
             return []
         }
 
-        let channels = set.map { $0 as! Channel }
-        let singleChannels = channels.filter { ChannelType(rawValue: $0.type!) == .single }
+        let singleChannels = channels.filter { $0.type == .single }
         
         return singleChannels
     }

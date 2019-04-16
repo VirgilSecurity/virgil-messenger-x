@@ -17,7 +17,7 @@ public class MessageSender {
             var text = textMessage.body
 
             // FIXME
-            if CoreDataHelper.shared.currentChannel?.type == ChannelType.group.rawValue {
+            if CoreDataHelper.shared.currentChannel?.type == .group {
                 text = "\(TwilioHelper.shared.username): \(textMessage.body)"
 
                 self.messageStatus(ciphertext: text, message: textMessage)

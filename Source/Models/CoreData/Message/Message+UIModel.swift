@@ -15,15 +15,9 @@ extension Message {
             MessageFactory.createCorruptedMessageModel(uid: id, isIncoming: self.isIncoming)
         }
 
-        guard let date = self.date,
-            let rawType = self.type,
-            let type = MessageType(rawValue: rawType) else {
-                return MessageFactory.createCorruptedMessageModel(uid: id, isIncoming: self.isIncoming)
-        }
-
         let resultMessage: DemoMessageModelProtocol
 
-        switch type {
+        switch self.type {
         case .text:
             guard let body = self.body else {
                 return corruptedMessage()

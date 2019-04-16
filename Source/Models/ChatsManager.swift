@@ -30,7 +30,7 @@ public enum ChatsManager {
             startProgressBar()
 
             // FIXME
-            let members = channels.map { $0.name! }
+            let members = channels.map { $0.name }
             let cards = channels.map { $0.cards.first! }
 
             let createTwilioChannelOperation = TwilioHelper.shared.makeCreateGroupChannelOperation(with: members, name: name)
@@ -196,9 +196,7 @@ public enum ChatsManager {
                     throw NSError()
                 }
 
-                guard let count = coreChannel.message?.count else {
-                    throw NSError()
-                }
+                let count = coreChannel.messages.count
 
                 let coreCount = UInt(count)
 
@@ -211,7 +209,6 @@ public enum ChatsManager {
                     let toLoad = twilioCount - coreCount
 
                     guard toLoad > 0 else {
-                        CoreDataHelper.shared.setLastMessage(for: coreChannel)
                         completion((), nil)
                         return
                     }

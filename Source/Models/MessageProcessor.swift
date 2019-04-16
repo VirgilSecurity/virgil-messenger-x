@@ -22,8 +22,6 @@ class MessageProcessor {
                 throw NSError()
         }
 
-        channel.lastMessagesDate = date
-
         if message.hasMedia() {
             return try self.processMedia(message: message,
                                          date: date,
@@ -45,7 +43,7 @@ class MessageProcessor {
                                     channel: Channel) throws -> Message  {
         // FIXME
         var decrypted: String = body
-        if let rawType = channel.type, let type = ChannelType(rawValue: rawType), type == .single {
+        if channel.type == .single {
             guard let tmp = try? VirgilHelper.shared.decrypt(body, withCard: channel.cards.first) else {
                 throw NSError()
             }

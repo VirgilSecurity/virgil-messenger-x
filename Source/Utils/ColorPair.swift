@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ColorPair {
+public class ColorPair {
     var first: CGColor
     var second: CGColor
 

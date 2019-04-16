@@ -8,13 +8,6 @@
 
 import Foundation
 
-extension NSOrderedSet {
-    /// Returns the element at the specified index iff it is within bounds, otherwise nil.
-    subscript (safe index: Int) -> Element? {
-        return self.count > index ? self[index] : nil
-    }
-}
-
 extension Collection {
     /// Returns the element at the specified index iff it is within bounds, otherwise nil.
     subscript (safe index: Index) -> Element? {

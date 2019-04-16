@@ -34,8 +34,8 @@ class CoreDataHelper {
 
     enum Keys: String {
         case account
-        case channel
-        case message
+        case channels = "orderedChannels"
+        case messages = "orderedMessages"
         case identity
         case name
         case body
@@ -57,12 +57,6 @@ class CoreDataHelper {
         }
 
         self.accounts = accounts
-        Log.debug("Core Data: accounts fetched. Count: \(self.accounts.count)")
-        
-        for account in self.accounts {
-            let identity = account.identity ?? "not found"
-            Log.debug(identity)
-        }
     }
 
     func reloadData() {
@@ -70,6 +64,7 @@ class CoreDataHelper {
             Log.error("Core Data: fetch error")
             return
         }
+
         self.accounts = accounts
     }
 

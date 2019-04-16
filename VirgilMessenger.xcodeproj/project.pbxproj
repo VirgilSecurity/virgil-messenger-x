@@ -16,8 +16,8 @@
 		16132FC22254C868008FD754 /* UIViewController+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16132FC12254C868008FD754 /* UIViewController+Utils.swift */; };
 		16132FC6225514D0008FD754 /* MessageProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16132FC5225514D0008FD754 /* MessageProcessor.swift */; };
 		16177AA620C01F5C0050BB31 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16177AA520C01F5C0050BB31 /* ChannelType.swift */; };
-		161BFB11225745CD00899C6F /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161BFB10225745CD00899C6F /* Message.swift */; };
-		1621B8491FB333B100D1ABC1 /* VirgilMessenger-1.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-1.xcdatamodeld */; };
+		161BFB11225745CD00899C6F /* Message+UIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161BFB10225745CD00899C6F /* Message+UIModel.swift */; };
+		1621B8491FB333B100D1ABC1 /* VirgilMessenger-2.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-2.xcdatamodeld */; };
 		1627723F203C5FB00086127C /* CoreDataHelper+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */; };
 		16277242203C60DB0086127C /* CoreDataHelper+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */; };
 		16277244203C62040086127C /* CoreDataHelper+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277243203C62040086127C /* CoreDataHelper+Messages.swift */; };
@@ -65,6 +65,8 @@
 		16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
 		16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */; };
 		16C0D4512265FF75001F23ED /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C0D4502265FF75001F23ED /* MessageType.swift */; };
+		16C0D45822660A5D001F23ED /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C0D45622660A5D001F23ED /* Message+CoreDataClass.swift */; };
+		16C0D45922660A5D001F23ED /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C0D45722660A5D001F23ED /* Message+CoreDataProperties.swift */; };
 		16CA51021FC45E9A0042AF9D /* Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51011FC45E9A0042AF9D /* Start.swift */; };
 		16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA51031FC45EA40042AF9D /* Start.storyboard */; };
 		16CA51061FC468370042AF9D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51051FC468370042AF9D /* Constants.swift */; };
@@ -159,7 +161,7 @@
 		16132FC12254C868008FD754 /* UIViewController+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Utils.swift"; sourceTree = "<group>"; };
 		16132FC5225514D0008FD754 /* MessageProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageProcessor.swift; sourceTree = "<group>"; };
 		16177AA520C01F5C0050BB31 /* ChannelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelType.swift; sourceTree = "<group>"; };
-		161BFB10225745CD00899C6F /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		161BFB10225745CD00899C6F /* Message+UIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+UIModel.swift"; sourceTree = "<group>"; };
 		1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirgilMessenger.xcdatamodel; sourceTree = "<group>"; };
 		1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Account.swift"; sourceTree = "<group>"; };
 		16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataHelper+Channel.swift"; sourceTree = "<group>"; };
@@ -204,6 +206,8 @@
 		16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
 		16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
 		16C0D4502265FF75001F23ED /* MessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageType.swift; sourceTree = "<group>"; };
+		16C0D45622660A5D001F23ED /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataClass.swift"; sourceTree = "<group>"; };
+		16C0D45722660A5D001F23ED /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		16CA51011FC45E9A0042AF9D /* Start.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Start.swift; sourceTree = "<group>"; };
 		16CA51031FC45EA40042AF9D /* Start.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Start.storyboard; sourceTree = "<group>"; };
 		16CA51051FC468370042AF9D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -375,7 +379,9 @@
 		166D3E5C1FB495DA0032BAAD /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				16FE75F2224A438D00B545AF /* Models */,
+				16C0D45C22660CBE001F23ED /* Account */,
+				16C0D45B22660CB6001F23ED /* Channel */,
+				16C0D45A22660CAC001F23ED /* Message */,
 				166D3E5D1FB495F90032BAAD /* CoreDataHelper.swift */,
 				1627723E203C5FB00086127C /* CoreDataHelper+Account.swift */,
 				16277241203C60DB0086127C /* CoreDataHelper+Channel.swift */,
@@ -415,6 +421,34 @@
 				16F30D4C1FDAE6E6006C3DEB /* SignInCollection.swift */,
 			);
 			path = Authentication;
+			sourceTree = "<group>";
+		};
+		16C0D45A22660CAC001F23ED /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				16C0D45622660A5D001F23ED /* Message+CoreDataClass.swift */,
+				16C0D45722660A5D001F23ED /* Message+CoreDataProperties.swift */,
+				161BFB10225745CD00899C6F /* Message+UIModel.swift */,
+			);
+			path = Message;
+			sourceTree = "<group>";
+		};
+		16C0D45B22660CB6001F23ED /* Channel */ = {
+			isa = PBXGroup;
+			children = (
+				16FCF27A1FE46756000348BC /* Channel+CoreDataClass.swift */,
+				16FCF27B1FE46756000348BC /* Channel+CoreDataProperties.swift */,
+			);
+			path = Channel;
+			sourceTree = "<group>";
+		};
+		16C0D45C22660CBE001F23ED /* Account */ = {
+			isa = PBXGroup;
+			children = (
+				16FCF27C1FE46756000348BC /* Account+CoreDataClass.swift */,
+				16FCF27D1FE46756000348BC /* Account+CoreDataProperties.swift */,
+			);
+			path = Account;
 			sourceTree = "<group>";
 		};
 		16CC9B7C21553C6100935AEC /* Views */ = {
@@ -565,18 +599,6 @@
 			path = Virgil;
 			sourceTree = "<group>";
 		};
-		16FE75F2224A438D00B545AF /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				16FCF27C1FE46756000348BC /* Account+CoreDataClass.swift */,
-				16FCF27D1FE46756000348BC /* Account+CoreDataProperties.swift */,
-				16FCF27A1FE46756000348BC /* Channel+CoreDataClass.swift */,
-				16FCF27B1FE46756000348BC /* Channel+CoreDataProperties.swift */,
-				161BFB10225745CD00899C6F /* Message.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
 		16FE75F3224A43A900B545AF /* Twilio */ = {
 			isa = PBXGroup;
 			children = (
@@ -632,7 +654,7 @@
 			children = (
 				429228BC1F96261000DCECDF /* Assets.xcassets */,
 				429228C11F96261000DCECDF /* Info.plist */,
-				1621B8471FB333B100D1ABC1 /* VirgilMessenger-1.xcdatamodeld */,
+				1621B8471FB333B100D1ABC1 /* VirgilMessenger-2.xcdatamodeld */,
 			);
 			path = VirgilMessenger;
 			sourceTree = "<group>";
@@ -815,12 +837,13 @@
 				164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */,
 				16FB2DCC204D806E00346FA0 /* DemoPhotoMessageViewModel.swift in Sources */,
 				16FCF2811FE46756000348BC /* Account+CoreDataProperties.swift in Sources */,
+				16C0D45822660A5D001F23ED /* Message+CoreDataClass.swift in Sources */,
 				163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */,
 				166D3E5E1FB495F90032BAAD /* CoreDataHelper.swift in Sources */,
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
 				16013C7B20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift in Sources */,
 				164E173020AAEECD00AB1AAD /* DemoAudioMessageModel.swift in Sources */,
-				161BFB11225745CD00899C6F /* Message.swift in Sources */,
+				161BFB11225745CD00899C6F /* Message+UIModel.swift in Sources */,
 				16FA91051FFC55A400FE98C7 /* UIViewController+Reachability.swift in Sources */,
 				169367942249181100EF9A42 /* LocalKeyManager.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
@@ -828,7 +851,7 @@
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
 				16013C8120B2CA760043EA29 /* AudioMessagePresenterBuilder.swift in Sources */,
 				164E173220AAEF1900AB1AAD /* DemoAudioMessageHandler.swift in Sources */,
-				1621B8491FB333B100D1ABC1 /* VirgilMessenger-1.xcdatamodeld in Sources */,
+				1621B8491FB333B100D1ABC1 /* VirgilMessenger-2.xcdatamodeld in Sources */,
 				16FCF27F1FE46756000348BC /* Channel+CoreDataProperties.swift in Sources */,
 				16177AA620C01F5C0050BB31 /* ChannelType.swift in Sources */,
 				164E173520AB0BE600AB1AAD /* AudioMessageViewModel.swift in Sources */,
@@ -877,6 +900,7 @@
 				1693679022490BA000EF9A42 /* VirgilAuthorizer.swift in Sources */,
 				162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */,
 				164E173820AB1BED00AB1AAD /* AudioChatInputItem.swift in Sources */,
+				16C0D45922660A5D001F23ED /* Message+CoreDataProperties.swift in Sources */,
 				1644C07B20B85AC500073D99 /* DemoPhotosChatInputItem.swift in Sources */,
 				4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */,
 				16FB2DD5204D87F200346FA0 /* UIColor+RGB.swift in Sources */,
@@ -1092,13 +1116,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		1621B8471FB333B100D1ABC1 /* VirgilMessenger-1.xcdatamodeld */ = {
+		1621B8471FB333B100D1ABC1 /* VirgilMessenger-2.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
 				1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */,
 			);
 			currentVersion = 1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */;
-			path = "VirgilMessenger-1.xcdatamodeld";
+			path = "VirgilMessenger-2.xcdatamodeld";
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

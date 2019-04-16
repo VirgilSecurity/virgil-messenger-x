@@ -23,17 +23,14 @@ class SettingsViewController: ViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
 
-        let identity = CoreDataHelper.shared.currentAccount!.identity!
+        let identity = CoreDataHelper.shared.currentAccount!.identity
         self.usernameLabel.text = identity
 
         let up = identity.uppercased().first!
         self.letterLabel.text = String(describing: up)
 
         if let account = CoreDataHelper.shared.currentAccount {
-            let num = Int(account.numColorPair)
-            let f = UIConstants.colorPairs[num].first
-            let s = UIConstants.colorPairs[num].second
-            self.avatarView.gradientLayer.colors = [f, s]
+            self.avatarView.gradientLayer.colors = [account.colorPair.first, account.colorPair.second]
             self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
         }
     }

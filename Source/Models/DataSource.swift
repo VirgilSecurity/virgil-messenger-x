@@ -44,8 +44,7 @@ class DataSource: ChatDataSourceProtocol {
             let id = self?.nextMessageId ?? 0
 
             guard self != nil,
-                let anyMessage = messages[safe: messageNumber],
-                let message = anyMessage as? Message else {
+                let message = messages[safe: messageNumber] else {
                     return MessageFactory.createCorruptedMessageModel(uid: id)
             }
 
