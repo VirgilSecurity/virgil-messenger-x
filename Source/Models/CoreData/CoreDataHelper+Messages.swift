@@ -11,21 +11,6 @@ import UIKit
 import CoreData
 
 extension CoreDataHelper {
-    enum MessageType: String {
-        case text
-        case photo
-        case audio
-
-        init?(_ type: TwilioHelper.MediaType) {
-            switch type {
-            case .photo:
-                self = .photo
-            case .audio:
-                self = .audio
-            }
-        }
-    }
-
     func saveMessage(_ message: Message, to channel: Channel) throws {
         let messages = channel.mutableOrderedSetValue(forKey: Keys.message.rawValue)
         messages.add(message)

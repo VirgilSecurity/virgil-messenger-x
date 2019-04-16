@@ -16,14 +16,15 @@ extension Message {
         }
 
         guard let date = self.date,
-            let type = self.type else {
+            let rawType = self.type,
+            let type = MessageType(rawValue: rawType) else {
                 return MessageFactory.createCorruptedMessageModel(uid: id, isIncoming: self.isIncoming)
         }
 
         let resultMessage: DemoMessageModelProtocol
 
         switch type {
-        case CoreDataHelper.MessageType.text.rawValue:
+        case .text:
             guard let body = self.body else {
                 return corruptedMessage()
             }
@@ -33,7 +34,7 @@ extension Message {
                                                                   isIncoming: self.isIncoming,
                                                                   status: .success,
                                                                   date: date)
-        case CoreDataHelper.MessageType.photo.rawValue:
+        case .photo:
             guard let media = self.media, let image = UIImage(data: media) else {
                 return corruptedMessage()
             }
@@ -44,7 +45,7 @@ extension Message {
                                                                    isIncoming: self.isIncoming,
                                                                    status: .success,
                                                                    date: date)
-        case CoreDataHelper.MessageType.audio.rawValue:
+        case .audio:
             guard let media = self.media, let duration = try? AVAudioPlayer(data: media).duration else {
                 return corruptedMessage()
             }
@@ -55,8 +56,6 @@ extension Message {
                                                                    isIncoming: self.isIncoming,
                                                                    status: .success,
                                                                    date: date)
-        default:
-            return corruptedMessage()
         }
 
         return resultMessage

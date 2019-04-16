@@ -64,7 +64,7 @@ class MessageProcessor {
                                      channel: Channel) throws -> Message {
         guard let rawValue = message.mediaType,
             let mediaType = TwilioHelper.MediaType(rawValue: rawValue),
-            let type = CoreDataHelper.MessageType(mediaType) else {
+            let type = MessageType(mediaType) else {
                 throw NSError()
         }
 
