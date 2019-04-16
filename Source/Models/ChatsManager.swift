@@ -56,26 +56,18 @@ public enum ChatsManager {
     public static func joinGroup(with members: [String],
                                  name: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            var getCardOperations: [CallbackOperation<String>] = []
-
-            let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateGroupChannelOperation(name: name, members: members)
-
-            members.forEach {
-                let getCardOperation = VirgilHelper.shared.makeGetCardOperation(identity: $0)
-                createCoreDataChannelOperation.addDependency(getCardOperation)
-                getCardOperations.append(getCardOperation)
-            }
-
-            let operations = getCardOperations + [createCoreDataChannelOperation]
-
+            let getCardsOperation = VirgilHelper.shared.makeGetCardsOperation(identities: members)
+            let createCoreDataGroupOperation = CoreDataHelper.shared.makeCreateGroupChannelOperation(name: name, members: members)
             let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
-            operations.forEach {
-                completionOperation.addDependency($0)
-            }
+            let operations = [getCardsOperation, createCoreDataGroupOperation, completionOperation]
+
+            createCoreDataGroupOperation.addDependency(getCardsOperation)
+            completionOperation.addDependency(getCardsOperation)
+            completionOperation.addDependency(createCoreDataGroupOperation)
 
             let queue = OperationQueue()
-            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+            queue.addOperations(operations, waitUntilFinished: false)
         }
     }
 
@@ -97,7 +89,7 @@ public enum ChatsManager {
 
             startProgressBar()
 
-            let getCardOperation = VirgilHelper.shared.makeGetCardOperation(identity: identity)
+            let getCardOperation = VirgilHelper.shared.makeGetCardsOperation(identities: [identity])
             let createTwilioChannelOperation = TwilioHelper.shared.makeCreateSingleChannelOperation(with: identity)
             let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateSingleChannelOperation(with: identity)
             let completionOperation = OperationUtils.makeCompletionOperation { (_: Void?, error: Error?) in completion(error) }
@@ -123,9 +115,9 @@ public enum ChatsManager {
     public static func joinSingle(with identity: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                let card = try VirgilHelper.shared.makeGetCardOperation(identity: identity).startSync().getResult()
+                let cards = try VirgilHelper.shared.makeGetCardsOperation(identities: [identity]).startSync().getResult()
 
-                try CoreDataHelper.shared.createChannel(type: .single, name: identity, cards: [card])
+                try CoreDataHelper.shared.createChannel(type: .single, name: identity, cards: cards)
 
                 completion((), nil)
             } catch {

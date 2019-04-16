@@ -30,8 +30,8 @@ class MessageProcessor {
                                          isIncoming: isIncoming,
                                          channel: channel)
         } else if let body = message.body {
-            return try self.processText(message: message,
-                                        body: body, date: date,
+            return try self.processText(body: body,
+                                        date: date,
                                         isIncoming: isIncoming,
                                         channel: channel)
         } else {
@@ -39,8 +39,7 @@ class MessageProcessor {
         }
     }
 
-    private static func processText(message: TCHMessage,
-                                    body: String,
+    private static func processText(body: String,
                                     date: Date,
                                     isIncoming: Bool,
                                     channel: Channel) throws -> Message  {

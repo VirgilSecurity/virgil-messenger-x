@@ -86,20 +86,20 @@ public class VirgilHelper {
         }
     }
 
-    func makeGetCardOperation(identity: String) -> CallbackOperation<String> {
+    func makeGetCardsOperation(identities: [String]) -> CallbackOperation<[String]> {
         return CallbackOperation { _, completion in
             do {
-                let cards = try self.client.searchCards(withIdentity: identity,
+                let cards = try self.client.searchCards(identities: identities,
                                                         selfIdentity: self.identity,
                                                         verifier: self.verifier)
 
-                guard let card = cards.first else {
+                guard !cards.isEmpty else {
                     throw UserFriendlyError.userNotFound
                 }
 
-                let exportedCard = try card.getRawCard().exportAsBase64EncodedString()
+                let exportedCards = try cards.map { try $0.getRawCard().exportAsBase64EncodedString() }
 
-                completion(exportedCard, nil)
+                completion(exportedCards, nil)
             } catch {
                 completion(nil, error)
             }

@@ -14,14 +14,7 @@ extension CoreDataHelper {
     func makeCreateGroupChannelOperation(name: String, members: [String], cards: [String]? = nil) -> CallbackOperation<Void> {
         return CallbackOperation<Void> { operation, completion in
             do {
-                var cards: [String] = cards ?? []
-
-                if cards.isEmpty {
-                    for _ in members {
-                        let card: String = try operation.findDependencyResult()
-                        cards.append(card)
-                    }
-                }
+                let cards: [String] = try cards ?? operation.findDependencyResult()
 
                 try self.createChannel(type: .group, name: name, cards: cards)
 
@@ -36,9 +29,9 @@ extension CoreDataHelper {
     func makeCreateSingleChannelOperation(with identity: String) -> CallbackOperation<Void> {
         return CallbackOperation<Void> { operation, completion in
             do {
-                let card: String = try operation.findDependencyResult()
+                let cards: [String] = try operation.findDependencyResult()
 
-                try self.createChannel(type: .single, name: identity, cards: [card])
+                try self.createChannel(type: .single, name: identity, cards: cards)
 
                 completion((), nil)
             }

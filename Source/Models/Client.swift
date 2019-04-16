@@ -56,7 +56,7 @@ public class Client {
 
 // MARK: - Queries
 extension Client {
-    public func searchCards(withIdentity identity: String,
+    public func searchCards(identities: [String],
                             selfIdentity: String,
                             verifier: VirgilCardVerifier) throws -> [Card] {
         let provider = self.makeAccessTokenProvider(identity: selfIdentity)
@@ -64,7 +64,7 @@ extension Client {
         let params = CardManagerParams(cardCrypto: self.cardCrypto, accessTokenProvider: provider, cardVerifier: verifier)
         let cardManager = CardManager(params: params)
 
-        return try cardManager.searchCards(identities: [identity]).startSync().getResult()
+        return try cardManager.searchCards(identities: identities).startSync().getResult()
     }
 
     public func signUp(identity: String,
