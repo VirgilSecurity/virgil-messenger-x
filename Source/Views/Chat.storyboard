@@ -21,6 +21,7 @@
                         <viewLayoutGuide key="safeArea" id="bmW-g9-FNa"/>
                     </view>
                     <navigationItem key="navigationItem" id="DvG-84-EM5">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="sik-Qm-usl"/>
                         <barButtonItem key="rightBarButtonItem" id="wMM-cd-h8e">
                             <view key="customView" contentMode="scaleToFill" id="0iQ-mF-2M9" customClass="GradientView" customModule="VirgilMessenger" customModuleProvider="target">
                                 <rect key="frame" x="324" y="4.5" width="35" height="35"/>
@@ -34,6 +35,7 @@
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" red="0.41568627450000001" green="0.78039215689999997" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstItem="ilc-h9-8kd" firstAttribute="centerY" secondItem="0iQ-mF-2M9" secondAttribute="centerY" id="1cB-LS-1Yq"/>
                                     <constraint firstAttribute="width" constant="35" id="5KY-el-SAy"/>
@@ -46,17 +48,37 @@
                                         <integer key="value" value="17"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="osw-29-x6d" appends="YES" id="h2N-0z-l4d"/>
+                                </connections>
                             </view>
+                            <connections>
+                                <action selector="showChatDetails:" destination="XsE-hb-Si4" id="1uP-Vk-eJn"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="avatarView" destination="0iQ-mF-2M9" id="D6N-2i-TTB"/>
                         <outlet property="letterLabel" destination="ilc-h9-8kd" id="964-aO-fAv"/>
+                        <segue destination="ZQo-cO-mEW" kind="show" identifier="goToGroupInfo" id="ENG-Sa-gZu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7G7-HX-4MO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="osw-29-x6d">
+                    <connections>
+                        <action selector="showChatDetails:" destination="XsE-hb-Si4" id="oMc-kj-IQe"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="400.80000000000001" y="-160.56971514242881"/>
+            <point key="canvasLocation" x="398" y="-170"/>
+        </scene>
+        <!--GroupInfo-->
+        <scene sceneID="Zut-pC-nz1">
+            <objects>
+                <viewControllerPlaceholder storyboardName="GroupInfo" id="ZQo-cO-mEW" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DkF-Yl-o6t" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1049" y="-171"/>
         </scene>
     </scenes>
 </document>

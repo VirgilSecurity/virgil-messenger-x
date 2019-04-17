@@ -31,10 +31,6 @@ import PKHUD
 class ChatViewController: BaseChatViewController {
     @IBOutlet weak var avatarView: GradientView!
     @IBOutlet weak var letterLabel: UILabel!
-    
-    var messageSender: MessageSender {
-        return self.dataSource.messageSender
-    }
 
     public var channel: Channel!
 
@@ -51,14 +47,14 @@ class ChatViewController: BaseChatViewController {
         return statusBarHidden
     }
 
-    var dataSource: DataSource! {
-        didSet {
-            self.chatDataSource = self.dataSource
-        }
-    }
+    lazy private var dataSource: DataSource = {
+        let dataSource = DataSource(count: self.channel.messages.count)
+        self.chatDataSource = dataSource
+        return dataSource
+    }()
 
-    lazy private var baseMessageHandler: BaseMessageHandler! = {
-        return BaseMessageHandler(messageSender: self.messageSender)
+    lazy private var baseMessageHandler: BaseMessageHandler = {
+        return BaseMessageHandler(messageSender: self.dataSource.messageSender)
     }()
 
     override func viewDidLoad() {
@@ -84,6 +80,9 @@ class ChatViewController: BaseChatViewController {
         titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
         titleButton.setTitle(self.channel.name, for: .normal)
 
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(showChatDetails(_:)))
+        titleButton.addGestureRecognizer(tapRecognizer)
+
         self.navigationItem.titleView = titleButton
     }
 
@@ -94,19 +93,21 @@ class ChatViewController: BaseChatViewController {
             navigationController?.viewControllers = [rootVC, self]
         }
 
-        if let dataSource = self.dataSource {
-            NotificationCenter.default.removeObserver(dataSource)
-        }
+        NotificationCenter.default.removeObserver(self.dataSource)
         
         self.dataSource.addObserver()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        if let dataSource = self.dataSource {
-            NotificationCenter.default.removeObserver(dataSource)
-        }
+        NotificationCenter.default.removeObserver(self.dataSource)
 
         NotificationCenter.default.removeObserver(self)
+    }
+
+    @IBAction @objc func showChatDetails(_ sender: Any) {
+        if self.channel.type == .group {
+            self.performSegue(withIdentifier: "goToGroupInfo", sender: self)
+        }
     }
 
     var chatInputPresenter: BasicChatInputBarPresenter!

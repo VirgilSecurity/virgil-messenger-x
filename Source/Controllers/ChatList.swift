@@ -137,7 +137,6 @@ extension ChatListViewController: CellTapDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let chatController = segue.destination as? ChatViewController,
             let channel = self.selectedChannel {
-                chatController.dataSource = DataSource(count: channel.messages.count)
                 chatController.channel = channel
         }
 

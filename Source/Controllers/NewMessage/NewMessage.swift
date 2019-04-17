@@ -28,7 +28,6 @@ class NewMessageViewController: ViewController {
 
         } else if let chatController = segue.destination as? ChatViewController,
             let channel = self.selectedUser {
-                chatController.dataSource = DataSource(count: channel.messages.count)
                 chatController.channel = channel
         }
     }

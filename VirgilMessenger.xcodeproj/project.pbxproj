@@ -39,6 +39,7 @@
 		1658BA181FD97497005EF9C1 /* Date+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1658BA171FD97497005EF9C1 /* Date+Utils.swift */; };
 		1658BA1D1FD9A8BC005EF9C1 /* InputBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1658BA1C1FD9A8BC005EF9C1 /* InputBar.swift */; };
 		1658BA211FD9B08F005EF9C1 /* InputBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1658BA201FD9B08F005EF9C1 /* InputBar.xib */; };
+		166BFAA222676C7D00EF72AD /* GroupInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 166BFAA122676C7D00EF72AD /* GroupInfo.storyboard */; };
 		166D3E5E1FB495F90032BAAD /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166D3E5D1FB495F90032BAAD /* CoreDataHelper.swift */; };
 		167C68451FADDB7800E6E448 /* VirgilHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167C68441FADDB7800E6E448 /* VirgilHelper.swift */; };
 		168E54CC22395DDC00B6E822 /* ColorPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168E54CB22395DDC00B6E822 /* ColorPair.swift */; };
@@ -187,6 +188,7 @@
 		1658BA171FD97497005EF9C1 /* Date+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Utils.swift"; sourceTree = "<group>"; };
 		1658BA1C1FD9A8BC005EF9C1 /* InputBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBar.swift; sourceTree = "<group>"; };
 		1658BA201FD9B08F005EF9C1 /* InputBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputBar.xib; sourceTree = "<group>"; };
+		166BFAA122676C7D00EF72AD /* GroupInfo.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = GroupInfo.storyboard; path = Source/GroupInfo.storyboard; sourceTree = SOURCE_ROOT; };
 		166D3E5D1FB495F90032BAAD /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
 		167C68441FADDB7800E6E448 /* VirgilHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirgilHelper.swift; sourceTree = "<group>"; };
 		168E54CB22395DDC00B6E822 /* ColorPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPair.swift; sourceTree = "<group>"; };
@@ -464,6 +466,7 @@
 				16EF7145225E2E3C00854DBF /* NewMessage.storyboard */,
 				162E22E8225F7E4E00AAE7C4 /* NewGroup.storyboard */,
 				429228EA1F96405800DCECDF /* Chat.storyboard */,
+				166BFAA122676C7D00EF72AD /* GroupInfo.storyboard */,
 				16CA510F1FC5D9960042AF9D /* Settings.storyboard */,
 			);
 			path = Views;
@@ -766,6 +769,7 @@
 				16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */,
 				16CC9B7B21552D5800935AEC /* TabBar.storyboard in Resources */,
 				423BDA7A1F97600A00C3EE9B /* ChatList.storyboard in Resources */,
+				166BFAA222676C7D00EF72AD /* GroupInfo.storyboard in Resources */,
 				16EF7146225E2E3C00854DBF /* NewMessage.storyboard in Resources */,
 				16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */,
 				1644C07920B720F000073D99 /* View.xcassets in Resources */,
