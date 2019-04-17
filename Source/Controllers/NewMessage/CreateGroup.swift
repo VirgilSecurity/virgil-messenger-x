@@ -13,6 +13,7 @@ class CreateGroupViewController: ViewController {
     @IBOutlet weak var letterLabel: UILabel!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var createButton: UIBarButtonItem!
+    @IBOutlet weak var usersListHeight: NSLayoutConstraint!
 
     public var members: [Channel] = []
 
@@ -60,5 +61,17 @@ class CreateGroupViewController: ViewController {
 
     @IBAction func backgroundTap(_ sender: Any) {
         self.view.endEditing(true)
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+
+        if let userList = segue.destination as? UsersListViewController {
+
+            userList.users = self.members
+
+            let height = userList.tableView.rowHeight
+            self.usersListHeight.constant = CGFloat(self.members.count) * height
+        }
     }
 }

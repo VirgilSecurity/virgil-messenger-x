@@ -580,10 +580,10 @@
 		16FC67992260A3CF0044CC70 /* NewMessage */ = {
 			isa = PBXGroup;
 			children = (
+				16F8F3BA22649A7F00143FB7 /* NewMessage.swift */,
 				162E22E6225F76BF00AAE7C4 /* NewMessageTable.swift */,
 				162E22EA225F8F6000AAE7C4 /* ChooseGroupMembers.swift */,
 				16FC679A2260D7860044CC70 /* CreateGroup.swift */,
-				16F8F3BA22649A7F00143FB7 /* NewMessage.swift */,
 			);
 			path = NewMessage;
 			sourceTree = "<group>";
