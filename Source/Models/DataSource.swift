@@ -32,11 +32,10 @@ class DataSource: ChatDataSourceProtocol {
     let count: Int
     var nextMessageId: Int = 0
     let preferredMaxWindowSize = 500
-    private let pageSize: Int
+    private let pageSize = ChatConstants.chatPageSize
     var slidingWindow: SlidingDataSource<ChatItemProtocol>!
 
-    init(count: Int, pageSize: Int) {
-        self.pageSize = pageSize
+    init(count: Int) {
         self.count = count
 
         self.slidingWindow = SlidingDataSource(count: count, pageSize: pageSize) { [weak self] (messageNumber, messages) -> ChatItemProtocol in

@@ -131,9 +131,9 @@ class TwilioHelper: NSObject {
 
 // Setters
 extension TwilioHelper {
-    func setChannel(withName name: String) {
+    func setChannel(_ coreDataChannel: Channel) {
         for channel in channels.subscribedChannels() {
-            if self.getName(of: channel) == name {
+            if self.getName(of: channel) == coreDataChannel.name {
                 self.currentChannel = channel
                 return
             }

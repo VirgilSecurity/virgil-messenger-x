@@ -13,7 +13,7 @@ class NewMessageViewController: ViewController {
 
     private let users: [Channel] = CoreDataHelper.shared.getSingleChannels()
 
-    private var selectedChannelMessagesCount: Int = 0
+    private var selectedUser: Channel?
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
@@ -26,12 +26,10 @@ class NewMessageViewController: ViewController {
             let height = userList.tableView.rowHeight
             self.usersListHeight.constant = CGFloat(self.users.count) * height
 
-        } else if let chatController = segue.destination as? ChatViewController {
-            let pageSize = ChatConstants.chatPageSize
-
-            let dataSource = DataSource(count: self.selectedChannelMessagesCount, pageSize: pageSize)
-            chatController.dataSource = dataSource
-            chatController.messageSender = dataSource.messageSender
+        } else if let chatController = segue.destination as? ChatViewController,
+            let channel = self.selectedUser {
+                chatController.dataSource = DataSource(count: channel.messages.count)
+                chatController.channel = channel
         }
     }
 }
@@ -40,15 +38,10 @@ extension NewMessageViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         if let _ = cell as? UsersListCell {
             guard let user = self.users[safe: cell.tag] else {
-                    return
+                return
             }
 
-            TwilioHelper.shared.setChannel(withName: user.name)
-            CoreDataHelper.shared.setCurrent(channel: user)
-            VirgilHelper.shared.setChannelCards(user.cards)
-
-            let count = user.messages.count
-            self.selectedChannelMessagesCount = count
+            self.selectedUser = user
 
             self.performSegue(withIdentifier: "goToChat", sender: self)
         }

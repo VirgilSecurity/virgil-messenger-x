@@ -15,7 +15,7 @@ class ChatListViewController: ViewController {
 
     static let name = "ChatList"
 
-    private var currentChannelMessegesCount: Int = 0
+    private var selectedChannel: Channel?
 
     private let configurator = Configurator()
 
@@ -123,17 +123,11 @@ extension ChatListViewController: UITableViewDataSource {
 extension ChatListViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         if let username = (cell as! ChatListCell).usernameLabel.text {
-            TwilioHelper.shared.setChannel(withName: username)
-
-            guard let channel = CoreDataHelper.shared.loadChannel(withName: username) else {
-                Log.error("Channel do not exist in Core Data")
+            guard let selectedChannel = CoreDataHelper.shared.loadChannel(withName: username) else {
                 return
             }
 
-            VirgilHelper.shared.setChannelCards(channel.cards)
-
-            let count = channel.messages.count
-            self.currentChannelMessegesCount = count
+            self.selectedChannel = selectedChannel
 
             self.performSegue(withIdentifier: "goToChat", sender: self)
         }
@@ -141,14 +135,12 @@ extension ChatListViewController: CellTapDelegate {
 
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-
-        if let chatController = segue.destination as? ChatViewController {
-            let pageSize = ChatConstants.chatPageSize
-
-            let dataSource = DataSource(count: self.currentChannelMessegesCount, pageSize: pageSize)
-            chatController.dataSource = dataSource
-            chatController.messageSender = dataSource.messageSender
+        if let chatController = segue.destination as? ChatViewController,
+            let channel = self.selectedChannel {
+                chatController.dataSource = DataSource(count: channel.messages.count)
+                chatController.channel = channel
         }
+
+        super.prepare(for: segue, sender: sender)
     }
 }

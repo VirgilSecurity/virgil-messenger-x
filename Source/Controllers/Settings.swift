@@ -23,16 +23,13 @@ class SettingsViewController: ViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
 
-        let identity = CoreDataHelper.shared.currentAccount!.identity
-        self.usernameLabel.text = identity
+        let account = CoreDataHelper.shared.currentAccount!
+        self.usernameLabel.text = account.identity
 
-        let up = identity.uppercased().first!
-        self.letterLabel.text = String(describing: up)
+        self.letterLabel.text = String(describing: account.letter)
 
-        if let account = CoreDataHelper.shared.currentAccount {
-            self.avatarView.gradientLayer.colors = [account.colorPair.first, account.colorPair.second]
-            self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
-        }
+        self.avatarView.gradientLayer.colors = [account.colorPair.first, account.colorPair.second]
+        self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
     }
 
     override func viewWillAppear(_ animated: Bool) {

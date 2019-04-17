@@ -29,9 +29,18 @@ import AVFoundation
 import PKHUD
 
 class ChatViewController: BaseChatViewController {
-    var messageSender: MessageSender!
+    @IBOutlet weak var avatarView: GradientView!
+    @IBOutlet weak var letterLabel: UILabel!
+    
+    var messageSender: MessageSender {
+        return self.dataSource.messageSender
+    }
+
+    public var channel: Channel!
+
     private var soundPlayer: AVAudioPlayer?
     weak private var cachedAudioModel: DemoAudioMessageViewModel?
+
     private var statusBarHidden: Bool = false {
         didSet {
             self.setNeedsStatusBarAppearanceUpdate()
@@ -54,20 +63,26 @@ class ChatViewController: BaseChatViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         super.chatItemsDecorator = ChatItemsDemoDecorator()
 
         super.inputContainer.backgroundColor = UIColor(rgb: 0x20232B)
         super.bottomSpaceView.backgroundColor = UIColor(rgb: 0x20232B)
         super.collectionView?.backgroundColor = UIColor(rgb: 0x2B303B)
 
-        self.navigationItem.title = self.title
-        self.navigationController?.navigationBar.tintColor = .white
+        self.letterLabel.text = self.channel.letter
+        self.avatarView.gradientLayer.colors = [self.channel.colorPair.first, self.channel.colorPair.second]
+        self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+
+        CoreDataHelper.shared.setCurrent(channel: self.channel)
+        TwilioHelper.shared.setChannel(self.channel)
+        VirgilHelper.shared.setChannelCards(self.channel.cards)
 
         let titleButton = UIButton(type: .custom)
         titleButton.frame = CGRect(x: 0, y: 0, width: 200, height: 21)
         titleButton.tintColor = .white
         titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
-        titleButton.setTitle(CoreDataHelper.shared.currentChannel?.name ?? "Error name", for: .normal)
+        titleButton.setTitle(self.channel.name, for: .normal)
 
         self.navigationItem.titleView = titleButton
     }
@@ -77,10 +92,6 @@ class ChatViewController: BaseChatViewController {
 
         if let rootVC = navigationController?.viewControllers.first {
             navigationController?.viewControllers = [rootVC, self]
-        }
-        
-        if let title = CoreDataHelper.shared.currentChannel?.name {
-            TwilioHelper.shared.setChannel(withName: title)
         }
 
         if let dataSource = self.dataSource {
@@ -99,21 +110,24 @@ class ChatViewController: BaseChatViewController {
     }
 
     var chatInputPresenter: BasicChatInputBarPresenter!
+
     override func createChatInputView() -> UIView {
         let chatInputView = InputBar.loadNib()
         var appearance = ChatInputBarAppearance()
 
         appearance.textInputAppearance.textColor = .white
         appearance.textInputAppearance.font = appearance.textInputAppearance.font.withSize(CGFloat(20))
-        appearance.sendButtonAppearance.titleColors = [
-            UIControlStateWrapper(state: UIControl.State.disabled) : UIColor(rgb: 0x585A60)
-        ]
+        appearance.sendButtonAppearance.titleColors = [UIControlStateWrapper(state: .disabled): UIColor(rgb: 0x585A60)]
         appearance.sendButtonAppearance.font = appearance.textInputAppearance.font
 
         appearance.sendButtonAppearance.title = NSLocalizedString("Send", comment: "")
         appearance.textInputAppearance.placeholderText = NSLocalizedString("Message...", comment: "")
         appearance.textInputAppearance.placeholderFont = appearance.textInputAppearance.font
-        self.chatInputPresenter = BasicChatInputBarPresenter(chatInputBar: chatInputView, chatInputItems: self.createChatInputItems(), chatInputBarAppearance: appearance)
+
+        self.chatInputPresenter = BasicChatInputBarPresenter(chatInputBar: chatInputView,
+                                                             chatInputItems: self.createChatInputItems(),
+                                                             chatInputBarAppearance: appearance)
+
         chatInputView.maxCharactersCount = ChatConstants.chatMaxCharectersCount
 
         return chatInputView
