@@ -86,7 +86,7 @@ public class VirgilHelper {
         }
     }
 
-    func makeGetCardsOperation(identities: [String]) -> CallbackOperation<[String]> {
+    func makeGetCardsOperation(identities: [String]) -> CallbackOperation<[Card]> {
         return CallbackOperation { _, completion in
             do {
                 let cards = try self.client.searchCards(identities: identities,
@@ -97,9 +97,7 @@ public class VirgilHelper {
                     throw UserFriendlyError.userNotFound
                 }
 
-                let exportedCards = try cards.map { try $0.getRawCard().exportAsBase64EncodedString() }
-
-                completion(exportedCards, nil)
+                completion(cards, nil)
             } catch {
                 completion(nil, error)
             }
@@ -124,16 +122,7 @@ public class VirgilHelper {
                                           cardVerifier: self.verifier)
     }
 
-    func setChannelCards(_ rawCards: [String]) {
-        self.channelCards = []
-
-        do {
-            for rawCard in rawCards {
-                let card = try self.importCard(fromBase64Encoded: rawCard)
-                self.channelCards.append(card)
-            }
-        } catch {
-            Log.error("Importing Card failed with: \(error.localizedDescription)")
-        }
+    func setChannelCards(_ cards: [Card]) {
+        self.channelCards = cards
     }
 }

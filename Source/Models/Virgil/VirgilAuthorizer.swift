@@ -31,15 +31,17 @@ public class VirgilAuthorizer {
         self.verifier = verifier
     }
 
-    public func signIn(identity: String, card: String) throws {
+    public func signIn(identity: String) throws {
         let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
 
         guard try localKeyManager.exists() else {
             throw UserFriendlyError.noUserOnDevice
         }
+
+        try VirgilHelper.initialize(identity: identity)
     }
 
-    public func signUp(identity: String) throws -> String {
+    public func signUp(identity: String) throws {
         let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
 
         guard try !localKeyManager.exists() else {
@@ -53,7 +55,7 @@ public class VirgilAuthorizer {
         let user = UserData(privateKey: keyPair.privateKey, card: card)
         try localKeyManager.store(user)
 
-        return try CardManager.exportCardAsBase64EncodedString(card)
+        try VirgilHelper.initialize(identity: identity)
     }
 
     public func logOut(identity: String) {

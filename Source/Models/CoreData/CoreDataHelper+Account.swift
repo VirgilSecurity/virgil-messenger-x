@@ -8,9 +8,10 @@
 
 import Foundation
 import CoreData
+import VirgilSDK
 
 extension CoreDataHelper {
-    func createAccount(withIdentity identity: String, card: String) throws {
+    func createAccount(withIdentity identity: String) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Entities.account.rawValue, in: self.managedContext) else {
             throw CoreDataHelperError.entityNotFound
         }
@@ -18,7 +19,6 @@ extension CoreDataHelper {
         let account = Account(entity: entity, insertInto: self.managedContext)
 
         account.identity = identity
-        account.card = card
         account.setupColorPair()
 
         self.append(account: account)
@@ -27,7 +27,7 @@ extension CoreDataHelper {
         self.appDelegate.saveContext()
     }
 
-    func loadAccount(withIdentity username: String) throws -> String {
+    func loadAccount(withIdentity username: String) throws {
         let account = self.accounts.first { $0.identity == username }
 
         guard let accountToLoad = account else {
@@ -35,8 +35,6 @@ extension CoreDataHelper {
         }
 
         self.setCurrent(account: accountToLoad)
-
-        return accountToLoad.card
     }
 
     func getAccount(withIdentity username: String) -> Account? {

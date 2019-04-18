@@ -43,11 +43,6 @@ class CoreDataHelper {
         case type
     }
 
-    let lastMessageIdentifier = [
-        MessageType.photo.rawValue: "Photo",
-        MessageType.audio.rawValue: "Voice Message"
-    ]
-
     private init() {
         self.managedContext = self.appDelegate.persistentContainer.viewContext
 

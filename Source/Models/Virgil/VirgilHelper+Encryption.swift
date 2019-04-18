@@ -51,7 +51,7 @@ extension VirgilHelper {
         }
     }
 
-    func decrypt(_ encrypted: String, withCard: String? = nil) throws -> String {
+    func decrypt(_ encrypted: String, withCard: Card? = nil) throws -> String {
         guard let data = Data(base64Encoded: encrypted) else {
             Log.error("Converting utf8 string to data failed")
             throw NSError()
@@ -59,7 +59,7 @@ extension VirgilHelper {
 
         let tryCard: Card?
         if let receiverCard = withCard {
-            tryCard = self.buildCard(receiverCard)
+            tryCard = receiverCard
         } else {
             tryCard = self.channelCards.first
         }

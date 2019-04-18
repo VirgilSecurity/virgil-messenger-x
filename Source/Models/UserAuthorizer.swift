@@ -30,15 +30,15 @@ public class UserAuthorizer {
             throw UserAuthorizerError.noIdentityAtDefaults
         }
 
-        let card = try CoreDataHelper.shared.loadAccount(withIdentity: identity)
+        try CoreDataHelper.shared.loadAccount(withIdentity: identity)
 
-        try self.virgilAuthorizer.signIn(identity: identity, card: card)
+        try self.virgilAuthorizer.signIn(identity: identity)
     }
 
     public func signIn(identity: String) throws {
-        let card = try CoreDataHelper.shared.loadAccount(withIdentity: identity)
+        try CoreDataHelper.shared.loadAccount(withIdentity: identity)
 
-        try self.virgilAuthorizer.signIn(identity: identity, card: card)
+        try self.virgilAuthorizer.signIn(identity: identity)
 
         UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
     }
@@ -48,9 +48,9 @@ public class UserAuthorizer {
 
         self.queue!.async {
             do {
-                let card = try self.virgilAuthorizer.signUp(identity: identity)
+                _ = try self.virgilAuthorizer.signUp(identity: identity)
 
-                try CoreDataHelper.shared.createAccount(withIdentity: identity, card: card)
+                try CoreDataHelper.shared.createAccount(withIdentity: identity)
 
                 UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 

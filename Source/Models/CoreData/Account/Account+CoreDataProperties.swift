@@ -11,6 +11,5 @@ import Foundation
 import CoreData
 
 extension Account {
-    @NSManaged public var card: String
     @NSManaged public var identity: String
 }

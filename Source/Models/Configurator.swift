@@ -17,8 +17,6 @@ public class Configurator {
                 throw NSError()
             }
 
-            try VirgilHelper.initialize(identity: identity)
-
             let initPFSOperation = VirgilHelper.shared.makeInitPFSOperation(identity: identity)
             let initTwilioOperation = TwilioHelper.makeInitTwilioOperation(identity: identity,
                                                                            client: VirgilHelper.shared.client)

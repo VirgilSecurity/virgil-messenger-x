@@ -11,10 +11,10 @@ import CoreData
 import VirgilSDK
 
 extension CoreDataHelper {
-    func makeCreateGroupChannelOperation(name: String, members: [String], cards: [String]? = nil) -> CallbackOperation<Void> {
+    func makeCreateGroupChannelOperation(name: String, members: [String], cards: [Card]? = nil) -> CallbackOperation<Void> {
         return CallbackOperation<Void> { operation, completion in
             do {
-                let cards: [String] = try cards ?? operation.findDependencyResult()
+                let cards: [Card] = try cards ?? operation.findDependencyResult()
 
                 try self.createChannel(type: .group, name: name, cards: cards)
 
@@ -29,7 +29,7 @@ extension CoreDataHelper {
     func makeCreateSingleChannelOperation(with identity: String) -> CallbackOperation<Void> {
         return CallbackOperation<Void> { operation, completion in
             do {
-                let cards: [String] = try operation.findDependencyResult()
+                let cards: [Card] = try operation.findDependencyResult()
 
                 try self.createChannel(type: .single, name: identity, cards: cards)
 
@@ -41,7 +41,7 @@ extension CoreDataHelper {
         }
     }
 
-    func createChannel(type: ChannelType, name: String, cards: [String]) throws {
+    func createChannel(type: ChannelType, name: String, cards: [Card]) throws {
         guard let account = self.currentAccount else {
             throw CoreDataHelperError.nilCurrentAccount
         }

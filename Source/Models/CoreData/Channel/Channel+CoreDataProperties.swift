@@ -11,7 +11,6 @@ import Foundation
 import CoreData
 
 extension Channel {
-    @NSManaged public var cards: [String]
     @NSManaged public var name: String
     @NSManaged public var account: Account
 }

@@ -105,7 +105,7 @@ extension Client {
         }
 
         return try CardManager.importCard(fromJson: exportedCard,
-                                          cardCrypto: cardCrypto,
+                                          cardCrypto: self.cardCrypto,
                                           cardVerifier: verifier)
     }
 

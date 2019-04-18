@@ -7,17 +7,32 @@
 //
 //
 
-import Foundation
 import CoreData
+import VirgilSDK
 
 @objc(Channel)
 public class Channel: NSManagedObject {
     @NSManaged private var rawType: String
     @NSManaged private var numColorPair: Int32
     @NSManaged private var orderedMessages: NSOrderedSet?
+    @NSManaged public var rawCards: [String]
 
     public var messages: [Message] {
         return self.orderedMessages?.array as? [Message] ?? []
+    }
+
+    public var cards: [Card] {
+        get {
+            let cards: [Card] = self.rawCards.map {
+                try! VirgilHelper.shared.importCard(fromBase64Encoded: $0)
+            }
+
+            return cards
+        }
+
+        set {
+            self.rawCards = newValue.map { try! $0.getRawCard().exportAsBase64EncodedString() }
+        }
     }
 
     public var type: ChannelType {
