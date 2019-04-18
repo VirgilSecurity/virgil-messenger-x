@@ -125,7 +125,10 @@ public enum ChatsManager {
             }
         }
     }
+}
 
+// Update Chats operations
+extension ChatsManager {
     public static func makeUpdateChannelsOperation() -> CallbackOperation<Void> {
         return CallbackOperation<Void> { _, completion in
             let twilioChannels = TwilioHelper.shared.channels.subscribedChannels()

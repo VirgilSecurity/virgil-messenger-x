@@ -11,7 +11,7 @@
         <attribute name="rawCards" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
         <attribute name="rawType" attributeType="String" minValueString="1" syncable="YES"/>
         <relationship name="account" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="orderedChannels" inverseEntity="Account" syncable="YES"/>
-        <relationship name="orderedMembers" toMany="YES" minCount="1" deletionRule="Nullify" ordered="YES" destinationEntity="User" inverseName="orderedChannels" inverseEntity="User" syncable="YES"/>
+        <relationship name="orderedMembers" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="User" inverseName="orderedChannels" inverseEntity="User" syncable="YES"/>
         <relationship name="orderedMessages" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Message" inverseName="channel" inverseEntity="Message" syncable="YES"/>
     </entity>
     <entity name="Message" representedClassName="Message" syncable="YES">
