@@ -26,23 +26,6 @@ class CoreDataHelper {
     private(set) var currentChannel: Channel?
     private(set) var currentAccount: Account?
 
-    enum Entities: String {
-        case account = "Account"
-        case channel = "Channel"
-        case message = "Message"
-    }
-
-    enum Keys: String {
-        case account
-        case channels = "orderedChannels"
-        case messages = "orderedMessages"
-        case identity
-        case name
-        case body
-        case isIncoming
-        case type
-    }
-
     private init() {
         self.managedContext = self.appDelegate.persistentContainer.viewContext
 
@@ -64,7 +47,7 @@ class CoreDataHelper {
     }
 
     private func fetch() -> [Account]? {
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: Entities.account.rawValue)
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: Account.EntityName)
 
         do {
             let accounts = try managedContext.fetch(fetchRequest) as? [Account]

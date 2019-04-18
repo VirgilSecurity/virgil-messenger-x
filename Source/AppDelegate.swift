@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if UserDefaults.standard.string(forKey: "first_launch")?.isEmpty ?? true {
             let context = persistentContainer.viewContext
             let fetchRequest =
-                NSFetchRequest<NSManagedObject>(entityName: CoreDataHelper.Entities.account.rawValue)
+                NSFetchRequest<NSManagedObject>(entityName: Account.EntityName)
             if let result = try? context.fetch(fetchRequest) {
                 for object in result {
                     context.delete(object)

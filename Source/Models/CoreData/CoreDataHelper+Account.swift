@@ -12,14 +12,7 @@ import VirgilSDK
 
 extension CoreDataHelper {
     func createAccount(withIdentity identity: String) throws {
-        guard let entity = NSEntityDescription.entity(forEntityName: Entities.account.rawValue, in: self.managedContext) else {
-            throw CoreDataHelperError.entityNotFound
-        }
-
-        let account = Account(entity: entity, insertInto: self.managedContext)
-
-        account.identity = identity
-        account.setupColorPair()
+        let account = try Account(identity: identity, managedContext: self.managedContext)
 
         self.append(account: account)
         self.setCurrent(account: account)

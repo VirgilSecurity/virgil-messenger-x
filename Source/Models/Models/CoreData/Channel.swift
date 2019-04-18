@@ -12,13 +12,26 @@ import VirgilSDK
 
 @objc(Channel)
 public class Channel: NSManagedObject {
+    @NSManaged public var name: String
+    @NSManaged public var account: Account
+
     @NSManaged private var rawType: String
     @NSManaged private var numColorPair: Int32
     @NSManaged private var orderedMessages: NSOrderedSet?
-    @NSManaged public var rawCards: [String]
+    @NSManaged private var orderedMembers: NSOrderedSet?
+    @NSManaged private var rawCards: [String]
+
+    private static let EntityName = "Channel"
+    public static let MessagesKey = "orderedMessages"
 
     public var messages: [Message] {
-        return self.orderedMessages?.array as? [Message] ?? []
+        get {
+            return self.orderedMessages?.array as? [Message] ?? []
+        }
+    }
+
+    public var members: [User] {
+        return self.orderedMembers?.array as? [User] ?? []
     }
 
     public var cards: [Card] {
@@ -49,10 +62,6 @@ public class Channel: NSManagedObject {
         return UIConstants.colorPairs[Int(self.numColorPair)]
     }
 
-    public func setupColorPair() {
-        self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
-    }
-
     public var lastMessagesBody: String {
         guard let message = self.messages.last else {
             return ""
@@ -80,5 +89,18 @@ public class Channel: NSManagedObject {
         get {
             return String(describing: self.name.uppercased().first!)
         }
+    }
+
+    convenience init(name: String, type: ChannelType, cards: [Card], managedContext: NSManagedObjectContext) throws {
+        guard let entity = NSEntityDescription.entity(forEntityName: Channel.EntityName, in: managedContext) else {
+            throw CoreDataHelperError.entityNotFound
+        }
+
+        self.init(entity: entity, insertInto: managedContext)
+
+        self.name = name
+        self.type = type
+        self.cards = cards
+        self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
     }
 }

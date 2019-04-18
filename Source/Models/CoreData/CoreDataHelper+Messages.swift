@@ -12,10 +12,10 @@ import CoreData
 
 extension CoreDataHelper {
     func saveMessage(_ message: Message, to channel: Channel) throws {
-        let messages = channel.mutableOrderedSetValue(forKey: Keys.messages.rawValue)
+        let messages = channel.mutableOrderedSetValue(forKey: Channel.MessagesKey)
         messages.add(message)
 
-        Log.debug("Core Data: new message added. Count: \(messages.count)")
+        Log.debug("Core Data: new message added")
         self.appDelegate.saveContext()
     }
 
@@ -43,20 +43,11 @@ extension CoreDataHelper {
                            in channel: Channel? = nil,
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Message {
-
-        guard let entity = NSEntityDescription.entity(forEntityName: Entities.message.rawValue, in: self.managedContext) else {
-            Log.error("Core Data: entity not found: " + Entities.message.rawValue)
-            throw NSError()
-        }
-
-        let message = Message(entity: entity, insertInto: self.managedContext)
-
-        message.body = body
-        message.isIncoming = isIncoming
-        message.date = date
-        message.type = .text
-
-        return message
+        return try Message(body: body,
+                           type: .text,
+                           isIncoming: isIncoming,
+                           date: date,
+                           managedContext: self.managedContext)
     }
 
     func createMediaMessage(_ data: Data,
@@ -64,18 +55,10 @@ extension CoreDataHelper {
                             isIncoming: Bool,
                             date: Date = Date(),
                             type: MessageType) throws -> Message {
-        guard let entity = NSEntityDescription.entity(forEntityName: Entities.message.rawValue, in: self.managedContext) else {
-            Log.error("Core Data: entity not found: " + Entities.message.rawValue)
-            throw NSError()
-        }
-
-        let message = Message(entity: entity, insertInto: self.managedContext)
-
-        message.media = data
-        message.isIncoming = isIncoming
-        message.date = date
-        message.type = type
-
-        return message
+        return try Message(media: data,
+                           type: type,
+                           isIncoming: isIncoming,
+                           date: date,
+                           managedContext: self.managedContext)
     }
 }

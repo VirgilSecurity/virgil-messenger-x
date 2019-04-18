@@ -46,22 +46,11 @@ extension CoreDataHelper {
             throw CoreDataHelperError.nilCurrentAccount
         }
 
-        guard let entity = NSEntityDescription.entity(forEntityName: Entities.channel.rawValue,
-                                                      in: self.managedContext) else {
-            throw CoreDataHelperError.entityNotFound
-        }
+        let channel = try Channel(name: name, type: type, cards: cards, managedContext: self.managedContext)
 
-        let channel = Channel(entity: entity, insertInto: self.managedContext)
-
-        channel.name = name
-        channel.cards = cards
-        channel.type = type
-        channel.setupColorPair()
-
-        let channels = account.mutableOrderedSetValue(forKey: Keys.channels.rawValue)
+        let channels = account.mutableOrderedSetValue(forKey: Account.ChannelsKey)
         channels.add(channel)
 
-        Log.debug("Core Data: new channel added. Count: \(channels.count)")
         self.appDelegate.saveContext()
     }
 
