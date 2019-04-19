@@ -95,14 +95,9 @@ extension MessageSender {
                 let options = TCHMessageOptions().withMediaStream(inputStream,
                                                                   contentType: TwilioHelper.MediaType.photo.rawValue,
                                                                   defaultFilename: "image.bmp",
-                                                                  onStarted: {
-                                                                    Log.debug("Media upload started")
-                },
-                                                                  onProgress: { (bytes) in
-                                                                    Log.debug("Media upload progress: \(bytes)")
-                }) { (mediaSid) in
-                    Log.debug("Media upload completed")
-                }
+                                                                  onStarted: { Log.debug("Media upload started") },
+                                                                  onProgress: { Log.debug("Media upload progress: \($0)") },
+                                                                  onCompleted: { _ in Log.debug("Media upload completed")})
                 Log.debug("sending photo")
                 messages.sendMessage(with: options) { result, msg in
                     if result.isSuccessful() {
