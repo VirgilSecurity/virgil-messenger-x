@@ -29,11 +29,27 @@ public enum ChatsManager {
 
             startProgressBar()
 
-            // FIXME
             let members = channels.map { $0.name }
             let cards = channels.map { $0.cards.first! }
 
-            let createTwilioChannelOperation = TwilioHelper.shared.makeCreateGroupChannelOperation(with: members, name: name)
+            // Create virgil ratchet group session -> get ratchet message
+            let initMessage = try VirgilHelper.shared.getGroupInitMessage(cards)
+
+            // Send ratchet message to all members. Encrypt personally
+            let data = initMessage.serialize()
+            let serviceMessage = try CoreDataHelper.shared.createServiceMessage(data, type: .startGroup)
+
+            let messageSender = MessageSender()
+            for channel in channels {
+                messageSender.sendMessage(serviceMessage.exportAsDummyUIModel(), to: channel, type: .service)
+            }
+
+            let sessionId = initMessage.getSessionId()
+
+            let createTwilioChannelOperation = TwilioHelper.shared.makeCreateGroupChannelOperation(with: members,
+                                                                                                   name: name,
+                                                                                                   sessionId: sessionId)
+
             let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateGroupChannelOperation(name: name,
                                                                                                        members: members,
                                                                                                        cards: cards)
@@ -224,6 +240,9 @@ extension ChatsManager {
 
                         do {
                             for message in messages {
+                                if message.author == TwilioHelper.shared.username {
+                                    continue
+                                }
                                 _ = try MessageProcessor.process(message: message, from: twilioChannel)
                             }
 

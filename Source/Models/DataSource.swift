@@ -117,7 +117,7 @@ class DataSource: ChatDataSourceProtocol {
                                                             text: text,
                                                             isIncoming: false,
                                                             status: .sending)
-        self.messageSender.sendMessage(message)
+        self.messageSender.sendMessage(message, type: .regular)
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
     }
@@ -130,7 +130,7 @@ class DataSource: ChatDataSourceProtocol {
                                                              size: image.size,
                                                              isIncoming: false,
                                                              status: .sending)
-        self.messageSender.sendMessage(message)
+        self.messageSender.sendMessage(message, type: .regular)
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
     }
@@ -154,7 +154,7 @@ class DataSource: ChatDataSourceProtocol {
             return
         }
 
-        self.messageSender.sendMessage(message)
+        self.messageSender.sendMessage(message, type: .regular)
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
     }

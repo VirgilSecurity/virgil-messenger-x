@@ -12,12 +12,7 @@ import VirgilSDKRatchet
 import VirgilCryptoRatchet
 
 extension VirgilHelper {
-    private func getSessionAsSender() throws -> SecureSession {
-        guard let card = self.channelCards.first else {
-            Log.error("channel card not found")
-            throw NSError()
-        }
-
+    private func getSessionAsSender(card: Card) throws -> SecureSession {
         guard let session = secureChat.existingSession(withParticpantIdentity: card.identity) else {
             return try secureChat.startNewSessionAsSender(receiverCard: card).startSync().getResult()
         }
@@ -33,22 +28,24 @@ extension VirgilHelper {
         return session
     }
 
+    public func getGroupInitMessage(_ cards: [Card]) throws -> RatchetGroupMessage {
+        return try self.secureChat.startNewGroupSession(with: cards)
+    }
+
     // FIXME
-    func encrypt(_ text: String) -> String? {
-        do {
-            guard !self.channelCards.isEmpty else {
-                Log.error("Virgil: Channel Card not found")
-                throw NSError()
-            }
+    func encrypt(_ text: String, cards: [Card] = []) throws -> String {
+        let cards = cards.isEmpty ? self.channelCards : cards
 
-            let session = try self.getSessionAsSender()
-
-            let ratchetMessage = try session.encrypt(string: text)
-
-            return ratchetMessage.serialize().base64EncodedString()
-        } catch {
-            return nil
+        guard !cards.isEmpty else {
+            Log.error("Virgil: Channel Card not found")
+            throw NSError()
         }
+
+        let session = try self.getSessionAsSender(card: cards.first!)
+
+        let ratchetMessage = try session.encrypt(string: text)
+
+        return ratchetMessage.serialize().base64EncodedString()
     }
 
     func decrypt(_ encrypted: String, withCard: Card? = nil) throws -> String {

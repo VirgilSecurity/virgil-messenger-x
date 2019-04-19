@@ -42,6 +42,7 @@ class ChatListViewController: ViewController {
                     // FIXME: go to login
                 }
 
+                self.noChatsView.isHidden = !CoreDataHelper.shared.getChannels().isEmpty
                 self.tableView.reloadData()
                 self.navigationItem.titleView = nil
                 self.title = "Chats"

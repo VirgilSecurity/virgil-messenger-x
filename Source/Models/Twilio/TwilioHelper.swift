@@ -11,7 +11,7 @@ import TwilioChatClient
 import TwilioAccessManager
 import VirgilSDK
 
-class TwilioHelper: NSObject {
+public class TwilioHelper: NSObject {
     private(set) static var shared: TwilioHelper!
     private(set) var client: TwilioChatClient!
     private(set) var channels: TCHChannels!
@@ -29,6 +29,11 @@ class TwilioHelper: NSObject {
         case initUsersFailed
         case joiningFailed
         case missingChannelAttributes
+    }
+
+    public enum MessageType: String, Codable {
+        case regular
+        case service
     }
 
     enum MediaType: String {
@@ -131,14 +136,12 @@ class TwilioHelper: NSObject {
 
 // Setters
 extension TwilioHelper {
+    func getChannel(_ coreDataChannel: Channel) -> TCHChannel? {
+        return channels.subscribedChannels().first { self.getName(of: $0) == coreDataChannel.name }
+    }
+
     func setChannel(_ coreDataChannel: Channel) {
-        for channel in channels.subscribedChannels() {
-            if self.getName(of: channel) == coreDataChannel.name {
-                self.currentChannel = channel
-                return
-            }
-        }
-        Log.error("Channel not found")
+        self.currentChannel = self.getChannel(coreDataChannel)
     }
 
     func deselectChannel() {

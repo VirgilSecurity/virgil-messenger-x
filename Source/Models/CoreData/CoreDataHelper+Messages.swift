@@ -39,6 +39,25 @@ extension CoreDataHelper {
         try self.saveMessage(message, to: channel)
     }
 
+    func saveServiceMessage(_ message: String, to channel: Channel, type: ServiceMessageType) throws {
+        // FIXME
+        guard let message = Data(base64Encoded: message) else {
+            throw NSError()
+        }
+
+        let serviceMessage = try self.createServiceMessage(message, type: type)
+
+        let messages = channel.mutableOrderedSetValue(forKey: Channel.ServiceMessagesKey)
+        messages.add(serviceMessage)
+
+        Log.debug("Core Data: new service added")
+        self.appDelegate.saveContext()
+    }
+
+    func createServiceMessage(_ message: Data, type: ServiceMessageType) throws -> ServiceMessage {
+        return try ServiceMessage(message: message, type: type, managedContext: self.managedContext)
+    }
+
     func createTextMessage(_ body: String,
                            in channel: Channel? = nil,
                            isIncoming: Bool,

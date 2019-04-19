@@ -48,7 +48,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
         }
     }
 
-    func chatClient(_ client: TwilioChatClient, connectionStateUpdated state: TCHClientConnectionState) {
+    public func chatClient(_ client: TwilioChatClient, connectionStateUpdated state: TCHClientConnectionState) {
         let connectionState = ConnectionState(state: state)
 
         let stateStr = connectionState.rawValue
@@ -62,7 +62,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
             ])
     }
 
-    func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
+    public func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
         self.queue.async {
             do {
                 try self.makeJoinOperation(channel: channel).startSync().getResult()
@@ -87,7 +87,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
         }
     }
 
-    func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
+    public func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
         guard message.author != self.username else {
             return
         }
@@ -95,7 +95,9 @@ extension TwilioHelper: TwilioChatClientDelegate {
         self.queue.async {
             // FIXME
             do {
-                let message = try MessageProcessor.process(message: message, from: channel)
+                guard let message = try MessageProcessor.process(message: message, from: channel) else {
+                    return
+                }
 
                 let notification: String
 
@@ -110,14 +112,14 @@ extension TwilioHelper: TwilioChatClientDelegate {
                                                 object: self,
                                                 userInfo: [NotificationKeys.Message.rawValue: message])
             } catch {
-                Log.error("\(error)")
+//                Log.error("\(error)")
             }
         }
     }
 }
 
 extension TwilioHelper: TwilioAccessManagerDelegate {
-    func accessManagerTokenWillExpire(_ accessManager: TwilioAccessManager) {
+    public func accessManagerTokenWillExpire(_ accessManager: TwilioAccessManager) {
         do {
             let token = try VirgilHelper.shared.client.getTwilioToken(identity: self.username)
 

@@ -12,7 +12,7 @@ import ChattoAdditions
 import AVFoundation
 
 class MessageProcessor {
-    static func process(message: TCHMessage, from twilioChannel: TCHChannel) throws -> Message {
+    static func process(message: TCHMessage, from twilioChannel: TCHChannel) throws -> Message? {
         let isIncoming = message.author == TwilioHelper.shared.username ? false : true
         let name = TwilioHelper.shared.getName(of: twilioChannel)
 
@@ -27,11 +27,16 @@ class MessageProcessor {
                                          date: date,
                                          isIncoming: isIncoming,
                                          channel: channel)
-        } else if let body = message.body {
-            return try self.processText(body: body,
-                                        date: date,
-                                        isIncoming: isIncoming,
-                                        channel: channel)
+        } else if let body = message.body,
+            let rawAttributes = message.attributes(),
+            let attributes = try? TwilioHelper.MessageAttributes.import(rawAttributes) {
+                return try self.processText(body: body,
+                                            date: date,
+                                            isIncoming: isIncoming,
+                                            message: message,
+                                            twilioChannel: twilioChannel,
+                                            channel: channel,
+                                            attributes: attributes)
         } else {
             throw NSError()
         }
@@ -40,20 +45,36 @@ class MessageProcessor {
     private static func processText(body: String,
                                     date: Date,
                                     isIncoming: Bool,
-                                    channel: Channel) throws -> Message  {
-        // FIXME
-        var decrypted: String = body
-        if channel.type == .single {
-            guard let tmp = try? VirgilHelper.shared.decrypt(body, withCard: channel.cards.first) else {
-                throw NSError()
+                                    message: TCHMessage,
+                                    twilioChannel: TCHChannel,
+                                    channel: Channel,
+                                    attributes: TwilioHelper.MessageAttributes) throws -> Message? {
+        switch attributes.type {
+        case .regular:
+            // FIXME
+            var decrypted: String = body
+            if channel.type == .single {
+                decrypted = try VirgilHelper.shared.decrypt(body, withCard: channel.cards.first)
             }
-            decrypted = tmp
+
+            let message = try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
+            try CoreDataHelper.shared.saveMessage(message, to: channel)
+
+            return message
+        case .service:
+            let decrypted = try VirgilHelper.shared.decrypt(body, withCard: channel.cards.first)
+
+            // FIXME
+            twilioChannel.messages?.remove(message) { result in
+                if let error = result.error {
+                    Log.debug("Service Message remove: \(error.description)")
+                }
+            }
+
+            try CoreDataHelper.shared.saveServiceMessage(decrypted, to: channel, type: .startGroup)
+
+            return nil
         }
-
-        let message = try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
-        try CoreDataHelper.shared.saveMessage(message, to: channel)
-
-        return message
     }
 
     private static func processMedia(message: TCHMessage,

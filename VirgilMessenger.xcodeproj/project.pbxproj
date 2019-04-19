@@ -65,6 +65,8 @@
 		16AE1D7B2044315B005DF777 /* DemoPhotoMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */; };
 		16B6751322689D2C00B6D4D0 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B6751122689D2C00B6D4D0 /* User.swift */; };
 		16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
+		16B796692269D34900FD0B0B /* ServiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B796672269D34900FD0B0B /* ServiceMessage.swift */; };
+		16B7966C2269D4E000FD0B0B /* ServiceMessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7966B2269D4E000FD0B0B /* ServiceMessageType.swift */; };
 		16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */; };
 		16C0D4512265FF75001F23ED /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C0D4502265FF75001F23ED /* MessageType.swift */; };
 		16C0D45822660A5D001F23ED /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C0D45622660A5D001F23ED /* Message.swift */; };
@@ -205,6 +207,8 @@
 		16AE1D782044315B005DF777 /* DemoPhotoMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoPhotoMessageHandler.swift; sourceTree = "<group>"; };
 		16B6751122689D2C00B6D4D0 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
+		16B796672269D34900FD0B0B /* ServiceMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceMessage.swift; sourceTree = "<group>"; };
+		16B7966B2269D4E000FD0B0B /* ServiceMessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceMessageType.swift; sourceTree = "<group>"; };
 		16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
 		16C0D4502265FF75001F23ED /* MessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageType.swift; sourceTree = "<group>"; };
 		16C0D45622660A5D001F23ED /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -340,6 +344,7 @@
 				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
 				16936791224916D100EF9A42 /* UserFriendlyError.swift */,
 				16C0D4502265FF75001F23ED /* MessageType.swift */,
+				16B7966B2269D4E000FD0B0B /* ServiceMessageType.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -416,6 +421,7 @@
 				16B6751122689D2C00B6D4D0 /* User.swift */,
 				16FCF27A1FE46756000348BC /* Channel.swift */,
 				16C0D45622660A5D001F23ED /* Message.swift */,
+				16B796672269D34900FD0B0B /* ServiceMessage.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -827,6 +833,7 @@
 				164E173020AAEECD00AB1AAD /* DemoAudioMessageModel.swift in Sources */,
 				16FA91051FFC55A400FE98C7 /* UIViewController+Reachability.swift in Sources */,
 				169367942249181100EF9A42 /* LocalKeyManager.swift in Sources */,
+				16B796692269D34900FD0B0B /* ServiceMessage.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				16FC679B2260D7860044CC70 /* CreateGroup.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
@@ -836,6 +843,7 @@
 				16177AA620C01F5C0050BB31 /* ChannelType.swift in Sources */,
 				164E173520AB0BE600AB1AAD /* AudioMessageViewModel.swift in Sources */,
 				16CA51131FC5DA3B0042AF9D /* Settings.swift in Sources */,
+				16B7966C2269D4E000FD0B0B /* ServiceMessageType.swift in Sources */,
 				4280C0DA1F97341A00075B3A /* DemoTextMessageModel.swift in Sources */,
 				16F30D4F1FDAE91D006C3DEB /* SignInCollectionCell.swift in Sources */,
 				16CA51061FC468370042AF9D /* Constants.swift in Sources */,

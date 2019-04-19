@@ -38,7 +38,6 @@ class BaseMessageHandler {
     }
     func userDidTapOnFailIcon(viewModel: DemoMessageViewModelProtocol) {
         print("userDidTapOnFailIcon")
-        self.messageSender.sendMessage(viewModel.messageModel)
     }
 
     func userDidTapOnAvatar(viewModel: MessageViewModelProtocol) {

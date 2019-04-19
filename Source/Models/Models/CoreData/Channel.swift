@@ -19,19 +19,25 @@ public class Channel: NSManagedObject {
     @NSManaged private var numColorPair: Int32
     @NSManaged private var orderedMessages: NSOrderedSet?
     @NSManaged private var orderedMembers: NSOrderedSet?
+    @NSManaged private var orderedServiceMessages: NSOrderedSet?
     @NSManaged private var rawCards: [String]
 
     private static let EntityName = "Channel"
+
     public static let MessagesKey = "orderedMessages"
+    public static let MembersKey = "orderedMembers"
+    public static let ServiceMessagesKey = "orderedServiceMessages"
 
     public var messages: [Message] {
-        get {
-            return self.orderedMessages?.array as? [Message] ?? []
-        }
+        return self.orderedMessages?.array as? [Message] ?? []
     }
 
     public var members: [User] {
         return self.orderedMembers?.array as? [User] ?? []
+    }
+
+    public var serviceMessages: [ServiceMessage] {
+        return self.orderedServiceMessages?.array as? [ServiceMessage] ?? []
     }
 
     public var cards: [Card] {

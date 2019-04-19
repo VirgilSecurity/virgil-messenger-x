@@ -9,20 +9,22 @@ public protocol DemoMessageModelProtocol: MessageModelProtocol {
 public class MessageSender {
     public var onMessageChanged: ((_ message: DemoMessageModelProtocol) -> Void)?
     
-    public func sendMessage(_ message: DemoMessageModelProtocol) {
+    public func sendMessage(_ message: DemoMessageModelProtocol, to channel: Channel? = nil, type: TwilioHelper.MessageType) {
         switch message {
         case is DemoTextMessageModel:
             let textMessage = message as! DemoTextMessageModel
 
             var text = textMessage.body
 
+            let cards = channel?.cards ?? []
+
             // FIXME
             if CoreDataHelper.shared.currentChannel?.type == .group {
                 text = "\(TwilioHelper.shared.username): \(textMessage.body)"
 
-                self.messageStatus(ciphertext: text, message: textMessage)
-            } else if let encrypted = VirgilHelper.shared.encrypt(text) {
-                self.messageStatus(ciphertext: encrypted, message: textMessage)
+                self.messageStatus(ciphertext: text, channel: channel, message: textMessage, type: type)
+            } else if let encrypted = try? VirgilHelper.shared.encrypt(text, cards: cards) {
+                self.messageStatus(ciphertext: encrypted, channel: channel, message: textMessage, type: type)
             }
         case is DemoPhotoMessageModel:
             let photoMessage = message as! DemoPhotoMessageModel
@@ -31,7 +33,7 @@ public class MessageSender {
                 return
             }
             
-            if let encrypted = VirgilHelper.shared.encrypt(photoData.base64EncodedString()) {
+            if let encrypted = try? VirgilHelper.shared.encrypt(photoData.base64EncodedString()) {
                 guard let cipherData = encrypted.data(using: .utf8) else {
                     Log.error("String to Data failed")
                     return
@@ -41,7 +43,7 @@ public class MessageSender {
             }
         case is DemoAudioMessageModel:
             let audioMessage = message as! DemoAudioMessageModel
-            if let encrypted = VirgilHelper.shared.encrypt(audioMessage.audio.base64EncodedString()) {
+            if let encrypted = try? VirgilHelper.shared.encrypt(audioMessage.audio.base64EncodedString()) {
                 guard let cipherData = encrypted.data(using: .utf8) else {
                     Log.error("String to Data failed")
                     return
@@ -56,21 +58,30 @@ public class MessageSender {
 }
 
 extension MessageSender {
-    private func messageStatus(ciphertext: String, message: DemoTextMessageModel) {
+    private func messageStatus(ciphertext: String, channel: Channel? = nil, message: DemoTextMessageModel, type: TwilioHelper.MessageType) {
         switch message.status {
         case .success:
             break
         case .failed:
             self.updateMessage(message, status: .sending)
-            self.messageStatus(ciphertext: ciphertext, message: message)
+            self.messageStatus(ciphertext: ciphertext, message: message, type: type)
         case .sending:
-            if let messages = TwilioHelper.shared.currentChannel?.messages {
-                let options = TCHMessageOptions().withBody(ciphertext)
+            let twilioChannel = channel == nil ? TwilioHelper.shared.currentChannel : TwilioHelper.shared.getChannel(channel!)
+
+            if let messages = twilioChannel?.messages {
+                let attributes = TwilioHelper.MessageAttributes(type: type)
+                let options = TCHMessageOptions()
+                options.withBody(ciphertext)
+                // FIXME
+                try! options.withAttributes(attributes.export())
+
                 Log.debug("sending \(ciphertext)")
                 messages.sendMessage(with: options) { result, msg in
                     if result.isSuccessful() {
                         self.updateMessage(message, status: .success)
-                        try! CoreDataHelper.shared.saveTextMessage(message.body, isIncoming: false, date: message.date)
+                        if type == .regular {
+                            try! CoreDataHelper.shared.saveTextMessage(message.body, isIncoming: false, date: message.date)
+                        }
                     } else {
                         Log.error("error sending: Twilio cause")
                         self.updateMessage(message, status: .failed)

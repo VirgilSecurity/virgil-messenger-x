@@ -19,6 +19,18 @@ extension TwilioHelper {
         return try ChannelAttributes.import(attributes)
     }
 
+    func makeDeleteMessageOperation(_ message: TCHMessage, from channel: TCHChannel) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            channel.messages?.remove(message) { result in
+                if let error = result.error {
+                    completion(nil, error)
+                } else {
+                    completion((), nil)
+                }
+            }
+        }
+    }
+
     func getName(of channel: TCHChannel) -> String {
         // FIXME
         guard let attributes = try? self.getAttributes(of: channel) else {
@@ -82,6 +94,7 @@ extension TwilioHelper {
         return CallbackOperation { _, completion in
             let attributes = ChannelAttributes(initiator: self.username,
                                                friendlyName: nil,
+                                               sessionId: nil,
                                                members: [self.username, identity],
                                                type: .single)
 
@@ -107,10 +120,11 @@ extension TwilioHelper {
         }
     }
 
-    func makeCreateGroupChannelOperation(with members: [String], name: String) -> CallbackOperation<Void> {
+    func makeCreateGroupChannelOperation(with members: [String], name: String, sessionId: Data) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             let attributes = ChannelAttributes(initiator: self.username,
                                                friendlyName: name,
+                                               sessionId: sessionId,
                                                members: [self.username] + members,
                                                type: .group)
 
