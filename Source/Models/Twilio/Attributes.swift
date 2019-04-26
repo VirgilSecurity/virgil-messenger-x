@@ -1,5 +1,5 @@
 //
-//  ChannelAttributes.swift
+//  Attributes.swift
 //  VirgilMessenger
 //
 //  Created by Yevhen Pyvovarov on 4/8/19.

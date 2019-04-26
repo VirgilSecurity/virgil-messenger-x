@@ -232,7 +232,7 @@ extension ChatViewController {
         item.textInputHandler = { [weak self] text in
             if self?.checkReachability() ?? false,
                 !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    self?.dataSource.addTextMessage(text)
+                    try? self?.dataSource.addTextMessage(text)
             }
         }
 

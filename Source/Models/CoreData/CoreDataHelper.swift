@@ -13,6 +13,7 @@ import CoreData
 enum CoreDataHelperError: String, Error {
     case accountNotFound
     case nilCurrentAccount
+    case nilCurrentChannel
     case entityNotFound
     case entityCorrupted
 }

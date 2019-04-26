@@ -11,8 +11,31 @@ import TwilioChatClient
 import VirgilSDK
 
 extension TwilioHelper {
+    public func send(ciphertext: String, messages: TCHMessages, type: MessageType) -> CallbackOperation<Void> {
+        let options = TCHMessageOptions()
+        options.withBody(ciphertext)
+
+        let attributes = TwilioHelper.MessageAttributes(type: type)
+        // FIXME
+        try! options.withAttributes(attributes.export())
+
+        return self.send(with: options, to: messages)
+    }
+
+    private func send(with options: TCHMessageOptions, to messages: TCHMessages) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            messages.sendMessage(with: options) { result, _ in
+                if let error = result.error {
+                    completion(nil, error)
+                } else {
+                    completion((), nil)
+                }
+            }
+        }
+    }
+
     func makeGetMediaOperation(message: TCHMessage) -> CallbackOperation<Data> {
-        return CallbackOperation<Data> { _, completion in
+        return CallbackOperation { _, completion in
             let tempFilename = (NSTemporaryDirectory() as NSString).appendingPathComponent(message.mediaFilename ?? "file.dat")
             let outputStream = OutputStream(toFileAtPath: tempFilename, append: false)
 

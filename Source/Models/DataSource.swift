@@ -110,53 +110,55 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self, updateType: .pagination)
     }
 
-    func addTextMessage(_ text: String) {
+    func addTextMessage(_ text: String) throws {
+        let message = try CoreDataHelper.shared.createTextMessage(text, isIncoming: false)
+
         self.nextMessageId += 1
         let id = self.nextMessageId
-        let message = MessageFactory.createTextMessageModel(uid: id,
-                                                            text: text,
-                                                            isIncoming: false,
-                                                            status: .sending)
-        self.messageSender.sendMessage(message, type: .regular)
-        self.slidingWindow.insertItem(message, position: .bottom)
+
+        let uiModel = try self.messageSender.send(message: message, withId: id)
+
+        self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
     func addPhotoMessage(_ image: UIImage) {
-        self.nextMessageId += 1
-        let id = self.nextMessageId
-        let message = MessageFactory.createPhotoMessageModel(uid: id,
-                                                             image: image,
-                                                             size: image.size,
-                                                             isIncoming: false,
-                                                             status: .sending)
-        self.messageSender.sendMessage(message, type: .regular)
-        self.slidingWindow.insertItem(message, position: .bottom)
-        self.delegate?.chatDataSourceDidUpdate(self)
+        // TODO
+//        self.nextMessageId += 1
+//        let id = self.nextMessageId
+//        let message = MessageFactory.createPhotoMessageModel(uid: id,
+//                                                             image: image,
+//                                                             size: image.size,
+//                                                             isIncoming: false,
+//                                                             status: .sending)
+//        self.messageSender.sendMessage(message, type: .regular)
+//        self.slidingWindow.insertItem(message, position: .bottom)
+//        self.delegate?.chatDataSourceDidUpdate(self)
     }
 
     func addAudioMessage(_ audio: Data) {
-        self.nextMessageId += 1
-        let id = self.nextMessageId
-
-        let message: DemoMessageModelProtocol
-
-        // FIXME
-        if let duration = try? AVAudioPlayer(data: audio).duration {
-            message = MessageFactory.createAudioMessageModel(uid: id,
-                                                             audio: audio,
-                                                             duration: duration,
-                                                             isIncoming: false,
-                                                             status: .sending)
-        } else {
-            Log.error("Getting audio duration failed")
-            message = MessageFactory.createCorruptedMessageModel(uid: id)
-            return
-        }
-
-        self.messageSender.sendMessage(message, type: .regular)
-        self.slidingWindow.insertItem(message, position: .bottom)
-        self.delegate?.chatDataSourceDidUpdate(self)
+        // TODO
+//        self.nextMessageId += 1
+//        let id = self.nextMessageId
+//
+//        let message: DemoMessageModelProtocol
+//
+//        // FIXME
+//        if let duration = try? AVAudioPlayer(data: audio).duration {
+//            message = MessageFactory.createAudioMessageModel(uid: id,
+//                                                             audio: audio,
+//                                                             duration: duration,
+//                                                             isIncoming: false,
+//                                                             status: .sending)
+//        } else {
+//            Log.error("Getting audio duration failed")
+//            message = MessageFactory.createCorruptedMessageModel(uid: id)
+//            return
+//        }
+//
+//        self.messageSender.sendMessage(message, type: .regular)
+//        self.slidingWindow.insertItem(message, position: .bottom)
+//        self.delegate?.chatDataSourceDidUpdate(self)
     }
 
     func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> ()) {

@@ -40,8 +40,10 @@ public enum ChatsManager {
             let serviceMessage = try CoreDataHelper.shared.createServiceMessage(data, type: .startGroup)
 
             let messageSender = MessageSender()
-            for channel in channels {
-                messageSender.sendMessage(serviceMessage.exportAsDummyUIModel(), to: channel, type: .service)
+
+            var sendServiceMessageOperations: [CallbackOperation<Void>] = []
+            channels.forEach {
+                sendServiceMessageOperations.append(messageSender.makeSendServiceMessageOperation(serviceMessage, to: $0))
             }
 
             let sessionId = initMessage.getSessionId()
@@ -54,7 +56,7 @@ public enum ChatsManager {
                                                                                                        members: members,
                                                                                                        cards: cards)
 
-            let operations = [createTwilioChannelOperation, createCoreDataChannelOperation]
+            let operations = [createTwilioChannelOperation, createCoreDataChannelOperation] + sendServiceMessageOperations
 
             let completionOperation = OperationUtils.makeCompletionOperation { (_: Void?, error: Error?) in completion(error) }
 

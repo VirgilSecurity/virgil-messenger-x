@@ -58,7 +58,7 @@ class MessageProcessor {
             }
 
             let message = try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
-            try CoreDataHelper.shared.saveMessage(message, to: channel)
+            try CoreDataHelper.shared.save(message)
 
             return message
         case .service:
@@ -90,7 +90,7 @@ class MessageProcessor {
         let data = try TwilioHelper.shared.makeGetMediaOperation(message: message).startSync().getResult()
 
         let message = try CoreDataHelper.shared.createMediaMessage(data, in: channel, isIncoming: isIncoming, date: date, type: type)
-        try CoreDataHelper.shared.saveMessage(message, to: channel)
+        try CoreDataHelper.shared.save(message)
 
         return message
     }

@@ -10,6 +10,7 @@
 import CoreData
 import UIKit
 import AVFoundation
+import ChattoAdditions
 
 @objc(Message)
 public class Message: NSManagedObject {
@@ -38,6 +39,7 @@ public class Message: NSManagedObject {
                      type: MessageType,
                      isIncoming: Bool,
                      date: Date,
+                     channel: Channel,
                      managedContext: NSManagedObjectContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Message.EntityName, in: managedContext) else {
             throw CoreDataHelperError.entityNotFound
@@ -50,11 +52,12 @@ public class Message: NSManagedObject {
         self.type = type
         self.isIncoming = isIncoming
         self.date = date
+        self.channel = channel
     }
 }
 
 extension Message {
-    public func exportAsUIModel(withId id: Int) -> DemoMessageModelProtocol {
+    public func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> DemoMessageModelProtocol {
         let corruptedMessage = {
             MessageFactory.createCorruptedMessageModel(uid: id, isIncoming: self.isIncoming)
         }
@@ -70,7 +73,7 @@ extension Message {
             resultMessage = MessageFactory.createTextMessageModel(uid: id,
                                                                   text: body,
                                                                   isIncoming: self.isIncoming,
-                                                                  status: .success,
+                                                                  status: status,
                                                                   date: date)
         case .photo:
             guard let media = self.media, let image = UIImage(data: media) else {
@@ -81,7 +84,7 @@ extension Message {
                                                                    image: image,
                                                                    size: image.size,
                                                                    isIncoming: self.isIncoming,
-                                                                   status: .success,
+                                                                   status: status,
                                                                    date: date)
         case .audio:
             guard let media = self.media, let duration = try? AVAudioPlayer(data: media).duration else {
@@ -92,7 +95,7 @@ extension Message {
                                                                    audio: media,
                                                                    duration: duration,
                                                                    isIncoming: self.isIncoming,
-                                                                   status: .success,
+                                                                   status: status,
                                                                    date: date)
         }
 
