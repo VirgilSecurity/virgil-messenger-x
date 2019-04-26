@@ -10,7 +10,7 @@ import VirgilCrypto
 import VirgilSDK
 
 public struct UserData {
-    public let privateKey: VirgilPrivateKey
+    public let keyPair: VirgilKeyPair
     public let card: Card
 }
 
@@ -43,11 +43,11 @@ public class LocalKeyManager {
                 return nil
         }
 
-        return UserData(privateKey: keyPair.privateKey, card: card)
+        return UserData(keyPair: keyPair, card: card)
     }
 
     public func store(_ user: UserData) throws {
-        let data = try self.crypto.exportPrivateKey(user.privateKey)
+        let data = try self.crypto.exportPrivateKey(user.keyPair.privateKey)
         let rawCard = try CardManager.exportCardAsBase64EncodedString(user.card)
         let meta = [KeychainMetaKeys.rawCard.rawValue: rawCard]
 

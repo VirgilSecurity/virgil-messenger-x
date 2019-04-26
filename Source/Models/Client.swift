@@ -117,7 +117,7 @@ extension Client {
         }
 
         let authHeader = try self.makeAuthHeader(cardId: user.card.identifier,
-                                                 privateKey: user.privateKey)
+                                                 privateKey: user.keyPair.privateKey)
 
         let requestURL = URLConstansts.twilioJwtEndpoint
         let headers = ["Content-Type": "application/json",
@@ -144,7 +144,7 @@ extension Client {
             throw NSError()
         }
 
-        let authHeader = try self.makeAuthHeader(cardId: user.card.identifier, privateKey: user.privateKey)
+        let authHeader = try self.makeAuthHeader(cardId: user.card.identifier, privateKey: user.keyPair.privateKey)
 
         let requestURL = URLConstansts.virgilJwtEndpoint
         let headers = ["Content-Type": "application/json",

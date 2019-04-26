@@ -52,7 +52,7 @@ public class VirgilAuthorizer {
 
         let card = try self.client.signUp(identity: identity, keyPair: keyPair, verifier: self.verifier)
 
-        let user = UserData(privateKey: keyPair.privateKey, card: card)
+        let user = UserData(keyPair: keyPair, card: card)
         try localKeyManager.store(user)
 
         try VirgilHelper.initialize(identity: identity)

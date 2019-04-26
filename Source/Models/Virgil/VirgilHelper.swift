@@ -60,7 +60,7 @@ public class VirgilHelper {
 
         let context = SecureChatContext(identity: identity,
                                         identityCard: user.card,
-                                        identityPrivateKey: user.privateKey,
+                                        identityKeyPair: user.keyPair,
                                         accessTokenProvider: provider)
 
         let secureChat = try SecureChat(context: context)
