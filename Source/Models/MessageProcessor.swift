@@ -73,6 +73,8 @@ class MessageProcessor {
 
             try CoreDataHelper.shared.saveServiceMessage(decrypted, to: channel, type: .startGroup)
 
+            Log.debug("Service message received and saved")
+
             return nil
         }
     }

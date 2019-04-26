@@ -39,11 +39,9 @@ public enum ChatsManager {
             let data = initMessage.serialize()
             let serviceMessage = try CoreDataHelper.shared.createServiceMessage(data, type: .startGroup)
 
-            let messageSender = MessageSender()
-
             var sendServiceMessageOperations: [CallbackOperation<Void>] = []
             channels.forEach {
-                sendServiceMessageOperations.append(messageSender.makeSendServiceMessageOperation(serviceMessage, to: $0))
+                sendServiceMessageOperations.append(MessageSender.makeSendServiceMessageOperation(serviceMessage, to: $0))
             }
 
             let sessionId = initMessage.getSessionId()

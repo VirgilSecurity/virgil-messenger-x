@@ -37,9 +37,9 @@ class ChatListViewController: ViewController {
 
         self.configurator.configure { error in
             DispatchQueue.main.async {
-                if let error = error {
-                    Log.error("\(error.localizedDescription)")
-                    // FIXME: go to login
+                if let _ = error {
+//                    Log.error("\(error.localizedDescription)")
+                    self.goToLogin()
                 }
 
                 self.noChatsView.isHidden = !CoreDataHelper.shared.getChannels().isEmpty
@@ -91,6 +91,12 @@ class ChatListViewController: ViewController {
 
     @IBAction func didTapAdd(_ sender: Any) {
         self.performSegue(withIdentifier: "goToNewMessage", sender: self)
+    }
+
+    private func goToLogin() {
+        let vc = UIStoryboard(name: AuthenticationViewController.name,
+                              bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
+        self.switchNavigationStack(to: vc)
     }
 
     deinit {

@@ -12,7 +12,7 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public func makeSendServiceMessageOperation(_ serviceMessage: ServiceMessage, to channel: Channel) -> CallbackOperation<Void> {
+    public static func makeSendServiceMessageOperation(_ serviceMessage: ServiceMessage, to channel: Channel) -> CallbackOperation<Void> {
         let cards = channel.cards
         let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(channel)
 
@@ -21,7 +21,7 @@ public class MessageSender {
         // FIXME
         let ciphertext = try! VirgilHelper.shared.encrypt(plaintext, cards: cards)
 
-        return TwilioHelper.shared.send(ciphertext: ciphertext, messages: channel!.messages!, type: .regular)
+        return TwilioHelper.shared.send(ciphertext: ciphertext, messages: channel!.messages!, type: .service)
     }
 
     public func send(message: Message, withId id: Int) throws -> DemoMessageModelProtocol {

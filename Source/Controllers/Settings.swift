@@ -49,7 +49,8 @@ extension SettingsViewController: UITableViewDelegate {
             alert.addAction(UIAlertAction(title: "Logout", style: .destructive) { _ in
                 UserDefaults.standard.set(nil, forKey: "last_username")
 
-                let vc = UIStoryboard(name: "Authentication", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
+                let vc = UIStoryboard(name: AuthenticationViewController.name,
+                                      bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
 
                 self.switchNavigationStack(to: vc)
             })
@@ -64,7 +65,8 @@ extension SettingsViewController: UITableViewDelegate {
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
                 UserAuthorizer().logOut()
 
-                let vc = UIStoryboard(name: "Authentication", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
+                let vc = UIStoryboard(name: AuthenticationViewController.name,
+                                      bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
 
                 self.switchNavigationStack(to: vc)
             }))

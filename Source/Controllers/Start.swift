@@ -39,7 +39,8 @@ class StartViewController: ViewController {
     }
 
     private func goToLogin() {
-        let vc = UIStoryboard(name: "Authentication", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
+        let vc = UIStoryboard(name: AuthenticationViewController.name,
+                              bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
 
         self.switchNavigationStack(to: vc)
     }

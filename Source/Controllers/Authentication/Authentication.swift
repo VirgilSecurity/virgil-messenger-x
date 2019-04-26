@@ -12,6 +12,8 @@ class AuthenticationViewController: ViewController {
     @IBOutlet weak var collectionViewWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var collectionView: UICollectionView!
 
+    static let name = "Authentication"
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }

@@ -26,8 +26,10 @@ extension TwilioHelper {
         return CallbackOperation { _, completion in
             messages.sendMessage(with: options) { result, _ in
                 if let error = result.error {
+                    Log.error("Message send failed: \(error)")
                     completion(nil, error)
                 } else {
+                    Log.debug("Message sent")
                     completion((), nil)
                 }
             }
