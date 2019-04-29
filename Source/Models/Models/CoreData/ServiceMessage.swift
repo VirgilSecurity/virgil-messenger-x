@@ -41,13 +41,3 @@ public class ServiceMessage: NSManagedObject {
         self.type = type
     }
 }
-
-// FIXME
-extension ServiceMessage {
-    public func exportAsDummyUIModel() -> DemoMessageModelProtocol {
-        return MessageFactory.createTextMessageModel(uid: 0,
-                                                     text: self.message.base64EncodedString(),
-                                                     isIncoming: true,
-                                                     status: .sending)
-    }
-}

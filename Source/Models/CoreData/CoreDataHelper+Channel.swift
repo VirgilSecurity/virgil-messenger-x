@@ -11,12 +11,19 @@ import CoreData
 import VirgilSDK
 
 extension CoreDataHelper {
-    func makeCreateGroupChannelOperation(name: String, members: [String], cards: [Card]? = nil) -> CallbackOperation<Void> {
+    func makeCreateGroupChannelOperation(name: String,
+                                         serviceMessage: Data? = nil,
+                                         members: [String],
+                                         cards: [Card]? = nil) -> CallbackOperation<Void> {
         return CallbackOperation<Void> { operation, completion in
             do {
                 let cards: [Card] = try cards ?? operation.findDependencyResult()
 
-                try self.createChannel(type: .group, name: name, cards: cards)
+                let channel = try self.createChannel(type: .group, name: name, cards: cards)
+
+                if let serviceMessage = serviceMessage {
+                    try self.saveServiceMessage(serviceMessage, to: channel, type: .startGroup)
+                }
 
                 completion((), nil)
             }
@@ -31,7 +38,7 @@ extension CoreDataHelper {
             do {
                 let cards: [Card] = try operation.findDependencyResult()
 
-                try self.createChannel(type: .single, name: identity, cards: cards)
+                _ = try self.createChannel(type: .single, name: identity, cards: cards)
 
                 completion((), nil)
             }
@@ -41,7 +48,7 @@ extension CoreDataHelper {
         }
     }
 
-    func createChannel(type: ChannelType, name: String, cards: [Card]) throws {
+    private func createChannel(type: ChannelType, name: String, cards: [Card]) throws -> Channel {
         guard let account = self.currentAccount else {
             throw CoreDataHelperError.nilCurrentAccount
         }
@@ -52,6 +59,8 @@ extension CoreDataHelper {
         channels.add(channel)
 
         self.appDelegate.saveContext()
+
+        return channel
     }
 
     func loadChannel(withName username: String) -> Channel? {

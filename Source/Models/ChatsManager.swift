@@ -32,27 +32,26 @@ public enum ChatsManager {
             let members = channels.map { $0.name }
             let cards = channels.map { $0.cards.first! }
 
-            // Create virgil ratchet group session -> get ratchet message
-            let initMessage = try VirgilHelper.shared.getGroupInitMessage(cards)
-
-            // Send ratchet message to all members. Encrypt personally
-            let data = initMessage.serialize()
-            let serviceMessage = try CoreDataHelper.shared.createServiceMessage(data, type: .startGroup)
-
-            var sendServiceMessageOperations: [CallbackOperation<Void>] = []
-            channels.forEach {
-                sendServiceMessageOperations.append(MessageSender.makeSendServiceMessageOperation(serviceMessage, to: $0))
-            }
-
-            let sessionId = initMessage.getSessionId()
+            let startGroupServiceMessage = try VirgilHelper.shared.getGroupInitMessage(cards)
+            let sessionId = startGroupServiceMessage.getSessionId()
+            let serviceMessageData = startGroupServiceMessage.serialize()
 
             let createTwilioChannelOperation = TwilioHelper.shared.makeCreateGroupChannelOperation(with: members,
                                                                                                    name: name,
                                                                                                    sessionId: sessionId)
 
             let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateGroupChannelOperation(name: name,
+                                                                                                       serviceMessage: serviceMessageData,
                                                                                                        members: members,
                                                                                                        cards: cards)
+
+            var sendServiceMessageOperations: [CallbackOperation<Void>] = []
+            channels.forEach {
+                let sendOperation = MessageSender.makeSendServiceMessageOperation(serviceMessageData, to: $0)
+                sendServiceMessageOperations.append(sendOperation)
+            }
+
+            createCoreDataChannelOperation.addDependency(createTwilioChannelOperation)
 
             let operations = [createTwilioChannelOperation, createCoreDataChannelOperation] + sendServiceMessageOperations
 
@@ -130,15 +129,18 @@ public enum ChatsManager {
 
     public static func joinSingle(with identity: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            do {
-                let cards = try VirgilHelper.shared.makeGetCardsOperation(identities: [identity]).startSync().getResult()
+            let getCardsOperation = VirgilHelper.shared.makeGetCardsOperation(identities: [identity])
+            let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateSingleChannelOperation(with: identity)
+            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
-                try CoreDataHelper.shared.createChannel(type: .single, name: identity, cards: cards)
+            let operations = [getCardsOperation, createCoreDataChannelOperation, completionOperation]
 
-                completion((), nil)
-            } catch {
-                completion(nil, error)
-            }
+            createCoreDataChannelOperation.addDependency(getCardsOperation)
+            completionOperation.addDependency(getCardsOperation)
+            completionOperation.addDependency(createCoreDataChannelOperation)
+
+            let queue = OperationQueue()
+            queue.addOperations(operations, waitUntilFinished: false)
         }
     }
 }
@@ -206,7 +208,7 @@ extension ChatsManager {
             do {
                 if twilioChannel.status == TCHChannelStatus.invited {
                     try TwilioHelper.shared.makeJoinOperation(channel: twilioChannel).startSync().getResult()
-                    try self.join(twilioChannel).startSync().getResult()
+                    try ChatsManager.join(twilioChannel).startSync().getResult()
                 }
 
                 let name = TwilioHelper.shared.getName(of: twilioChannel)

@@ -33,7 +33,7 @@ class MessageProcessor {
                 return try self.processText(body: body,
                                             date: date,
                                             isIncoming: isIncoming,
-                                            message: message,
+                                            twilioMessage: message,
                                             twilioChannel: twilioChannel,
                                             channel: channel,
                                             attributes: attributes)
@@ -45,7 +45,7 @@ class MessageProcessor {
     private static func processText(body: String,
                                     date: Date,
                                     isIncoming: Bool,
-                                    message: TCHMessage,
+                                    twilioMessage: TCHMessage,
                                     twilioChannel: TCHChannel,
                                     channel: Channel,
                                     attributes: TwilioHelper.MessageAttributes) throws -> Message? {
@@ -64,14 +64,18 @@ class MessageProcessor {
         case .service:
             let decrypted = try VirgilHelper.shared.decrypt(body, withCard: channel.cards.first)
 
+            guard let message = Data(base64Encoded: decrypted) else {
+                throw NSError()
+            }
+
             // FIXME
-            twilioChannel.messages?.remove(message) { result in
+            twilioChannel.messages?.remove(twilioMessage) { result in
                 if let error = result.error {
                     Log.debug("Service Message remove: \(error.description)")
                 }
             }
 
-            try CoreDataHelper.shared.saveServiceMessage(decrypted, to: channel, type: .startGroup)
+            try CoreDataHelper.shared.saveServiceMessage(message, to: channel, type: .startGroup)
 
             Log.debug("Service message received and saved")
 

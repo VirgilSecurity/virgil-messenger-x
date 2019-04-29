@@ -6,7 +6,6 @@
 //  Copyright © 2018 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import UIKit
 import CoreData
 
@@ -15,7 +14,13 @@ extension CoreDataHelper {
         let messages = message.channel.mutableOrderedSetValue(forKey: Channel.MessagesKey)
         messages.add(message)
 
-        Log.debug("Core Data: new message added")
+        self.appDelegate.saveContext()
+    }
+
+    func save(_ message: ServiceMessage, to channel: Channel) throws {
+        let messages = channel.mutableOrderedSetValue(forKey: Channel.ServiceMessagesKey)
+        messages.add(message)
+
         self.appDelegate.saveContext()
     }
 
@@ -29,12 +34,7 @@ extension CoreDataHelper {
 //        try self.saveMessage(message)
 //    }
 //
-    func saveServiceMessage(_ message: String, to channel: Channel, type: ServiceMessageType) throws {
-        // FIXME
-        guard let message = Data(base64Encoded: message) else {
-            throw NSError()
-        }
-
+    func saveServiceMessage(_ message: Data, to channel: Channel, type: ServiceMessageType) throws {
         let serviceMessage = try self.createServiceMessage(message, type: type)
 
         let messages = channel.mutableOrderedSetValue(forKey: Channel.ServiceMessagesKey)
@@ -44,7 +44,7 @@ extension CoreDataHelper {
         self.appDelegate.saveContext()
     }
 
-    func createServiceMessage(_ message: Data, type: ServiceMessageType) throws -> ServiceMessage {
+    private func createServiceMessage(_ message: Data, type: ServiceMessageType) throws -> ServiceMessage {
         return try ServiceMessage(message: message,
                                   type: type,
                                   managedContext: self.managedContext)

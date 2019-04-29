@@ -25,8 +25,9 @@ class ViewController: UIViewController {
     func switchNavigationStack(to navigationController: UINavigationController) {
         let window = UIApplication.shared.keyWindow!
 
-        UIView.transition(with: window, duration: UIConstants.TransitionAnimationDuration, options: .transitionCrossDissolve, animations: {
-            window.rootViewController = navigationController
-        })
+        UIView.transition(with: window,
+                          duration: UIConstants.TransitionAnimationDuration,
+                          options: .transitionCrossDissolve,
+                          animations: { window.rootViewController = navigationController })
     }
 }

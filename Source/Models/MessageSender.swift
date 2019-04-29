@@ -12,11 +12,11 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public static func makeSendServiceMessageOperation(_ serviceMessage: ServiceMessage, to channel: Channel) -> CallbackOperation<Void> {
+    public static func makeSendServiceMessageOperation(_ data: Data, to channel: Channel) -> CallbackOperation<Void> {
         let cards = channel.cards
         let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(channel)
 
-        let plaintext = serviceMessage.message.base64EncodedString()
+        let plaintext = data.base64EncodedString()
 
         // FIXME
         let ciphertext = try! VirgilHelper.shared.encrypt(plaintext, cards: cards)
