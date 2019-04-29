@@ -1,5 +1,5 @@
 //
-//  UIViewController+Alerts.swift
+//  UIViewController.swift
 //  VirgilMessenger
 //
 //  Created by Yevhen Pyvovarov on 4/3/19.

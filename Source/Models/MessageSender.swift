@@ -19,7 +19,7 @@ public class MessageSender {
         let plaintext = data.base64EncodedString()
 
         // FIXME
-        let ciphertext = try! VirgilHelper.shared.encrypt(plaintext, cards: cards)
+        let ciphertext = try! VirgilHelper.shared.encrypt(plaintext, card: cards.first!)
 
         return TwilioHelper.shared.send(ciphertext: ciphertext, messages: channel!.messages!, type: .service)
     }
@@ -42,9 +42,13 @@ public class MessageSender {
                         throw NSError()
                     }
 
-                    let ciphertext = message.channel.type == .group ?
-                        "\(TwilioHelper.shared.username): \(plaintext)" :
-                    try VirgilHelper.shared.encrypt(plaintext, cards: cards)
+                    let ciphertext: String
+                    switch message.channel.type {
+                    case .group:
+                        ciphertext = "\(TwilioHelper.shared.username): \(plaintext)"
+                    case .single:
+                        ciphertext = try VirgilHelper.shared.encrypt(plaintext, card: cards.first!)
+                    }
 
                     try TwilioHelper.shared.send(ciphertext: ciphertext, messages: messages, type: .regular).startSync().getResult()
                 case .photo:

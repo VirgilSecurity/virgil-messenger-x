@@ -28,41 +28,37 @@ extension VirgilHelper {
         return session
     }
 
-    public func getGroupInitMessage(_ cards: [Card]) throws -> RatchetGroupMessage {
-        return try self.secureChat.startNewGroupSession(with: cards)
-    }
-
-    // FIXME
-    func encrypt(_ text: String, cards: [Card] = []) throws -> String {
-        let cards = cards.isEmpty ? self.channelCards : cards
-
-        guard !cards.isEmpty else {
-            Log.error("Virgil: Channel Card not found")
+    private func getGroupSession(sessionId: String) throws -> SecureGroupSession {
+        guard let session = secureChat.existingGroupSession(sessionId: sessionId) else {
             throw NSError()
         }
 
-        let session = try self.getSessionAsSender(card: cards.first!)
+        return session
+    }
+
+    public func getStartGroupTicket(_ cards: [Card]) throws -> RatchetGroupMessage {
+        return try self.secureChat.startNewGroupSession(with: cards)
+    }
+
+    func encrypt(_ text: String, groupSessionId: String) throws -> String {
+        let session = try self.getGroupSession(sessionId: groupSessionId)
 
         let ratchetMessage = try session.encrypt(string: text)
 
         return ratchetMessage.serialize().base64EncodedString()
     }
 
-    func decrypt(_ encrypted: String, withCard: Card? = nil) throws -> String {
+    func encrypt(_ text: String, card: Card) throws -> String {
+        let session = try self.getSessionAsSender(card: card)
+
+        let ratchetMessage = try session.encrypt(string: text)
+
+        return ratchetMessage.serialize().base64EncodedString()
+    }
+
+    func decrypt(_ encrypted: String, from card: Card) throws -> String {
         guard let data = Data(base64Encoded: encrypted) else {
             Log.error("Converting utf8 string to data failed")
-            throw NSError()
-        }
-
-        let tryCard: Card?
-        if let receiverCard = withCard {
-            tryCard = receiverCard
-        } else {
-            tryCard = self.channelCards.first
-        }
-
-        guard let card = tryCard else {
-            Log.error("No card")
             throw NSError()
         }
 

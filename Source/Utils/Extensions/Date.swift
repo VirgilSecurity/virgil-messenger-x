@@ -1,5 +1,5 @@
 //
-//  Utils+Date.swift
+//  Date.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 12/7/17.

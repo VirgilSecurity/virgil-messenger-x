@@ -32,7 +32,7 @@ public enum ChatsManager {
             let members = channels.map { $0.name }
             let cards = channels.map { $0.cards.first! }
 
-            let startGroupServiceMessage = try VirgilHelper.shared.getGroupInitMessage(cards)
+            let startGroupServiceMessage = try VirgilHelper.shared.getStartGroupTicket(cards)
             let sessionId = startGroupServiceMessage.getSessionId()
             let serviceMessageData = startGroupServiceMessage.serialize()
 

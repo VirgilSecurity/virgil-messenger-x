@@ -54,7 +54,7 @@ class MessageProcessor {
             // FIXME
             var decrypted: String = body
             if channel.type == .single {
-                decrypted = try VirgilHelper.shared.decrypt(body, withCard: channel.cards.first)
+                decrypted = try VirgilHelper.shared.decrypt(body, from: channel.cards.first!)
             }
 
             let message = try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
@@ -62,7 +62,7 @@ class MessageProcessor {
 
             return message
         case .service:
-            let decrypted = try VirgilHelper.shared.decrypt(body, withCard: channel.cards.first)
+            let decrypted = try VirgilHelper.shared.decrypt(body, from: channel.cards.first!)
 
             guard let message = Data(base64Encoded: decrypted) else {
                 throw NSError()
