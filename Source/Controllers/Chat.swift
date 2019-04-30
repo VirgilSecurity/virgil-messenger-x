@@ -72,7 +72,6 @@ class ChatViewController: BaseChatViewController {
 
         CoreDataHelper.shared.setCurrent(channel: self.channel)
         TwilioHelper.shared.setChannel(self.channel)
-        VirgilHelper.shared.setChannelCards(self.channel.cards)
 
         let titleButton = UIButton(type: .custom)
         titleButton.frame = CGRect(x: 0, y: 0, width: 200, height: 21)

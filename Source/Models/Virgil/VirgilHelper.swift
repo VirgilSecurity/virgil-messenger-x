@@ -26,8 +26,6 @@ public class VirgilHelper {
     let client: Client
     let secureChat: SecureChat
 
-    private(set) var channelCards: [Card] = []
-
     private init(crypto: VirgilCrypto,
                  cardCrypto: VirgilCardCrypto,
                  verifier: VirgilCardVerifier,
@@ -104,6 +102,25 @@ public class VirgilHelper {
         }
     }
 
+    func makeSendNewMessageServiceMessageOperation(members: [Channel], newSessionTicket: Data) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            var operations: [CallbackOperation<Void>] = []
+            members.forEach {
+                let sendOperation = MessageSender.makeSendServiceMessageOperation(newSessionTicket, to: $0)
+                operations.append(sendOperation)
+            }
+
+            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+            operations.forEach {
+                completionOperation.addDependency($0)
+            }
+
+            let queue = OperationQueue()
+            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+        }
+    }
+
     func buildCard(_ card: String) -> Card? {
         do {
             let card = try self.importCard(fromBase64Encoded: card)
@@ -120,9 +137,5 @@ public class VirgilHelper {
         return try CardManager.importCard(fromBase64Encoded: card,
                                           cardCrypto: self.cardCrypto,
                                           cardVerifier: self.verifier)
-    }
-
-    func setChannelCards(_ cards: [Card]) {
-        self.channelCards = cards
     }
 }

@@ -9,6 +9,6 @@
 import Foundation
 
 public enum ServiceMessageType: String {
-    case startGroup
+    case newSession
     case changeMembers
 }

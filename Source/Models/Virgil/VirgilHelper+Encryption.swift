@@ -30,13 +30,17 @@ extension VirgilHelper {
 
     private func getGroupSession(sessionId: String) throws -> SecureGroupSession {
         guard let session = secureChat.existingGroupSession(sessionId: sessionId) else {
+//            let newSessionMessage = try VirgilHelper.shared.getNewSessionTicket(cards)
+//            let sessionId = newSessionMessage.getSessionId()
+//            let serviceMessageData = newSessionMessage.serialize()
+
             throw NSError()
         }
 
         return session
     }
 
-    public func getStartGroupTicket(_ cards: [Card]) throws -> RatchetGroupMessage {
+    public func getNewSessionTicket(_ cards: [Card]) throws -> RatchetGroupMessage {
         return try self.secureChat.startNewGroupSession(with: cards)
     }
 

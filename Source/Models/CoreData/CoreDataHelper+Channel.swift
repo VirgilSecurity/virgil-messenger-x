@@ -22,7 +22,7 @@ extension CoreDataHelper {
                 let channel = try self.createChannel(type: .group, name: name, cards: cards)
 
                 if let serviceMessage = serviceMessage {
-                    try self.saveServiceMessage(serviceMessage, to: channel, type: .startGroup)
+                    try self.saveServiceMessage(serviceMessage, to: channel, type: .newSession)
                 }
 
                 completion((), nil)

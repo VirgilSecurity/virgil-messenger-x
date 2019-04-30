@@ -21,7 +21,7 @@ public class ServiceMessage: NSManagedObject {
 
     public var type: ServiceMessageType {
         get {
-            return ServiceMessageType(rawValue: self.rawType) ?? .startGroup
+            return ServiceMessageType(rawValue: self.rawType) ?? .newSession
         }
 
         set {

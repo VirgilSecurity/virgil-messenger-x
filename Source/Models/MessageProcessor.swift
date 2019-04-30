@@ -75,7 +75,7 @@ class MessageProcessor {
                 }
             }
 
-            try CoreDataHelper.shared.saveServiceMessage(message, to: channel, type: .startGroup)
+            try CoreDataHelper.shared.saveServiceMessage(message, to: channel, type: .newSession)
 
             Log.debug("Service message received and saved")
 
