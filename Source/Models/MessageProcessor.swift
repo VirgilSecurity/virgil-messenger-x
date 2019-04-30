@@ -10,6 +10,7 @@ import TwilioChatClient
 import Chatto
 import ChattoAdditions
 import AVFoundation
+import VirgilCryptoRatchet
 
 class MessageProcessor {
     static func process(message: TCHMessage, from twilioChannel: TCHChannel) throws -> Message? {
@@ -52,9 +53,12 @@ class MessageProcessor {
         switch attributes.type {
         case .regular:
             // FIXME
-            var decrypted: String = body
-            if channel.type == .single {
+            let decrypted: String
+            switch channel.type {
+            case .single:
                 decrypted = try VirgilHelper.shared.decrypt(body, from: channel.cards.first!)
+            case .group:
+                decrypted = try VirgilHelper.shared.decrypt(body, from: twilioMessage.author!, channel: channel)
             }
 
             let message = try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
@@ -64,9 +68,11 @@ class MessageProcessor {
         case .service:
             let decrypted = try VirgilHelper.shared.decrypt(body, from: channel.cards.first!)
 
-            guard let message = Data(base64Encoded: decrypted) else {
+            guard let data = Data(base64Encoded: decrypted) else {
                 throw NSError()
             }
+
+            let message = try RatchetGroupMessage.deserialize(input: data)
 
             // FIXME
             twilioChannel.messages?.remove(twilioMessage) { result in

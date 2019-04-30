@@ -12,23 +12,22 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public static func makeSendServiceMessageOperation(_ data: Data, to channel: Channel) -> CallbackOperation<Void> {
-        let cards = channel.cards
-        let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(channel)
+    public static func makeSendServiceMessageOperation(_ data: Data, to card: Card) -> CallbackOperation<Void> {
+        let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(card.identity)
 
         let plaintext = data.base64EncodedString()
 
         // FIXME
-        let ciphertext = try! VirgilHelper.shared.encrypt(plaintext, card: cards.first!)
+        let ciphertext = try! VirgilHelper.shared.encrypt(plaintext, card: card)
 
         return TwilioHelper.shared.send(ciphertext: ciphertext, messages: channel!.messages!, type: .service)
     }
 
     public func send(message: Message, withId id: Int) throws -> DemoMessageModelProtocol {
         let cards = message.channel.cards
-        let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel)
+        let channelCandidate = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel.name)
 
-        guard let messages = channel?.messages else {
+        guard let channel = channelCandidate, let messages = channel.messages else {
             throw NSError()
         }
 
@@ -38,14 +37,15 @@ public class MessageSender {
             do {
                 switch message.type {
                 case .text:
-                    guard let plaintext = message.body else {
+                    guard var plaintext = message.body else {
                         throw NSError()
                     }
 
                     let ciphertext: String
                     switch message.channel.type {
                     case .group:
-                        ciphertext = "\(TwilioHelper.shared.username): \(plaintext)"
+                        plaintext = "\(TwilioHelper.shared.username): \(plaintext)"
+                        ciphertext = try VirgilHelper.shared.encrypt(plaintext, channel: message.channel)
                     case .single:
                         ciphertext = try VirgilHelper.shared.encrypt(plaintext, card: cards.first!)
                     }
@@ -61,8 +61,6 @@ public class MessageSender {
 
                 self.updateMessage(uiModel, status: .success)
             } catch {
-                Log.error(error.localizedDescription)
-                Log.error("\(error)")
                 self.updateMessage(uiModel, status: .failed)
             }
         }

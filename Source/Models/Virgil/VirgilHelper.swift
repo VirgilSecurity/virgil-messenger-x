@@ -14,6 +14,7 @@ import VirgilCryptoRatchet
 public enum VirgilHelperError: String, Error {
     case getCardFailed = "Getting Virgil Card Failed"
     case cardVerifierInitFailed
+    case utf8ToDataFailed
 }
 
 public class VirgilHelper {
@@ -102,10 +103,10 @@ public class VirgilHelper {
         }
     }
 
-    func makeSendNewMessageServiceMessageOperation(members: [Channel], newSessionTicket: Data) -> CallbackOperation<Void> {
+    func makeSendNewMessageServiceMessageOperation(cards: [Card], newSessionTicket: Data) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             var operations: [CallbackOperation<Void>] = []
-            members.forEach {
+            cards.forEach {
                 let sendOperation = MessageSender.makeSendServiceMessageOperation(newSessionTicket, to: $0)
                 operations.append(sendOperation)
             }

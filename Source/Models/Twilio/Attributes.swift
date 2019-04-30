@@ -12,7 +12,6 @@ extension TwilioHelper {
     struct ChannelAttributes: Codable {
         let initiator: String
         let friendlyName: String?
-        let sessionId: Data?
         let members: [String]
         let type: ChannelType
 

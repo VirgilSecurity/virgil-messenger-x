@@ -10,8 +10,9 @@ import Foundation
 import VirgilSDKRatchet
 
 extension SecureChat {
-    @objc public func existingGroupSession(sessionId: String) -> SecureGroupSession? {
-        if let session = self.groupSessionStorage.retrieveSession(identifier: sessionId) {
+    @objc public func existingGroupSession(sessionId: Data) -> SecureGroupSession? {
+        let identifier = sessionId.hexEncodedString()
+        if let session = self.groupSessionStorage.retrieveSession(identifier: identifier) {
             Log.debug("Found existing group session with identifier: \(sessionId)")
 
             return session

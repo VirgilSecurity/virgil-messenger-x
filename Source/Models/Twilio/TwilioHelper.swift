@@ -136,12 +136,12 @@ public class TwilioHelper: NSObject {
 
 // Setters
 extension TwilioHelper {
-    func getChannel(_ coreDataChannel: Channel) -> TCHChannel? {
-        return channels.subscribedChannels().first { self.getName(of: $0) == coreDataChannel.name }
+    func getChannel(_ identity: String) -> TCHChannel? {
+        return channels.subscribedChannels().first { self.getName(of: $0) == identity }
     }
 
     func setChannel(_ coreDataChannel: Channel) {
-        self.currentChannel = self.getChannel(coreDataChannel)
+        self.currentChannel = self.getChannel(coreDataChannel.name)
     }
 
     func deselectChannel() {

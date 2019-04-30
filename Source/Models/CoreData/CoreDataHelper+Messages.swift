@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import VirgilCryptoRatchet
 
 extension CoreDataHelper {
     func save(_ message: Message) throws {
@@ -34,20 +35,16 @@ extension CoreDataHelper {
 //        try self.saveMessage(message)
 //    }
 //
-    func saveServiceMessage(_ message: Data, to channel: Channel, type: ServiceMessageType) throws {
-        let serviceMessage = try self.createServiceMessage(message, type: type)
+    func saveServiceMessage(_ message: RatchetGroupMessage, to channel: Channel, type: ServiceMessageType) throws {
+        let serviceMessage = try ServiceMessage(message: message,
+                                                type: type,
+                                                managedContext: self.managedContext)
 
         let messages = channel.mutableOrderedSetValue(forKey: Channel.ServiceMessagesKey)
         messages.add(serviceMessage)
 
         Log.debug("Core Data: new service added")
         self.appDelegate.saveContext()
-    }
-
-    private func createServiceMessage(_ message: Data, type: ServiceMessageType) throws -> ServiceMessage {
-        return try ServiceMessage(message: message,
-                                  type: type,
-                                  managedContext: self.managedContext)
     }
 
     func createTextMessage(_ body: String,

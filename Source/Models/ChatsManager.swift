@@ -32,25 +32,16 @@ public enum ChatsManager {
             let members = channels.map { $0.name }
             let cards = channels.map { $0.cards.first! }
 
-            let newSessionMessage = try VirgilHelper.shared.getNewSessionTicket(cards)
-            let sessionId = newSessionMessage.getSessionId()
-            let serviceMessageData = newSessionMessage.serialize()
-
             let createTwilioChannelOperation = TwilioHelper.shared.makeCreateGroupChannelOperation(with: members,
-                                                                                                   name: name,
-                                                                                                   sessionId: sessionId)
-
-            let sendNewSessionMessageOperation = VirgilHelper.shared.makeSendNewMessageServiceMessageOperation(members: channels,
-                                                                                                               newSessionTicket: serviceMessageData)
+                                                                                                   name: name)
 
             let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateGroupChannelOperation(name: name,
-                                                                                                       serviceMessage: serviceMessageData,
                                                                                                        members: members,
                                                                                                        cards: cards)
 
             createCoreDataChannelOperation.addDependency(createTwilioChannelOperation)
 
-            let operations = [createTwilioChannelOperation, sendNewSessionMessageOperation, createCoreDataChannelOperation]
+            let operations = [createTwilioChannelOperation, createCoreDataChannelOperation]
 
             let completionOperation = OperationUtils.makeCompletionOperation { (_: Void?, error: Error?) in completion(error) }
 

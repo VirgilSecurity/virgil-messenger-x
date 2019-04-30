@@ -94,7 +94,6 @@ extension TwilioHelper {
         return CallbackOperation { _, completion in
             let attributes = ChannelAttributes(initiator: self.username,
                                                friendlyName: nil,
-                                               sessionId: nil,
                                                members: [self.username, identity],
                                                type: .single)
 
@@ -120,11 +119,10 @@ extension TwilioHelper {
         }
     }
 
-    func makeCreateGroupChannelOperation(with members: [String], name: String, sessionId: Data) -> CallbackOperation<Void> {
+    func makeCreateGroupChannelOperation(with members: [String], name: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             let attributes = ChannelAttributes(initiator: self.username,
                                                friendlyName: name,
-                                               sessionId: sessionId,
                                                members: [self.username] + members,
                                                type: .group)
 

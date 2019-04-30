@@ -12,18 +12,13 @@ import VirgilSDK
 
 extension CoreDataHelper {
     func makeCreateGroupChannelOperation(name: String,
-                                         serviceMessage: Data? = nil,
                                          members: [String],
                                          cards: [Card]? = nil) -> CallbackOperation<Void> {
         return CallbackOperation<Void> { operation, completion in
             do {
                 let cards: [Card] = try cards ?? operation.findDependencyResult()
 
-                let channel = try self.createChannel(type: .group, name: name, cards: cards)
-
-                if let serviceMessage = serviceMessage {
-                    try self.saveServiceMessage(serviceMessage, to: channel, type: .newSession)
-                }
+                _ = try self.createChannel(type: .group, name: name, cards: cards)
 
                 completion((), nil)
             }
@@ -48,19 +43,31 @@ extension CoreDataHelper {
         }
     }
 
-    private func createChannel(type: ChannelType, name: String, cards: [Card]) throws -> Channel {
+    private func createChannel(type: ChannelType, name: String, cards: [Card], sessionId: Data? = nil) throws -> Channel {
         guard let account = self.currentAccount else {
             throw CoreDataHelperError.nilCurrentAccount
         }
 
-        let channel = try Channel(name: name, type: type, cards: cards, managedContext: self.managedContext)
-
-        let channels = account.mutableOrderedSetValue(forKey: Account.ChannelsKey)
-        channels.add(channel)
+        let channel = try Channel(name: name,
+                                  type: type,
+                                  account: account,
+                                  cards: cards,
+                                  sessionId: sessionId,
+                                  managedContext: self.managedContext)
 
         self.appDelegate.saveContext()
 
         return channel
+    }
+
+    func setSessionId(_ sessionId: Data, for channel: Channel) {
+        guard channel.sessionId != sessionId else {
+            return
+        }
+        
+        channel.sessionId = sessionId
+
+        self.appDelegate.saveContext()
     }
 
     func loadChannel(withName username: String) -> Channel? {
@@ -81,6 +88,10 @@ extension CoreDataHelper {
 
     func getChannels() -> [Channel] {
         return self.currentAccount?.channels ?? []
+    }
+
+    func getChannel(with identity: String) -> Channel? {
+        return CoreDataHelper.shared.getSingleChannels().first { $0.name == identity }
     }
 
     func getSingleChannels() -> [Channel] {

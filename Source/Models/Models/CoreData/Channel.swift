@@ -14,6 +14,7 @@ import VirgilSDK
 public class Channel: NSManagedObject {
     @NSManaged public var name: String
     @NSManaged public var account: Account
+    @NSManaged public var sessionId: Data?
 
     @NSManaged private var rawType: String
     @NSManaged private var numColorPair: Int32
@@ -97,7 +98,12 @@ public class Channel: NSManagedObject {
         }
     }
 
-    convenience init(name: String, type: ChannelType, cards: [Card], managedContext: NSManagedObjectContext) throws {
+    convenience init(name: String,
+                     type: ChannelType,
+                     account: Account,
+                     cards: [Card],
+                     sessionId: Data?,
+                     managedContext: NSManagedObjectContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Channel.EntityName, in: managedContext) else {
             throw CoreDataHelperError.entityNotFound
         }
@@ -107,6 +113,10 @@ public class Channel: NSManagedObject {
         self.name = name
         self.type = type
         self.cards = cards
+        self.sessionId = sessionId
         self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
+
+        let accountChannels = account.mutableOrderedSetValue(forKey: Account.ChannelsKey)
+        accountChannels.add(self)
     }
 }

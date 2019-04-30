@@ -9,15 +9,26 @@
 
 import Foundation
 import CoreData
+import VirgilCryptoRatchet
 
 @objc(ServiceMessage)
 public class ServiceMessage: NSManagedObject {
-    @NSManaged public var message: Data
+    @NSManaged public var rawMessage: Data
     @NSManaged public var channel: Channel?
 
     @NSManaged private var rawType: String
 
     private static let EntityName = "ServiceMessage"
+
+    public var message: RatchetGroupMessage {
+        get {
+            return try! RatchetGroupMessage.deserialize(input: self.rawMessage)
+        }
+
+        set {
+            self.rawMessage = newValue.serialize()
+        }
+    }
 
     public var type: ServiceMessageType {
         get {
@@ -29,7 +40,7 @@ public class ServiceMessage: NSManagedObject {
         }
     }
 
-    convenience init(message: Data, type: ServiceMessageType, managedContext: NSManagedObjectContext) throws {
+    convenience init(message: RatchetGroupMessage, type: ServiceMessageType, managedContext: NSManagedObjectContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: ServiceMessage.EntityName,
                                                       in: managedContext) else {
             throw CoreDataHelperError.entityNotFound
