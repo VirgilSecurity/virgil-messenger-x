@@ -18,6 +18,7 @@ public class TwilioHelper: NSObject {
 
     let username: String
     let queue = DispatchQueue(label: "TwilioHelper")
+    let mutex = Mutex()
     private let device: String
 
     enum TwilioHelperError: Error {
