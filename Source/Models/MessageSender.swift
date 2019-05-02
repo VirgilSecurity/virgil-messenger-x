@@ -13,7 +13,7 @@ public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
     public static func makeSendServiceMessageOperation(_ data: Data, to card: Card) -> CallbackOperation<Void> {
-        let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(card.identity)
+        let channel = TwilioHelper.shared.getChannel(card.identity)
 
         let plaintext = data.base64EncodedString()
 
@@ -50,7 +50,10 @@ public class MessageSender {
                         ciphertext = try VirgilHelper.shared.encrypt(plaintext, card: cards.first!)
                     }
 
-                    try TwilioHelper.shared.send(ciphertext: ciphertext, messages: messages, type: .regular).startSync().getResult()
+                    try TwilioHelper.shared.send(ciphertext: ciphertext,
+                                                 messages: messages,
+                                                 type: .regular,
+                                                 sessionId: message.channel.sessionId).startSync().getResult()
                 case .photo:
                     break
                 case .audio:

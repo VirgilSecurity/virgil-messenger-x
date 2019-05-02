@@ -19,18 +19,6 @@ extension TwilioHelper {
         return try ChannelAttributes.import(attributes)
     }
 
-    func makeDeleteMessageOperation(_ message: TCHMessage, from channel: TCHChannel) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            channel.messages?.remove(message) { result in
-                if let error = result.error {
-                    completion(nil, error)
-                } else {
-                    completion((), nil)
-                }
-            }
-        }
-    }
-
     func getName(of channel: TCHChannel) -> String {
         // FIXME
         guard let attributes = try? self.getAttributes(of: channel) else {
@@ -86,6 +74,35 @@ extension TwilioHelper {
                 }
             } catch {
                 completion(nil, error)
+            }
+        }
+    }
+
+    func getMessagesCount(in channel: TCHChannel) -> CallbackOperation<UInt> {
+        return CallbackOperation { _, completion in
+            channel.getMessagesCount { result, count in
+                if let error = result.error {
+                    completion(nil, error)
+                } else {
+                    completion(count, nil)
+                }
+            }
+        }
+    }
+
+    func getLastMessages(withCount count: UInt, from messages: TCHMessages?) -> CallbackOperation<[TCHMessage]> {
+        return CallbackOperation { _, completion in
+            guard let messages = messages else {
+                completion([], nil)
+                return
+            }
+
+            messages.getLastWithCount(count) { result, messages in
+                if let error = result.error {
+                    completion(nil, error)
+                } else {
+                    completion(messages ?? [], nil)
+                }
             }
         }
     }

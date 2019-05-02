@@ -6,9 +6,9 @@
 //  Copyright © 2018 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import CoreData
 import VirgilSDK
+import TwilioChatClient
 
 extension CoreDataHelper {
     func makeCreateGroupChannelOperation(name: String,
@@ -78,6 +78,12 @@ extension CoreDataHelper {
         self.setCurrent(channel: channel)
 
         return channel
+    }
+
+    func getChannel(_ twilioChannel: TCHChannel) -> Channel? {
+        let name = TwilioHelper.shared.getName(of: twilioChannel)
+
+        return CoreDataHelper.shared.getChannel(withName: name)
     }
 
     func getChannel(withName username: String) -> Channel? {

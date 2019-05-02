@@ -6,9 +6,7 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import TwilioChatClient
-import TwilioAccessManager
 import VirgilSDK
 
 public class TwilioHelper: NSObject {
@@ -17,7 +15,6 @@ public class TwilioHelper: NSObject {
     private(set) var channels: TCHChannels!
     private(set) var users: TCHUsers!
     private(set) var currentChannel: TCHChannel?
-    private(set) var accessManager: TwilioAccessManager!
 
     let username: String
     let queue = DispatchQueue(label: "TwilioHelper")
@@ -75,9 +72,6 @@ public class TwilioHelper: NSObject {
         Log.debug("Initializing Twilio")
 
         self.queue.async {
-
-            self.accessManager = TwilioAccessManager(token: token, delegate: self)
-
             TwilioChatClient.chatClient(withToken: token, properties: nil, delegate: self) { result, client in
                 guard let client = client, result.isSuccessful() else {
                     Log.error("Error while initializing Twilio: \(result.error?.localizedDescription ?? "")")
@@ -100,15 +94,6 @@ public class TwilioHelper: NSObject {
                 self.client = client
                 self.channels = channels
                 self.users = users
-
-                self.accessManager?.registerClient(client, forUpdates: { [weak client = self.client] (token) in
-                    client?.updateToken(token) { (result) in
-                        guard result.error == nil else {
-                            Log.error("Update Twilio Token failed: \(result.error?.localizedDescription ?? "unknown error")")
-                            return
-                        }
-                    }
-                })
 
                 Log.debug("Successfully initialized Twilio")
 

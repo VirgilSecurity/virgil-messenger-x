@@ -52,9 +52,15 @@ extension VirgilHelper {
                 throw NSError()
             }
 
-            let serviceMessage = user.serviceMessages.first { $0.message.getSessionId() == sessionId }
+            var candidate: ServiceMessage?
+            while candidate == nil {
+                candidate = user.serviceMessages.first { $0.message.getSessionId() == sessionId }
+                sleep(1)
+            }
 
-            return try secureChat.startGroupSession(with: channel.cards, using: serviceMessage!.message)
+            let serviceMessage = candidate!
+
+            return try secureChat.startGroupSession(with: channel.cards, using: serviceMessage.message)
         }
 
         return session
@@ -68,14 +74,12 @@ extension VirgilHelper {
         return ratchetMessage.serialize().base64EncodedString()
     }
 
-    func decrypt(_ encrypted: String, from identity: String, channel: Channel) throws -> String {
+    func decrypt(_ encrypted: String, from identity: String, channel: Channel, sessionId: Data) throws -> String {
         guard let data = Data(base64Encoded: encrypted) else {
             throw VirgilHelperError.utf8ToDataFailed
         }
 
         let ratchetMessage = try RatchetGroupMessage.deserialize(input: data)
-
-        let sessionId = ratchetMessage.getSessionId()
 
         CoreDataHelper.shared.setSessionId(sessionId, for: channel)
 

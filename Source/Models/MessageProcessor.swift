@@ -58,7 +58,11 @@ class MessageProcessor {
             case .single:
                 decrypted = try VirgilHelper.shared.decrypt(body, from: channel.cards.first!)
             case .group:
-                decrypted = try VirgilHelper.shared.decrypt(body, from: twilioMessage.author!, channel: channel)
+                guard let sessionId = attributes.sessionId else {
+                    throw NSError()
+                }
+
+                decrypted = try VirgilHelper.shared.decrypt(body, from: twilioMessage.author!, channel: channel, sessionId: sessionId)
             }
 
             let message = try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
@@ -74,12 +78,11 @@ class MessageProcessor {
 
             let message = try RatchetGroupMessage.deserialize(input: data)
 
-            // FIXME
-            twilioChannel.messages?.remove(twilioMessage) { result in
-                if let error = result.error {
-                    Log.debug("Service Message remove: \(error.description)")
-                }
+            guard let messages = twilioChannel.messages else {
+                throw NSError()
             }
+
+            try TwilioHelper.shared.delete(twilioMessage, from: messages).startSync().getResult()
 
             try CoreDataHelper.shared.saveServiceMessage(message, to: channel, type: .newSession)
 

@@ -135,30 +135,47 @@ public enum ChatsManager {
 
 // Update Chats operations
 extension ChatsManager {
+    private static let queue = DispatchQueue(label: "test")
+
     public static func makeUpdateChannelsOperation() -> CallbackOperation<Void> {
-        return CallbackOperation<Void> { _, completion in
-            let twilioChannels = TwilioHelper.shared.channels.subscribedChannels()
+        return CallbackOperation { _, completion in
+            self.queue.async {
+                let twilioChannels = TwilioHelper.shared.channels.subscribedChannels()
 
-            guard twilioChannels.count > 0 else {
-                completion((), nil)
-                return
+                guard twilioChannels.count > 0 else {
+                    completion((), nil)
+                    return
+                }
+
+                var singleChannelOperations: [CallbackOperation<Void>] = []
+                var groupChannelOperations: [CallbackOperation<Void>] = []
+
+                for twilioChannel in twilioChannels {
+                    let operation = self.makeUpdateChannelOperation(twilioChannel: twilioChannel)
+
+                    let attributes = try! TwilioHelper.shared.getAttributes(of: twilioChannel)
+
+                    switch attributes.type {
+                    case .single:
+                        singleChannelOperations.append(operation)
+                    case .group:
+                        groupChannelOperations.append(operation)
+                    }
+                }
+
+//                groupChannelOperations.first!.addDependency(singleChannelOperations.first!)
+
+                let operations = singleChannelOperations + groupChannelOperations
+
+                let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+                operations.forEach {
+                    completionOperation.addDependency($0)
+                }
+
+                let queue = OperationQueue()
+                queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
             }
-
-            var operations: [CallbackOperation<Void>] = []
-
-            for twilioChannel in twilioChannels {
-                let operation = self.makeUpdateChannelOperation(twilioChannel: twilioChannel)
-                operations.append(operation)
-            }
-
-            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-
-            operations.forEach {
-                completionOperation.addDependency($0)
-            }
-
-            let queue = OperationQueue()
-            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
         }
     }
 
@@ -190,7 +207,6 @@ extension ChatsManager {
         }
     }
 
-    // FIXME
     private static func makeUpdateChannelOperation(twilioChannel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
@@ -199,50 +215,31 @@ extension ChatsManager {
                     try ChatsManager.join(twilioChannel).startSync().getResult()
                 }
 
-                let name = TwilioHelper.shared.getName(of: twilioChannel)
-
-                guard let coreChannel = CoreDataHelper.shared.getChannel(withName: name) else {
+                guard let coreChannel = CoreDataHelper.shared.getChannel(twilioChannel) else {
                     throw NSError()
                 }
 
-                let count = coreChannel.messages.count
+                let coreCount = UInt(coreChannel.messages.count)
+                let twilioCount = try TwilioHelper.shared.getMessagesCount(in: twilioChannel).startSync().getResult()
 
-                let coreCount = UInt(count)
+                let toLoad = twilioCount - coreCount
 
-                twilioChannel.getMessagesCount { result, twilioCount in
-                    if let error = result.error {
-                        completion(nil, error)
-                        return
-                    }
-
-                    let toLoad = twilioCount - coreCount
-
-                    guard toLoad > 0 else {
-                        completion((), nil)
-                        return
-                    }
-
-                    twilioChannel.messages?.getLastWithCount(toLoad) { result, messages in
-                        guard let messages = messages, result.isSuccessful() else {
-                            completion(nil, result.error)
-                            return
-                        }
-
-                        do {
-                            for message in messages {
-                                if message.author == TwilioHelper.shared.username {
-                                    continue
-                                }
-                                _ = try MessageProcessor.process(message: message, from: twilioChannel)
-                            }
-
-                            completion((), nil)
-                        } catch {
-                            completion(nil, error)
-                        }
-
-                    }
+                guard toLoad > 0 else {
+                    completion((), nil)
+                    return
                 }
+
+                let messages = try TwilioHelper.shared.getLastMessages(withCount: toLoad, from: twilioChannel.messages).startSync().getResult()
+
+                for message in messages {
+                    if message.author == TwilioHelper.shared.username {
+                        continue
+                    }
+
+                    _ = try MessageProcessor.process(message: message, from: twilioChannel)
+                }
+
+                completion((), nil)
             } catch {
                 completion(nil, error)
             }

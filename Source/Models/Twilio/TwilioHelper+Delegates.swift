@@ -8,9 +8,7 @@
 
 import UIKit
 import CoreData
-import Foundation
 import TwilioChatClient
-import TwilioAccessManager
 
 extension TwilioHelper: TwilioChatClientDelegate {
     enum Notifications: String {
@@ -116,17 +114,24 @@ extension TwilioHelper: TwilioChatClientDelegate {
             }
         }
     }
-}
 
-extension TwilioHelper: TwilioAccessManagerDelegate {
-    public func accessManagerTokenWillExpire(_ accessManager: TwilioAccessManager) {
+    public func chatClientTokenWillExpire(_ client: TwilioChatClient) {
         do {
             let token = try VirgilHelper.shared.client.getTwilioToken(identity: self.username)
 
-            accessManager.updateToken(token)
+            self.client.updateToken(token)
         } catch {
             Log.error("Update Twilio Token failed: \(error.localizedDescription)")
         }
+    }
 
+    public func chatClientTokenExpired(_ client: TwilioChatClient) {
+        do {
+            let token = try VirgilHelper.shared.client.getTwilioToken(identity: self.username)
+
+            self.client.updateToken(token)
+        } catch {
+            Log.error("Update Twilio Token failed: \(error.localizedDescription)")
+        }
     }
 }

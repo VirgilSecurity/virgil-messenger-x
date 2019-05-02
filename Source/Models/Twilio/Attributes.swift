@@ -34,6 +34,7 @@ extension TwilioHelper {
 
     struct MessageAttributes: Codable {
         let type: MessageType
+        let sessionId: Data?
 
         static func `import`(_ json: [String: Any]) throws -> MessageAttributes {
             let data = try JSONSerialization.data(withJSONObject: json, options: [])

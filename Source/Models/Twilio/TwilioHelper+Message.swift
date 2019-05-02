@@ -11,13 +11,15 @@ import TwilioChatClient
 import VirgilSDK
 
 extension TwilioHelper {
-    public func send(ciphertext: String, messages: TCHMessages, type: MessageType) -> CallbackOperation<Void> {
+    public func send(ciphertext: String, messages: TCHMessages, type: MessageType, sessionId: Data? = nil) -> CallbackOperation<Void> {
         let options = TCHMessageOptions()
         options.withBody(ciphertext)
 
-        let attributes = TwilioHelper.MessageAttributes(type: type)
+        let attributes = TwilioHelper.MessageAttributes(type: type, sessionId: sessionId)
         // FIXME
         try! options.withAttributes(attributes.export())
+
+        Log.debug("Message type to send: \(type.rawValue)")
 
         return self.send(with: options, to: messages)
     }
@@ -30,6 +32,19 @@ extension TwilioHelper {
                     completion(nil, error)
                 } else {
                     Log.debug("Message sent")
+                    completion((), nil)
+                }
+            }
+        }
+    }
+
+    public func delete(_ message: TCHMessage, from messages: TCHMessages) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            messages.remove(message) { result in
+                if let error = result.error {
+                    Log.debug("Service Message remove: \(error.description)")
+                    completion(nil, error)
+                } else {
                     completion((), nil)
                 }
             }

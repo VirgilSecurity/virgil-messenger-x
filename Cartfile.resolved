@@ -6,3 +6,4 @@ github "VirgilSecurity/virgil-cryptowrapper-x" "a0ae38b08108a0b170458304bc8eb5b3
 github "VirgilSecurity/virgil-ratchet-x" "9ca197510ed4f9418a6865c7892f2078ef6f94d9"
 github "VirgilSecurity/virgil-sdk-x" "5.7.2"
 github "pkluz/PKHUD" "5.2.1"
+github "twilio/twilio-chat-ios" "v2.4.6"

@@ -26,6 +26,7 @@
 		162E22ED225F953D00AAE7C4 /* ChooseMembersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EC225F953D00AAE7C4 /* ChooseMembersCell.swift */; };
 		162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */; };
 		163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */; };
+		1640C021227B2C5300D585E3 /* TwilioChatClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1640C020227B2C5300D585E3 /* TwilioChatClient.framework */; };
 		1644C07920B720F000073D99 /* View.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1644C07820B720F000073D99 /* View.xcassets */; };
 		1644C07B20B85AC500073D99 /* DemoPhotosChatInputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1644C07A20B85AC500073D99 /* DemoPhotosChatInputItem.swift */; };
 		1647CC05227764CC003FE3EF /* SecureChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1647CC04227764CC003FE3EF /* SecureChat.swift */; };
@@ -77,8 +78,6 @@
 		16CA51101FC5D9960042AF9D /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA510F1FC5D9960042AF9D /* Settings.storyboard */; };
 		16CA51131FC5DA3B0042AF9D /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51121FC5DA3B0042AF9D /* Settings.swift */; };
 		16CC9B7B21552D5800935AEC /* TabBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CC9B7A21552D5800935AEC /* TabBar.storyboard */; };
-		16CC9B8A215549C600935AEC /* TwilioAccessManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16CC9B86215549AC00935AEC /* TwilioAccessManager.framework */; };
-		16CC9B8B215549C600935AEC /* TwilioAccessManager.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 16CC9B86215549AC00935AEC /* TwilioAccessManager.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16D6CB3A1FDFEECC00302A05 /* Registration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16D6CB391FDFEECC00302A05 /* Registration.storyboard */; };
 		16D7072C214C060000452A16 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D70726214BF60E00452A16 /* Security.framework */; };
 		16D7072E214C060B00452A16 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D7072D214C060B00452A16 /* libz.tbd */; };
@@ -91,7 +90,6 @@
 		16F30D4D1FDAE6E6006C3DEB /* SignInCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4C1FDAE6E6006C3DEB /* SignInCollection.swift */; };
 		16F30D4F1FDAE91D006C3DEB /* SignInCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4E1FDAE91D006C3DEB /* SignInCollectionCell.swift */; };
 		16F6FC721FAA235400158615 /* Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F6FC711FAA235300158615 /* Registration.swift */; };
-		16F8BC871FAA06040020094B /* TwilioChatClient.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 429228D11F96324B00DCECDF /* TwilioChatClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16F8F3B5226484C500143FB7 /* UsersList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16F8F3B4226484C500143FB7 /* UsersList.storyboard */; };
 		16F8F3B72264875F00143FB7 /* UsersList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3B62264875F00143FB7 /* UsersList.swift */; };
 		16F8F3B9226487BE00143FB7 /* UsersListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3B8226487BE00143FB7 /* UsersListCell.swift */; };
@@ -132,26 +130,11 @@
 		429228B61F96261000DCECDF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228B51F96261000DCECDF /* AppDelegate.swift */; };
 		429228B81F96261000DCECDF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228B71F96261000DCECDF /* ViewController.swift */; };
 		429228BD1F96261000DCECDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 429228BC1F96261000DCECDF /* Assets.xcassets */; };
-		429228D71F96334E00DCECDF /* TwilioChatClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228D11F96324B00DCECDF /* TwilioChatClient.framework */; };
 		429228DE1F9637A200DCECDF /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
 		429228E41F963DBE00DCECDF /* TwilioHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E21F963DBE00DCECDF /* TwilioHelper.swift */; };
 		429228E51F963DBE00DCECDF /* TwilioHelper+Delegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E31F963DBE00DCECDF /* TwilioHelper+Delegates.swift */; };
 		429228EB1F96405800DCECDF /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* Chat.storyboard */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		16F8BC861FAA05E70020094B /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 12;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				16CC9B8B215549C600935AEC /* TwilioAccessManager.framework in CopyFiles */,
-				16F8BC871FAA06040020094B /* TwilioChatClient.framework in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		16013C7820B214460043EA29 /* AudioBubleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBubleView.swift; sourceTree = "<group>"; };
@@ -176,6 +159,7 @@
 		162E22EC225F953D00AAE7C4 /* ChooseMembersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseMembersCell.swift; sourceTree = "<group>"; };
 		162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellTapDelegate.swift; sourceTree = "<group>"; };
 		163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewZeroPaddings.swift; sourceTree = "<group>"; };
+		1640C020227B2C5300D585E3 /* TwilioChatClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwilioChatClient.framework; path = Carthage/Build/iOS/TwilioChatClient.framework; sourceTree = "<group>"; };
 		1644C07820B720F000073D99 /* View.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = View.xcassets; sourceTree = "<group>"; };
 		1644C07A20B85AC500073D99 /* DemoPhotosChatInputItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoPhotosChatInputItem.swift; sourceTree = "<group>"; };
 		1647CC04227764CC003FE3EF /* SecureChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureChat.swift; sourceTree = "<group>"; };
@@ -220,7 +204,6 @@
 		16CA510F1FC5D9960042AF9D /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		16CA51121FC5DA3B0042AF9D /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		16CC9B7A21552D5800935AEC /* TabBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBar.storyboard; sourceTree = "<group>"; };
-		16CC9B86215549AC00935AEC /* TwilioAccessManager.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwilioAccessManager.framework; path = Frameworks/TwilioAccessManager.framework; sourceTree = "<group>"; };
 		16D6CB391FDFEECC00302A05 /* Registration.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Registration.storyboard; sourceTree = "<group>"; };
 		16D70726214BF60E00452A16 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		16D7072D214C060B00452A16 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -279,7 +262,6 @@
 		429228C91F96287A00DCECDF /* Chatto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Chatto.framework; path = Carthage/Build/iOS/Chatto.framework; sourceTree = "<group>"; };
 		429228CA1F96287A00DCECDF /* VirgilCrypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCrypto.framework; path = Carthage/Build/iOS/VirgilCrypto.framework; sourceTree = "<group>"; };
 		429228CB1F96287A00DCECDF /* VirgilSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilSDK.framework; path = Carthage/Build/iOS/VirgilSDK.framework; sourceTree = "<group>"; };
-		429228D11F96324B00DCECDF /* TwilioChatClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwilioChatClient.framework; path = Frameworks/TwilioChatClient.framework; sourceTree = "<group>"; };
 		429228DD1F9637A200DCECDF /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		429228E21F963DBE00DCECDF /* TwilioHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwilioHelper.swift; sourceTree = "<group>"; };
 		429228E31F963DBE00DCECDF /* TwilioHelper+Delegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Delegates.swift"; sourceTree = "<group>"; };
@@ -292,6 +274,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1640C021227B2C5300D585E3 /* TwilioChatClient.framework in Frameworks */,
 				1693677F2248FA0800EF9A42 /* Crashlytics.framework in Frameworks */,
 				169367802248FA0800EF9A42 /* Fabric.framework in Frameworks */,
 				169367812248FA0800EF9A42 /* VirgilCryptoFoundation.framework in Frameworks */,
@@ -309,8 +292,6 @@
 				16D70730214C061400452A16 /* libc++.tbd in Frameworks */,
 				16D7072E214C060B00452A16 /* libz.tbd in Frameworks */,
 				16D7072C214C060000452A16 /* Security.framework in Frameworks */,
-				16CC9B8A215549C600935AEC /* TwilioAccessManager.framework in Frameworks */,
-				429228D71F96334E00DCECDF /* TwilioChatClient.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -652,6 +633,7 @@
 		429228C71F96287A00DCECDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1640C020227B2C5300D585E3 /* TwilioChatClient.framework */,
 				162D2B462240F94300CE7FC2 /* Crashlytics.framework */,
 				162D2B472240F94300CE7FC2 /* Fabric.framework */,
 				1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */,
@@ -666,8 +648,6 @@
 				16D70726214BF60E00452A16 /* Security.framework */,
 				1627E4CF20BD522400D0AF36 /* VirgilCryptoAPI.framework */,
 				42E8F8731F978A51007CB39F /* PKHUD.framework */,
-				429228D11F96324B00DCECDF /* TwilioChatClient.framework */,
-				16CC9B86215549AC00935AEC /* TwilioAccessManager.framework */,
 				429228C91F96287A00DCECDF /* Chatto.framework */,
 				429228C81F96287A00DCECDF /* ChattoAdditions.framework */,
 				429228CA1F96287A00DCECDF /* VirgilCrypto.framework */,
@@ -697,7 +677,6 @@
 				429228AF1F96261000DCECDF /* Frameworks */,
 				429228B01F96261000DCECDF /* Resources */,
 				1693678E2248FA2F00EF9A42 /* ShellScript */,
-				16F8BC861FAA05E70020094B /* CopyFiles */,
 				16319BE72088E60200B09856 /* Remove unused architectures */,
 			);
 			buildRules = (
@@ -807,6 +786,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoFoundation.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoRatchet.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilSDKRatchet.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/TwilioChatClient.framework",
 			);
 			outputFileListPaths = (
 			);
