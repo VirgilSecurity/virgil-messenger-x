@@ -23,10 +23,10 @@ public class Configurator {
             let updateChannelsOperation = ChatsManager.makeUpdateChannelsOperation()
 
             let operations = [initPFSOperation, initTwilioOperation, updateChannelsOperation]
-            let completionOperation = OperationUtils.makeCompletionOperation(completion: { (_: Void?, error: Error?) in
+            let completionOperation = OperationUtils.makeCompletionOperation { (_: Void?, error: Error?) in
                 self.isConfigured = true
                 completion(error)
-            })
+            }
 
             updateChannelsOperation.addDependency(initPFSOperation)
             updateChannelsOperation.addDependency(initTwilioOperation)

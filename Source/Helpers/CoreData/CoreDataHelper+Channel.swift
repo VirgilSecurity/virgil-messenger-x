@@ -86,17 +86,17 @@ extension CoreDataHelper {
         return CoreDataHelper.shared.getChannel(withName: name)
     }
 
-    func getChannel(withName username: String) -> Channel? {
+    func getChannel(withName name: String) -> Channel? {
         let channels = self.getChannels()
 
-        return channels.first { $0.name == username }
+        return channels.first { $0.name == name }
     }
 
     func getChannels() -> [Channel] {
         return self.currentAccount?.channels ?? []
     }
 
-    func getChannel(with identity: String) -> Channel? {
+    func getSingleChannel(with identity: String) -> Channel? {
         return CoreDataHelper.shared.getSingleChannels().first { $0.name == identity }
     }
 

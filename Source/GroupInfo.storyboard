@@ -72,6 +72,7 @@
                                 </connections>
                             </containerView>
                         </subviews>
+                        <color key="backgroundColor" red="0.16862745100000001" green="0.18823529410000001" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="0nb-3n-zsd" secondAttribute="bottom" constant="497" id="2st-BM-qOK"/>
                             <constraint firstItem="tXx-Qg-e9l" firstAttribute="top" secondItem="0nb-3n-zsd" secondAttribute="bottom" constant="20" id="4pt-yY-Zz0"/>

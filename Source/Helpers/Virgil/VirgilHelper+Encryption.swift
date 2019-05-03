@@ -48,7 +48,7 @@ extension VirgilHelper {
 
     private func getGroupSessionAsReceiver(identity: String, channel: Channel, sessionId: Data) throws -> SecureGroupSession {
         guard let session = secureChat.existingGroupSession(sessionId: sessionId) else {
-            guard let user = CoreDataHelper.shared.getChannel(with: identity) else {
+            guard let user = CoreDataHelper.shared.getSingleChannel(with: identity) else {
                 throw NSError()
             }
 
