@@ -26,15 +26,13 @@ extension TwilioHelper {
 
     private func send(with options: TCHMessageOptions, to messages: TCHMessages) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            try! self.mutex.executeSync {
-                messages.sendMessage(with: options) { result, _ in
-                    if let error = result.error {
-                        Log.error("Message send failed: \(error)")
-                        completion(nil, error)
-                    } else {
-                        Log.debug("Message sent")
-                        completion((), nil)
-                    }
+            messages.sendMessage(with: options) { result, _ in
+                if let error = result.error {
+                    Log.error("Message send failed: \(error)")
+                    completion(nil, error)
+                } else {
+                    Log.debug("Message sent")
+                    completion((), nil)
                 }
             }
         }
@@ -42,14 +40,12 @@ extension TwilioHelper {
 
     public func delete(_ message: TCHMessage, from messages: TCHMessages) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            try! self.mutex.executeSync {
-                messages.remove(message) { result in
-                    if let error = result.error {
-                        Log.debug("Service Message remove: \(error.description)")
-                        completion(nil, error)
-                    } else {
-                        completion((), nil)
-                    }
+            messages.remove(message) { result in
+                if let error = result.error {
+                    Log.debug("Service Message remove: \(error.description)")
+                    completion(nil, error)
+                } else {
+                    completion((), nil)
                 }
             }
         }

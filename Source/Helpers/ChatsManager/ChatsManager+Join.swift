@@ -41,7 +41,7 @@ extension ChatsManager {
     public static func joinSingle(with identity: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             let getCardsOperation = VirgilHelper.shared.makeGetCardsOperation(identities: [identity])
-            let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateSingleChannelOperation(with: identity)
+            let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateSingleChannelOperation()
             let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
             let operations = [getCardsOperation, createCoreDataChannelOperation, completionOperation]
@@ -58,14 +58,18 @@ extension ChatsManager {
     public static func joinGroup(with members: [String],
                                  name: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            let getCardsOperation = VirgilHelper.shared.makeGetCardsOperation(identities: members)
+
             let createCoreDataGroupOperation = CoreDataHelper.shared.makeCreateGroupChannelOperation(name: name, members: members)
+
+            let members = members.filter { !CoreDataHelper.shared.existsSingleChannel(with: $0) }
+            let startSingleOperation = ChatsManager.makeStartSingleOperation(with: members)
+
             let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
-            let operations = [getCardsOperation, createCoreDataGroupOperation, completionOperation]
+            let operations = [startSingleOperation, createCoreDataGroupOperation, completionOperation]
 
-            createCoreDataGroupOperation.addDependency(getCardsOperation)
-            completionOperation.addDependency(getCardsOperation)
+            createCoreDataGroupOperation.addDependency(startSingleOperation)
+            completionOperation.addDependency(startSingleOperation)
             completionOperation.addDependency(createCoreDataGroupOperation)
 
             let queue = OperationQueue()

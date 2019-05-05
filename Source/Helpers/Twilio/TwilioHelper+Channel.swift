@@ -35,15 +35,13 @@ extension TwilioHelper {
 
     func makeJoinOperation(channel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            try! self.mutex.executeSync {
-                channel.join { result in
-                    guard result.isSuccessful() else {
-                        completion(nil, TwilioHelperError.joiningFailed)
-                        return
-                    }
-
-                    completion((), nil)
+            channel.join { result in
+                guard result.isSuccessful() else {
+                    completion(nil, TwilioHelperError.joiningFailed)
+                    return
                 }
+
+                completion((), nil)
             }
         }
     }
@@ -82,13 +80,11 @@ extension TwilioHelper {
 
     func getMessagesCount(in channel: TCHChannel) -> CallbackOperation<UInt> {
         return CallbackOperation { _, completion in
-            try! self.mutex.executeSync {
-                channel.getMessagesCount { result, count in
-                    if let error = result.error {
-                        completion(nil, error)
-                    } else {
-                        completion(count, nil)
-                    }
+            channel.getMessagesCount { result, count in
+                if let error = result.error {
+                    completion(nil, error)
+                } else {
+                    completion(count, nil)
                 }
             }
         }
@@ -96,18 +92,16 @@ extension TwilioHelper {
 
     func getLastMessages(withCount count: UInt, from messages: TCHMessages?) -> CallbackOperation<[TCHMessage]> {
         return CallbackOperation { _, completion in
-            try! self.mutex.executeSync {
-                guard let messages = messages else {
-                    completion([], nil)
-                    return
-                }
+            guard let messages = messages else {
+                completion([], nil)
+                return
+            }
 
-                messages.getLastWithCount(count) { result, messages in
-                    if let error = result.error {
-                        completion(nil, error)
-                    } else {
-                        completion(messages ?? [], nil)
-                    }
+            messages.getLastWithCount(count) { result, messages in
+                if let error = result.error {
+                    completion(nil, error)
+                } else {
+                    completion(messages ?? [], nil)
                 }
             }
         }
@@ -135,6 +129,28 @@ extension TwilioHelper {
 
             operations.forEach {
                 completionOperation.addDependency($0)
+            }
+
+            let queue = OperationQueue()
+            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+        }
+    }
+
+    func makeCreateSingleChannelOperation(with identities: [String]) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            guard !identities.isEmpty else {
+                completion((), nil)
+                return
+            }
+
+            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+            var operations: [CallbackOperation<Void>] = []
+
+            identities.forEach {
+                let operation = self.makeCreateSingleChannelOperation(with: $0)
+                completionOperation.addDependency(operation)
+                operations.append(operation)
             }
 
             let queue = OperationQueue()

@@ -11,12 +11,11 @@ import VirgilSDK
 import TwilioChatClient
 
 extension CoreDataHelper {
-    func makeCreateGroupChannelOperation(name: String,
-                                         members: [String],
-                                         cards: [Card]? = nil) -> CallbackOperation<Void> {
+    func makeCreateGroupChannelOperation(name: String, members: [String]) -> CallbackOperation<Void> {
         return CallbackOperation<Void> { operation, completion in
             do {
-                let cards: [Card] = try cards ?? operation.findDependencyResult()
+                let channels = members.map { CoreDataHelper.shared.getSingleChannel(with: $0)! }
+                let cards = channels.map { $0.cards.first! }
 
                 _ = try self.createChannel(type: .group, name: name, cards: cards)
 
@@ -28,16 +27,19 @@ extension CoreDataHelper {
         }
     }
 
-    func makeCreateSingleChannelOperation(with identity: String) -> CallbackOperation<Void> {
-        return CallbackOperation<Void> { operation, completion in
+    func makeCreateSingleChannelOperation() -> CallbackOperation<Void> {
+        return CallbackOperation { operation, completion in
             do {
-                let cards: [Card] = try operation.findDependencyResult()
+                var cards: [Card] = try operation.findDependencyResult()
 
-                _ = try self.createChannel(type: .single, name: identity, cards: cards)
+                cards = cards.filter { !self.existsSingleChannel(with: $0.identity) }
+
+                try cards.forEach {
+                    _ = try self.createChannel(type: .single, name: $0.identity, cards: [$0])
+                }
 
                 completion((), nil)
-            }
-            catch {
+            } catch {
                 completion(nil, error)
             }
         }
@@ -78,6 +80,10 @@ extension CoreDataHelper {
         self.setCurrent(channel: channel)
 
         return channel
+    }
+
+    func existsSingleChannel(with identity: String) -> Bool {
+        return self.getSingleChannel(with: identity) != nil ? true : false
     }
 
     func getChannel(_ twilioChannel: TCHChannel) -> Channel? {

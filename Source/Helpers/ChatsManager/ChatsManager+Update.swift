@@ -38,7 +38,11 @@ extension ChatsManager {
                     }
                 }
 
-                //                groupChannelOperations.first!.addDependency(singleChannelOperations.first!)
+                for singleOperation in singleChannelOperations {
+                    for groupOperation in groupChannelOperations {
+                        groupOperation.addDependency(singleOperation)
+                    }
+                }
 
                 let operations = singleChannelOperations + groupChannelOperations
 
@@ -57,13 +61,21 @@ extension ChatsManager {
     private static func makeUpdateChannelOperation(twilioChannel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                if twilioChannel.status == TCHChannelStatus.invited {
-                    try TwilioHelper.shared.makeJoinOperation(channel: twilioChannel).startSync().getResult()
-                    try ChatsManager.join(twilioChannel).startSync().getResult()
-                }
+                let coreChannel: Channel
+                if let channel = CoreDataHelper.shared.getChannel(twilioChannel) {
+                    coreChannel = channel
+                } else {
+                    if twilioChannel.status == TCHChannelStatus.invited {
+                        try TwilioHelper.shared.makeJoinOperation(channel: twilioChannel).startSync().getResult()
+                    }
 
-                guard let coreChannel = CoreDataHelper.shared.getChannel(twilioChannel) else {
-                    throw NSError()
+                    try ChatsManager.join(twilioChannel).startSync().getResult()
+
+                    guard let channel = CoreDataHelper.shared.getChannel(twilioChannel) else {
+                        throw NSError()
+                    }
+
+                    coreChannel = channel
                 }
 
                 let coreCount = UInt(coreChannel.messages.count)

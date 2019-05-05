@@ -11,7 +11,7 @@ import TwilioChatClient
 
 public enum ChatsManager {
     public static func startSingle(with identity: String,
-                                   startProgressBar: @escaping () -> Void,
+                                   startProgressBar: (() -> Void)? = nil,
                                    completion: @escaping (Error?) -> Void) {
         do {
             let identity = identity.lowercased()
@@ -26,12 +26,25 @@ public enum ChatsManager {
                 throw UserFriendlyError.doubleChannelForbidded
             }
 
-            startProgressBar()
+            startProgressBar?()
 
-            let getCardOperation = VirgilHelper.shared.makeGetCardsOperation(identities: [identity])
-            let createTwilioChannelOperation = TwilioHelper.shared.makeCreateSingleChannelOperation(with: identity)
-            let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateSingleChannelOperation(with: identity)
-            let completionOperation = OperationUtils.makeCompletionOperation { (_: Void?, error: Error?) in completion(error) }
+            ChatsManager.makeStartSingleOperation(with: [identity]).start(completion: { completion($1) })
+        } catch {
+            completion(error)
+        }
+    }
+
+    public static func makeStartSingleOperation(with identities: [String]) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            guard !identities.isEmpty else {
+                completion((), nil)
+                return
+            }
+
+            let getCardOperation = VirgilHelper.shared.makeGetCardsOperation(identities: identities)
+            let createTwilioChannelOperation = TwilioHelper.shared.makeCreateSingleChannelOperation(with: identities)
+            let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateSingleChannelOperation()
+            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
             createCoreDataChannelOperation.addDependency(getCardOperation)
             createTwilioChannelOperation.addDependency(getCardOperation)
@@ -46,8 +59,6 @@ public enum ChatsManager {
 
             let queue = OperationQueue()
             queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
-        } catch {
-            completion(error)
         }
     }
     
@@ -71,14 +82,12 @@ public enum ChatsManager {
             startProgressBar()
 
             let members = channels.map { $0.name }
-            let cards = channels.map { $0.cards.first! }
 
             let createTwilioChannelOperation = TwilioHelper.shared.makeCreateGroupChannelOperation(with: members,
                                                                                                    name: name)
 
             let createCoreDataChannelOperation = CoreDataHelper.shared.makeCreateGroupChannelOperation(name: name,
-                                                                                                       members: members,
-                                                                                                       cards: cards)
+                                                                                                       members: members)
 
             createCoreDataChannelOperation.addDependency(createTwilioChannelOperation)
 
