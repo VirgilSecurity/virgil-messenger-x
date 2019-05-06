@@ -38,4 +38,8 @@ class GroupInfoViewController: ViewController {
             self.usersListHeight.constant = CGFloat(self.channel.cards.count) * height
         }
     }
+
+    @IBAction func addMemberTapped(_ sender: Any) {
+        self.performSegue(withIdentifier: "goToAddMembers", sender: self)
+    }
 }

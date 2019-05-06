@@ -85,12 +85,20 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="xJl-Hy-9oJ"/>
                     </scrollView>
-                    <navigationItem key="navigationItem" title="Group Info" id="1f6-CX-TNl"/>
+                    <navigationItem key="navigationItem" title="Group Info" id="1f6-CX-TNl">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="DOM-xr-amY"/>
+                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="add" id="vI9-sY-xkl">
+                            <connections>
+                                <action selector="addMemberTapped:" destination="KRu-nJ-U9G" id="IeN-HP-cHc"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="avatarView" destination="fd5-eN-nwL" id="yfV-2O-02T"/>
                         <outlet property="letterLabel" destination="c6x-M6-9F7" id="b2R-IV-2Wi"/>
                         <outlet property="nameLabel" destination="i4n-lh-axn" id="rF2-1D-pCf"/>
                         <outlet property="usersListHeight" destination="ltC-ep-vVe" id="GaM-HU-aVI"/>
+                        <segue destination="Mqi-j1-WPX" kind="show" identifier="goToAddMembers" id="X1I-10-WqX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SWZ-aR-782" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -103,7 +111,47 @@
                 <viewControllerPlaceholder storyboardName="UsersList" id="j3I-cI-1fQ" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="s1k-wW-CDD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="789" y="137"/>
+            <point key="canvasLocation" x="736" y="232"/>
+        </scene>
+        <!--Add Members-->
+        <scene sceneID="Mwo-qI-dyt">
+            <objects>
+                <viewController id="Mqi-j1-WPX" customClass="AddMembersViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="U5z-FI-EyM">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fib-u2-NaA">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <color key="backgroundColor" red="0.16862745100000001" green="0.18823529410000001" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="separatorColor" red="0.1215686275" green="0.1333333333" blue="0.1647058824" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.16862745100000001" green="0.18823529410000001" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="fib-u2-NaA" firstAttribute="bottom" secondItem="Fdo-qY-458" secondAttribute="bottom" id="DDM-Ze-yrn"/>
+                            <constraint firstItem="fib-u2-NaA" firstAttribute="trailing" secondItem="Fdo-qY-458" secondAttribute="trailing" id="HBD-7d-mSr"/>
+                            <constraint firstItem="fib-u2-NaA" firstAttribute="top" secondItem="Fdo-qY-458" secondAttribute="top" id="JEP-Nx-MBr"/>
+                            <constraint firstItem="fib-u2-NaA" firstAttribute="leading" secondItem="Fdo-qY-458" secondAttribute="leading" id="R0Y-Yt-vsn"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Fdo-qY-458"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Add Members" id="zmd-3J-MCS">
+                        <barButtonItem key="rightBarButtonItem" title="Add" id="7HD-tB-WoE">
+                            <connections>
+                                <action selector="addTapped:" destination="Mqi-j1-WPX" id="6F1-Bm-Ogb"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="addButton" destination="7HD-tB-WoE" id="RCU-pO-AZN"/>
+                        <outlet property="tableView" destination="fib-u2-NaA" id="FJa-tK-BFN"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BXn-4O-F0l" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1305" y="115"/>
         </scene>
     </scenes>
 </document>
