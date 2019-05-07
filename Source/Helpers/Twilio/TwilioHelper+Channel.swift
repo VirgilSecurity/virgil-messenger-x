@@ -137,7 +137,12 @@ extension TwilioHelper {
     }
 
     func makeCreateSingleChannelOperation(with identities: [String]) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
+        return CallbackOperation { operation, completion in
+            if let error = operation.findDependencyError() {
+                completion(nil, error)
+                return
+            }
+
             guard !identities.isEmpty else {
                 completion((), nil)
                 return
