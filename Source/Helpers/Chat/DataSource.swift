@@ -22,11 +22,11 @@
  THE SOFTWARE.
 */
 
-import Foundation
 import Chatto
 import ChattoAdditions
 import TwilioChatClient
 import AVFoundation
+import VirgilSDK
 
 class DataSource: ChatDataSourceProtocol {
     let count: Int
@@ -108,6 +108,69 @@ class DataSource: ChatDataSourceProtocol {
         self.slidingWindow.loadPrevious()
         self.slidingWindow.adjustWindow(focusPosition: 0, maxWindowSize: self.preferredMaxWindowSize)
         self.delegate?.chatDataSourceDidUpdate(self, updateType: .pagination)
+    }
+
+    func addChangeMembersMessage(add cards: [Card]) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            do {
+                let members = cards.map { $0.identity }
+
+                guard let first = members.first else {
+                    return
+                }
+
+                var text = "\(TwilioHelper.shared.username) added \(first)"
+
+                for member in members {
+                    if member != first {
+                        text += ", \(member)"
+                    }
+                }
+
+                guard let twilioChannel = TwilioHelper.shared.currentChannel,
+                    let coreChannel = CoreDataHelper.shared.currentChannel else {
+                        completion(nil, NSError())
+                        return
+                }
+
+                let identities = cards.map { $0.identity }
+
+                guard let session = VirgilHelper.shared.getGroupSession(of: coreChannel) else {
+                    completion(nil, nil)
+                    return
+                }
+
+                let ticket = try session.createChangeMembersTicket(add: cards, removeCardIds: [])
+
+                let message = try CoreDataHelper.shared.createChangeMembersMessage(text, isIncoming: false)
+
+                let serviceMessage = try ServiceMessage(message: ticket, type: .changeMembers, add: cards, remove: [])
+                let serialized = try serviceMessage.export()
+
+                try TwilioHelper.shared.addMembers(identities, to: twilioChannel).startSync().getResult()
+
+                try CoreDataHelper.shared.makeAddOperation(cards, to: coreChannel).startSync().getResult()
+
+                try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serialized).startSync().getResult()
+
+                try self.messageSender.sendChangeMembers(message: message).startSync().getResult()
+
+                try session.useChangeMembersTicket(ticket: ticket, addCards: cards, removeCardIds: [])
+                try session.sessionStorage.storeSession(session)
+
+                self.nextMessageId += 1
+                let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
+
+                self.slidingWindow.insertItem(uiModel, position: .bottom)
+
+                DispatchQueue.main.async {
+                    self.delegate?.chatDataSourceDidUpdate(self)
+                    completion((), nil)
+                }
+            } catch {
+                completion(nil, error)
+            }
+        }
     }
 
     func addTextMessage(_ text: String) throws {

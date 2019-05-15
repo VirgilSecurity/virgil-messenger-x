@@ -12,7 +12,7 @@ extension TwilioHelper {
     struct ChannelAttributes: Codable {
         let initiator: String
         let friendlyName: String?
-        let members: [String]
+        var members: [String]
         let type: ChannelType
 
         static func `import`(_ json: [String: Any]) throws -> ChannelAttributes {

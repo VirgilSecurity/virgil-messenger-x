@@ -50,45 +50,67 @@ class MessageProcessor {
                                     twilioChannel: TCHChannel,
                                     channel: Channel,
                                     attributes: TwilioHelper.MessageAttributes) throws -> Message? {
-        switch attributes.type {
-        case .regular:
-            // FIXME
-            let decrypted: String
-            switch channel.type {
-            case .single:
-                decrypted = try VirgilHelper.shared.decrypt(body, from: channel.cards.first!)
-            case .group:
-                guard let sessionId = attributes.sessionId else {
-                    throw NSError()
-                }
+        let decrypted: String
 
-                decrypted = try VirgilHelper.shared.decrypt(body, from: twilioMessage.author!, channel: channel, sessionId: sessionId)
+        switch channel.type {
+        case .single:
+            decrypted = try VirgilHelper.shared.decrypt(body, from: channel.cards.first!)
+        case .group:
+            guard let sessionId = attributes.sessionId else {
+                throw NSError()
             }
 
+            decrypted = try VirgilHelper.shared.decryptGroup(body, from: twilioMessage.author!, channel: channel, sessionId: sessionId)
+        }
+
+        switch attributes.type {
+        case .regular:
             let message = try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
             try CoreDataHelper.shared.save(message)
 
             return message
         case .service:
-            let decrypted = try VirgilHelper.shared.decrypt(body, from: channel.cards.first!)
-
-            guard let data = Data(base64Encoded: decrypted) else {
-                throw NSError()
-            }
-
-            let message = try RatchetGroupMessage.deserialize(input: data)
-
             guard let messages = twilioChannel.messages else {
                 throw NSError()
             }
 
-            try TwilioHelper.shared.delete(twilioMessage, from: messages).startSync().getResult()
+            switch channel.type {
+            case .single:
+                let serviceMessage = try ServiceMessage.import(decrypted)
 
-            try CoreDataHelper.shared.saveServiceMessage(message, to: channel, type: .newSession)
+                try TwilioHelper.shared.delete(twilioMessage, from: messages).startSync().getResult()
 
-            Log.debug("Service message received and saved")
+                try CoreDataHelper.shared.save(serviceMessage, to: channel)
 
-            return nil
+                Log.debug("Service message received and saved")
+
+                return nil
+            case .group:
+                let message = try CoreDataHelper.shared.createChangeMembersMessage(decrypted,
+                                                                                   in: channel,
+                                                                                   isIncoming: isIncoming,
+                                                                                   date: date)
+
+                try CoreDataHelper.shared.save(message)
+
+                // Find Service Message in DM, update and resave Virgil Ratchet session
+
+                guard let sessionId = attributes.sessionId else {
+                    throw NSError()
+                }
+
+                let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!, withSessionId: sessionId)
+
+                guard let session = VirgilHelper.shared.getGroupSession(of: channel) else {
+                    throw NSError()
+                }
+
+                try session.useChangeMembersTicket(ticket: serviceMessage.message,
+                                                   addCards: serviceMessage.cardsAdd,
+                                                   removeCardIds: [])
+
+                return message
+            }
         }
     }
 

@@ -11,7 +11,7 @@ import TwilioChatClient
 
 public enum ChatsManager {
     public static func startSingle(with identity: String,
-                                   startProgressBar: (() -> Void)? = nil,
+                                   startProgressBar: (() -> Void),
                                    completion: @escaping (Error?) -> Void) {
         do {
             let identity = identity.lowercased()
@@ -26,7 +26,7 @@ public enum ChatsManager {
                 throw UserFriendlyError.doubleChannelForbidded
             }
 
-            startProgressBar?()
+            startProgressBar()
 
             ChatsManager.makeStartSingleOperation(with: [identity]).start(completion: { completion($1) })
         } catch {

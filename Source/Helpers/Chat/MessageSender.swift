@@ -12,23 +12,45 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public static func makeSendServiceMessageOperation(_ data: Data, to card: Card) -> CallbackOperation<Void> {
-        let channel = TwilioHelper.shared.getChannel(card.identity)
+    public static func makeSendServiceMessageOperation(_ plaintext: String, to coreChannel: Channel) -> CallbackOperation<Void> {
+//        let channel = TwilioHelper.shared.getChannel(card.identity)
+        let twilioChannel = TwilioHelper.shared.getChannel(coreChannel.name)
 
-        let plaintext = data.base64EncodedString()
+        switch coreChannel.type {
+        case .single:
+            let ciphertext = try! VirgilHelper.shared.encrypt(plaintext, card: coreChannel.cards.first!)
 
-        // FIXME
-        let ciphertext = try! VirgilHelper.shared.encrypt(plaintext, card: card)
+            return TwilioHelper.shared.send(ciphertext: ciphertext, messages: twilioChannel!.messages!, type: .service)
+        case .group:
+            let ciphertext = try! VirgilHelper.shared.encryptGroup(plaintext, channel: coreChannel)
 
-        return TwilioHelper.shared.send(ciphertext: ciphertext, messages: channel!.messages!, type: .service)
+            return TwilioHelper.shared.send(ciphertext: ciphertext, messages: twilioChannel!.messages!, type: .service)
+        }
+    }
+
+    public func sendChangeMembers(message: Message) -> CallbackOperation<Void> {
+        let channel = TwilioHelper.shared.currentChannel!
+        let messages = channel.messages!
+
+//        guard message.type == .changeMembers else {
+//            throw NSError()
+//        }
+
+        let plaintext = "\(TwilioHelper.shared.username) \(message.body!)"
+        let ciphertext = try! VirgilHelper.shared.encryptGroup(plaintext, channel: message.channel)
+
+        return TwilioHelper.shared.send(ciphertext: ciphertext,
+                                        messages: messages,
+                                        type: .service,
+                                        sessionId: message.channel.sessionId)
     }
 
     public func send(message: Message, withId id: Int) throws -> DemoMessageModelProtocol {
         let cards = message.channel.cards
-        let channelCandidate = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel.name)
 
-        guard let channel = channelCandidate, let messages = channel.messages else {
-            throw NSError()
+        guard let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel.name),
+            let messages = channel.messages else {
+                throw NSError()
         }
 
         let uiModel = message.exportAsUIModel(withId: id, status: .sending)
@@ -45,7 +67,7 @@ public class MessageSender {
                     switch message.channel.type {
                     case .group:
                         plaintext = "\(TwilioHelper.shared.username): \(plaintext)"
-                        ciphertext = try VirgilHelper.shared.encrypt(plaintext, channel: message.channel)
+                        ciphertext = try VirgilHelper.shared.encryptGroup(plaintext, channel: message.channel)
                     case .single:
                         ciphertext = try VirgilHelper.shared.encrypt(plaintext, card: cards.first!)
                     }
@@ -58,6 +80,18 @@ public class MessageSender {
                     break
                 case .audio:
                     break
+                case .changeMembers:
+                    guard var plaintext = message.body else {
+                        throw NSError()
+                    }
+
+                    plaintext = "\(TwilioHelper.shared.username) \(plaintext)"
+                    let ciphertext = try VirgilHelper.shared.encryptGroup(plaintext, channel: message.channel)
+
+                    try TwilioHelper.shared.send(ciphertext: ciphertext,
+                                                 messages: messages,
+                                                 type: .service,
+                                                 sessionId: message.channel.sessionId).startSync().getResult()
                 }
 
                 try CoreDataHelper.shared.save(message)

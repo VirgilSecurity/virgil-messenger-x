@@ -6,9 +6,9 @@
 //  Copyright © 2018 VirgilSecurity. All rights reserved.
 //
 
-import UIKit
 import CoreData
 import VirgilCryptoRatchet
+import VirgilSDK
 
 extension CoreDataHelper {
     func save(_ message: Message) throws {
@@ -25,26 +25,20 @@ extension CoreDataHelper {
         self.appDelegate.saveContext()
     }
 
-//    func saveMediaMessage(_ data: Data, to channel: Channel? = nil, isIncoming: Bool, date: Date = Date(), type: MessageType) throws {
-//        guard let channel = channel ?? self.currentChannel else {
-//            throw CoreDataHelperError.nilCurrentAccount
-//        }
-//
-//        let message = try self.createMediaMessage(data, in: channel, isIncoming: isIncoming, date: date, type: type)
-//
-//        try self.saveMessage(message)
-//    }
-//
-    func saveServiceMessage(_ message: RatchetGroupMessage, to channel: Channel, type: ServiceMessageType) throws {
-        let serviceMessage = try ServiceMessage(message: message,
-                                                type: type,
-                                                managedContext: self.managedContext)
+    func createChangeMembersMessage(_ body: String,
+                                    in channel: Channel? = nil,
+                                    isIncoming: Bool,
+                                    date: Date = Date()) throws -> Message {
+        guard let channel = channel ?? self.currentChannel else {
+            throw CoreDataHelperError.nilCurrentChannel
+        }
 
-        let messages = channel.mutableOrderedSetValue(forKey: Channel.ServiceMessagesKey)
-        messages.add(serviceMessage)
-
-        Log.debug("Core Data: new service added")
-        self.appDelegate.saveContext()
+        return try Message(body: body,
+                           type: .changeMembers,
+                           isIncoming: isIncoming,
+                           date: date,
+                           channel: channel,
+                           managedContext: self.managedContext)
     }
 
     func createTextMessage(_ body: String,
@@ -78,5 +72,19 @@ extension CoreDataHelper {
                            date: date,
                            channel: channel,
                            managedContext: self.managedContext)
+    }
+
+    func findServiceMessage(from identity: String, withSessionId sessionId: Data) throws -> ServiceMessage {
+        guard let user = self.getSingleChannel(with: identity) else {
+            throw NSError()
+        }
+
+        var candidate: ServiceMessage?
+        while candidate == nil {
+            candidate = user.serviceMessages.first { $0.message.getSessionId() == sessionId }
+            sleep(1)
+        }
+
+        return candidate!
     }
 }

@@ -65,7 +65,7 @@ extension Message {
         let resultMessage: DemoMessageModelProtocol
 
         switch self.type {
-        case .text:
+        case .text, .changeMembers:
             guard let body = self.body else {
                 return corruptedMessage()
             }

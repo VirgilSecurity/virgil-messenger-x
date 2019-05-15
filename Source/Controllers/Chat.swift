@@ -112,6 +112,7 @@ class ChatViewController: BaseChatViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let groupInfo = segue.destination as? GroupInfoViewController {
             groupInfo.channel = channel
+            groupInfo.dataSource = self.dataSource
         }
 
         super.prepare(for: segue, sender: sender)

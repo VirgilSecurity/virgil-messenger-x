@@ -62,6 +62,16 @@ extension CoreDataHelper {
         return channel
     }
 
+    func makeAddOperation(_ cards: [Card], to channel: Channel) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            channel.cards += cards
+
+            self.appDelegate.saveContext()
+
+            completion((), nil)
+        }
+    }
+
     func setSessionId(_ sessionId: Data, for channel: Channel) {
         guard channel.sessionId != sessionId else {
             return

@@ -103,11 +103,15 @@ public class VirgilHelper {
         }
     }
 
-    func makeSendNewMessageServiceMessageOperation(cards: [Card], newSessionTicket: Data) -> CallbackOperation<Void> {
+    func makeSendServiceMessageOperation(cards: [Card], ticket: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             var operations: [CallbackOperation<Void>] = []
-            cards.forEach {
-                let sendOperation = MessageSender.makeSendServiceMessageOperation(newSessionTicket, to: $0)
+            for card in cards {
+                guard let channel = CoreDataHelper.shared.getSingleChannel(with: card.identity) else {
+                    continue
+                }
+
+                let sendOperation = MessageSender.makeSendServiceMessageOperation(ticket, to: channel)
                 operations.append(sendOperation)
             }
 
@@ -119,6 +123,44 @@ public class VirgilHelper {
 
             let queue = OperationQueue()
             queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+        }
+    }
+
+    func makeSendChangeMembersServiceMessageOperation(add: [Card], remove: [Card], channel: Channel) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            do {
+                guard let session = self.getGroupSession(of: channel) else {
+                    completion((), nil)
+                    return
+                }
+
+                let removeCardIds = remove.map { $0.identifier }
+                let message = try session.createChangeMembersTicket(add: add, removeCardIds: removeCardIds)
+
+                let userTicketOperation = CallbackOperation<Void> { _, completion in
+                    do {
+                        try session.useChangeMembersTicket(ticket: message, addCards: add, removeCardIds: removeCardIds)
+                        completion((), nil)
+                    } catch {
+                        completion(nil, error)
+                    }
+                }
+
+                let serviceMessage = try ServiceMessage(message: message, type: .changeMembers, add: add, remove: remove)
+                let serialized = try serviceMessage.export()
+
+                let sendServiceChangeMembersOperation = MessageSender.makeSendServiceMessageOperation(serialized, to: channel)
+                let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+                userTicketOperation.addDependency(sendServiceChangeMembersOperation)
+                completionOperation.addDependency(sendServiceChangeMembersOperation)
+                completionOperation.addDependency(userTicketOperation)
+
+                let queue = OperationQueue()
+                queue.addOperations([sendServiceChangeMembersOperation, userTicketOperation, completionOperation], waitUntilFinished: false)
+            } catch {
+                completion(nil, error)
+            }
         }
     }
 

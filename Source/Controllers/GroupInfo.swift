@@ -15,6 +15,7 @@ class GroupInfoViewController: ViewController {
     @IBOutlet weak var usersListHeight: NSLayoutConstraint!
     
     public var channel: Channel!
+    public var dataSource: DataSource!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +37,8 @@ class GroupInfoViewController: ViewController {
 
             let height = userList.tableView.rowHeight
             self.usersListHeight.constant = CGFloat(self.channel.cards.count) * height
+        } else if let addMembers = segue.destination as? AddMembersViewController {
+            addMembers.dataSource = self.dataSource
         }
     }
 

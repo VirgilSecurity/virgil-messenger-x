@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PKHUD
 
 class AddMembersViewController: ViewController {
     @IBOutlet weak var tableView: UITableView!
@@ -17,6 +18,8 @@ class AddMembersViewController: ViewController {
             self.addButton.isEnabled = !self.members.isEmpty
         }
     }
+
+    public var dataSource: DataSource!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +33,21 @@ class AddMembersViewController: ViewController {
     }
 
     @IBAction func addTapped(_ sender: Any) {
-        
+        let cards = self.members.map { $0.cards.first! }
+
+        HUD.show(.progress)
+
+        self.dataSource.addChangeMembersMessage(add: cards).start { (_: Void?, error: Error?) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    HUD.hide()
+                    self.alert(error)
+                } else {
+                    HUD.flash(.success)
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }
     }
 }
 

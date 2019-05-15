@@ -12,6 +12,7 @@ public enum MessageType: String {
     case text
     case photo
     case audio
+    case changeMembers
 
     init?(_ type: TwilioHelper.MediaType) {
         switch type {

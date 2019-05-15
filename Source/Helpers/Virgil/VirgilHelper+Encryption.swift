@@ -12,61 +12,7 @@ import VirgilSDKRatchet
 import VirgilCryptoRatchet
 
 extension VirgilHelper {
-    private func getSessionAsSender(card: Card) throws -> SecureSession {
-        guard let session = secureChat.existingSession(withParticpantIdentity: card.identity) else {
-            return try secureChat.startNewSessionAsSender(receiverCard: card).startSync().getResult()
-        }
-
-        return session
-    }
-
-    private func getSessionAsReceiver(message: RatchetMessage, receiverCard card: Card) throws -> SecureSession {
-        guard let session = secureChat.existingSession(withParticpantIdentity: card.identity) else {
-            return try secureChat.startNewSessionAsReceiver(senderCard: card, ratchetMessage: message)
-        }
-
-        return session
-    }
-
-    private func getGroupSessionAsSender(channel: Channel) throws -> SecureGroupSession {
-        guard let sessionId = channel.sessionId,
-            let session = secureChat.existingGroupSession(sessionId: sessionId) else {
-                let newSessionMessage = try self.secureChat.startNewGroupSession(with: channel.cards)
-                let sessionId = newSessionMessage.getSessionId()
-                let serviceMessageData = newSessionMessage.serialize()
-
-                try VirgilHelper.shared.makeSendNewMessageServiceMessageOperation(cards: channel.cards,
-                                                                                  newSessionTicket: serviceMessageData).startSync().getResult()
-
-                CoreDataHelper.shared.setSessionId(sessionId, for: channel)
-
-                return try secureChat.startGroupSession(with: channel.cards, using: newSessionMessage)
-        }
-
-        return session
-    }
-
-    private func getGroupSessionAsReceiver(identity: String, channel: Channel, sessionId: Data) throws -> SecureGroupSession {
-        guard let session = secureChat.existingGroupSession(sessionId: sessionId) else {
-            guard let user = CoreDataHelper.shared.getSingleChannel(with: identity) else {
-                throw NSError()
-            }
-
-            var candidate: ServiceMessage?
-            while candidate == nil {
-                candidate = user.serviceMessages.first { $0.message.getSessionId() == sessionId }
-                sleep(1)
-            }
-
-            let serviceMessage = candidate!
-
-            return try secureChat.startGroupSession(with: channel.cards, using: serviceMessage.message)
-        }
-
-        return session
-    }
-
-    func encrypt(_ text: String, channel: Channel) throws -> String {
+    func encryptGroup(_ text: String, channel: Channel) throws -> String {
         let session = try self.getGroupSessionAsSender(channel: channel)
 
         let ratchetMessage = try session.encrypt(string: text)
@@ -74,7 +20,7 @@ extension VirgilHelper {
         return ratchetMessage.serialize().base64EncodedString()
     }
 
-    func decrypt(_ encrypted: String, from identity: String, channel: Channel, sessionId: Data) throws -> String {
+    func decryptGroup(_ encrypted: String, from identity: String, channel: Channel, sessionId: Data) throws -> String {
         guard let data = Data(base64Encoded: encrypted) else {
             throw VirgilHelperError.utf8ToDataFailed
         }
@@ -106,5 +52,63 @@ extension VirgilHelper {
         let session = try self.getSessionAsReceiver(message: ratchetMessage, receiverCard: card)
 
         return try session.decryptString(from: ratchetMessage)
+    }
+}
+
+// MARK: - Extension with session operations
+extension VirgilHelper {
+    func getGroupSession(of channel: Channel) -> SecureGroupSession? {
+        guard let sessionId = channel.sessionId,
+            let session = self.secureChat.existingGroupSession(sessionId: sessionId) else {
+                return nil
+        }
+
+        return session
+    }
+
+    private func getSessionAsSender(card: Card) throws -> SecureSession {
+        guard let session = secureChat.existingSession(withParticpantIdentity: card.identity) else {
+            return try secureChat.startNewSessionAsSender(receiverCard: card).startSync().getResult()
+        }
+
+        return session
+    }
+
+    private func getSessionAsReceiver(message: RatchetMessage, receiverCard card: Card) throws -> SecureSession {
+        guard let session = secureChat.existingSession(withParticpantIdentity: card.identity) else {
+            return try secureChat.startNewSessionAsReceiver(senderCard: card, ratchetMessage: message)
+        }
+
+        return session
+    }
+
+    private func getGroupSessionAsSender(channel: Channel) throws -> SecureGroupSession {
+        guard let session = self.getGroupSession(of: channel) else {
+            let newSessionMessage = try self.secureChat.startNewGroupSession(with: channel.cards)
+            let sessionId = newSessionMessage.getSessionId()
+
+            let serviceMessage = try ServiceMessage(message: newSessionMessage, type: .newSession)
+            let serialized = try serviceMessage.export()
+
+            try VirgilHelper.shared.makeSendServiceMessageOperation(cards: channel.cards,
+                                                                    ticket: serialized).startSync().getResult()
+
+            CoreDataHelper.shared.setSessionId(sessionId, for: channel)
+
+            return try secureChat.startGroupSession(with: channel.cards, using: newSessionMessage)
+        }
+
+        return session
+    }
+
+    private func getGroupSessionAsReceiver(identity: String, channel: Channel, sessionId: Data) throws -> SecureGroupSession {
+        guard let session = secureChat.existingGroupSession(sessionId: sessionId) else {
+
+            let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: identity, withSessionId: sessionId)
+
+            return try secureChat.startGroupSession(with: channel.cards, using: serviceMessage.message)
+        }
+
+        return session
     }
 }

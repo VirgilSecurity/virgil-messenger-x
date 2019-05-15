@@ -75,7 +75,7 @@ public class Channel: NSManagedObject {
         }
 
         switch message.type {
-        case .text:
+        case .text, .changeMembers:
             return message.body ?? ""
         case .photo:
             return "Photo"
