@@ -36,8 +36,7 @@ public class MessageSender {
 //            throw NSError()
 //        }
 
-        let plaintext = "\(TwilioHelper.shared.username) \(message.body!)"
-        let ciphertext = try! VirgilHelper.shared.encryptGroup(plaintext, channel: message.channel)
+        let ciphertext = try! VirgilHelper.shared.encryptGroup(message.body!, channel: message.channel)
 
         return TwilioHelper.shared.send(ciphertext: ciphertext,
                                         messages: messages,

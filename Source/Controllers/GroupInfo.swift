@@ -17,6 +17,8 @@ class GroupInfoViewController: ViewController {
     public var channel: Channel!
     public var dataSource: DataSource!
 
+    private var usersListController: UsersListViewController?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -27,19 +29,31 @@ class GroupInfoViewController: ViewController {
         self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        if let userList = self.usersListController {
+            self.update(userList: userList)
+        }
+    }
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
         if let userList = segue.destination as? UsersListViewController {
-            let members = self.channel.cards.map { CoreDataHelper.shared.getSingleChannel(with: $0.identity)! }
+            self.usersListController = userList
+            self.update(userList: userList)
 
-            userList.users = members
-
-            let height = userList.tableView.rowHeight
-            self.usersListHeight.constant = CGFloat(self.channel.cards.count) * height
         } else if let addMembers = segue.destination as? AddMembersViewController {
             addMembers.dataSource = self.dataSource
         }
+    }
+
+    private func update(userList: UsersListViewController) {
+        let members = self.channel.cards.map { CoreDataHelper.shared.getSingleChannel(with: $0.identity)! }
+
+        userList.users = members
+
+        let height = userList.tableView.rowHeight
+        self.usersListHeight.constant = CGFloat(self.channel.cards.count) * height
     }
 
     @IBAction func addMemberTapped(_ sender: Any) {

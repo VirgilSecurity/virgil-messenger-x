@@ -21,6 +21,10 @@ class UsersListViewController: UITableViewController {
         self.tableView.dataSource = self
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        self.tableView.reloadData()
+    }
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.users.count
     }
