@@ -109,15 +109,15 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
         guard let entity = NSEntityDescription.entity(forEntityName: ServiceMessage.EntityName,
                                                       in: managedContext) else {
-                                                        throw CoreDataHelperError.entityNotFound
+            throw CoreDataHelperError.entityNotFound
         }
 
         self.init(entity: entity, insertInto: managedContext)
 
         self.rawMessage = try container.decode(Data.self, forKey: .rawMessage)
         self.rawType = try container.decode(String.self, forKey: .rawType)
-        self.rawCardsAdd = try container.decodeIfPresent([String].self, forKey: .rawCardsAdd) ?? []
-        self.rawCardsRemove = try container.decodeIfPresent([String].self, forKey: .rawCardsRemove) ?? []
+        self.rawCardsAdd = try container.decode([String].self, forKey: .rawCardsAdd)
+        self.rawCardsRemove = try container.decode([String].self, forKey: .rawCardsRemove)
     }
 }
 

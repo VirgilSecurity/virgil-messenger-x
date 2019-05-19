@@ -116,6 +116,7 @@ class DataSource: ChatDataSourceProtocol {
                 let members = cards.map { $0.identity }
 
                 guard let first = members.first else {
+                    completion(nil, NSError())
                     return
                 }
 
@@ -135,6 +136,10 @@ class DataSource: ChatDataSourceProtocol {
 
                 let identities = cards.map { $0.identity }
 
+                try TwilioHelper.shared.addMembers(identities, to: twilioChannel).startSync().getResult()
+
+                try CoreDataHelper.shared.makeAddOperation(cards, to: coreChannel).startSync().getResult()
+
                 guard let session = VirgilHelper.shared.getGroupSession(of: coreChannel) else {
                     completion(nil, nil)
                     return
@@ -147,16 +152,14 @@ class DataSource: ChatDataSourceProtocol {
                 let serviceMessage = try ServiceMessage(message: ticket, type: .changeMembers, add: cards, remove: [])
                 let serialized = try serviceMessage.export()
 
-                try TwilioHelper.shared.addMembers(identities, to: twilioChannel).startSync().getResult()
-
-                try CoreDataHelper.shared.makeAddOperation(cards, to: coreChannel).startSync().getResult()
-
                 try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serialized).startSync().getResult()
 
                 try self.messageSender.sendChangeMembers(message: message).startSync().getResult()
 
                 try session.useChangeMembersTicket(ticket: ticket, addCards: cards, removeCardIds: [])
                 try session.sessionStorage.storeSession(session)
+
+                CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
 
                 self.nextMessageId += 1
                 let uiModel = message.exportAsUIModel(withId: self.nextMessageId)

@@ -104,9 +104,15 @@ extension VirgilHelper {
     private func getGroupSessionAsReceiver(identity: String, channel: Channel, sessionId: Data) throws -> SecureGroupSession {
         guard let session = secureChat.existingGroupSession(sessionId: sessionId) else {
 
-            let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: identity, withSessionId: sessionId)
+            let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: identity,
+                                                                              type: .newSession,
+                                                                              withSessionId: sessionId)
 
-            return try secureChat.startGroupSession(with: channel.cards, using: serviceMessage.message)
+            let session = try secureChat.startGroupSession(with: channel.cards, using: serviceMessage.message)
+
+            CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
+
+            return session
         }
 
         return session

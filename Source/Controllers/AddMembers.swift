@@ -8,6 +8,7 @@
 
 import UIKit
 import PKHUD
+import VirgilSDK
 
 class AddMembersViewController: ViewController {
     @IBOutlet weak var tableView: UITableView!
@@ -35,11 +36,22 @@ class AddMembersViewController: ViewController {
     @IBAction func addTapped(_ sender: Any) {
         let cards = self.members.map { $0.cards.first! }
 
+        // FIXME
+        for newCard in cards {
+            for card in CoreDataHelper.shared.currentChannel!.cards {
+                if card.identity == newCard.identity {
+                    self.alert(UserFriendlyError.memberAlreadyExists)
+                    return
+                }
+            }
+        }
+
         HUD.show(.progress)
 
         self.dataSource.addChangeMembersMessage(add: cards).start { (_: Void?, error: Error?) in
             DispatchQueue.main.async {
-                if let error = error {
+                // FIXME
+                if let error = error, (error as? CallbackOperationError) != CallbackOperationError.errorAndResultMissing {
                     HUD.hide()
                     self.alert(error)
                 } else {

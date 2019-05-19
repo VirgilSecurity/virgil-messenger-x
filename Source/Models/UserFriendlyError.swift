@@ -17,4 +17,5 @@ enum UserFriendlyError: String, Error {
     case noConnection = "Please check your network connection"
     case unknownError = "Something went wrong"
     case playingError = "Playing error"
+    case memberAlreadyExists = "This user is already a member of channel"
 }
