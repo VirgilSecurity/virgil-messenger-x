@@ -149,7 +149,11 @@ class DataSource: ChatDataSourceProtocol {
 
                 let message = try CoreDataHelper.shared.createChangeMembersMessage(text, isIncoming: false)
 
-                let serviceMessage = try ServiceMessage(message: ticket, type: .changeMembers, add: cards, remove: [])
+                let serviceMessage = try ServiceMessage(message: ticket,
+                                                        type: .changeMembers,
+                                                        members: coreChannel.cards,
+                                                        add: cards,
+                                                        remove: [])
                 let serialized = try serviceMessage.export()
 
                 try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serialized).startSync().getResult()

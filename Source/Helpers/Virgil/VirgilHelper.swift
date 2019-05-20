@@ -146,7 +146,12 @@ public class VirgilHelper {
                     }
                 }
 
-                let serviceMessage = try ServiceMessage(message: message, type: .changeMembers, add: add, remove: remove)
+                let serviceMessage = try ServiceMessage(message: message,
+                                                        type: .changeMembers,
+                                                        members: channel.cards,
+                                                        add: add,
+                                                        remove: remove)
+
                 let serialized = try serviceMessage.export()
 
                 let sendServiceChangeMembersOperation = MessageSender.makeSendServiceMessageOperation(serialized, to: channel)

@@ -17,6 +17,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
     @NSManaged public var channel: Channel?
 
     @NSManaged private var rawType: String
+    @NSManaged private var rawCards: [String]
     @NSManaged private var rawCardsAdd: [String]
     @NSManaged private var rawCardsRemove: [String]
 
@@ -25,6 +26,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
     enum CodingKeys: String, CodingKey {
         case rawMessage
         case rawType
+        case rawCards
         case rawCardsAdd
         case rawCardsRemove
     }
@@ -33,6 +35,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(self.rawMessage, forKey: .rawMessage)
         try container.encode(self.rawType, forKey: .rawType)
+        try container.encode(self.rawCards, forKey: .rawCards)
         try container.encode(self.rawCardsAdd, forKey: .rawCardsAdd)
         try container.encode(self.rawCardsRemove, forKey: .rawCardsRemove)
     }
@@ -54,6 +57,20 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
         set {
             self.rawType = newValue.rawValue
+        }
+    }
+
+    public var cards: [Card] {
+        get {
+            let cards: [Card] = self.rawCards.map {
+                try! VirgilHelper.shared.importCard(fromBase64Encoded: $0)
+            }
+
+            return cards
+        }
+
+        set {
+            self.rawCards = newValue.map { try! $0.getRawCard().exportAsBase64EncodedString() }
         }
     }
 
@@ -87,6 +104,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
     convenience init(message: RatchetGroupMessage,
                      type: ServiceMessageType,
+                     members: [Card],
                      add: [Card] = [],
                      remove: [Card] = [],
                      managedContext: NSManagedObjectContext = CoreDataHelper.shared.managedContext) throws {
@@ -99,6 +117,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
         self.message = message
         self.type = type
+        self.cards = members
         self.cardsAdd = add
         self.cardsRemove = remove
     }
@@ -116,6 +135,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
         self.rawMessage = try container.decode(Data.self, forKey: .rawMessage)
         self.rawType = try container.decode(String.self, forKey: .rawType)
+        self.rawCards = try container.decode([String].self, forKey: .rawCards)
         self.rawCardsAdd = try container.decode([String].self, forKey: .rawCardsAdd)
         self.rawCardsRemove = try container.decode([String].self, forKey: .rawCardsRemove)
     }

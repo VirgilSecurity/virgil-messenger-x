@@ -29,7 +29,7 @@ extension VirgilHelper {
 
         CoreDataHelper.shared.setSessionId(sessionId, for: channel)
 
-        let session = try self.getGroupSessionAsReceiver(identity: identity, channel: channel, sessionId: sessionId)
+        let session = try self.getGroupSessionAsReceiver(identity: identity, sessionId: sessionId)
 
         return try session.decryptString(from: ratchetMessage)
     }
@@ -87,7 +87,7 @@ extension VirgilHelper {
             let newSessionMessage = try self.secureChat.startNewGroupSession(with: channel.cards)
             let sessionId = newSessionMessage.getSessionId()
 
-            let serviceMessage = try ServiceMessage(message: newSessionMessage, type: .newSession)
+            let serviceMessage = try ServiceMessage(message: newSessionMessage, type: .newSession, members: channel.cards)
             let serialized = try serviceMessage.export()
 
             try VirgilHelper.shared.makeSendServiceMessageOperation(cards: channel.cards,
@@ -101,14 +101,14 @@ extension VirgilHelper {
         return session
     }
 
-    private func getGroupSessionAsReceiver(identity: String, channel: Channel, sessionId: Data) throws -> SecureGroupSession {
+    private func getGroupSessionAsReceiver(identity: String, sessionId: Data) throws -> SecureGroupSession {
         guard let session = secureChat.existingGroupSession(sessionId: sessionId) else {
 
             let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: identity,
                                                                               type: .newSession,
                                                                               withSessionId: sessionId)
 
-            let session = try secureChat.startGroupSession(with: channel.cards, using: serviceMessage.message)
+            let session = try secureChat.startGroupSession(with: serviceMessage.cards, using: serviceMessage.message)
 
             CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
 

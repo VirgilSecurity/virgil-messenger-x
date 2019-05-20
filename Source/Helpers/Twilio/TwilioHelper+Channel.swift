@@ -128,11 +128,8 @@ extension TwilioHelper {
     func addMembers(_ identities: [String], to channel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                guard let rawAttributes = channel.attributes() else {
-                    throw NSError()
-                }
+                var attributes = try self.getAttributes(of: channel)
 
-                var attributes = try ChannelAttributes.import(rawAttributes)
                 attributes.members += identities
 
                 let setAttributesOperation = self.setAttributes(attributes, to: channel)
