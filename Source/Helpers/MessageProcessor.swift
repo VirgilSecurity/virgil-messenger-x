@@ -111,7 +111,7 @@ class MessageProcessor {
 
                 let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!,
                                                                                   type: .changeMembers,
-                                                                                  withSessionId: sessionId)
+                                                                                  withSessionId: sessionId)!
 
                 guard let session = VirgilHelper.shared.getGroupSession(of: channel) else {
                     throw NSError()
