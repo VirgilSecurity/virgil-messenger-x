@@ -96,13 +96,13 @@ extension TwilioHelper {
         }
     }
 
-    func getMessagesCount(in channel: TCHChannel) -> CallbackOperation<UInt> {
+    func getMessagesCount(in channel: TCHChannel) -> CallbackOperation<Int> {
         return CallbackOperation { _, completion in
             channel.getMessagesCount { result, count in
                 if let error = result.error {
                     completion(nil, error)
                 } else {
-                    completion(count, nil)
+                    completion(Int(count), nil)
                 }
             }
         }

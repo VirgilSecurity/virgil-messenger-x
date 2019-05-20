@@ -78,7 +78,7 @@ extension ChatsManager {
                     coreChannel = channel
                 }
 
-                let coreCount = UInt(coreChannel.messages.count)
+                let coreCount = coreChannel.messages.count
                 let twilioCount = try TwilioHelper.shared.getMessagesCount(in: twilioChannel).startSync().getResult()
 
                 let toLoad = twilioCount - coreCount
@@ -88,19 +88,20 @@ extension ChatsManager {
                     return
                 }
 
-                let messages = try TwilioHelper.shared.getLastMessages(withCount: toLoad, from: twilioChannel.messages).startSync().getResult()
+                let messages = try TwilioHelper.shared.getLastMessages(withCount: UInt(toLoad), from: twilioChannel.messages).startSync().getResult()
 
                 for message in messages {
                     if message.author == TwilioHelper.shared.username {
                         continue
                     }
 
-                    _ = try MessageProcessor.process(message: message, from: twilioChannel)
+                     _ = try MessageProcessor.process(message: message, from: twilioChannel)
                 }
 
                 completion((), nil)
             } catch {
                 completion(nil, error)
+                Log.error("AAA: \(error.localizedDescription)")
             }
         }
     }

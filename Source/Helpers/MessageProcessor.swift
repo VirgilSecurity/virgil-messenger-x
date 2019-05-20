@@ -52,15 +52,25 @@ class MessageProcessor {
                                     attributes: TwilioHelper.MessageAttributes) throws -> Message? {
         let decrypted: String
 
-        switch channel.type {
-        case .single:
-            decrypted = try VirgilHelper.shared.decrypt(body, from: channel.cards.first!)
-        case .group:
-            guard let sessionId = attributes.sessionId else {
-                throw NSError()
-            }
+        do {
+            switch channel.type {
+            case .single:
+                decrypted = try VirgilHelper.shared.decrypt(body, from: channel.cards.first!)
+            case .group:
+                guard let sessionId = attributes.sessionId else {
+                    throw NSError()
+                }
 
-            decrypted = try VirgilHelper.shared.decryptGroup(body, from: twilioMessage.author!, channel: channel, sessionId: sessionId)
+                decrypted = try VirgilHelper.shared.decryptGroup(body, from: twilioMessage.author!, channel: channel, sessionId: sessionId)
+            }
+        } catch {
+            Log.error("AAA: \(error.localizedDescription)")
+            let encryptedMessage = try CoreDataHelper.shared.createTextMessage("Message encrypted",
+                                                                               in: channel,
+                                                                               isIncoming: isIncoming)
+            try CoreDataHelper.shared.save(encryptedMessage)
+
+            return encryptedMessage
         }
 
         switch attributes.type {
@@ -110,6 +120,7 @@ class MessageProcessor {
                 try session.useChangeMembersTicket(ticket: serviceMessage.message,
                                                    addCards: serviceMessage.cardsAdd,
                                                    removeCardIds: [])
+                try session.sessionStorage.storeSession(session)
 
                 CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
 

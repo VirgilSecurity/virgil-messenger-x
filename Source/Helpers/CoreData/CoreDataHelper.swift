@@ -10,12 +10,12 @@ import UIKit
 import Foundation
 import CoreData
 
-enum CoreDataHelperError: String, Error {
-    case accountNotFound
-    case nilCurrentAccount
-    case nilCurrentChannel
-    case entityNotFound
-    case entityCorrupted
+enum CoreDataHelperError: Int, Error {
+    case accountNotFound = 1
+    case nilCurrentAccount = 2
+    case nilCurrentChannel = 3
+    case entityNotFound = 4
+    case entityCorrupted = 5
 }
 
 class CoreDataHelper {
