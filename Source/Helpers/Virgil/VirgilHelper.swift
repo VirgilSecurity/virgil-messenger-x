@@ -105,6 +105,11 @@ public class VirgilHelper {
 
     func makeSendServiceMessageOperation(cards: [Card], ticket: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
+            guard !cards.isEmpty else {
+                completion((), nil)
+                return
+            }
+
             var operations: [CallbackOperation<Void>] = []
             for card in cards {
                 guard let channel = CoreDataHelper.shared.getSingleChannel(with: card.identity) else {

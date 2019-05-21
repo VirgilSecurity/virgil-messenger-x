@@ -110,6 +110,61 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self, updateType: .pagination)
     }
 
+    func addRemoveMemberMessage(remove card: Card) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            do {
+                let text = "\(TwilioHelper.shared.username) removed \(card.identity)"
+
+                guard let twilioChannel = TwilioHelper.shared.currentChannel,
+                    let coreChannel = CoreDataHelper.shared.currentChannel else {
+                        completion(nil, NSError())
+                        return
+                }
+
+                CoreDataHelper.shared.remove([card], from: coreChannel)
+
+                guard let session = VirgilHelper.shared.getGroupSession(of: coreChannel) else {
+                    completion(nil, nil)
+                    return
+                }
+
+                let ticket = try session.createChangeMembersTicket(add: [], removeCardIds: [card.identifier])
+
+                let message = try CoreDataHelper.shared.createChangeMembersMessage(text, isIncoming: false)
+
+                let serviceMessage = try ServiceMessage(message: ticket,
+                                                        type: .changeMembers,
+                                                        members: coreChannel.cards,
+                                                        add: [],
+                                                        remove: [card])
+                let serialized = try serviceMessage.export()
+
+                try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serialized).startSync().getResult()
+
+                try session.useChangeMembersTicket(ticket: ticket, addCards: [], removeCardIds: [card.identifier])
+                try session.sessionStorage.storeSession(session)
+
+                try self.messageSender.sendChangeMembers(message: message).startSync().getResult()
+
+                try TwilioHelper.shared.remove(member: card.identity, from: twilioChannel).startSync().getResult()
+
+                CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
+
+                self.nextMessageId += 1
+                let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
+
+                self.slidingWindow.insertItem(uiModel, position: .bottom)
+
+                DispatchQueue.main.async {
+                    self.delegate?.chatDataSourceDidUpdate(self)
+                    completion((), nil)
+                }
+            } catch{
+                completion(nil, error)
+            }
+        }
+    }
+
     func addChangeMembersMessage(add cards: [Card]) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
@@ -136,9 +191,9 @@ class DataSource: ChatDataSourceProtocol {
 
                 let identities = cards.map { $0.identity }
 
-                try TwilioHelper.shared.addMembers(identities, to: twilioChannel).startSync().getResult()
+                try TwilioHelper.shared.add(members: identities, to: twilioChannel).startSync().getResult()
 
-                try CoreDataHelper.shared.makeAddOperation(cards, to: coreChannel).startSync().getResult()
+                CoreDataHelper.shared.add(cards, to: coreChannel)
 
                 guard let session = VirgilHelper.shared.getGroupSession(of: coreChannel) else {
                     completion(nil, nil)

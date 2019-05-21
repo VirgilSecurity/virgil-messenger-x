@@ -64,7 +64,7 @@ extension TwilioHelper {
             do {
                 let channel: TCHChannel = try channel ?? operation.findDependencyResult()
 
-                channel.members?.invite(byIdentity: identity) { result in
+                channel.members!.invite(byIdentity: identity) { result in
                     guard result.isSuccessful() else {
                         completion(nil, result.error)
                         return
@@ -74,6 +74,36 @@ extension TwilioHelper {
                 }
             } catch {
                 completion(nil, error)
+            }
+        }
+    }
+
+    private func makeRemoveOperation(identity: String, channel: TCHChannel) -> CallbackOperation<Void> {
+        return CallbackOperation { operation, completion in
+            // FIXME: add pages of members
+            channel.members!.members { result, paginator in
+                guard let paginator = paginator, result.isSuccessful() else {
+                    completion(nil, result.error)
+                    return
+                }
+
+                let members = paginator.items()
+
+                let candidate = members.first { $0.identity == identity }
+
+                guard let member = candidate else {
+                    completion(nil, NSError())
+                    return
+                }
+
+                channel.members?.remove(member) { result in
+                    guard result.isSuccessful() else {
+                        completion(nil, result.error)
+                        return
+                    }
+
+                    completion((), nil)
+                }
             }
         }
     }
@@ -125,12 +155,12 @@ extension TwilioHelper {
         }
     }
 
-    func addMembers(_ identities: [String], to channel: TCHChannel) -> CallbackOperation<Void> {
+    func add(members: [String], to channel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 var attributes = try self.getAttributes(of: channel)
 
-                attributes.members += identities
+                attributes.members += members
 
                 let setAttributesOperation = self.setAttributes(attributes, to: channel)
 
@@ -141,7 +171,7 @@ extension TwilioHelper {
                 completionOperation.addDependency(setAttributesOperation)
                 operations.append(setAttributesOperation)
 
-                identities.forEach {
+                members.forEach {
                     let operation = self.makeInviteOperation(identity: $0, channel: channel)
                     completionOperation.addDependency(operation)
                     operations.append(operation)
@@ -149,6 +179,31 @@ extension TwilioHelper {
 
                 let queue = OperationQueue()
                 queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+            } catch {
+                completion(nil, error)
+            }
+        }
+    }
+
+    func remove(member: String, from channel: TCHChannel) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            do {
+                var attributes = try self.getAttributes(of: channel)
+
+                attributes.members = attributes.members.filter { $0 != member }
+
+                let setAttributesOperation = self.setAttributes(attributes, to: channel)
+                let removeOperation = self.makeRemoveOperation(identity: member, channel: channel)
+
+                let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+                completionOperation.addDependency(setAttributesOperation)
+                completionOperation.addDependency(removeOperation)
+
+                let operations = [setAttributesOperation, removeOperation, completionOperation]
+
+                let queue = OperationQueue()
+                queue.addOperations(operations, waitUntilFinished: false)
             } catch {
                 completion(nil, error)
             }

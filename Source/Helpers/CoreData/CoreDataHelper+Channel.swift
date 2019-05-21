@@ -62,14 +62,35 @@ extension CoreDataHelper {
         return channel
     }
 
-    func makeAddOperation(_ cards: [Card], to channel: Channel) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            channel.cards += cards
+    func add(_ cards: [Card], to channel: Channel) {
+        let members = channel.cards.map { $0.identity }
+        var cardsToAdd: [Card] = []
 
-            self.appDelegate.saveContext()
-
-            completion((), nil)
+        for card in cards {
+            if !members.contains(card.identity) {
+                cardsToAdd.append(card)
+            }
         }
+
+        channel.cards += cardsToAdd
+
+        self.appDelegate.saveContext()
+    }
+
+    func remove(_ cards: [Card], from channel: Channel) {
+        channel.cards = channel.cards.filter { card1 in
+            !cards.contains { card2 in
+                card1.identity == card2.identity
+            }
+        }
+
+        self.appDelegate.saveContext()
+    }
+
+    func delete(channel: Channel) {
+        self.managedContext.delete(channel)
+
+        self.appDelegate.saveContext()
     }
 
     func setSessionId(_ sessionId: Data, for channel: Channel) {

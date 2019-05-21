@@ -106,12 +106,11 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
             return
         }
 
-        PKHUD.sharedHUD.contentView = PKHUDProgressView()
-        PKHUD.sharedHUD.show()
+        HUD.show(.progress)
 
         self.userAuthorizer.signUp(identity: username) { error in
             DispatchQueue.main.async {
-                PKHUD.sharedHUD.hide() { _ in
+                HUD.hide() { _ in
                     if let error = error {
                         self.alert(title: self.title, error)
                     } else {

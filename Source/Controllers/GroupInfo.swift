@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import PKHUD
+import VirgilSDK
 
 class GroupInfoViewController: ViewController {
     @IBOutlet weak var avatarView: GradientView!
@@ -30,9 +32,7 @@ class GroupInfoViewController: ViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        if let userList = self.usersListController {
-            self.update(userList: userList)
-        }
+        self.updateUserList()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -40,23 +40,45 @@ class GroupInfoViewController: ViewController {
 
         if let userList = segue.destination as? UsersListViewController {
             self.usersListController = userList
-            self.update(userList: userList)
+            userList.deleteItemDelegate = self
+            self.updateUserList()
 
         } else if let addMembers = segue.destination as? AddMembersViewController {
             addMembers.dataSource = self.dataSource
         }
     }
 
-    private func update(userList: UsersListViewController) {
-        let members = self.channel.cards.map { CoreDataHelper.shared.getSingleChannel(with: $0.identity)! }
+    private func updateUserList() {
+        if let userList = self.usersListController {
+            let members = self.channel.cards.map { CoreDataHelper.shared.getSingleChannel(with: $0.identity)! }
 
-        userList.users = members
+            userList.users = members
 
-        let height = userList.tableView.rowHeight
-        self.usersListHeight.constant = CGFloat(self.channel.cards.count) * height
+            let height = userList.tableView.rowHeight
+            self.usersListHeight.constant = CGFloat(self.channel.cards.count) * height
+        }
     }
 
     @IBAction func addMemberTapped(_ sender: Any) {
         self.performSegue(withIdentifier: "goToAddMembers", sender: self)
+    }
+}
+
+extension GroupInfoViewController: DeleteItemDelegate {
+    func delete(_ user: Channel) {
+        HUD.show(.progress)
+
+        self.dataSource.addRemoveMemberMessage(remove: user.cards.first!).start { (_: Void?, error: Error?) in
+            DispatchQueue.main.async {
+                // FIXME
+                if let error = error, (error as? CallbackOperationError) != CallbackOperationError.errorAndResultMissing {
+                    HUD.hide()
+                    self.alert(error)
+                } else {
+                    HUD.flash(.success)
+                    self.updateUserList()
+                }
+            }
+        }
     }
 }

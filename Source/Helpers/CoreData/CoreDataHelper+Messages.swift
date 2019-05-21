@@ -84,5 +84,7 @@ extension CoreDataHelper {
 
     func delete(serviceMessage: ServiceMessage) {
         self.managedContext.delete(serviceMessage)
+
+        self.appDelegate.saveContext()
     }
 }

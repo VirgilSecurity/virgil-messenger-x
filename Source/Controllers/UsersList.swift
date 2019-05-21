@@ -8,10 +8,15 @@
 
 import UIKit
 
+protocol DeleteItemDelegate: class {
+    func delete(_ user: Channel)
+}
+
 class UsersListViewController: UITableViewController {
     public var users: [Channel] = []
 
     public var cellTapDelegate: CellTapDelegate?
+    public var deleteItemDelegate: DeleteItemDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,5 +43,15 @@ class UsersListViewController: UITableViewController {
         cell.configure(with: self.users)
 
         return cell
+    }
+
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return self.deleteItemDelegate != nil
+    }
+
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == .delete), let user = self.users[safe: self.users.count - indexPath.row - 1] {
+            self.deleteItemDelegate?.delete(user)
+        }
     }
 }

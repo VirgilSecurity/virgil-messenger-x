@@ -64,7 +64,6 @@ class MessageProcessor {
                 decrypted = try VirgilHelper.shared.decryptGroup(body, from: twilioMessage.author!, channel: channel, sessionId: sessionId)
             }
         } catch {
-            Log.error("AAA: \(error.localizedDescription)")
             let encryptedMessage = try CoreDataHelper.shared.createTextMessage("Message encrypted",
                                                                                in: channel,
                                                                                isIncoming: isIncoming)
@@ -111,21 +110,34 @@ class MessageProcessor {
 
                 if let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!,
                                                                                      withSessionId: sessionId) {
+                    if serviceMessage.cardsRemove.contains(where: { $0.identity == TwilioHelper.shared.username}) {
+                        CoreDataHelper.shared.delete(channel: channel)
+
+                        NotificationCenter.default.post(
+                            name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                            object: self,
+                            userInfo: [:])
+
+                        return message
+                    }
+
                     guard let session = VirgilHelper.shared.getGroupSession(of: channel) else {
                         throw NSError()
                     }
 
+                    let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
+
                     try session.useChangeMembersTicket(ticket: serviceMessage.message,
                                                        addCards: serviceMessage.cardsAdd,
-                                                       removeCardIds: [])
+                                                       removeCardIds: removeCardIds)
                     try session.sessionStorage.storeSession(session)
 
                     CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
 
+                    CoreDataHelper.shared.add(serviceMessage.cardsAdd, to: channel)
+                    CoreDataHelper.shared.remove(serviceMessage.cardsRemove, from: channel)
+
                     let membersCards = serviceMessage.cardsAdd.filter { !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) }
-
-                    try CoreDataHelper.shared.makeAddOperation(membersCards, to: channel).startSync().getResult()
-
                     let members = membersCards.map { $0.identity }
 
                     try ChatsManager.makeStartSingleOperation(with: members).startSync().getResult()
