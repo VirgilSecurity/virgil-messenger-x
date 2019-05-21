@@ -74,12 +74,12 @@ extension CoreDataHelper {
                            managedContext: self.managedContext)
     }
 
-    func findServiceMessage(from identity: String, type: ServiceMessageType, withSessionId sessionId: Data) throws -> ServiceMessage? {
+    func findServiceMessage(from identity: String, withSessionId sessionId: Data) throws -> ServiceMessage? {
         guard let user = self.getSingleChannel(with: identity) else {
             throw NSError()
         }
 
-        return user.serviceMessages.first { $0.message.getSessionId() == sessionId && $0.type == type }
+        return user.serviceMessages.first { $0.message.getSessionId() == sessionId }
     }
 
     func delete(serviceMessage: ServiceMessage) {

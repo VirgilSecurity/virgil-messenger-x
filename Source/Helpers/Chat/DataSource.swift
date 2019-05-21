@@ -158,10 +158,10 @@ class DataSource: ChatDataSourceProtocol {
 
                 try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serialized).startSync().getResult()
 
-                try self.messageSender.sendChangeMembers(message: message).startSync().getResult()
-
                 try session.useChangeMembersTicket(ticket: ticket, addCards: cards, removeCardIds: [])
                 try session.sessionStorage.storeSession(session)
+
+                try self.messageSender.sendChangeMembers(message: message).startSync().getResult()
 
                 CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
 

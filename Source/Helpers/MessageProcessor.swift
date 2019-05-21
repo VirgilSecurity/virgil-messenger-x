@@ -109,28 +109,27 @@ class MessageProcessor {
                     throw NSError()
                 }
 
-                let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!,
-                                                                                  type: .changeMembers,
-                                                                                  withSessionId: sessionId)!
+                if let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!,
+                                                                                     withSessionId: sessionId) {
+                    guard let session = VirgilHelper.shared.getGroupSession(of: channel) else {
+                        throw NSError()
+                    }
 
-                guard let session = VirgilHelper.shared.getGroupSession(of: channel) else {
-                    throw NSError()
+                    try session.useChangeMembersTicket(ticket: serviceMessage.message,
+                                                       addCards: serviceMessage.cardsAdd,
+                                                       removeCardIds: [])
+                    try session.sessionStorage.storeSession(session)
+
+                    CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
+
+                    let membersCards = serviceMessage.cardsAdd.filter { !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) }
+
+                    try CoreDataHelper.shared.makeAddOperation(membersCards, to: channel).startSync().getResult()
+
+                    let members = membersCards.map { $0.identity }
+
+                    try ChatsManager.makeStartSingleOperation(with: members).startSync().getResult()
                 }
-
-                try session.useChangeMembersTicket(ticket: serviceMessage.message,
-                                                   addCards: serviceMessage.cardsAdd,
-                                                   removeCardIds: [])
-                try session.sessionStorage.storeSession(session)
-
-                CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
-
-                let membersCards = serviceMessage.cardsAdd.filter { !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) }
-
-                try CoreDataHelper.shared.makeAddOperation(membersCards, to: channel).startSync().getResult()
-
-                let members = membersCards.map { $0.identity }
-
-                try ChatsManager.makeStartSingleOperation(with: members).startSync().getResult()
 
                 return message
             }
