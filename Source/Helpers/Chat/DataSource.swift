@@ -121,8 +121,6 @@ class DataSource: ChatDataSourceProtocol {
                         return
                 }
 
-                CoreDataHelper.shared.remove([card], from: coreChannel)
-
                 guard let session = VirgilHelper.shared.getGroupSession(of: coreChannel) else {
                     completion(nil, nil)
                     return
@@ -140,6 +138,8 @@ class DataSource: ChatDataSourceProtocol {
                 let serialized = try serviceMessage.export()
 
                 try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serialized).startSync().getResult()
+
+                CoreDataHelper.shared.remove([card], from: coreChannel)
 
                 try session.useChangeMembersTicket(ticket: ticket, addCards: [], removeCardIds: [card.identifier])
                 try session.sessionStorage.storeSession(session)
@@ -159,7 +159,7 @@ class DataSource: ChatDataSourceProtocol {
                     self.delegate?.chatDataSourceDidUpdate(self)
                     completion((), nil)
                 }
-            } catch{
+            } catch {
                 completion(nil, error)
             }
         }

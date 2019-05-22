@@ -96,7 +96,7 @@ extension TwilioHelper {
                     return
                 }
 
-                channel.members?.remove(member) { result in
+                channel.members!.remove(member) { result in
                     guard result.isSuccessful() else {
                         completion(nil, result.error)
                         return
@@ -104,6 +104,19 @@ extension TwilioHelper {
 
                     completion((), nil)
                 }
+            }
+        }
+    }
+
+    func leave(_ channel: TCHChannel) -> CallbackOperation<Void> {
+        return CallbackOperation { operation, completion in
+            channel.leave { result in
+                guard result.isSuccessful() else {
+                    completion(nil, result.error)
+                    return
+                }
+
+                completion((), nil)
             }
         }
     }
@@ -193,14 +206,14 @@ extension TwilioHelper {
                 attributes.members = attributes.members.filter { $0 != member }
 
                 let setAttributesOperation = self.setAttributes(attributes, to: channel)
-                let removeOperation = self.makeRemoveOperation(identity: member, channel: channel)
+//                let removeOperation = self.makeRemoveOperation(identity: member, channel: channel)
 
                 let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
                 completionOperation.addDependency(setAttributesOperation)
-                completionOperation.addDependency(removeOperation)
+//                completionOperation.addDependency(removeOperation)
 
-                let operations = [setAttributesOperation, removeOperation, completionOperation]
+                let operations = [setAttributesOperation, /* removeOperation, */ completionOperation]
 
                 let queue = OperationQueue()
                 queue.addOperations(operations, waitUntilFinished: false)

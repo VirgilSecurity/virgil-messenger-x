@@ -53,6 +53,7 @@ class GroupInfoViewController: ViewController {
             let members = self.channel.cards.map { CoreDataHelper.shared.getSingleChannel(with: $0.identity)! }
 
             userList.users = members
+            userList.tableView.reloadData()
 
             let height = userList.tableView.rowHeight
             self.usersListHeight.constant = CGFloat(self.channel.cards.count) * height
