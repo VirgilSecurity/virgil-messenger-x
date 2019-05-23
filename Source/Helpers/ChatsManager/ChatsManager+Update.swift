@@ -91,6 +91,10 @@ extension ChatsManager {
                 let messages = try TwilioHelper.shared.getLastMessages(withCount: UInt(toLoad), from: twilioChannel.messages).startSync().getResult()
 
                 for message in messages {
+                    if !CoreDataHelper.shared.existsChannel(name: TwilioHelper.shared.getName(of: twilioChannel)) {
+                        break
+                    }
+
                     if message.author == TwilioHelper.shared.username {
                         continue
                     }

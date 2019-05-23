@@ -88,6 +88,9 @@ extension CoreDataHelper {
     }
 
     func delete(channel: Channel) {
+        channel.messages.forEach { self.managedContext.delete($0) }
+        channel.serviceMessages.forEach { self.managedContext.delete($0) }
+
         self.managedContext.delete(channel)
 
         self.appDelegate.saveContext()
@@ -115,6 +118,10 @@ extension CoreDataHelper {
 
     func existsSingleChannel(with identity: String) -> Bool {
         return self.getSingleChannel(with: identity) != nil ? true : false
+    }
+
+    func existsChannel(name: String) -> Bool {
+        return self.currentAccount?.channels.contains { $0.name == name } ?? false
     }
 
     func getChannel(_ twilioChannel: TCHChannel) -> Channel? {
