@@ -12,36 +12,40 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public static func makeSendServiceMessageOperation(_ plaintext: String, to coreChannel: Channel) -> CallbackOperation<Void> {
-//        let channel = TwilioHelper.shared.getChannel(card.identity)
+    public static func makeSendServiceMessageOperation(_ message: ServiceMessage, to coreChannel: Channel) -> CallbackOperation<Void> {
         let twilioChannel = TwilioHelper.shared.getChannel(coreChannel.name)
+
+        let plaintext = try! message.export()
 
         switch coreChannel.type {
         case .single:
             let ciphertext = try! VirgilHelper.shared.encrypt(plaintext, card: coreChannel.cards.first!)
 
-            return TwilioHelper.shared.send(ciphertext: ciphertext, messages: twilioChannel!.messages!, type: .service)
+            return TwilioHelper.shared.send(ciphertext: ciphertext,
+                                            messages: twilioChannel!.messages!,
+                                            type: .service,
+                                            identifier: message.identifier)
         case .group:
             let ciphertext = try! VirgilHelper.shared.encryptGroup(plaintext, channel: coreChannel)
 
-            return TwilioHelper.shared.send(ciphertext: ciphertext, messages: twilioChannel!.messages!, type: .service)
+            return TwilioHelper.shared.send(ciphertext: ciphertext,
+                                            messages: twilioChannel!.messages!,
+                                            type: .service,
+                                            identifier: message.identifier)
         }
     }
 
-    public func sendChangeMembers(message: Message) -> CallbackOperation<Void> {
+    public func sendChangeMembers(message: Message, identifier: String) -> CallbackOperation<Void> {
         let channel = TwilioHelper.shared.currentChannel!
         let messages = channel.messages!
-
-//        guard message.type == .changeMembers else {
-//            throw NSError()
-//        }
 
         let ciphertext = try! VirgilHelper.shared.encryptGroup(message.body!, channel: message.channel)
 
         return TwilioHelper.shared.send(ciphertext: ciphertext,
                                         messages: messages,
                                         type: .service,
-                                        sessionId: message.channel.sessionId)
+                                        sessionId: message.channel.sessionId,
+                                        identifier: identifier)
     }
 
     public func send(message: Message, withId id: Int) throws -> DemoMessageModelProtocol {

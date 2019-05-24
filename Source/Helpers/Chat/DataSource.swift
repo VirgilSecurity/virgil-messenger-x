@@ -130,25 +130,25 @@ class DataSource: ChatDataSourceProtocol {
 
                 let message = try CoreDataHelper.shared.createChangeMembersMessage(text, isIncoming: false)
 
-                let serviceMessage = try ServiceMessage(message: ticket,
+                let serviceMessage = try ServiceMessage(identifier: UUID().uuidString,
+                                                        message: ticket,
                                                         type: .changeMembers,
                                                         members: coreChannel.cards,
                                                         add: [],
                                                         remove: [card])
-                let serialized = try serviceMessage.export()
 
-                try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serialized).startSync().getResult()
+                try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serviceMessage).startSync().getResult()
 
                 CoreDataHelper.shared.remove([card], from: coreChannel)
 
                 try session.useChangeMembersTicket(ticket: ticket, addCards: [], removeCardIds: [card.identifier])
                 try session.sessionStorage.storeSession(session)
 
-                try self.messageSender.sendChangeMembers(message: message).startSync().getResult()
+                try self.messageSender.sendChangeMembers(message: message, identifier: serviceMessage.identifier!).startSync().getResult()
 
                 try TwilioHelper.shared.remove(member: card.identity, from: twilioChannel).startSync().getResult()
 
-                CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
+                CoreDataHelper.shared.delete(serviceMessage)
 
                 self.nextMessageId += 1
                 let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
@@ -204,21 +204,21 @@ class DataSource: ChatDataSourceProtocol {
 
                 let message = try CoreDataHelper.shared.createChangeMembersMessage(text, isIncoming: false)
 
-                let serviceMessage = try ServiceMessage(message: ticket,
+                let serviceMessage = try ServiceMessage(identifier: UUID().uuidString,
+                                                        message: ticket,
                                                         type: .changeMembers,
                                                         members: coreChannel.cards,
                                                         add: cards,
                                                         remove: [])
-                let serialized = try serviceMessage.export()
 
-                try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serialized).startSync().getResult()
+                try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serviceMessage).startSync().getResult()
 
                 try session.useChangeMembersTicket(ticket: ticket, addCards: cards, removeCardIds: [])
                 try session.sessionStorage.storeSession(session)
 
-                try self.messageSender.sendChangeMembers(message: message).startSync().getResult()
+                try self.messageSender.sendChangeMembers(message: message, identifier: serviceMessage.identifier!).startSync().getResult()
 
-                CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
+                CoreDataHelper.shared.delete(serviceMessage)
 
                 self.nextMessageId += 1
                 let uiModel = message.exportAsUIModel(withId: self.nextMessageId)

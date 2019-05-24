@@ -87,11 +87,13 @@ extension VirgilHelper {
             let newSessionMessage = try self.secureChat.startNewGroupSession(with: channel.cards)
             let sessionId = newSessionMessage.getSessionId()
 
-            let serviceMessage = try ServiceMessage(message: newSessionMessage, type: .newSession, members: channel.cards)
-            let serialized = try serviceMessage.export()
+            let serviceMessage = try ServiceMessage(identifier: nil,
+                                                    message: newSessionMessage,
+                                                    type: .newSession,
+                                                    members: channel.cards)
 
             try VirgilHelper.shared.makeSendServiceMessageOperation(cards: channel.cards,
-                                                                    ticket: serialized).startSync().getResult()
+                                                                    ticket: serviceMessage).startSync().getResult()
 
             CoreDataHelper.shared.setSessionId(sessionId, for: channel)
 
@@ -112,7 +114,7 @@ extension VirgilHelper {
             let session = try secureChat.startGroupSession(with: serviceMessage.cards, using: serviceMessage.message)
             try session.sessionStorage.storeSession(session)
 
-            CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
+            CoreDataHelper.shared.delete(serviceMessage)
 
             return session
         }

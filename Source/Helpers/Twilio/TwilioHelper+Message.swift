@@ -11,11 +11,11 @@ import TwilioChatClient
 import VirgilSDK
 
 extension TwilioHelper {
-    public func send(ciphertext: String, messages: TCHMessages, type: MessageType, sessionId: Data? = nil) -> CallbackOperation<Void> {
+    public func send(ciphertext: String, messages: TCHMessages, type: MessageType, sessionId: Data? = nil, identifier: String? = nil) -> CallbackOperation<Void> {
         let options = TCHMessageOptions()
         options.withBody(ciphertext)
 
-        let attributes = TwilioHelper.MessageAttributes(type: type, sessionId: sessionId)
+        let attributes = TwilioHelper.MessageAttributes(type: type, sessionId: sessionId, identifier: identifier)
         // FIXME
         try! options.withAttributes(attributes.export())
 

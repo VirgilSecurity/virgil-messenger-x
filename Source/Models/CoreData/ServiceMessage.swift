@@ -13,6 +13,7 @@ import VirgilSDK
 
 @objc(ServiceMessage)
 public final class ServiceMessage: NSManagedObject, Codable {
+    @NSManaged public var identifier: String?
     @NSManaged public var rawMessage: Data
     @NSManaged public var channel: Channel?
 
@@ -24,6 +25,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
     private static let EntityName = "ServiceMessage"
 
     enum CodingKeys: String, CodingKey {
+        case identifier
         case rawMessage
         case rawType
         case rawCards
@@ -33,6 +35,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.identifier, forKey: .identifier)
         try container.encode(self.rawMessage, forKey: .rawMessage)
         try container.encode(self.rawType, forKey: .rawType)
         try container.encode(self.rawCards, forKey: .rawCards)
@@ -102,7 +105,8 @@ public final class ServiceMessage: NSManagedObject, Codable {
         }
     }
 
-    convenience init(message: RatchetGroupMessage,
+    convenience init(identifier: String?,
+                     message: RatchetGroupMessage,
                      type: ServiceMessageType,
                      members: [Card],
                      add: [Card] = [],
@@ -115,6 +119,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
         self.init(entity: entity, insertInto: managedContext)
 
+        self.identifier = identifier
         self.message = message
         self.type = type
         self.cards = members
@@ -133,6 +138,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
         self.init(entity: entity, insertInto: managedContext)
 
+        self.identifier = try container.decodeIfPresent(String.self, forKey: .identifier)
         self.rawMessage = try container.decode(Data.self, forKey: .rawMessage)
         self.rawType = try container.decode(String.self, forKey: .rawType)
         self.rawCards = try container.decode([String].self, forKey: .rawCards)

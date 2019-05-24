@@ -61,7 +61,7 @@ extension ChatsManager {
 
             let createCoreDataGroupOperation = CoreDataHelper.shared.makeCreateGroupChannelOperation(name: name, members: members)
 
-            let members = members.filter { !CoreDataHelper.shared.existsSingleChannel(with: $0) }
+            let members = members.filter { !CoreDataHelper.shared.existsSingleChannel(with: $0) && $0 != TwilioHelper.shared.username }
             let startSingleOperation = ChatsManager.makeStartSingleOperation(with: members)
 
             let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)

@@ -21,15 +21,13 @@ extension TwilioHelper {
 
     func getName(of channel: TCHChannel) -> String {
         // FIXME
-        guard let attributes = try? self.getAttributes(of: channel) else {
-            return "Error name"
-        }
+        let attributes = try! self.getAttributes(of: channel)
 
         switch attributes.type {
         case .single:
             return self.getCompanion(of: channel)
         case .group:
-            return channel.friendlyName ?? "Error name"
+            return channel.friendlyName!
         }
     }
 

@@ -110,12 +110,9 @@ public class TwilioHelper: NSObject {
     }
     
     func getCompanion(of channel: TCHChannel) -> String {
-        guard let attributes = try? self.getAttributes(of: channel) else {
-            Log.error("Missing channel attributes")
-            return "Error name"
-        }
+        let attributes = try! self.getAttributes(of: channel)
 
-        return attributes.members.first { $0 != self.username } ?? "Error name"
+        return attributes.members.first { $0 != self.username }!
     }
 }
 

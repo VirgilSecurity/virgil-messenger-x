@@ -103,7 +103,7 @@ public class VirgilHelper {
         }
     }
 
-    func makeSendServiceMessageOperation(cards: [Card], ticket: String) -> CallbackOperation<Void> {
+    func makeSendServiceMessageOperation(cards: [Card], ticket: ServiceMessage) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             guard !cards.isEmpty else {
                 completion((), nil)
@@ -131,7 +131,7 @@ public class VirgilHelper {
         }
     }
 
-    func makeSendChangeMembersServiceMessageOperation(add: [Card], remove: [Card], channel: Channel) -> CallbackOperation<Void> {
+    func makeSendChangeMembersServiceMessageOperation(identifier: String, add: [Card], remove: [Card], channel: Channel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 guard let session = self.getGroupSession(of: channel) else {
@@ -151,15 +151,14 @@ public class VirgilHelper {
                     }
                 }
 
-                let serviceMessage = try ServiceMessage(message: message,
+                let serviceMessage = try ServiceMessage(identifier: identifier,
+                                                        message: message,
                                                         type: .changeMembers,
                                                         members: channel.cards,
                                                         add: add,
                                                         remove: remove)
 
-                let serialized = try serviceMessage.export()
-
-                let sendServiceChangeMembersOperation = MessageSender.makeSendServiceMessageOperation(serialized, to: channel)
+                let sendServiceChangeMembersOperation = MessageSender.makeSendServiceMessageOperation(serviceMessage, to: channel)
                 let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
                 userTicketOperation.addDependency(sendServiceChangeMembersOperation)

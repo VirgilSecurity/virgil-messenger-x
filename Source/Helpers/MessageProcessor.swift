@@ -125,40 +125,55 @@ class MessageProcessor {
                 }
 
                 if let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!,
-                                                                                     withSessionId: sessionId) {
-                    if serviceMessage.cardsRemove.contains(where: { $0.identity == TwilioHelper.shared.username}) {
-                        CoreDataHelper.shared.delete(channel: channel)
+                                                                                     withSessionId: sessionId,
+                                                                                     identifier: attributes.identifier) {
+                    if let session = VirgilHelper.shared.getGroupSession(of: channel) {
+                        if serviceMessage.cardsRemove.contains(where: { $0.identity == TwilioHelper.shared.username}) {
+                            if !CoreDataHelper.shared.existsServiceMessages(from: twilioMessage.author!, withSessionId: sessionId) {
+                                CoreDataHelper.shared.delete(serviceMessage)
+                                CoreDataHelper.shared.delete(channel: channel)
 
-                        try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
+                                try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
 
-                        NotificationCenter.default.post(
-                            name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-                            object: self,
-                            userInfo: [:])
+                                return nil
+                            }
 
-                        return nil
+                            try session.sessionStorage.deleteSession(identifier: session.identifier)
+                        } else {
+                            let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
+
+                            try session.useChangeMembersTicket(ticket: serviceMessage.message,
+                                                               addCards: serviceMessage.cardsAdd,
+                                                               removeCardIds: removeCardIds)
+                            try session.sessionStorage.storeSession(session)
+
+                            CoreDataHelper.shared.add(serviceMessage.cardsAdd, to: channel)
+                            CoreDataHelper.shared.remove(serviceMessage.cardsRemove, from: channel)
+
+                            let membersCards = serviceMessage.cardsAdd.filter {
+                                !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) && $0.identity != TwilioHelper.shared.username
+                            }
+                            let members = membersCards.map { $0.identity }
+
+                            CoreDataHelper.shared.delete(serviceMessage)
+
+                            try ChatsManager.makeStartSingleOperation(with: members).startSync().getResult()
+                        }
+                    } else {
+                        let session = try VirgilHelper.shared.secureChat.startGroupSession(with: serviceMessage.cards, using: serviceMessage.message)
+                        try session.sessionStorage.storeSession(session)
+
+                        CoreDataHelper.shared.add(serviceMessage.cardsAdd, to: channel)
+                        CoreDataHelper.shared.remove(serviceMessage.cardsRemove, from: channel)
+
+                        let membersCards = serviceMessage.cardsAdd.filter {
+                            !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) && $0.identity != TwilioHelper.shared.username }
+                        let members = membersCards.map { $0.identity }
+
+                        CoreDataHelper.shared.delete(serviceMessage)
+
+                        try ChatsManager.makeStartSingleOperation(with: members).startSync().getResult()
                     }
-
-                    guard let session = VirgilHelper.shared.getGroupSession(of: channel) else {
-                        throw NSError()
-                    }
-
-                    let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
-
-                    try session.useChangeMembersTicket(ticket: serviceMessage.message,
-                                                       addCards: serviceMessage.cardsAdd,
-                                                       removeCardIds: removeCardIds)
-                    try session.sessionStorage.storeSession(session)
-
-                    CoreDataHelper.shared.add(serviceMessage.cardsAdd, to: channel)
-                    CoreDataHelper.shared.remove(serviceMessage.cardsRemove, from: channel)
-
-                    let membersCards = serviceMessage.cardsAdd.filter { !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) }
-                    let members = membersCards.map { $0.identity }
-
-                    CoreDataHelper.shared.delete(serviceMessage: serviceMessage)
-
-                    try ChatsManager.makeStartSingleOperation(with: members).startSync().getResult()
                 }
 
                 let decrypted: String
