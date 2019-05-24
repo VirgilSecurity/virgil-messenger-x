@@ -17,7 +17,6 @@ class MessageProcessor {
         let isIncoming = message.author == TwilioHelper.shared.username ? false : true
 
         guard let date = message.dateUpdatedAsDate,
-            // FIXME
             let channel = CoreDataHelper.shared.getChannel(twilioChannel) else {
                 throw NSError()
         }

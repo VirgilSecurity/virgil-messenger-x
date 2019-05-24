@@ -75,6 +75,10 @@ extension CoreDataHelper {
     }
 
     func findServiceMessage(from identity: String, withSessionId sessionId: Data, identifier: String? = nil) throws -> ServiceMessage? {
+        guard identity != self.currentAccount?.identity else {
+            return nil
+        }
+
         guard let user = self.getSingleChannel(with: identity) else {
             throw NSError()
         }

@@ -163,8 +163,8 @@ class ChatViewController: BaseChatViewController {
     func createChatInputItems() -> [ChatInputItemProtocol] {
         var items = [ChatInputItemProtocol]()
         items.append(self.createTextInputItem())
-        items.append(self.createPhotoInputItem())
-        items.append(self.createAudioInputItem())
+//        items.append(self.createPhotoInputItem())
+//        items.append(self.createAudioInputItem())
 
         return items
     }
