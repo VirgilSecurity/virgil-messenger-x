@@ -27,7 +27,7 @@ extension VirgilHelper {
 
         let ratchetMessage = try RatchetGroupMessage.deserialize(input: data)
 
-        CoreDataHelper.shared.setSessionId(sessionId, for: channel)
+        CoreDataHelper.shared.set(sessionId: sessionId, for: channel)
 
         let session = try self.getGroupSessionAsReceiver(identity: identity, sessionId: sessionId)
 
@@ -95,7 +95,7 @@ extension VirgilHelper {
             try VirgilHelper.shared.makeSendServiceMessageOperation(cards: channel.cards,
                                                                     ticket: serviceMessage).startSync().getResult()
 
-            CoreDataHelper.shared.setSessionId(sessionId, for: channel)
+            CoreDataHelper.shared.set(sessionId: sessionId, for: channel)
 
             return try secureChat.startGroupSession(with: channel.cards, using: newSessionMessage)
         }

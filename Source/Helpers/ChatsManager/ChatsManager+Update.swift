@@ -69,7 +69,7 @@ extension ChatsManager {
                         try TwilioHelper.shared.makeJoinOperation(channel: twilioChannel).startSync().getResult()
                     }
 
-                    try ChatsManager.join(twilioChannel).startSync().getResult()
+                    try ChatsManager.join(twilioChannel)
 
                     guard let channel = CoreDataHelper.shared.getChannel(twilioChannel) else {
                         throw NSError()
@@ -91,13 +91,14 @@ extension ChatsManager {
                 let messages = try TwilioHelper.shared.getLastMessages(withCount: UInt(toLoad), from: twilioChannel.messages).startSync().getResult()
 
                 for message in messages {
-                    if !CoreDataHelper.shared.existsChannel(name: TwilioHelper.shared.getName(of: twilioChannel)) {
+                    if !CoreDataHelper.shared.existsChannel(sid: twilioChannel.sid!) {
                         break
                     }
 
-//                    if message.author == TwilioHelper.shared.username {
-//                        continue
-//                    }
+                    let attributes = try TwilioHelper.MessageAttributes.import(message.attributes()!)
+                    if message.author == TwilioHelper.shared.username && attributes.type == .service {
+                        continue
+                    }
 
                      _ = try MessageProcessor.process(message: message, from: twilioChannel)
                 }

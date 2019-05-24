@@ -73,7 +73,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                     return
                 }
 
-                try ChatsManager.join(channel).startSync().getResult()
+                try ChatsManager.join(channel)
 
                 NotificationCenter.default.post(
                     name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
@@ -99,9 +99,8 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
                 let notification: String
 
-                if let currentChannel = self.currentChannel,
-                    self.getName(of: channel) == self.getName(of: currentChannel) {
-                        notification = Notifications.MessageAddedToSelectedChannel.rawValue
+                if let currentChannel = self.currentChannel, channel.sid! == currentChannel.sid! {
+                    notification = Notifications.MessageAddedToSelectedChannel.rawValue
                 } else {
                     notification = Notifications.MessageAdded.rawValue
                 }

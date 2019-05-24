@@ -11,50 +11,33 @@ import VirgilSDK
 import TwilioChatClient
 
 extension CoreDataHelper {
-    func makeCreateGroupChannelOperation(name: String, members: [String]) -> CallbackOperation<Void> {
-        return CallbackOperation<Void> { operation, completion in
-            do {
-                let channels = members.map { CoreDataHelper.shared.getSingleChannel(with: $0)! }
-                let cards = channels.map { $0.cards.first! }
+    func createGroupChannel(name: String, members: [String], sid: String) throws {
+        let members = members.filter { $0 != self.currentAccount?.identity }
+        let channels = members.map { CoreDataHelper.shared.getSingleChannel(with: $0)! }
+        let cards = channels.map { $0.cards.first! }
 
-                _ = try self.createChannel(type: .group, name: name, cards: cards)
-
-                completion((), nil)
-            }
-            catch {
-                completion(nil, error)
-            }
-        }
+        _ = try self.createChannel(type: .group, sid: sid, name: name, cards: cards)
     }
 
-    func makeCreateSingleChannelOperation() -> CallbackOperation<Void> {
-        return CallbackOperation { operation, completion in
-            do {
-                var cards: [Card] = try operation.findDependencyResult()
-
-                cards = cards.filter { !self.existsSingleChannel(with: $0.identity) }
-
-                try cards.forEach {
-                    _ = try self.createChannel(type: .single, name: $0.identity, cards: [$0])
-                }
-
-                completion((), nil)
-            } catch {
-                completion(nil, error)
-            }
+    func createSingleChannel(sid: String, card: Card) throws {
+        guard !self.existsSingleChannel(with: card.identity), card.identity != TwilioHelper.shared.username else {
+            return
         }
+
+        _ = try self.createChannel(type: .single, sid: sid, name: card.identity, cards: [card])
     }
 
-    private func createChannel(type: ChannelType, name: String, cards: [Card], sessionId: Data? = nil) throws -> Channel {
+    private func createChannel(type: ChannelType, sid: String, name: String, cards: [Card]) throws -> Channel {
         guard let account = self.currentAccount else {
             throw CoreDataHelperError.nilCurrentAccount
         }
 
-        let channel = try Channel(name: name,
+        let channel = try Channel(sid: sid,
+                                  name: name,
                                   type: type,
                                   account: account,
                                   cards: cards,
-                                  sessionId: sessionId,
+                                  sessionId: nil,
                                   managedContext: self.managedContext)
 
         self.appDelegate.saveContext()
@@ -96,7 +79,7 @@ extension CoreDataHelper {
         self.appDelegate.saveContext()
     }
 
-    func setSessionId(_ sessionId: Data, for channel: Channel) {
+    func set(sessionId: Data, for channel: Channel) {
         guard channel.sessionId != sessionId else {
             return
         }
@@ -106,52 +89,31 @@ extension CoreDataHelper {
         self.appDelegate.saveContext()
     }
 
-    func loadChannel(withName username: String) -> Channel? {
-        guard let channel = self.getChannel(withName: username) else {
-            return nil
-        }
-
-        self.setCurrent(channel: channel)
-
-        return channel
-    }
-
     func existsSingleChannel(with identity: String) -> Bool {
-        return self.getSingleChannel(with: identity) != nil ? true : false
+        return self.getSingleChannels().contains { $0.name == identity }
     }
 
-    func existsChannel(name: String) -> Bool {
-        return self.currentAccount?.channels.contains { $0.name == name } ?? false
+    func existsChannel(sid: String) -> Bool {
+        return self.getChannels().contains { $0.sid == sid }
     }
 
     func getChannel(_ twilioChannel: TCHChannel) -> Channel? {
-        let name = TwilioHelper.shared.getName(of: twilioChannel)
-
-        return CoreDataHelper.shared.getChannel(withName: name)
+        return self.getChannels().first { $0.sid == twilioChannel.sid! }
     }
 
     func getChannel(withName name: String) -> Channel? {
-        let channels = self.getChannels()
-
-        return channels.first { $0.name == name }
+        return self.getChannels().first { $0.name == name }
     }
 
     func getChannels() -> [Channel] {
-        return self.currentAccount?.channels ?? []
+        return self.currentAccount!.channels
     }
 
     func getSingleChannel(with identity: String) -> Channel? {
-        return CoreDataHelper.shared.getSingleChannels().first { $0.name == identity }
+        return self.getSingleChannels().first { $0.name == identity }
     }
 
     func getSingleChannels() -> [Channel] {
-        guard let channels = self.currentAccount?.channels else {
-            Log.error("Core Data: missing current account or channels")
-            return []
-        }
-
-        let singleChannels = channels.filter { $0.type == .single }
-        
-        return singleChannels
+        return self.getChannels().filter { $0.type == .single }
     }
 }

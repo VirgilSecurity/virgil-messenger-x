@@ -13,7 +13,7 @@ public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
     public static func makeSendServiceMessageOperation(_ message: ServiceMessage, to coreChannel: Channel) -> CallbackOperation<Void> {
-        let twilioChannel = TwilioHelper.shared.getChannel(coreChannel.name)
+        let twilioChannel = TwilioHelper.shared.getChannel(coreChannel)
 
         let plaintext = try! message.export()
 
@@ -51,7 +51,7 @@ public class MessageSender {
     public func send(message: Message, withId id: Int) throws -> DemoMessageModelProtocol {
         let cards = message.channel.cards
 
-        guard let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel.name),
+        guard let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel),
             let messages = channel.messages else {
                 throw NSError()
         }

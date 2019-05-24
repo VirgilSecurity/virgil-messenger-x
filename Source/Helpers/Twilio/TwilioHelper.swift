@@ -108,22 +108,16 @@ public class TwilioHelper: NSObject {
             }
         }
     }
-    
-    func getCompanion(of channel: TCHChannel) -> String {
-        let attributes = try! self.getAttributes(of: channel)
-
-        return attributes.members.first { $0 != self.username }!
-    }
 }
 
 // Setters
 extension TwilioHelper {
-    func getChannel(_ identity: String) -> TCHChannel? {
-        return channels.subscribedChannels().first { self.getName(of: $0) == identity }
+    func getChannel(_ channel: Channel) -> TCHChannel? {
+        return self.channels.subscribedChannels().first { $0.sid! == channel.sid }
     }
 
-    func setChannel(_ coreDataChannel: Channel) {
-        self.currentChannel = self.getChannel(coreDataChannel.name)
+    func setChannel(_ channel: Channel) {
+        self.currentChannel = self.getChannel(channel)
     }
 
     func deselectChannel() {

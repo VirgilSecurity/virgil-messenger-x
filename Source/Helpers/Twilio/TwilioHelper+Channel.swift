@@ -19,16 +19,8 @@ extension TwilioHelper {
         return try ChannelAttributes.import(attributes)
     }
 
-    func getName(of channel: TCHChannel) -> String {
-        // FIXME
-        let attributes = try! self.getAttributes(of: channel)
-
-        switch attributes.type {
-        case .single:
-            return self.getCompanion(of: channel)
-        case .group:
-            return channel.friendlyName!
-        }
+    func getCompanion(from attributes: ChannelAttributes) -> String {
+        return attributes.members.first { $0 != self.username }!
     }
 
     func makeJoinOperation(channel: TCHChannel) -> CallbackOperation<Void> {
@@ -57,21 +49,15 @@ extension TwilioHelper {
         }
     }
 
-    private func makeInviteOperation(identity: String, channel: TCHChannel? = nil) -> CallbackOperation<Void> {
+    private func makeInviteOperation(identity: String, channel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { operation, completion in
-            do {
-                let channel: TCHChannel = try channel ?? operation.findDependencyResult()
-
-                channel.members!.invite(byIdentity: identity) { result in
-                    guard result.isSuccessful() else {
-                        completion(nil, result.error)
-                        return
-                    }
-
-                    completion((), nil)
+            channel.members!.invite(byIdentity: identity) { result in
+                guard result.isSuccessful() else {
+                    completion(nil, result.error)
+                    return
                 }
-            } catch {
-                completion(nil, error)
+
+                completion((), nil)
             }
         }
     }
@@ -204,14 +190,12 @@ extension TwilioHelper {
                 attributes.members = attributes.members.filter { $0 != member }
 
                 let setAttributesOperation = self.setAttributes(attributes, to: channel)
-//                let removeOperation = self.makeRemoveOperation(identity: member, channel: channel)
 
                 let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
                 completionOperation.addDependency(setAttributesOperation)
-//                completionOperation.addDependency(removeOperation)
 
-                let operations = [setAttributesOperation, /* removeOperation, */ completionOperation]
+                let operations = [setAttributesOperation, completionOperation]
 
                 let queue = OperationQueue()
                 queue.addOperations(operations, waitUntilFinished: false)
@@ -221,40 +205,39 @@ extension TwilioHelper {
         }
     }
 
-    func makeCreateSingleChannelOperation(with identity: String) -> CallbackOperation<Void> {
+    func makeCreateSingleChannelOperation(with card: Card) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            let attributes = ChannelAttributes(initiator: self.username,
-                                               friendlyName: nil,
-                                               members: [self.username, identity],
-                                               type: .single)
+            do {
+                let attributes = ChannelAttributes(initiator: self.username,
+                                                   friendlyName: nil,
+                                                   members: [self.username, card.identity],
+                                                   type: .single)
 
-            let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
-                                          TCHChannelOptionAttributes: try! attributes.export()]
+                let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
+                                              TCHChannelOptionAttributes: try attributes.export()]
 
-            // FIXME join operation
-            let createChannelOperation = self.makeCreateChannelOperation(with: options)
-            let inviteOperation = self.makeInviteOperation(identity: identity)
-            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+                // FIXME join operation
+                let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
 
-            inviteOperation.addDependency(createChannelOperation)
-            completionOperation.addDependency(createChannelOperation)
-            completionOperation.addDependency(inviteOperation)
+                try CoreDataHelper.shared.createSingleChannel(sid: channel.sid!, card: card)
 
-            let operations = [createChannelOperation, inviteOperation, completionOperation]
+                try self.makeInviteOperation(identity: card.identity, channel: channel).startSync().getResult()
 
-            let queue = OperationQueue()
-            queue.addOperations(operations, waitUntilFinished: false)
+                completion((), nil)
+            } catch {
+                completion(nil, error)
+            }
         }
     }
 
-    func makeCreateSingleChannelOperation(with identities: [String]) -> CallbackOperation<Void> {
+    func makeCreateSingleChannelOperation(with cards: [Card]) -> CallbackOperation<Void> {
         return CallbackOperation { operation, completion in
             if let error = operation.findDependencyError() {
                 completion(nil, error)
                 return
             }
 
-            guard !identities.isEmpty else {
+            guard !cards.isEmpty else {
                 completion((), nil)
                 return
             }
@@ -263,7 +246,7 @@ extension TwilioHelper {
 
             var operations: [CallbackOperation<Void>] = []
 
-            identities.forEach {
+            cards.forEach {
                 let operation = self.makeCreateSingleChannelOperation(with: $0)
                 completionOperation.addDependency(operation)
                 operations.append(operation)
@@ -276,35 +259,35 @@ extension TwilioHelper {
 
     func makeCreateGroupChannelOperation(with members: [String], name: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            let attributes = ChannelAttributes(initiator: self.username,
-                                               friendlyName: name,
-                                               members: [self.username] + members,
-                                               type: .group)
+            do {
+                let attributes = ChannelAttributes(initiator: self.username,
+                                                   friendlyName: name,
+                                                   members: [self.username] + members,
+                                                   type: .group)
 
-            let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
-                                          TCHChannelOptionFriendlyName: name,
-                                          TCHChannelOptionAttributes: try! attributes.export()]
+                let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
+                                              TCHChannelOptionFriendlyName: name,
+                                              TCHChannelOptionAttributes: try attributes.export()]
 
-            let createChannelOperation = self.makeCreateChannelOperation(with: options)
+                let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
+                
+                try CoreDataHelper.shared.createGroupChannel(name: name, members: members, sid: channel.sid!)
 
-            var inviteOperations: [CallbackOperation<Void>] = []
+                let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+                
+                var operations: [CallbackOperation<Void>] = []
 
-            members.forEach {
-                let inviteOperation = self.makeInviteOperation(identity: $0)
-                inviteOperation.addDependency(createChannelOperation)
-                inviteOperations.append(inviteOperation)
+                members.forEach {
+                    let inviteOperation = self.makeInviteOperation(identity: $0, channel: channel)
+                    completionOperation.addDependency(inviteOperation)
+                    operations.append(inviteOperation)
+                }
+
+                let queue = OperationQueue()
+                queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+            } catch {
+                completion(nil, error)
             }
-
-            let operations = [createChannelOperation] + inviteOperations
-
-            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-
-            operations.forEach {
-                completionOperation.addDependency($0)
-            }
-
-            let queue = OperationQueue()
-            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
         }
     }
 }

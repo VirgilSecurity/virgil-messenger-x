@@ -129,15 +129,15 @@ extension ChatListViewController: UITableViewDataSource {
 
 extension ChatListViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
-        if let username = (cell as! ChatListCell).usernameLabel.text {
-            guard let selectedChannel = CoreDataHelper.shared.loadChannel(withName: username) else {
-                return
-            }
+        let channels = CoreDataHelper.shared.getChannels()
 
-            self.selectedChannel = selectedChannel
+        let selectedChannel = channels[safe: cell.tag]!
 
-            self.performSegue(withIdentifier: "goToChat", sender: self)
-        }
+        CoreDataHelper.shared.setCurrent(channel: selectedChannel)
+
+        self.selectedChannel = selectedChannel
+
+        self.performSegue(withIdentifier: "goToChat", sender: self)
     }
 
 

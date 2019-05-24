@@ -12,6 +12,7 @@ import VirgilSDK
 
 @objc(Channel)
 public class Channel: NSManagedObject {
+    @NSManaged public var sid: String
     @NSManaged public var name: String
     @NSManaged public var account: Account
     @NSManaged public var sessionId: Data?
@@ -98,7 +99,8 @@ public class Channel: NSManagedObject {
         }
     }
 
-    convenience init(name: String,
+    convenience init(sid: String,
+                     name: String,
                      type: ChannelType,
                      account: Account,
                      cards: [Card],
@@ -110,6 +112,7 @@ public class Channel: NSManagedObject {
 
         self.init(entity: entity, insertInto: managedContext)
 
+        self.sid = sid
         self.name = name
         self.type = type
         self.cards = cards
