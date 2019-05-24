@@ -67,7 +67,7 @@ extension CoreDataHelper {
         var cardsToAdd: [Card] = []
 
         for card in cards {
-            if !members.contains(card.identity) {
+            if !members.contains(card.identity), card.identity != TwilioHelper.shared.username {
                 cardsToAdd.append(card)
             }
         }

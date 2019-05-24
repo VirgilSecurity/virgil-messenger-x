@@ -95,9 +95,9 @@ extension ChatsManager {
                         break
                     }
 
-                    if message.author == TwilioHelper.shared.username {
-                        continue
-                    }
+//                    if message.author == TwilioHelper.shared.username {
+//                        continue
+//                    }
 
                      _ = try MessageProcessor.process(message: message, from: twilioChannel)
                 }
@@ -105,7 +105,7 @@ extension ChatsManager {
                 completion((), nil)
             } catch {
                 completion(nil, error)
-                Log.error("AAA: \(error.localizedDescription)")
+                Log.error("Updating channels: \(error.localizedDescription)")
             }
         }
     }

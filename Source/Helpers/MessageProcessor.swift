@@ -129,6 +129,9 @@ class MessageProcessor {
                                                                                      identifier: attributes.identifier) {
                     if let session = VirgilHelper.shared.getGroupSession(of: channel) {
                         if serviceMessage.cardsRemove.contains(where: { $0.identity == TwilioHelper.shared.username}) {
+                            CoreDataHelper.shared.delete(serviceMessage)
+                            try session.sessionStorage.deleteSession(identifier: session.identifier)
+                            
                             if !CoreDataHelper.shared.existsServiceMessages(from: twilioMessage.author!, withSessionId: sessionId) {
                                 CoreDataHelper.shared.delete(serviceMessage)
                                 CoreDataHelper.shared.delete(channel: channel)
@@ -137,8 +140,6 @@ class MessageProcessor {
 
                                 return nil
                             }
-
-                            try session.sessionStorage.deleteSession(identifier: session.identifier)
                         } else {
                             let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
 
