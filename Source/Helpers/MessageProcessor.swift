@@ -95,6 +95,10 @@ class MessageProcessor {
 
             switch channel.type {
             case .single:
+                if twilioMessage.author == TwilioHelper.shared.username {
+                    return nil
+                }
+
                 let decrypted: String
                 do {
                     decrypted = try MessageProcessor.decrypt(body,

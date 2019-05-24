@@ -95,11 +95,6 @@ extension ChatsManager {
                         break
                     }
 
-                    let attributes = try TwilioHelper.MessageAttributes.import(message.attributes()!)
-                    if message.author == TwilioHelper.shared.username && attributes.type == .service {
-                        continue
-                    }
-
                      _ = try MessageProcessor.process(message: message, from: twilioChannel)
                 }
 
