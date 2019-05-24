@@ -40,7 +40,6 @@ class GroupInfoViewController: ViewController {
 
         if let userList = segue.destination as? UsersListViewController {
             self.usersListController = userList
-            userList.deleteItemDelegate = self
             self.updateUserList()
 
         } else if let addMembers = segue.destination as? AddMembersViewController {
@@ -50,6 +49,8 @@ class GroupInfoViewController: ViewController {
 
     private func updateUserList() {
         if let userList = self.usersListController {
+            userList.deleteItemDelegate = self.channel.cards.count > 1 ? self : nil
+
             let members = self.channel.cards.map { CoreDataHelper.shared.getSingleChannel(with: $0.identity)! }
 
             userList.users = members

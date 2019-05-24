@@ -58,6 +58,7 @@ class MessageProcessor {
         }
     }
 
+    // TODO: Obviously refactor
     private static func processText(body: String,
                                     date: Date,
                                     isIncoming: Bool,
@@ -138,6 +139,13 @@ class MessageProcessor {
                                 try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
 
                                 return nil
+                            } else {
+                                let text = "\(twilioMessage.author!) removed \(TwilioHelper.shared.username)"
+                                let message = try CoreDataHelper.shared.createTextMessage(text, in: channel, isIncoming: isIncoming)
+
+                                try CoreDataHelper.shared.save(message)
+
+                                return message
                             }
                         } else {
                             let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
