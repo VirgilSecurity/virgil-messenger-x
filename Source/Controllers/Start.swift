@@ -33,15 +33,10 @@ class StartViewController: ViewController {
     }
 
     private func goToChatList() {
-        let vc = UIStoryboard(name: "TabBar", bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
-
-        self.switchNavigationStack(to: vc)
+        self.switchNavigationStack(to: "TabBar")
     }
 
     private func goToLogin() {
-        let vc = UIStoryboard(name: AuthenticationViewController.name,
-                              bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
-
-        self.switchNavigationStack(to: vc)
+        self.switchNavigationStack(to: AuthenticationViewController.name)
     }
 }

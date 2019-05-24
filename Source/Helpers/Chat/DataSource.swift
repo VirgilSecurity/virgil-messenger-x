@@ -139,7 +139,7 @@ class DataSource: ChatDataSourceProtocol {
 
                 try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serviceMessage).startSync().getResult()
 
-                CoreDataHelper.shared.remove([card], from: coreChannel)
+                try CoreDataHelper.shared.remove([card], from: coreChannel)
 
                 try session.useChangeMembersTicket(ticket: ticket, addCards: [], removeCardIds: [card.identifier])
                 try session.sessionStorage.storeSession(session)
@@ -148,7 +148,7 @@ class DataSource: ChatDataSourceProtocol {
 
                 try TwilioHelper.shared.remove(member: card.identity, from: twilioChannel).startSync().getResult()
 
-                CoreDataHelper.shared.delete(serviceMessage)
+                try CoreDataHelper.shared.delete(serviceMessage)
 
                 self.nextMessageId += 1
                 let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
@@ -193,7 +193,7 @@ class DataSource: ChatDataSourceProtocol {
 
                 try TwilioHelper.shared.add(members: identities, to: twilioChannel).startSync().getResult()
 
-                CoreDataHelper.shared.add(cards, to: coreChannel)
+                try CoreDataHelper.shared.add(cards, to: coreChannel)
 
                 guard let session = VirgilHelper.shared.getGroupSession(of: coreChannel) else {
                     completion(nil, nil)
@@ -218,7 +218,7 @@ class DataSource: ChatDataSourceProtocol {
 
                 try self.messageSender.sendChangeMembers(message: message, identifier: serviceMessage.identifier!).startSync().getResult()
 
-                CoreDataHelper.shared.delete(serviceMessage)
+                try CoreDataHelper.shared.delete(serviceMessage)
 
                 self.nextMessageId += 1
                 let uiModel = message.exportAsUIModel(withId: self.nextMessageId)

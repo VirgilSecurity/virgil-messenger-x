@@ -17,33 +17,31 @@ extension CoreDataHelper {
         self.append(account: account)
         self.setCurrent(account: account)
 
-        self.appDelegate.saveContext()
+        try self.appDelegate.saveContext()
     }
 
-    func loadAccount(withIdentity username: String) throws {
-        let account = self.accounts.first { $0.identity == username }
-
-        guard let accountToLoad = account else {
+    func loadAccount(withIdentity identity: String) throws {
+        guard let account = self.getAccount(withIdentity: identity) else {
             throw UserFriendlyError.noUserOnDevice
         }
 
-        self.setCurrent(account: accountToLoad)
+        self.setCurrent(account: account)
     }
 
     func getAccount(withIdentity username: String) -> Account? {
-        return accounts.first { $0.identity == username }
+        return self.accounts.first { $0.identity == username }
     }
 
-    func deleteAccount() {
+    func deleteAccount() throws {
         guard let account = self.currentAccount else {
-            Log.error("Core Data: missing account")
-            return
+            throw NSError()
         }
 
-        self.managedContext.delete(account)
-        Log.debug("Core Data: account deleted")
+        try account.channels.forEach { try self.delete(channel: $0) }
 
-        self.appDelegate.saveContext()
+        self.managedContext.delete(account)
+
+        try self.appDelegate.saveContext()
 
         self.reloadData()
     }

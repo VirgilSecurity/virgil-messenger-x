@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.shared.delegate?.window??.rootViewController = UIStoryboard(name: StartViewController.name, bundle: Bundle.main).instantiateInitialViewController()!
 
         if UserDefaults.standard.string(forKey: "first_launch")?.isEmpty ?? true {
-            let context = persistentContainer.viewContext
+            let context = self.persistentContainer.viewContext
             let fetchRequest =
                 NSFetchRequest<NSManagedObject>(entityName: Account.EntityName)
             if let result = try? context.fetch(fetchRequest) {
@@ -42,7 +42,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        self.saveContext()
+        do {
+            try self.saveContext()
+        } catch {
+            Log.error("Saving Core Data context failed with error: \(error.localizedDescription)")
+        }
     }
 
     // MARK: - Core Data stack
@@ -76,17 +80,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: - Core Data Saving support
 
-    func saveContext() {
-        Log.debug("saving context")
-        let context = persistentContainer.viewContext
-        if context.hasChanges {
-            Log.debug("context has changes")
-            do {
-                try context.save()
-            } catch {
-                let nserror = error as NSError
-                Log.error("save context failed: \(nserror.localizedDescription)")
-            }
+    func saveContext() throws {
+        let context = self.persistentContainer.viewContext
+
+        if self.persistentContainer.viewContext.hasChanges {
+            try context.save()
         }
     }
 }

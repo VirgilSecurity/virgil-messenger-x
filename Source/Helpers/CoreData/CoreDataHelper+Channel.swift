@@ -40,12 +40,12 @@ extension CoreDataHelper {
                                   sessionId: nil,
                                   managedContext: self.managedContext)
 
-        self.appDelegate.saveContext()
+        try self.appDelegate.saveContext()
 
         return channel
     }
 
-    func add(_ cards: [Card], to channel: Channel) {
+    func add(_ cards: [Card], to channel: Channel) throws {
         let members = channel.cards.map { $0.identity }
         var cardsToAdd: [Card] = []
 
@@ -57,36 +57,36 @@ extension CoreDataHelper {
 
         channel.cards += cardsToAdd
 
-        self.appDelegate.saveContext()
+        try self.appDelegate.saveContext()
     }
 
-    func remove(_ cards: [Card], from channel: Channel) {
+    func remove(_ cards: [Card], from channel: Channel) throws {
         channel.cards = channel.cards.filter { card1 in
             !cards.contains { card2 in
                 card1.identity == card2.identity
             }
         }
 
-        self.appDelegate.saveContext()
+        try self.appDelegate.saveContext()
     }
 
-    func delete(channel: Channel) {
+    func delete(channel: Channel) throws {
         channel.messages.forEach { self.managedContext.delete($0) }
         channel.serviceMessages.forEach { self.managedContext.delete($0) }
 
         self.managedContext.delete(channel)
 
-        self.appDelegate.saveContext()
+        try self.appDelegate.saveContext()
     }
 
-    func set(sessionId: Data, for channel: Channel) {
+    func set(sessionId: Data, for channel: Channel) throws {
         guard channel.sessionId != sessionId else {
             return
         }
         
         channel.sessionId = sessionId
 
-        self.appDelegate.saveContext()
+        try self.appDelegate.saveContext()
     }
 
     func existsSingleChannel(with identity: String) -> Bool {

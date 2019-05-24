@@ -63,8 +63,12 @@ public class UserAuthorizer {
 
     public func logOut() {
         UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+    }
 
-        CoreDataHelper.shared.deleteAccount()
+    public func deleteAccount() throws {
+        UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+
+        try CoreDataHelper.shared.deleteAccount()
 
         self.virgilAuthorizer.logOut(identity: TwilioHelper.shared.username)
     }

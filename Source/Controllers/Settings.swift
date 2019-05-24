@@ -36,44 +36,56 @@ class SettingsViewController: ViewController {
         super.viewWillAppear(animated)
     }
 
+    private func logOut() {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        let logoutAction = UIAlertAction(title: "Logout", style: .destructive) { _ in
+            UserAuthorizer().logOut()
+
+            self.switchNavigationStack(to: AuthenticationViewController.name)
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+        alert.addAction(logoutAction)
+        alert.addAction(cancelAction)
+
+        self.present(alert, animated: true)
+    }
+
+    private func deleteAccount() {
+        let alertController = UIAlertController(title: "Delete account",
+                                                message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.",
+                                                preferredStyle: .alert)
+
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            try! UserAuthorizer().deleteAccount()
+
+            self.switchNavigationStack(to: AuthenticationViewController.name)
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+        alertController.addAction(okAction)
+        alertController.addAction(cancelAction)
+
+        self.present(alertController, animated: true)
+    }
 }
 
 extension SettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        if indexPath.section == 0 {
-           self.performSegue(withIdentifier: "About", sender: self)
-        } else if indexPath.section == 1 {
-            let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            alert.addAction(UIAlertAction(title: "Logout", style: .destructive) { _ in
-                UserDefaults.standard.set(nil, forKey: "last_username")
-
-                let vc = UIStoryboard(name: AuthenticationViewController.name,
-                                      bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
-
-                self.switchNavigationStack(to: vc)
-            })
-
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-
-            self.present(alert, animated: true)
-        } else if indexPath.section == 2 {
-            let alertController = UIAlertController(title: "Delete account",
-                                                    message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.",
-                                                    preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-                UserAuthorizer().logOut()
-
-                let vc = UIStoryboard(name: AuthenticationViewController.name,
-                                      bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
-
-                self.switchNavigationStack(to: vc)
-            }))
-
-            alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in }))
-
-            self.present(alertController, animated: true)
+        switch indexPath.section {
+        case 0:
+            self.performSegue(withIdentifier: "About", sender: self)
+        case 1:
+            self.logOut()
+        case 2:
+            self.deleteAccount()
+        default:
+            fatalError("Unknown number of table view section")
         }
     }
 
