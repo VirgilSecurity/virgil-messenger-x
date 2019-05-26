@@ -203,6 +203,7 @@ extension ChatViewController {
             viewModelBuilder: UITextMessageViewModelBuilder(),
             interactionHandler: UITextMessageHandler(baseHandler: self.baseMessageHandler)
         )
+        
         textMessagePresenter.baseMessageStyle = baseMessageStyle
         textMessagePresenter.textCellStyle = textCellStyle
 

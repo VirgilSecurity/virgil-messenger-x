@@ -22,7 +22,9 @@ class ChatListViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.isUserInteractionEnabled = false
+        self.navigationController?.view.isUserInteractionEnabled = false
+        self.tabBarController?.tabBar.isUserInteractionEnabled = false
+        
         let indicator = UIActivityIndicatorView()
         indicator.hidesWhenStopped = false
         indicator.startAnimating()
@@ -46,7 +48,8 @@ class ChatListViewController: ViewController {
                 self.tableView.reloadData()
                 self.navigationItem.titleView = nil
                 self.title = "Chats"
-                self.view.isUserInteractionEnabled = true
+                self.navigationController?.view.isUserInteractionEnabled = true
+                self.tabBarController?.tabBar.isUserInteractionEnabled = true
                 indicator.stopAnimating()
             }
         }
