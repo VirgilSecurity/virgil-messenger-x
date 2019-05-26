@@ -58,7 +58,7 @@ extension ChatsManager {
         }
     }
 
-    private static func makeUpdateChannelOperation(twilioChannel: TCHChannel) -> CallbackOperation<Void> {
+    public static func makeUpdateChannelOperation(twilioChannel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 let coreChannel: Channel

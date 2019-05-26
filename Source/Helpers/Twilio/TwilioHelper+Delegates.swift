@@ -16,6 +16,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
         case MessageAdded = "TwilioHelper.Notifications.MessageAdded"
         case MessageAddedToSelectedChannel = "TwilioHelper.Notifications.MessageAddedToSelectedChannel"
         case ChannelAdded = "TwilioHelper.Notifications.ChannelAdded"
+        case ChannelDeleted = "TwilioHelper.Notifications.ChannelDeleted"
     }
 
     enum NotificationKeys: String {
@@ -75,6 +76,8 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
                 try ChatsManager.join(channel)
 
+                try ChatsManager.makeUpdateChannelOperation(twilioChannel: channel).startSync().getResult()
+
                 NotificationCenter.default.post(
                     name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
                     object: self,
@@ -94,6 +97,8 @@ extension TwilioHelper: TwilioChatClientDelegate {
             // FIXME
             do {
                 guard let message = try MessageProcessor.process(message: message, from: channel) else {
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.MessageAdded.rawValue),
+                                                    object: self)
                     return
                 }
 

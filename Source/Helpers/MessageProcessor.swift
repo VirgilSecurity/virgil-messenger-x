@@ -21,6 +21,10 @@ class MessageProcessor {
                 throw NSError()
         }
 
+        guard (Int(truncating: message.index!) >= channel.messages.count) else {
+            return nil
+        }
+
         if message.hasMedia() {
             return try self.processMedia(message: message,
                                          date: date,
@@ -140,6 +144,11 @@ class MessageProcessor {
                                 try CoreDataHelper.shared.delete(channel: channel)
 
                                 try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
+
+                                DispatchQueue.main.async {
+                                    NotificationCenter.default.post(name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
+                                                                    object: self)
+                                }
 
                                 return nil
                             } else {

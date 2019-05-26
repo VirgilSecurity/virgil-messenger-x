@@ -3,12 +3,12 @@ import ChattoAdditions
 import TwilioChatClient
 import VirgilSDK
 
-public protocol DemoMessageModelProtocol: MessageModelProtocol {
+public protocol UIMessageModelProtocol: MessageModelProtocol {
     var status: MessageStatus { get set }
 }
 
 public class MessageSender {
-    public var onMessageChanged: ((_ message: DemoMessageModelProtocol) -> Void)?
+    public var onMessageChanged: ((_ message: UIMessageModelProtocol) -> Void)?
 
     private let queue = DispatchQueue(label: "MessageSender")
 
@@ -48,7 +48,7 @@ public class MessageSender {
                                         identifier: identifier)
     }
 
-    public func send(message: Message, withId id: Int) throws -> DemoMessageModelProtocol {
+    public func send(message: Message, withId id: Int) throws -> UIMessageModelProtocol {
         let cards = message.channel.cards
 
         guard let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel),
@@ -108,14 +108,14 @@ public class MessageSender {
         return uiModel
     }
 
-    private func updateMessage(_ message: DemoMessageModelProtocol, status: MessageStatus) {
+    private func updateMessage(_ message: UIMessageModelProtocol, status: MessageStatus) {
         if message.status != status {
             message.status = status
             self.notifyMessageChanged(message)
         }
     }
 
-    private func notifyMessageChanged(_ message: DemoMessageModelProtocol) {
+    private func notifyMessageChanged(_ message: UIMessageModelProtocol) {
         DispatchQueue.main.async {
             self.onMessageChanged?(message)
         }

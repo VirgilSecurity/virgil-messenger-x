@@ -1,16 +1,12 @@
 //
-//  UIView+Gradient.swift
+//  Gradient.swift
 //  VirgilMessenger
 //
-//  Created by Eugen Pivovarov on 3/5/18.
-//  Copyright © 2018 VirgilSecurity. All rights reserved.
+//  Created by Yevhen Pyvovarov on 5/27/19.
+//  Copyright © 2019 VirgilSecurity. All rights reserved.
 //
 
 import UIKit
-
-extension UIView: GradientViewProvider {
-    typealias GradientViewType = GradientLayer
-}
 
 typealias GradientType = (x: CGPoint, y: CGPoint)
 

@@ -22,16 +22,28 @@
  THE SOFTWARE.
 */
 
-import Foundation
+import Chatto
 import ChattoAdditions
 
-public class DemoTextMessageModel: TextMessageModel<MessageModel>, DemoMessageModelProtocol {
-    public override init(messageModel: MessageModel, text: String) {
-        self.body = text
-        super.init(messageModel: messageModel, text: text)
-    }
+public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageModelProtocol {
+    
+    public required init(uid: Int,
+                         image: UIImage,
+                         size: CGSize,
+                         isIncoming: Bool,
+                         status: MessageStatus,
+                         date: Date) {
+        let senderId = isIncoming ? "1" : "2"
 
-    private(set) var body: String
+        let messageModel = MessageModel(uid: String(uid),
+                                        senderId: senderId,
+                                        type: PhotoMessageModel<MessageModel>.chatItemType,
+                                        isIncoming: isIncoming,
+                                        date: date,
+                                        status: status)
+
+        super.init(messageModel: messageModel, imageSize: size, image: image)
+    }
 
     public var status: MessageStatus {
         get {
@@ -40,5 +52,11 @@ public class DemoTextMessageModel: TextMessageModel<MessageModel>, DemoMessageMo
         set {
             self._messageModel.status = newValue
         }
+    }
+}
+
+extension PhotoMessageModel {
+    static var chatItemType: ChatItemType {
+        return "photo"
     }
 }

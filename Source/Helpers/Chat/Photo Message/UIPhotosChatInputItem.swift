@@ -1,5 +1,5 @@
 //
-//  DemoPhotosChatInputItem.swift
+//  UIPhotosChatInputItem.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 5/25/18.
@@ -8,7 +8,7 @@
 
 import ChattoAdditions
 
-class DemoPhotosChatInputItem: PhotosChatInputItem {
+class UIPhotosChatInputItem: PhotosChatInputItem {
     override var inputView: UIView? {
         if let subviews = super.inputView?.subviews {
             for subview in subviews {

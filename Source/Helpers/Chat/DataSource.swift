@@ -44,7 +44,7 @@ class DataSource: ChatDataSourceProtocol {
 
             guard self != nil,
                 let message = messages[safe: messageNumber] else {
-                    return MessageFactory.createCorruptedMessageModel(uid: id)
+                    return UITextMessageModel.corruptedModel(uid: id)
             }
 
             return message.exportAsUIModel(withId: id)
@@ -266,7 +266,7 @@ class DataSource: ChatDataSourceProtocol {
 //        self.nextMessageId += 1
 //        let id = self.nextMessageId
 //
-//        let message: DemoMessageModelProtocol
+//        let message: UIMessageModelProtocol
 //
 //        // FIXME
 //        if let duration = try? AVAudioPlayer(data: audio).duration {

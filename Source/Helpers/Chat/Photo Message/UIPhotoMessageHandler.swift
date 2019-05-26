@@ -30,10 +30,10 @@ protocol PhotoObserverProtocol: class {
     func showSaveImageAlert(_ : UIImage)
 }
 
-class DemoPhotoMessageHandler: NSObject, BaseMessageInteractionHandlerProtocol {
-    func userDidSelectMessage(viewModel: DemoPhotoMessageViewModel) {}
+class UIPhotoMessageHandler: NSObject, BaseMessageInteractionHandlerProtocol {
+    func userDidSelectMessage(viewModel: UIPhotoMessageViewModel) {}
 
-    func userDidDeselectMessage(viewModel: DemoPhotoMessageViewModel) {}
+    func userDidDeselectMessage(viewModel: UIPhotoMessageViewModel) {}
 
     private let baseHandler: BaseMessageHandler
     weak private var photoObserverController: PhotoObserverProtocol!
@@ -44,25 +44,25 @@ class DemoPhotoMessageHandler: NSObject, BaseMessageInteractionHandlerProtocol {
         super.init()
     }
 
-    func userDidTapOnFailIcon(viewModel: DemoPhotoMessageViewModel, failIconView: UIView) {
+    func userDidTapOnFailIcon(viewModel: UIPhotoMessageViewModel, failIconView: UIView) {
         self.baseHandler.userDidTapOnFailIcon(viewModel: viewModel)
     }
 
-    func userDidTapOnAvatar(viewModel: DemoPhotoMessageViewModel) {
+    func userDidTapOnAvatar(viewModel: UIPhotoMessageViewModel) {
         self.baseHandler.userDidTapOnAvatar(viewModel: viewModel)
     }
 
-    func userDidTapOnBubble(viewModel: DemoPhotoMessageViewModel) {
+    func userDidTapOnBubble(viewModel: UIPhotoMessageViewModel) {
         self.baseHandler.userDidTapOnBubble(viewModel: viewModel)
         self.photoObserverController.showImage(viewModel.fakeImage)
     }
 
-    func userDidBeginLongPressOnBubble(viewModel: DemoPhotoMessageViewModel) {
+    func userDidBeginLongPressOnBubble(viewModel: UIPhotoMessageViewModel) {
         self.baseHandler.userDidBeginLongPressOnBubble(viewModel: viewModel)
         self.photoObserverController.showSaveImageAlert(viewModel.fakeImage)
     }
 
-    func userDidEndLongPressOnBubble(viewModel: DemoPhotoMessageViewModel) {
+    func userDidEndLongPressOnBubble(viewModel: UIPhotoMessageViewModel) {
         self.baseHandler.userDidEndLongPressOnBubble(viewModel: viewModel)
     }
 }

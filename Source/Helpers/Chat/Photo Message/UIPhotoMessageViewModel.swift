@@ -22,13 +22,12 @@
  THE SOFTWARE.
 */
 
-import Foundation
 import ChattoAdditions
 
-class DemoPhotoMessageViewModel: PhotoMessageViewModel<DemoPhotoMessageModel> {
+class UIPhotoMessageViewModel: PhotoMessageViewModel<UIPhotoMessageModel> {
     let fakeImage: UIImage
 
-    override init(photoMessage: DemoPhotoMessageModel, messageViewModel: MessageViewModelProtocol) {
+    override init(photoMessage: UIPhotoMessageModel, messageViewModel: MessageViewModelProtocol) {
         self.fakeImage = photoMessage.image
         super.init(photoMessage: photoMessage, messageViewModel: messageViewModel)
     }
@@ -59,24 +58,24 @@ class DemoPhotoMessageViewModel: PhotoMessageViewModel<DemoPhotoMessageModel> {
     }
 }
 
-extension DemoPhotoMessageViewModel: DemoMessageViewModelProtocol {
-    var messageModel: DemoMessageModelProtocol {
+extension UIPhotoMessageViewModel: UIMessageViewModelProtocol {
+    var messageModel: UIMessageModelProtocol {
         return self._photoMessage
     }
 }
 
-class DemoPhotoMessageViewModelBuilder: ViewModelBuilderProtocol {
+class UIPhotoMessageViewModelBuilder: ViewModelBuilderProtocol {
 
     let messageViewModelBuilder = MessageViewModelDefaultBuilder()
 
-    func createViewModel(_ model: DemoPhotoMessageModel) -> DemoPhotoMessageViewModel {
+    func createViewModel(_ model: UIPhotoMessageModel) -> UIPhotoMessageViewModel {
         let messageViewModel = self.messageViewModelBuilder.createMessageViewModel(model)
-        let photoMessageViewModel = DemoPhotoMessageViewModel(photoMessage: model, messageViewModel: messageViewModel)
+        let photoMessageViewModel = UIPhotoMessageViewModel(photoMessage: model, messageViewModel: messageViewModel)
         photoMessageViewModel.avatarImage.value = UIImage(named: "userAvatar")
         return photoMessageViewModel
     }
 
     func canCreateViewModel(fromModel model: Any) -> Bool {
-        return model is DemoPhotoMessageModel
+        return model is UIPhotoMessageModel
     }
 }

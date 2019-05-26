@@ -35,7 +35,7 @@ class ChatViewController: BaseChatViewController {
     public var channel: Channel!
 
     private var soundPlayer: AVAudioPlayer?
-    weak private var cachedAudioModel: DemoAudioMessageViewModel?
+    weak private var cachedAudioModel: UIAudioMessageViewModel?
 
     private var statusBarHidden: Bool = false {
         didSet {
@@ -93,8 +93,18 @@ class ChatViewController: BaseChatViewController {
         }
 
         NotificationCenter.default.removeObserver(self.dataSource)
+        NotificationCenter.default.removeObserver(self)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.popController(notification:)),
+                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
+                                               object: nil)
         
         self.dataSource.addObserver()
+    }
+
+    @objc func popController(notification: Notification) {
+        self.navigationController?.popViewController(animated: true)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -152,9 +162,9 @@ class ChatViewController: BaseChatViewController {
         let baseMessageStyle = BaseMessageCollectionViewCellDefaultStyle(colors: chatColor)
 
         return [
-            DemoTextMessageModel.chatItemType: [self.createTextPresenter(with: baseMessageStyle)],
-            DemoPhotoMessageModel.chatItemType: [self.createPhotoPresenter(with: baseMessageStyle)],
-            DemoAudioMessageModel.chatItemType: [self.createAudioPresenter(with: baseMessageStyle)],
+            UITextMessageModel.chatItemType: [self.createTextPresenter(with: baseMessageStyle)],
+            UIPhotoMessageModel.chatItemType: [self.createPhotoPresenter(with: baseMessageStyle)],
+            UIAudioMessageModel.chatItemType: [self.createAudioPresenter(with: baseMessageStyle)],
             SendingStatusModel.chatItemType: [SendingStatusPresenterBuilder()],
             TimeSeparatorModel.chatItemType: [TimeSeparatorPresenterBuilder()]
         ]
@@ -176,7 +186,7 @@ class ChatViewController: BaseChatViewController {
 
 /// Presenters creators
 extension ChatViewController {
-    private func createTextPresenter(with baseMessageStyle: BaseMessageCollectionViewCellDefaultStyle) -> TextMessagePresenterBuilder<DemoTextMessageViewModelBuilder, DemoTextMessageHandler> {
+    private func createTextPresenter(with baseMessageStyle: BaseMessageCollectionViewCellDefaultStyle) -> TextMessagePresenterBuilder<UITextMessageViewModelBuilder, UITextMessageHandler> {
         let textStyle = TextMessageCollectionViewCellDefaultStyle.TextStyle(
             font: UIFont.systemFont(ofSize: 15),
             incomingColor: UIColor(rgb: 0xE4E4E4),
@@ -190,8 +200,8 @@ extension ChatViewController {
             baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
 
         let textMessagePresenter = TextMessagePresenterBuilder(
-            viewModelBuilder: DemoTextMessageViewModelBuilder(),
-            interactionHandler: DemoTextMessageHandler(baseHandler: self.baseMessageHandler)
+            viewModelBuilder: UITextMessageViewModelBuilder(),
+            interactionHandler: UITextMessageHandler(baseHandler: self.baseMessageHandler)
         )
         textMessagePresenter.baseMessageStyle = baseMessageStyle
         textMessagePresenter.textCellStyle = textCellStyle
@@ -199,18 +209,18 @@ extension ChatViewController {
         return textMessagePresenter
     }
 
-    private func createPhotoPresenter(with baseMessageStyle: BaseMessageCollectionViewCellDefaultStyle) -> PhotoMessagePresenterBuilder<DemoPhotoMessageViewModelBuilder, DemoPhotoMessageHandler> {
+    private func createPhotoPresenter(with baseMessageStyle: BaseMessageCollectionViewCellDefaultStyle) -> PhotoMessagePresenterBuilder<UIPhotoMessageViewModelBuilder, UIPhotoMessageHandler> {
         let photoMessagePresenter = PhotoMessagePresenterBuilder(
-            viewModelBuilder: DemoPhotoMessageViewModelBuilder(),
-            interactionHandler: DemoPhotoMessageHandler(baseHandler: self.baseMessageHandler,
-                                                        photoObserverController: self)
+            viewModelBuilder: UIPhotoMessageViewModelBuilder(),
+            interactionHandler: UIPhotoMessageHandler(baseHandler: self.baseMessageHandler,
+                                                      photoObserverController: self)
         )
         photoMessagePresenter.baseCellStyle = baseMessageStyle
 
         return photoMessagePresenter
     }
 
-    private func createAudioPresenter(with baseMessageStyle: BaseMessageCollectionViewCellDefaultStyle) -> AudioMessagePresenterBuilder<DemoAudioMessageViewModelBuilder, DemoAudioMessageHandler> {
+    private func createAudioPresenter(with baseMessageStyle: BaseMessageCollectionViewCellDefaultStyle) -> AudioMessagePresenterBuilder<UIAudioMessageViewModelBuilder, UIAudioMessageHandler> {
         let audioTextStyle = AudioMessageCollectionViewCellDefaultStyle.TextStyle(
             font: UIFont.systemFont(ofSize: 15),
             incomingColor: UIColor(rgb: 0xE4E4E4),
@@ -223,8 +233,8 @@ extension ChatViewController {
             textStyle: audioTextStyle,
             baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
 
-        let audioMessagePresenter = AudioMessagePresenterBuilder(viewModelBuilder: DemoAudioMessageViewModelBuilder(),
-                                                                 interactionHandler: DemoAudioMessageHandler(baseHandler: self.baseMessageHandler, playableController: self))
+        let audioMessagePresenter = AudioMessagePresenterBuilder(viewModelBuilder: UIAudioMessageViewModelBuilder(),
+                                                                 interactionHandler: UIAudioMessageHandler(baseHandler: self.baseMessageHandler, playableController: self))
         audioMessagePresenter.baseMessageStyle = baseMessageStyle
         audioMessagePresenter.textCellStyle = audioTextCellStyle
 
@@ -247,13 +257,13 @@ extension ChatViewController {
         return item
     }
 
-    private func createPhotoInputItem() -> DemoPhotosChatInputItem {
+    private func createPhotoInputItem() -> UIPhotosChatInputItem {
         var liveCamaraAppearence = LiveCameraCellAppearance.createDefaultAppearance()
         liveCamaraAppearence.backgroundColor = UIColor(rgb: 0x2B303B)
         let photosAppearence = PhotosInputViewAppearance(liveCameraCellAppearence: liveCamaraAppearence)
-        let item = DemoPhotosChatInputItem(presentingController: self,
-                                       tabInputButtonAppearance: PhotosChatInputItem.createDefaultButtonAppearance(),
-                                       inputViewAppearance: photosAppearence)
+        let item = UIPhotosChatInputItem(presentingController: self,
+                                         tabInputButtonAppearance: PhotosChatInputItem.createDefaultButtonAppearance(),
+                                         inputViewAppearance: photosAppearence)
 
         item.photoInputHandler = { [weak self] image in
             if self?.checkReachability() ?? false {
@@ -275,7 +285,7 @@ extension ChatViewController {
 }
 
 extension ChatViewController: AudioPlayableProtocol {
-    func play(model: DemoAudioMessageViewModel) {
+    func play(model: UIAudioMessageViewModel) {
         try? AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
         do {
             self.soundPlayer = try AVAudioPlayer(data: model.audio)

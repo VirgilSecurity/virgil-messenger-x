@@ -1,5 +1,5 @@
 //
-//  DemoAudioMessageViewModel.swift
+//  UIAudioMessageViewModel.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 5/21/18.
@@ -8,24 +8,24 @@
 
 import ChattoAdditions
 
-class DemoAudioMessageViewModel: AudioMessageViewModel<DemoAudioMessageModel>, DemoMessageViewModelProtocol {
-    var messageModel: DemoMessageModelProtocol {
+class UIAudioMessageViewModel: AudioMessageViewModel<UIAudioMessageModel>, UIMessageViewModelProtocol {
+    var messageModel: UIMessageModelProtocol {
         return self.audioMessage
     }
 }
 
-class DemoAudioMessageViewModelBuilder: ViewModelBuilderProtocol {
+class UIAudioMessageViewModelBuilder: ViewModelBuilderProtocol {
 
     let messageViewModelBuilder = MessageViewModelDefaultBuilder()
 
-    func createViewModel(_ model: DemoAudioMessageModel) -> DemoAudioMessageViewModel {
+    func createViewModel(_ model: UIAudioMessageModel) -> UIAudioMessageViewModel {
         let messageViewModel = self.messageViewModelBuilder.createMessageViewModel(model)
-        let audioMessageViewModel = DemoAudioMessageViewModel(audioMessage: model, messageViewModel: messageViewModel)
+        let audioMessageViewModel = UIAudioMessageViewModel(audioMessage: model, messageViewModel: messageViewModel)
         audioMessageViewModel.avatarImage.value = UIImage(named: "userAvatar")
         return audioMessageViewModel
     }
 
     func canCreateViewModel(fromModel model: Any) -> Bool {
-        return model is DemoAudioMessageModel
+        return model is UIAudioMessageModel
     }
 }

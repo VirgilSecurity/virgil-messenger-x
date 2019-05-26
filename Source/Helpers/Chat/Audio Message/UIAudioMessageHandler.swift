@@ -1,5 +1,5 @@
 //
-//  DemoAudioMessageHandler.swift
+//  UIAudioMessageHandler.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 5/15/18.
@@ -10,15 +10,15 @@ import ChattoAdditions
 import AVFoundation
 
 protocol AudioPlayableProtocol: class, AVAudioPlayerDelegate {
-    func play(model: DemoAudioMessageViewModel)
+    func play(model: UIAudioMessageViewModel)
     func pause()
     func resume()
 }
 
-class DemoAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
-    func userDidSelectMessage(viewModel: DemoAudioMessageViewModel) {}
+class UIAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
+    func userDidSelectMessage(viewModel: UIAudioMessageViewModel) {}
 
-    func userDidDeselectMessage(viewModel: DemoAudioMessageViewModel) {}
+    func userDidDeselectMessage(viewModel: UIAudioMessageViewModel) {}
 
     private let baseHandler: BaseMessageHandler
     weak private var playableController: AudioPlayableProtocol!
@@ -27,15 +27,15 @@ class DemoAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
         self.playableController = playableController
     }
 
-    func userDidTapOnFailIcon(viewModel: DemoAudioMessageViewModel, failIconView: UIView) {
+    func userDidTapOnFailIcon(viewModel: UIAudioMessageViewModel, failIconView: UIView) {
         self.baseHandler.userDidTapOnFailIcon(viewModel: viewModel)
     }
 
-    func userDidTapOnAvatar(viewModel: DemoAudioMessageViewModel) {
+    func userDidTapOnAvatar(viewModel: UIAudioMessageViewModel) {
         self.baseHandler.userDidTapOnAvatar(viewModel: viewModel)
     }
 
-    func userDidTapOnBubble(viewModel: DemoAudioMessageViewModel) {
+    func userDidTapOnBubble(viewModel: UIAudioMessageViewModel) {
         self.baseHandler.userDidTapOnBubble(viewModel: viewModel)
 
         switch viewModel.state.value {
@@ -51,11 +51,11 @@ class DemoAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
         }
     }
 
-    func userDidBeginLongPressOnBubble(viewModel: DemoAudioMessageViewModel) {
+    func userDidBeginLongPressOnBubble(viewModel: UIAudioMessageViewModel) {
         self.baseHandler.userDidBeginLongPressOnBubble(viewModel: viewModel)
     }
 
-    func userDidEndLongPressOnBubble(viewModel: DemoAudioMessageViewModel) {
+    func userDidEndLongPressOnBubble(viewModel: UIAudioMessageViewModel) {
         self.baseHandler.userDidEndLongPressOnBubble(viewModel: viewModel)
     }
 }

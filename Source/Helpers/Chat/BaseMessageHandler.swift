@@ -26,8 +26,8 @@ import Foundation
 import Chatto
 import ChattoAdditions
 
-public protocol DemoMessageViewModelProtocol {
-    var messageModel: DemoMessageModelProtocol { get }
+public protocol UIMessageViewModelProtocol {
+    var messageModel: UIMessageModelProtocol { get }
 }
 
 class BaseMessageHandler {
@@ -36,7 +36,7 @@ class BaseMessageHandler {
     init (messageSender: MessageSender) {
         self.messageSender = messageSender
     }
-    func userDidTapOnFailIcon(viewModel: DemoMessageViewModelProtocol) {
+    func userDidTapOnFailIcon(viewModel: UIMessageViewModelProtocol) {
         print("userDidTapOnFailIcon")
     }
 
@@ -44,15 +44,15 @@ class BaseMessageHandler {
         print("userDidTapOnAvatar")
     }
 
-    func userDidTapOnBubble(viewModel: DemoMessageViewModelProtocol) {
+    func userDidTapOnBubble(viewModel: UIMessageViewModelProtocol) {
         print("userDidTapOnBubble")
     }
 
-    func userDidBeginLongPressOnBubble(viewModel: DemoMessageViewModelProtocol) {
+    func userDidBeginLongPressOnBubble(viewModel: UIMessageViewModelProtocol) {
         print("userDidBeginLongPressOnBubble")
     }
 
-    func userDidEndLongPressOnBubble(viewModel: DemoMessageViewModelProtocol) {
+    func userDidEndLongPressOnBubble(viewModel: UIMessageViewModelProtocol) {
         print("userDidEndLongPressOnBubble")
     }
 }

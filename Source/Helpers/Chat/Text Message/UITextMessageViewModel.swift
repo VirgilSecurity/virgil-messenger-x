@@ -22,36 +22,33 @@
  THE SOFTWARE.
 */
 
-import Foundation
 import ChattoAdditions
 
-class DemoTextMessageHandler: BaseMessageInteractionHandlerProtocol {
-    func userDidSelectMessage(viewModel: DemoTextMessageViewModel) {}
+public class UITextMessageViewModel: TextMessageViewModel<UITextMessageModel>, UIMessageViewModelProtocol {
 
-    func userDidDeselectMessage(viewModel: DemoTextMessageViewModel) {}
-
-    private let baseHandler: BaseMessageHandler
-    init (baseHandler: BaseMessageHandler) {
-        self.baseHandler = baseHandler
+    public override init(textMessage: UITextMessageModel, messageViewModel: MessageViewModelProtocol) {
+        super.init(textMessage: textMessage, messageViewModel: messageViewModel)
     }
 
-    func userDidTapOnFailIcon(viewModel: DemoTextMessageViewModel, failIconView: UIView) {
-        self.baseHandler.userDidTapOnFailIcon(viewModel: viewModel)
+    public var messageModel: UIMessageModelProtocol {
+        return self.textMessage
+    }
+}
+
+public class UITextMessageViewModelBuilder: ViewModelBuilderProtocol {
+    public init() {}
+
+    let messageViewModelBuilder = MessageViewModelDefaultBuilder()
+
+    public func createViewModel(_ textMessage: UITextMessageModel) -> UITextMessageViewModel {
+        let messageViewModel = self.messageViewModelBuilder.createMessageViewModel(textMessage)
+        let textMessageViewModel = UITextMessageViewModel(textMessage: textMessage, messageViewModel: messageViewModel)
+        textMessageViewModel.avatarImage.value = UIImage(named: "userAvatar")
+
+        return textMessageViewModel
     }
 
-    func userDidTapOnAvatar(viewModel: DemoTextMessageViewModel) {
-        self.baseHandler.userDidTapOnAvatar(viewModel: viewModel)
-    }
-
-    func userDidTapOnBubble(viewModel: DemoTextMessageViewModel) {
-        self.baseHandler.userDidTapOnBubble(viewModel: viewModel)
-    }
-
-    func userDidBeginLongPressOnBubble(viewModel: DemoTextMessageViewModel) {
-        self.baseHandler.userDidBeginLongPressOnBubble(viewModel: viewModel)
-    }
-
-    func userDidEndLongPressOnBubble(viewModel: DemoTextMessageViewModel) {
-        self.baseHandler.userDidEndLongPressOnBubble(viewModel: viewModel)
+    public func canCreateViewModel(fromModel model: Any) -> Bool {
+        return model is UITextMessageModel
     }
 }

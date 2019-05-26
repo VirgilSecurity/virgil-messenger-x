@@ -57,12 +57,12 @@ public class Message: NSManagedObject {
 }
 
 extension Message {
-    public func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> DemoMessageModelProtocol {
+    public func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
         let corruptedMessage = {
-            MessageFactory.createCorruptedMessageModel(uid: id, isIncoming: self.isIncoming)
+            UITextMessageModel.corruptedModel(uid: id, isIncoming: self.isIncoming, date: self.date)
         }
 
-        let resultMessage: DemoMessageModelProtocol
+        let resultMessage: UIMessageModelProtocol
 
         switch self.type {
         case .text, .changeMembers:
@@ -70,33 +70,33 @@ extension Message {
                 return corruptedMessage()
             }
 
-            resultMessage = MessageFactory.createTextMessageModel(uid: id,
-                                                                  text: body,
-                                                                  isIncoming: self.isIncoming,
-                                                                  status: status,
-                                                                  date: date)
+            resultMessage = UITextMessageModel(uid: id,
+                                               text: body,
+                                               isIncoming: self.isIncoming,
+                                               status: status,
+                                               date: date)
         case .photo:
             guard let media = self.media, let image = UIImage(data: media) else {
                 return corruptedMessage()
             }
 
-            resultMessage = MessageFactory.createPhotoMessageModel(uid: id,
-                                                                   image: image,
-                                                                   size: image.size,
-                                                                   isIncoming: self.isIncoming,
-                                                                   status: status,
-                                                                   date: date)
+            resultMessage = UIPhotoMessageModel(uid: id,
+                                                image: image,
+                                                size: image.size,
+                                                isIncoming: self.isIncoming,
+                                                status: status,
+                                                date: date)
         case .audio:
             guard let media = self.media, let duration = try? AVAudioPlayer(data: media).duration else {
                 return corruptedMessage()
             }
 
-            resultMessage = MessageFactory.createAudioMessageModel(uid: id,
-                                                                   audio: media,
-                                                                   duration: duration,
-                                                                   isIncoming: self.isIncoming,
-                                                                   status: status,
-                                                                   date: date)
+            resultMessage = UIAudioMessageModel(uid: id,
+                                                audio: media,
+                                                duration: duration,
+                                                isIncoming: self.isIncoming,
+                                                status: status,
+                                                date: date)
         }
 
         return resultMessage
