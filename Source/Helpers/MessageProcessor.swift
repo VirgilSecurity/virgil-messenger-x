@@ -30,61 +30,60 @@ class MessageProcessor {
                                          date: date,
                                          isIncoming: isIncoming,
                                          channel: channel)
-        } else if let body = message.body,
-            let rawAttributes = message.attributes(),
-            let attributes = try? TwilioHelper.MessageAttributes.import(rawAttributes) {
-                return try self.processText(body: body,
-                                            date: date,
-                                            isIncoming: isIncoming,
-                                            twilioMessage: message,
-                                            twilioChannel: twilioChannel,
-                                            channel: channel,
-                                            attributes: attributes)
+        } else if let body = message.body {
+            return try self.processText(body,
+                                        date: date,
+                                        isIncoming: isIncoming,
+                                        twilioMessage: message,
+                                        twilioChannel: twilioChannel,
+                                        channel: channel)
         } else {
             throw NSError()
         }
     }
 
-    private static func decrypt(_ text: String,
-                                channel: Channel,
-                                author: String,
-                                attributes: TwilioHelper.MessageAttributes) throws -> String {
-        switch channel.type {
-        case .single:
-            return try VirgilHelper.shared.decrypt(text, from: channel.cards.first!)
-        case .group:
-            guard let sessionId = attributes.sessionId else {
-                throw NSError()
-            }
-
-            return try VirgilHelper.shared.decryptGroup(text, from: author, channel: channel, sessionId: sessionId)
-        }
-    }
-
-    // TODO: Obviously refactor
-    private static func processText(body: String,
+    private static func processText(_ text: String,
                                     date: Date,
                                     isIncoming: Bool,
                                     twilioMessage: TCHMessage,
                                     twilioChannel: TCHChannel,
-                                    channel: Channel,
-                                    attributes: TwilioHelper.MessageAttributes) throws -> Message? {
+                                    channel: Channel) throws -> Message? {
+        let attributes = try TwilioHelper.MessageAttributes.import(twilioMessage.attributes()!)
+
+        switch channel.type {
+        case .single:
+            return try self.processSingle(text: text,
+                                          date: date,
+                                          isIncoming: isIncoming,
+                                          twilioMessage: twilioMessage,
+                                          twilioChannel: twilioChannel,
+                                          channel: channel,
+                                          attributes: attributes)
+        case .group:
+            return try self.processGroup(text: text,
+                                         date: date,
+                                         isIncoming: isIncoming,
+                                         twilioMessage: twilioMessage,
+                                         twilioChannel: twilioChannel,
+                                         channel: channel,
+                                         attributes: attributes)
+        }
+    }
+
+    private static func processSingle(text: String,
+                                      date: Date,
+                                      isIncoming: Bool,
+                                      twilioMessage: TCHMessage,
+                                      twilioChannel: TCHChannel,
+                                      channel: Channel,
+                                      attributes: TwilioHelper.MessageAttributes) throws -> Message? {
         switch attributes.type {
         case .regular:
-
             let decrypted: String
             do {
-                decrypted = try MessageProcessor.decrypt(body,
-                                                         channel: channel,
-                                                         author: twilioMessage.author!,
-                                                         attributes: attributes)
+                decrypted = try VirgilHelper.shared.decrypt(text, from: channel.cards.first!)
             } catch {
-                let encryptedMessage = try CoreDataHelper.shared.createTextMessage("Message encrypted",
-                                                                                   in: channel,
-                                                                                   isIncoming: isIncoming)
-                try CoreDataHelper.shared.save(encryptedMessage)
-
-                return encryptedMessage
+                return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
             }
 
             let message = try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
@@ -92,134 +91,132 @@ class MessageProcessor {
 
             return message
         case .service:
-            guard let messages = twilioChannel.messages else {
-                throw NSError()
+            if twilioMessage.author == TwilioHelper.shared.username {
+                return nil
             }
 
-            switch channel.type {
-            case .single:
-                if twilioMessage.author == TwilioHelper.shared.username {
-                    return nil
-                }
+            let decrypted: String
+            do {
+                decrypted = try VirgilHelper.shared.decrypt(text, from: channel.cards.first!)
+            } catch {
+                return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+            }
 
-                let decrypted: String
-                do {
-                    decrypted = try MessageProcessor.decrypt(body,
-                                                             channel: channel,
-                                                             author: twilioMessage.author!,
-                                                             attributes: attributes)
-                } catch {
-                    let encryptedMessage = try CoreDataHelper.shared.createTextMessage("Message encrypted",
-                                                                                       in: channel,
-                                                                                       isIncoming: isIncoming)
-                    try CoreDataHelper.shared.save(encryptedMessage)
+            let serviceMessage = try ServiceMessage.import(decrypted)
 
-                    return encryptedMessage
-                }
+            try TwilioHelper.shared.delete(twilioMessage, from: twilioChannel.messages!).startSync().getResult()
 
-                let serviceMessage = try ServiceMessage.import(decrypted)
+            try CoreDataHelper.shared.save(serviceMessage, to: channel)
 
-                try TwilioHelper.shared.delete(twilioMessage, from: messages).startSync().getResult()
+            return nil
+        }
+    }
 
-                try CoreDataHelper.shared.save(serviceMessage, to: channel)
+    private static func processGroup(text: String,
+                                     date: Date,
+                                     isIncoming: Bool,
+                                     twilioMessage: TCHMessage,
+                                     twilioChannel: TCHChannel,
+                                     channel: Channel,
+                                     attributes: TwilioHelper.MessageAttributes) throws -> Message? {
+        guard let sessionId = attributes.sessionId else {
+            throw NSError()
+        }
 
-                Log.debug("Service message received and saved")
+        switch attributes.type {
+        case .regular:
+            let decrypted: String
+            do {
+                decrypted = try VirgilHelper.shared.decryptGroup(text, from: twilioMessage.author!, channel: channel, sessionId: sessionId)
+            } catch {
+                return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+            }
 
-                return nil
-            case .group:
-                guard let sessionId = attributes.sessionId else {
-                    throw NSError()
-                }
+            let message = try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
+            try CoreDataHelper.shared.save(message)
 
-                if let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!,
-                                                                                     withSessionId: sessionId,
-                                                                                     identifier: attributes.identifier) {
-                    if let session = VirgilHelper.shared.getGroupSession(of: channel) {
-                        if serviceMessage.cardsRemove.contains(where: { $0.identity == TwilioHelper.shared.username}) {
+            return message
+        case .service:
+            if let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!,
+                                                                                 withSessionId: sessionId,
+                                                                                 identifier: attributes.identifier) {
+                if let session = VirgilHelper.shared.getGroupSession(of: channel) {
+                    if serviceMessage.cardsRemove.contains(where: { $0.identity == TwilioHelper.shared.username}) {
+                        try CoreDataHelper.shared.delete(serviceMessage)
+                        try session.sessionStorage.deleteSession(identifier: session.identifier)
+
+                        if !CoreDataHelper.shared.existsServiceMessages(from: twilioMessage.author!, withSessionId: sessionId) {
                             try CoreDataHelper.shared.delete(serviceMessage)
-                            try session.sessionStorage.deleteSession(identifier: session.identifier)
-                            
-                            if !CoreDataHelper.shared.existsServiceMessages(from: twilioMessage.author!, withSessionId: sessionId) {
-                                try CoreDataHelper.shared.delete(serviceMessage)
-                                try CoreDataHelper.shared.delete(channel: channel)
+                            try CoreDataHelper.shared.delete(channel: channel)
 
-                                try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
+                            try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
 
-                                DispatchQueue.main.async {
-                                    NotificationCenter.default.post(name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
-                                                                    object: self)
-                                }
-
-                                return nil
-                            } else {
-                                let text = "\(twilioMessage.author!) removed \(TwilioHelper.shared.username)"
-                                let message = try CoreDataHelper.shared.createTextMessage(text, in: channel, isIncoming: isIncoming)
-
-                                try CoreDataHelper.shared.save(message)
-
-                                return message
+                            DispatchQueue.main.async {
+                                NotificationCenter.default.post(name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
+                                                                object: self)
                             }
+
+                            return nil
                         } else {
-                            let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
+                            let text = "\(twilioMessage.author!) removed \(TwilioHelper.shared.username)"
+                            let message = try CoreDataHelper.shared.createTextMessage(text, in: channel, isIncoming: isIncoming)
 
-                            try session.useChangeMembersTicket(ticket: serviceMessage.message,
-                                                               addCards: serviceMessage.cardsAdd,
-                                                               removeCardIds: removeCardIds)
-                            try session.sessionStorage.storeSession(session)
+                            try CoreDataHelper.shared.save(message)
 
-                            try CoreDataHelper.shared.add(serviceMessage.cardsAdd, to: channel)
-                            try CoreDataHelper.shared.remove(serviceMessage.cardsRemove, from: channel)
-
-                            let membersCards = serviceMessage.cardsAdd.filter {
-                                !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) && $0.identity != TwilioHelper.shared.username
-                            }
-                            let members = membersCards.map { $0.identity }
-
-                            try CoreDataHelper.shared.delete(serviceMessage)
-
-                            try ChatsManager.makeStartSingleOperation(with: members)
+                            return message
                         }
                     } else {
-                        let session = try VirgilHelper.shared.secureChat.startGroupSession(with: serviceMessage.cards, using: serviceMessage.message)
+                        let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
+
+                        try session.useChangeMembersTicket(ticket: serviceMessage.message,
+                                                           addCards: serviceMessage.cardsAdd,
+                                                           removeCardIds: removeCardIds)
                         try session.sessionStorage.storeSession(session)
 
                         try CoreDataHelper.shared.add(serviceMessage.cardsAdd, to: channel)
                         try CoreDataHelper.shared.remove(serviceMessage.cardsRemove, from: channel)
 
                         let membersCards = serviceMessage.cardsAdd.filter {
-                            !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) && $0.identity != TwilioHelper.shared.username }
+                            !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) && $0.identity != TwilioHelper.shared.username
+                        }
                         let members = membersCards.map { $0.identity }
 
                         try CoreDataHelper.shared.delete(serviceMessage)
 
                         try ChatsManager.makeStartSingleOperation(with: members)
                     }
+                } else {
+                    let session = try VirgilHelper.shared.secureChat.startGroupSession(with: serviceMessage.cards, using: serviceMessage.message)
+                    try session.sessionStorage.storeSession(session)
+
+                    try CoreDataHelper.shared.add(serviceMessage.cardsAdd, to: channel)
+                    try CoreDataHelper.shared.remove(serviceMessage.cardsRemove, from: channel)
+
+                    let membersCards = serviceMessage.cardsAdd.filter {
+                        !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) && $0.identity != TwilioHelper.shared.username }
+                    let members = membersCards.map { $0.identity }
+
+                    try CoreDataHelper.shared.delete(serviceMessage)
+
+                    try ChatsManager.makeStartSingleOperation(with: members)
                 }
-
-                let decrypted: String
-                do {
-                    decrypted = try MessageProcessor.decrypt(body,
-                                                             channel: channel,
-                                                             author: twilioMessage.author!,
-                                                             attributes: attributes)
-                } catch {
-                    let encryptedMessage = try CoreDataHelper.shared.createTextMessage("Message encrypted",
-                                                                                       in: channel,
-                                                                                       isIncoming: isIncoming)
-                    try CoreDataHelper.shared.save(encryptedMessage)
-
-                    return encryptedMessage
-                }
-
-                let message = try CoreDataHelper.shared.createChangeMembersMessage(decrypted,
-                                                                                   in: channel,
-                                                                                   isIncoming: isIncoming,
-                                                                                   date: date)
-
-                try CoreDataHelper.shared.save(message)
-
-                return message
             }
+
+            let decrypted: String
+            do {
+                decrypted = try VirgilHelper.shared.decryptGroup(text, from: twilioMessage.author!, channel: channel, sessionId: sessionId)
+            } catch {
+                return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+            }
+
+            let message = try CoreDataHelper.shared.createChangeMembersMessage(decrypted,
+                                                                               in: channel,
+                                                                               isIncoming: isIncoming,
+                                                                               date: date)
+
+            try CoreDataHelper.shared.save(message)
+
+            return message
         }
     }
 
