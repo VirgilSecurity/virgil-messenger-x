@@ -24,9 +24,17 @@ extension ChatsManager {
         case .group:
             let members = attributes.members.filter { !CoreDataHelper.shared.existsSingleChannel(with: $0) && $0 != TwilioHelper.shared.username }
 
-            try ChatsManager.makeStartSingleOperation(with: members)
+            var cards: [Card] = []
+            if !members.isEmpty {
+                cards = try VirgilHelper.shared.makeGetCardsOperation(identities: members).startSync().getResult()
+            }
 
-            try CoreDataHelper.shared.createGroupChannel(name: attributes.friendlyName!, members: attributes.members, sid: channel.sid!)
+            try? ChatsManager.startSingle(with: members, cards: cards)
+
+            try CoreDataHelper.shared.createGroupChannel(name: attributes.friendlyName!,
+                                                         members: attributes.members,
+                                                         sid: channel.sid!,
+                                                         additionalCards: cards)
         }
     }
 }

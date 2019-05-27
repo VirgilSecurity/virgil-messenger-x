@@ -27,7 +27,7 @@ public enum ChatsManager {
 
                 startProgressBar()
 
-                try ChatsManager.makeStartSingleOperation(with: [identity])
+                try ChatsManager.startSingle(with: [identity])
 
                 completion(nil)
             } catch {
@@ -36,12 +36,12 @@ public enum ChatsManager {
         }
     }
 
-    public static func makeStartSingleOperation(with identities: [String]) throws {
+    public static func startSingle(with identities: [String], cards: [Card]? = nil) throws {
         guard !identities.isEmpty else {
             return
         }
 
-        let cards = try VirgilHelper.shared.makeGetCardsOperation(identities: identities).startSync().getResult()
+        let cards = try cards ?? VirgilHelper.shared.makeGetCardsOperation(identities: identities).startSync().getResult()
 
         try TwilioHelper.shared.makeCreateSingleChannelOperation(with: cards).startSync().getResult()
     }

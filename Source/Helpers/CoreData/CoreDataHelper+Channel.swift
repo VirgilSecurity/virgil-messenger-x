@@ -11,10 +11,15 @@ import VirgilSDK
 import TwilioChatClient
 
 extension CoreDataHelper {
-    func createGroupChannel(name: String, members: [String], sid: String) throws {
+    func createGroupChannel(name: String, members: [String], sid: String, additionalCards: [Card] = []) throws {
         let members = members.filter { $0 != self.currentAccount?.identity }
-        let channels = members.map { CoreDataHelper.shared.getSingleChannel(with: $0)! }
-        let cards = channels.map { $0.cards.first! }
+
+        var cards: [Card] = additionalCards
+        members.forEach {
+            if let channel = CoreDataHelper.shared.getSingleChannel(with: $0) {
+                cards.append(channel.cards.first!)
+            }
+        }
 
         _ = try self.createChannel(type: .group, sid: sid, name: name, cards: cards)
     }

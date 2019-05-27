@@ -216,7 +216,7 @@ class MessageProcessor {
 
                 try CoreDataHelper.shared.delete(serviceMessage)
 
-                try? ChatsManager.makeStartSingleOperation(with: members)
+                try? ChatsManager.startSingle(with: members)
             }
         } else {
             let session = try VirgilHelper.shared.secureChat.startGroupSession(with: serviceMessage.cards, using: serviceMessage.message)
@@ -231,7 +231,7 @@ class MessageProcessor {
 
             try CoreDataHelper.shared.delete(serviceMessage)
 
-            try? ChatsManager.makeStartSingleOperation(with: members)
+            try? ChatsManager.startSingle(with: members)
         }
 
         return (false, nil)
