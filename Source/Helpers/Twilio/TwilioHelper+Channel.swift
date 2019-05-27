@@ -213,8 +213,10 @@ extension TwilioHelper {
                                                    members: [self.username, card.identity],
                                                    type: .single)
 
+                let uniqueName = self.makeUniqueName(card.identity, self.username)
                 let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
-                                              TCHChannelOptionAttributes: try attributes.export()]
+                                              TCHChannelOptionAttributes: try attributes.export(),
+                                              TCHChannelOptionUniqueName: uniqueName]
 
                 // FIXME join operation
                 let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
@@ -227,6 +229,14 @@ extension TwilioHelper {
             } catch {
                 completion(nil, error)
             }
+        }
+    }
+
+    func makeUniqueName(_ user1: String, _ user2: String) -> String {
+        if user1 > user2 {
+            return VirgilHelper.shared.makeHash(from: user1 + user2)!
+        } else {
+            return VirgilHelper.shared.makeHash(from: user2 + user1)!
         }
     }
 

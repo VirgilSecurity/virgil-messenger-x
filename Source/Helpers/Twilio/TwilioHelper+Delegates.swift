@@ -53,12 +53,9 @@ extension TwilioHelper: TwilioChatClientDelegate {
         let stateStr = connectionState.rawValue
         Log.debug("\(stateStr)")
 
-        NotificationCenter.default.post(
-            name: Notification.Name(rawValue: TwilioHelper.Notifications.ConnectionStateUpdated.rawValue),
-            object: self,
-            userInfo: [
-                TwilioHelper.NotificationKeys.NewState.rawValue: connectionState
-            ])
+        NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.ConnectionStateUpdated.rawValue),
+                                        object: self,
+                                        userInfo: [NotificationKeys.NewState.rawValue: connectionState])
     }
 
     public func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
@@ -68,9 +65,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
                 let attributes = try self.getAttributes(of: channel)
 
-                let identity = attributes.initiator
-
-                guard identity != self.username else {
+                guard attributes.initiator != self.username else {
                     return
                 }
 
@@ -78,18 +73,16 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
                 try ChatsManager.makeUpdateChannelOperation(twilioChannel: channel).startSync().getResult()
 
-                NotificationCenter.default.post(
-                    name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-                    object: self,
-                    userInfo: [:])
+                NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.ChannelAdded.rawValue),
+                                                object: self)
             } catch {
-                Log.error("\(error)")
+//                Log.error("\(error)")
             }
         }
     }
 
     public func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
-        guard message.author != self.username else {
+        guard message.author != self.username, channel.status == .joined else {
             return
         }
 
@@ -114,7 +107,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                                                 object: self,
                                                 userInfo: [NotificationKeys.Message.rawValue: message])
             } catch {
-//                Log.error("\(error)")
+                Log.error("\(error)")
             }
         }
     }

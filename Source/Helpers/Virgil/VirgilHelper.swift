@@ -190,4 +190,12 @@ public class VirgilHelper {
                                           cardCrypto: self.cardCrypto,
                                           cardVerifier: self.verifier)
     }
+
+    func makeHash(from string: String) -> String? {
+        guard let data = string.data(using: .utf8) else {
+            return nil
+        }
+
+        return self.crypto.computeHash(for: data, using: .sha256).hexEncodedString()
+    }
 }
