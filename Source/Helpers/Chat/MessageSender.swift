@@ -53,7 +53,7 @@ public class MessageSender {
 
         guard let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel),
             let messages = channel.messages else {
-                throw NSError()
+                throw TwilioHelperError.invalidChannel
         }
 
         let uiModel = message.exportAsUIModel(withId: id, status: .sending)
@@ -63,7 +63,7 @@ public class MessageSender {
                 switch message.type {
                 case .text:
                     guard var plaintext = message.body else {
-                        throw NSError()
+                        throw CoreDataHelperError.invalidMessage
                     }
 
                     let ciphertext: String
@@ -85,7 +85,7 @@ public class MessageSender {
                     break
                 case .changeMembers:
                     guard var plaintext = message.body else {
-                        throw NSError()
+                        throw CoreDataHelperError.invalidMessage
                     }
 
                     plaintext = "\(TwilioHelper.shared.username) \(plaintext)"

@@ -11,11 +11,11 @@ import Foundation
 import CoreData
 
 enum CoreDataHelperError: Int, Error {
-    case accountNotFound = 1
-    case nilCurrentAccount = 2
-    case nilCurrentChannel = 3
-    case entityNotFound = 4
-    case entityCorrupted = 5
+    case nilCurrentAccount = 1
+    case nilCurrentChannel = 2
+    case entityNotFound = 3
+    case channelNotFound = 4
+    case invalidMessage = 5
 }
 
 class CoreDataHelper {

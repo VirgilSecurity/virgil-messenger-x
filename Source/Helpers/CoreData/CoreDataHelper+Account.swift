@@ -34,7 +34,7 @@ extension CoreDataHelper {
 
     func deleteAccount() throws {
         guard let account = self.currentAccount else {
-            throw NSError()
+            fatalError("Current account is not set")
         }
 
         try account.channels.forEach { try self.delete(channel: $0) }

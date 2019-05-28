@@ -9,6 +9,14 @@
 import TwilioChatClient
 import VirgilSDK
 
+public enum TwilioHelperError: Int, Error {
+    case initFailed = 1
+    case initChannelsFailed = 2
+    case initUsersFailed = 3
+    case invalidChannel = 4
+    case invalidMessage = 5
+}
+
 public class TwilioHelper: NSObject {
     private(set) static var shared: TwilioHelper!
     private(set) var client: TwilioChatClient!
@@ -19,14 +27,6 @@ public class TwilioHelper: NSObject {
     let username: String
     let queue = DispatchQueue(label: "TwilioHelper")
     private let device: String
-
-    enum TwilioHelperError: Error {
-        case initFailed
-        case initChannelsFailed
-        case initUsersFailed
-        case joiningFailed
-        case missingChannelAttributes
-    }
 
     public enum MessageType: String, Codable {
         case regular

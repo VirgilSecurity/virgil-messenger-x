@@ -51,9 +51,7 @@ public class VirgilHelper {
             throw VirgilHelperError.cardVerifierInitFailed
         }
 
-        guard let user = localKeyManager.retrieveUserData() else {
-            throw NSError()
-        }
+        let user = try localKeyManager.retrieveUserData()
 
         let provider = client.makeAccessTokenProvider(identity: identity)
 
@@ -128,48 +126,6 @@ public class VirgilHelper {
 
             let queue = OperationQueue()
             queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
-        }
-    }
-
-    func makeSendChangeMembersServiceMessageOperation(identifier: String, add: [Card], remove: [Card], channel: Channel) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            do {
-                guard let session = self.getGroupSession(of: channel) else {
-                    completion((), nil)
-                    return
-                }
-
-                let removeCardIds = remove.map { $0.identifier }
-                let message = try session.createChangeMembersTicket(add: add, removeCardIds: removeCardIds)
-
-                let userTicketOperation = CallbackOperation<Void> { _, completion in
-                    do {
-                        try session.useChangeMembersTicket(ticket: message, addCards: add, removeCardIds: removeCardIds)
-                        completion((), nil)
-                    } catch {
-                        completion(nil, error)
-                    }
-                }
-
-                let serviceMessage = try ServiceMessage(identifier: identifier,
-                                                        message: message,
-                                                        type: .changeMembers,
-                                                        members: channel.cards,
-                                                        add: add,
-                                                        remove: remove)
-
-                let sendServiceChangeMembersOperation = MessageSender.makeSendServiceMessageOperation(serviceMessage, to: channel)
-                let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-
-                userTicketOperation.addDependency(sendServiceChangeMembersOperation)
-                completionOperation.addDependency(sendServiceChangeMembersOperation)
-                completionOperation.addDependency(userTicketOperation)
-
-                let queue = OperationQueue()
-                queue.addOperations([sendServiceChangeMembersOperation, userTicketOperation, completionOperation], waitUntilFinished: false)
-            } catch {
-                completion(nil, error)
-            }
         }
     }
 

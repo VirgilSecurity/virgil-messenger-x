@@ -105,7 +105,7 @@ extension CoreDataHelper {
         }
 
         guard let user = self.getSingleChannel(with: identity) else {
-            throw NSError()
+            throw CoreDataHelperError.channelNotFound
         }
 
         return user.serviceMessages.first { $0.message.getSessionId() == sessionId && $0.identifier == identifier }

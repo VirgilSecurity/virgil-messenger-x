@@ -13,7 +13,7 @@ import VirgilSDK
 extension TwilioHelper {
     func getAttributes(of channel: TCHChannel) throws -> ChannelAttributes {
         guard let attributes = channel.attributes() else {
-            throw TwilioHelperError.missingChannelAttributes
+            throw TwilioHelperError.invalidChannel
         }
 
         return try ChannelAttributes.import(attributes)
@@ -27,7 +27,7 @@ extension TwilioHelper {
         return CallbackOperation { _, completion in
             channel.join { result in
                 guard result.isSuccessful() else {
-                    completion(nil, TwilioHelperError.joiningFailed)
+                    completion(nil, result.error)
                     return
                 }
 
@@ -76,7 +76,8 @@ extension TwilioHelper {
                 let candidate = members.first { $0.identity == identity }
 
                 guard let member = candidate else {
-                    completion(nil, NSError())
+                    // Already removed member
+                    completion((), nil)
                     return
                 }
 

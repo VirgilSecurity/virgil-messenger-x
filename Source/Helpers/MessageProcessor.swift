@@ -16,12 +16,15 @@ class MessageProcessor {
     static func process(message: TCHMessage, from twilioChannel: TCHChannel) throws -> Message? {
         let isIncoming = message.author == TwilioHelper.shared.username ? false : true
 
-        guard let date = message.dateUpdatedAsDate,
-            let channel = CoreDataHelper.shared.getChannel(twilioChannel) else {
-                throw NSError()
+        guard let date = message.dateUpdatedAsDate, let index = message.index else {
+            throw TwilioHelperError.invalidMessage
         }
 
-        guard (Int(truncating: message.index!) >= channel.messages.count) else {
+        guard let channel = CoreDataHelper.shared.getChannel(twilioChannel) else {
+            throw CoreDataHelperError.channelNotFound
+        }
+
+        guard (Int(truncating: index) >= channel.messages.count) else {
             return nil
         }
 
@@ -38,7 +41,7 @@ class MessageProcessor {
                                         twilioChannel: twilioChannel,
                                         channel: channel)
         } else {
-            throw NSError()
+            throw TwilioHelperError.invalidMessage
         }
     }
 
@@ -117,7 +120,7 @@ class MessageProcessor {
                                      channel: Channel,
                                      attributes: TwilioHelper.MessageAttributes) throws -> Message? {
         guard let sessionId = attributes.sessionId else {
-            throw NSError()
+            throw TwilioHelperError.invalidMessage
         }
 
         switch attributes.type {

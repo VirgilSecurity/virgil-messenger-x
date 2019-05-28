@@ -13,7 +13,13 @@ extension ChatsManager {
     private static let queue = DispatchQueue(label: "ChatsManager")
 
     public static func makeUpdateChannelsOperation() -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
+        return CallbackOperation { operation, completion in
+
+            if let error = operation.findDependencyError() {
+                completion(nil, error)
+                return
+            }
+
             self.queue.async {
                 let twilioChannels = TwilioHelper.shared.channels.subscribedChannels()
 
@@ -72,7 +78,7 @@ extension ChatsManager {
                     try ChatsManager.join(twilioChannel)
 
                     guard let channel = CoreDataHelper.shared.getChannel(twilioChannel) else {
-                        throw NSError()
+                        throw CoreDataHelperError.channelNotFound
                     }
 
                     coreChannel = channel

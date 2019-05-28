@@ -14,6 +14,10 @@ public struct UserData {
     public let card: Card
 }
 
+public enum LocalKeyManagerError: Int, Error {
+    case retrieveFailed = 1
+}
+
 public class LocalKeyManager {
     private let identity: String
     private let keychainStorage: KeychainStorage
@@ -33,14 +37,14 @@ public class LocalKeyManager {
         self.keychainStorage = KeychainStorage(storageParams: storageParams)
     }
 
-    public func retrieveUserData() -> UserData? {
+    public func retrieveUserData() throws -> UserData {
         guard let keyEntry = try? self.keychainStorage.retrieveEntry(withName: self.identity),
             let keyPair = try? self.crypto.importPrivateKey(from: keyEntry.data),
             let meta = keyEntry.meta,
             let rawCardBase64 = meta[KeychainMetaKeys.rawCard.rawValue],
             let rawCard = try? RawSignedModel.import(fromBase64Encoded: rawCardBase64),
             let card = try? CardManager.parseCard(from: rawCard, cardCrypto: cardCrypto) else {
-                return nil
+                throw LocalKeyManagerError.retrieveFailed
         }
 
         return UserData(keyPair: keyPair, card: card)

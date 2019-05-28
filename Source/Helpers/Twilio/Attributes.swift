@@ -25,7 +25,7 @@ extension TwilioHelper {
             let data = try JSONEncoder().encode(self)
 
             guard let result = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-                throw NSError()
+                throw TwilioHelperError.invalidChannel
             }
 
             return result
@@ -47,7 +47,7 @@ extension TwilioHelper {
             let data = try JSONEncoder().encode(self)
 
             guard let result = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-                throw NSError()
+                throw TwilioHelperError.invalidMessage
             }
 
             return result

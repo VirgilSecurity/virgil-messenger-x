@@ -150,7 +150,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
 extension ServiceMessage {
     static func `import`(_ base64EncodedString: String) throws -> ServiceMessage {
         guard let data = Data(base64Encoded: base64EncodedString) else {
-            throw NSError()
+            throw CoreDataHelperError.invalidMessage
         }
 
         return try JSONDecoder().decode(ServiceMessage.self, from: data)

@@ -112,9 +112,7 @@ extension Client {
     public func getTwilioToken(identity: String) throws -> String {
         let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
 
-        guard let user = localKeyManager.retrieveUserData() else {
-            throw NSError()
-        }
+        let user = try localKeyManager.retrieveUserData()
 
         let authHeader = try self.makeAuthHeader(cardId: user.card.identifier,
                                                  privateKey: user.keyPair.privateKey)
@@ -140,9 +138,7 @@ extension Client {
     public func getVirgilToken(identity: String) throws -> String {
         let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
 
-        guard let user = localKeyManager.retrieveUserData() else {
-            throw NSError()
-        }
+        let user = try localKeyManager.retrieveUserData()
 
         let authHeader = try self.makeAuthHeader(cardId: user.card.identifier, privateKey: user.keyPair.privateKey)
 
