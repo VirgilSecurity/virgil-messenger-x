@@ -97,8 +97,6 @@ public class MessageSender {
                                                  sessionId: message.channel.sessionId).startSync().getResult()
                 }
 
-                try CoreDataHelper.shared.save(message)
-
                 self.updateMessage(uiModel, status: .success)
             } catch {
                 self.updateMessage(uiModel, status: .failed)

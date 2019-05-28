@@ -86,10 +86,7 @@ class MessageProcessor {
                 return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
             }
 
-            let message = try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
-            try CoreDataHelper.shared.save(message)
-
-            return message
+            return try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
         case .service:
             if twilioMessage.author == TwilioHelper.shared.username {
                 return nil
@@ -132,10 +129,7 @@ class MessageProcessor {
                 return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
             }
 
-            let message = try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
-            try CoreDataHelper.shared.save(message)
-
-            return message
+            return try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
         case .service:
             if let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!,
                                                                                  withSessionId: sessionId,
@@ -156,14 +150,10 @@ class MessageProcessor {
                 return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
             }
 
-            let message = try CoreDataHelper.shared.createChangeMembersMessage(decrypted,
+            return try CoreDataHelper.shared.createChangeMembersMessage(decrypted,
                                                                                in: channel,
                                                                                isIncoming: isIncoming,
                                                                                date: date)
-
-            try CoreDataHelper.shared.save(message)
-
-            return message
         }
     }
 
@@ -193,8 +183,6 @@ class MessageProcessor {
                 } else {
                     let text = "\(author) removed \(TwilioHelper.shared.username)"
                     let message = try CoreDataHelper.shared.createTextMessage(text, in: channel, isIncoming: isIncoming)
-
-                    try CoreDataHelper.shared.save(message)
 
                     return (true, message)
                 }
@@ -249,9 +237,6 @@ class MessageProcessor {
 
         let data = try TwilioHelper.shared.makeGetMediaOperation(message: message).startSync().getResult()
 
-        let message = try CoreDataHelper.shared.createMediaMessage(data, in: channel, isIncoming: isIncoming, date: date, type: type)
-        try CoreDataHelper.shared.save(message)
-
-        return message
+        return try CoreDataHelper.shared.createMediaMessage(data, in: channel, isIncoming: isIncoming, date: date, type: type)
     }
 }

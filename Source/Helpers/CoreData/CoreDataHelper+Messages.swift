@@ -11,7 +11,7 @@ import VirgilCryptoRatchet
 import VirgilSDK
 
 extension CoreDataHelper {
-    func save(_ message: Message) throws {
+    private func save(_ message: Message) throws {
         let messages = message.channel.mutableOrderedSetValue(forKey: Channel.MessagesKey)
         messages.add(message)
 
@@ -33,12 +33,16 @@ extension CoreDataHelper {
             throw CoreDataHelperError.nilCurrentChannel
         }
 
-        return try Message(body: body,
-                           type: .changeMembers,
-                           isIncoming: isIncoming,
-                           date: date,
-                           channel: channel,
-                           managedContext: self.managedContext)
+        let message = try Message(body: body,
+                                  type: .changeMembers,
+                                  isIncoming: isIncoming,
+                                  date: date,
+                                  channel: channel,
+                                  managedContext: self.managedContext)
+
+        try self.save(message)
+
+        return message
     }
 
     func createEncryptedMessage(in channel: Channel, isIncoming: Bool, date: Date) throws -> Message {
@@ -62,12 +66,16 @@ extension CoreDataHelper {
             throw CoreDataHelperError.nilCurrentChannel
         }
 
-        return try Message(body: body,
-                           type: .text,
-                           isIncoming: isIncoming,
-                           date: date,
-                           channel: channel,
-                           managedContext: self.managedContext)
+        let message = try Message(body: body,
+                                  type: .text,
+                                  isIncoming: isIncoming,
+                                  date: date,
+                                  channel: channel,
+                                  managedContext: self.managedContext)
+
+        try self.save(message)
+
+        return message
     }
 
     func createMediaMessage(_ data: Data,
@@ -79,12 +87,16 @@ extension CoreDataHelper {
             throw CoreDataHelperError.nilCurrentChannel
         }
 
-        return try Message(media: data,
-                           type: type,
-                           isIncoming: isIncoming,
-                           date: date,
-                           channel: channel,
-                           managedContext: self.managedContext)
+        let message = try Message(media: data,
+                                  type: type,
+                                  isIncoming: isIncoming,
+                                  date: date,
+                                  channel: channel,
+                                  managedContext: self.managedContext)
+
+        try self.save(message)
+
+        return message
     }
 
     func findServiceMessage(from identity: String, withSessionId sessionId: Data, identifier: String? = nil) throws -> ServiceMessage? {
