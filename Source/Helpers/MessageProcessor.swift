@@ -154,9 +154,9 @@ class MessageProcessor {
             }
 
             return try CoreDataHelper.shared.createChangeMembersMessage(decrypted,
-                                                                               in: channel,
-                                                                               isIncoming: isIncoming,
-                                                                               date: date)
+                                                                        in: channel,
+                                                                        isIncoming: isIncoming,
+                                                                        date: date)
         }
     }
 

@@ -191,8 +191,6 @@ class DataSource: ChatDataSourceProtocol {
 
                 let identities = cards.map { $0.identity }
 
-                try TwilioHelper.shared.add(members: identities, to: twilioChannel).startSync().getResult()
-
                 try CoreDataHelper.shared.add(cards, to: coreChannel)
 
                 guard let session = VirgilHelper.shared.getGroupSession(of: coreChannel) else {
@@ -212,6 +210,8 @@ class DataSource: ChatDataSourceProtocol {
                                                         remove: [])
 
                 try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serviceMessage).startSync().getResult()
+
+                try TwilioHelper.shared.add(members: identities, to: twilioChannel).startSync().getResult()
 
                 try session.useChangeMembersTicket(ticket: ticket, addCards: cards, removeCardIds: [])
                 try session.sessionStorage.storeSession(session)

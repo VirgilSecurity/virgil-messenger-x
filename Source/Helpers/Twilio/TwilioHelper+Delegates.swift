@@ -76,7 +76,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
                 NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.ChannelAdded.rawValue),
                                                 object: self)
             } catch {
-//                Log.error("\(error)")
+                Log.error("\(error)")
             }
         }
     }
@@ -87,7 +87,6 @@ extension TwilioHelper: TwilioChatClientDelegate {
         }
 
         self.queue.async {
-            // FIXME
             do {
                 guard let message = try MessageProcessor.process(message: message, from: channel) else {
                     NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.MessageAdded.rawValue),
