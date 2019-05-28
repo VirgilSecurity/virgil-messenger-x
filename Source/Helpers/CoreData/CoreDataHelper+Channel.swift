@@ -15,9 +15,10 @@ extension CoreDataHelper {
         let members = members.filter { $0 != self.currentAccount?.identity }
 
         var cards: [Card] = additionalCards
-        members.forEach {
-            if let channel = CoreDataHelper.shared.getSingleChannel(with: $0) {
-                cards.append(channel.cards.first!)
+        for member in members {
+            if let channel = CoreDataHelper.shared.getSingleChannel(with: member),
+                !additionalCards.contains(where: { $0.identity ==  member }) {
+                    cards.append(channel.cards.first!)
             }
         }
 
