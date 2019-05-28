@@ -35,13 +35,13 @@ extension ChatsManager {
                 throw TwilioHelperError.invalidChannel
             }
 
-            _ = try VirgilHelper.shared.startNewGroupSession(identity: attributes.initiator, sessionId: sessionId)
-
             try CoreDataHelper.shared.createGroupChannel(name: attributes.friendlyName!,
                                                          members: attributes.members,
                                                          sid: channel.sid!,
                                                          sessionId: sessionId,
                                                          additionalCards: cards)
+
+            _ = try? VirgilHelper.shared.startNewGroupSession(identity: attributes.initiator, sessionId: sessionId)
         }
     }
 }

@@ -100,7 +100,7 @@ extension VirgilHelper {
     func startNewGroupSession(identity: String, sessionId: Data) throws -> SecureGroupSession {
         guard let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: identity,
                                                                                 withSessionId: sessionId) else {
-            throw NSError()
+            throw VirgilHelperError.missingServiceMessage
         }
 
         let session = try secureChat.startGroupSession(with: serviceMessage.cards, using: serviceMessage.message)

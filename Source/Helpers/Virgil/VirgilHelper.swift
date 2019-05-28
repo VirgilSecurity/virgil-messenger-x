@@ -12,9 +12,9 @@ import VirgilSDKRatchet
 import VirgilCryptoRatchet
 
 public enum VirgilHelperError: String, Error {
-    case getCardFailed = "Getting Virgil Card Failed"
     case cardVerifierInitFailed
     case utf8ToDataFailed
+    case missingServiceMessage
 }
 
 public class VirgilHelper {
