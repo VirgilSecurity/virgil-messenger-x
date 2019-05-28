@@ -119,8 +119,8 @@ class MessageProcessor {
                                      twilioChannel: TCHChannel,
                                      channel: Channel,
                                      attributes: TwilioHelper.MessageAttributes) throws -> Message? {
-        guard let sessionId = attributes.sessionId else {
-            throw TwilioHelperError.invalidMessage
+        guard let sessionId = channel.sessionId else {
+            throw CoreDataHelperError.invalidChannel
         }
 
         switch attributes.type {

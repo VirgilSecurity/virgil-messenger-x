@@ -13,7 +13,7 @@ import VirgilCryptoRatchet
 
 extension VirgilHelper {
     func encryptGroup(_ text: String, channel: Channel) throws -> String {
-        let session = try self.getGroupSessionAsSender(channel: channel)
+        let session = try self.getGroupSession(of: channel) ?? self.startNewGroupSession(with: channel.cards)
 
         let ratchetMessage = try session.encrypt(string: text)
 
@@ -27,9 +27,7 @@ extension VirgilHelper {
 
         let ratchetMessage = try RatchetGroupMessage.deserialize(input: data)
 
-        try CoreDataHelper.shared.set(sessionId: sessionId, for: channel)
-
-        let session = try self.getGroupSessionAsReceiver(identity: identity, sessionId: sessionId)
+        let session = try self.getGroupSession(of: channel) ?? self.startNewGroupSession(identity: identity, sessionId: sessionId)
 
         return try session.decryptString(from: ratchetMessage)
     }
@@ -67,7 +65,7 @@ extension VirgilHelper {
     }
 
     private func getSessionAsSender(card: Card) throws -> SecureSession {
-        guard let session = secureChat.existingSession(withParticpantIdentity: card.identity) else {
+        guard let session = self.secureChat.existingSession(withParticpantIdentity: card.identity) else {
             return try secureChat.startNewSessionAsSender(receiverCard: card).startSync().getResult()
         }
 
@@ -75,49 +73,40 @@ extension VirgilHelper {
     }
 
     private func getSessionAsReceiver(message: RatchetMessage, receiverCard card: Card) throws -> SecureSession {
-        guard let session = secureChat.existingSession(withParticpantIdentity: card.identity) else {
+        guard let session = self.secureChat.existingSession(withParticpantIdentity: card.identity) else {
             return try secureChat.startNewSessionAsReceiver(senderCard: card, ratchetMessage: message)
         }
 
         return session
     }
 
-    private func getGroupSessionAsSender(channel: Channel) throws -> SecureGroupSession {
-        guard let session = self.getGroupSession(of: channel) else {
-            let newSessionMessage = try self.secureChat.startNewGroupSession(with: channel.cards)
-            let sessionId = newSessionMessage.getSessionId()
+    func startNewGroupSession(with cards: [Card]) throws -> SecureGroupSession {
+        let newSessionMessage = try self.secureChat.startNewGroupSession(with: cards)
 
-            let serviceMessage = try ServiceMessage(identifier: nil,
-                                                    message: newSessionMessage,
-                                                    type: .newSession,
-                                                    members: channel.cards)
+        let serviceMessage = try ServiceMessage(identifier: nil,
+                                                message: newSessionMessage,
+                                                type: .newSession,
+                                                members: cards)
 
-            try VirgilHelper.shared.makeSendServiceMessageOperation(cards: channel.cards,
-                                                                    ticket: serviceMessage).startSync().getResult()
+        try VirgilHelper.shared.makeSendServiceMessageOperation(cards: cards,
+                                                                ticket: serviceMessage).startSync().getResult()
 
-            try CoreDataHelper.shared.set(sessionId: sessionId, for: channel)
-
-            return try secureChat.startGroupSession(with: channel.cards, using: newSessionMessage)
-        }
+        let session = try secureChat.startGroupSession(with: cards, using: newSessionMessage)
+        try session.sessionStorage.storeSession(session)
 
         return session
     }
 
-    private func getGroupSessionAsReceiver(identity: String, sessionId: Data) throws -> SecureGroupSession {
-        guard let session = secureChat.existingGroupSession(sessionId: sessionId) else {
-
-            guard let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: identity,
-                                                                                    withSessionId: sessionId) else {
-                throw NSError()
-            }
-
-            let session = try secureChat.startGroupSession(with: serviceMessage.cards, using: serviceMessage.message)
-            try session.sessionStorage.storeSession(session)
-
-            try CoreDataHelper.shared.delete(serviceMessage)
-
-            return session
+    func startNewGroupSession(identity: String, sessionId: Data) throws -> SecureGroupSession {
+        guard let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: identity,
+                                                                                withSessionId: sessionId) else {
+            throw NSError()
         }
+
+        let session = try secureChat.startGroupSession(with: serviceMessage.cards, using: serviceMessage.message)
+        try session.sessionStorage.storeSession(session)
+
+        try CoreDataHelper.shared.delete(serviceMessage)
 
         return session
     }

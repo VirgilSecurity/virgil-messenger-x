@@ -15,7 +15,8 @@ enum CoreDataHelperError: Int, Error {
     case nilCurrentChannel = 2
     case entityNotFound = 3
     case channelNotFound = 4
-    case invalidMessage = 5
+    case invalidChannel = 5
+    case invalidMessage = 6
 }
 
 class CoreDataHelper {

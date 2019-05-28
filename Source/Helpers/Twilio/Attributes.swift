@@ -12,6 +12,7 @@ extension TwilioHelper {
     struct ChannelAttributes: Codable {
         let initiator: String
         let friendlyName: String?
+        let sessionId: Data?
         var members: [String]
         let type: ChannelType
 
@@ -34,7 +35,6 @@ extension TwilioHelper {
 
     struct MessageAttributes: Codable {
         let type: MessageType
-        let sessionId: Data?
         let identifier: String?
 
         static func `import`(_ json: [String: Any]) throws -> MessageAttributes {

@@ -31,9 +31,16 @@ extension ChatsManager {
 
             try? ChatsManager.startSingle(with: members, cards: cards)
 
+            guard let sessionId = attributes.sessionId else {
+                throw TwilioHelperError.invalidChannel
+            }
+
+            _ = try VirgilHelper.shared.startNewGroupSession(identity: attributes.initiator, sessionId: sessionId)
+
             try CoreDataHelper.shared.createGroupChannel(name: attributes.friendlyName!,
                                                          members: attributes.members,
                                                          sid: channel.sid!,
+                                                         sessionId: sessionId,
                                                          additionalCards: cards)
         }
     }

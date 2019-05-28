@@ -37,6 +37,7 @@ public class MessageSender {
 
     public func sendChangeMembers(message: Message, identifier: String) -> CallbackOperation<Void> {
         let channel = TwilioHelper.shared.currentChannel!
+        
         let messages = channel.messages!
 
         let ciphertext = try! VirgilHelper.shared.encryptGroup(message.body!, channel: message.channel)
@@ -44,7 +45,6 @@ public class MessageSender {
         return TwilioHelper.shared.send(ciphertext: ciphertext,
                                         messages: messages,
                                         type: .service,
-                                        sessionId: message.channel.sessionId,
                                         identifier: identifier)
     }
 
@@ -77,8 +77,7 @@ public class MessageSender {
 
                     try TwilioHelper.shared.send(ciphertext: ciphertext,
                                                  messages: messages,
-                                                 type: .regular,
-                                                 sessionId: message.channel.sessionId).startSync().getResult()
+                                                 type: .regular).startSync().getResult()
                 case .photo:
                     break
                 case .audio:
@@ -93,8 +92,7 @@ public class MessageSender {
 
                     try TwilioHelper.shared.send(ciphertext: ciphertext,
                                                  messages: messages,
-                                                 type: .service,
-                                                 sessionId: message.channel.sessionId).startSync().getResult()
+                                                 type: .service).startSync().getResult()
                 }
 
                 self.updateMessage(uiModel, status: .success)

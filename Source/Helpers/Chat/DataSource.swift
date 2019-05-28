@@ -122,7 +122,7 @@ class DataSource: ChatDataSourceProtocol {
                 }
 
                 guard let session = VirgilHelper.shared.getGroupSession(of: coreChannel) else {
-                    completion(nil, nil)
+                    completion(nil, NSError())
                     return
                 }
 
@@ -194,7 +194,7 @@ class DataSource: ChatDataSourceProtocol {
                 try CoreDataHelper.shared.add(cards, to: coreChannel)
 
                 guard let session = VirgilHelper.shared.getGroupSession(of: coreChannel) else {
-                    completion(nil, nil)
+                    completion(nil, NSError())
                     return
                 }
 

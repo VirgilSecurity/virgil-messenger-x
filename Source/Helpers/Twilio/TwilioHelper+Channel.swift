@@ -211,6 +211,7 @@ extension TwilioHelper {
             do {
                 let attributes = ChannelAttributes(initiator: self.username,
                                                    friendlyName: nil,
+                                                   sessionId: nil,
                                                    members: [self.username, card.identity],
                                                    type: .single)
 
@@ -268,11 +269,12 @@ extension TwilioHelper {
         }
     }
 
-    func makeCreateGroupChannelOperation(with members: [String], name: String) -> CallbackOperation<Void> {
+    func makeCreateGroupChannelOperation(with members: [String], name: String, sessionId: Data) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 let attributes = ChannelAttributes(initiator: self.username,
                                                    friendlyName: name,
+                                                   sessionId: sessionId,
                                                    members: [self.username] + members,
                                                    type: .group)
 
@@ -282,7 +284,7 @@ extension TwilioHelper {
 
                 let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
                 
-                try CoreDataHelper.shared.createGroupChannel(name: name, members: members, sid: channel.sid!)
+                try CoreDataHelper.shared.createGroupChannel(name: name, members: members, sid: channel.sid!, sessionId: sessionId)
 
                 let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
                 

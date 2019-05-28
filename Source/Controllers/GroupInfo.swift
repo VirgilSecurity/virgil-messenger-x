@@ -8,7 +8,6 @@
 
 import UIKit
 import PKHUD
-import VirgilSDK
 
 class GroupInfoViewController: ViewController {
     @IBOutlet weak var avatarView: GradientView!
@@ -73,7 +72,7 @@ extension GroupInfoViewController: DeleteItemDelegate {
         self.dataSource.addRemoveMemberMessage(remove: user.cards.first!).start { (_: Void?, error: Error?) in
             DispatchQueue.main.async {
                 // FIXME
-                if let error = error, (error as? CallbackOperationError) != CallbackOperationError.errorAndResultMissing {
+                if let error = error {
                     HUD.hide()
                     self.alert(error)
                 } else {

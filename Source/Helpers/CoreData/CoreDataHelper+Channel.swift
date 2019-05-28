@@ -11,7 +11,7 @@ import VirgilSDK
 import TwilioChatClient
 
 extension CoreDataHelper {
-    func createGroupChannel(name: String, members: [String], sid: String, additionalCards: [Card] = []) throws {
+    func createGroupChannel(name: String, members: [String], sid: String, sessionId: Data, additionalCards: [Card] = []) throws {
         let members = members.filter { $0 != self.currentAccount?.identity }
 
         var cards: [Card] = additionalCards
@@ -21,7 +21,7 @@ extension CoreDataHelper {
             }
         }
 
-        _ = try self.createChannel(type: .group, sid: sid, name: name, cards: cards)
+        _ = try self.createChannel(type: .group, sid: sid, name: name, cards: cards, sessionId: sessionId)
     }
 
     func createSingleChannel(sid: String, card: Card) throws {
@@ -32,7 +32,7 @@ extension CoreDataHelper {
         _ = try self.createChannel(type: .single, sid: sid, name: card.identity, cards: [card])
     }
 
-    private func createChannel(type: ChannelType, sid: String, name: String, cards: [Card]) throws -> Channel {
+    private func createChannel(type: ChannelType, sid: String, name: String, cards: [Card], sessionId: Data? = nil) throws -> Channel {
         guard let account = self.currentAccount else {
             throw CoreDataHelperError.nilCurrentAccount
         }
@@ -42,7 +42,7 @@ extension CoreDataHelper {
                                   type: type,
                                   account: account,
                                   cards: cards,
-                                  sessionId: nil,
+                                  sessionId: sessionId,
                                   managedContext: self.managedContext)
 
         try self.appDelegate.saveContext()
@@ -80,16 +80,6 @@ extension CoreDataHelper {
         channel.serviceMessages.forEach { self.managedContext.delete($0) }
 
         self.managedContext.delete(channel)
-
-        try self.appDelegate.saveContext()
-    }
-
-    func set(sessionId: Data, for channel: Channel) throws {
-        guard channel.sessionId != sessionId else {
-            return
-        }
-        
-        channel.sessionId = sessionId
 
         try self.appDelegate.saveContext()
     }
