@@ -15,11 +15,15 @@ extension ChatsManager {
 
         switch attributes.type {
         case .single:
+            guard let sid = channel.sid else {
+                throw TwilioHelperError.invalidChannel
+            }
+
             let name = TwilioHelper.shared.getCompanion(from: attributes)
 
             let cards = try VirgilHelper.shared.makeGetCardsOperation(identities: [name]).startSync().getResult()
 
-            try CoreDataHelper.shared.createSingleChannel(sid: channel.sid!, card: cards.first!)
+            try CoreDataHelper.shared.createSingleChannel(sid: sid, card: cards.first!)
 
         case .group:
             let members = attributes.members.filter { !CoreDataHelper.shared.existsSingleChannel(with: $0) && $0 != TwilioHelper.shared.username }
@@ -31,13 +35,15 @@ extension ChatsManager {
 
             try? ChatsManager.startSingle(with: members, cards: cards)
 
-            guard let sessionId = attributes.sessionId else {
-                throw TwilioHelperError.invalidChannel
+            guard let sessionId = attributes.sessionId,
+                let name = attributes.friendlyName,
+                let sid = channel.sid else {
+                    throw TwilioHelperError.invalidChannel
             }
 
-            try CoreDataHelper.shared.createGroupChannel(name: attributes.friendlyName!,
+            try CoreDataHelper.shared.createGroupChannel(name: name,
                                                          members: attributes.members,
-                                                         sid: channel.sid!,
+                                                         sid: sid,
                                                          sessionId: sessionId,
                                                          additionalCards: cards)
 

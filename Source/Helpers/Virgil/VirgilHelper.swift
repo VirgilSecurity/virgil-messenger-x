@@ -26,19 +26,22 @@ public class VirgilHelper {
     let verifier: VirgilCardVerifier
     let client: Client
     let secureChat: SecureChat
+    let localKeyManager: LocalKeyManager
 
     private init(crypto: VirgilCrypto,
                  cardCrypto: VirgilCardCrypto,
                  verifier: VirgilCardVerifier,
                  client: Client,
                  identity: String,
-                 secureChat: SecureChat) {
+                 secureChat: SecureChat,
+                 localKeyManager: LocalKeyManager) {
         self.crypto = crypto
         self.cardCrypto = cardCrypto
         self.verifier = verifier
         self.client = client
         self.identity = identity
         self.secureChat = secureChat
+        self.localKeyManager = localKeyManager
     }
 
     public static func initialize(identity: String) throws {
@@ -67,7 +70,8 @@ public class VirgilHelper {
                                    verifier: verifier,
                                    client: client,
                                    identity: identity,
-                                   secureChat: secureChat)
+                                   secureChat: secureChat,
+                                   localKeyManager: localKeyManager)
     }
 
     public func makeInitPFSOperation(identity: String) -> CallbackOperation<Void> {

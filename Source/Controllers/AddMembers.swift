@@ -48,10 +48,9 @@ class AddMembersViewController: ViewController {
 
         HUD.show(.progress)
 
-        self.dataSource.addChangeMembersMessage(add: cards).start { (_: Void?, error: Error?) in
+        self.dataSource.addChangeMembersMessage(add: cards).start { _, error in
             DispatchQueue.main.async {
-                // FIXME
-                if let error = error, (error as? CallbackOperationError) != CallbackOperationError.errorAndResultMissing {
+                if let error = error {
                     HUD.hide()
                     self.alert(error)
                 } else {

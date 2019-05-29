@@ -71,6 +71,20 @@
                                     <segue destination="j3I-cI-1fQ" kind="embed" identifier="userListSegue" id="kKg-Jf-Q8Q"/>
                                 </connections>
                             </containerView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gp4-rZ-zN4">
+                                <rect key="frame" x="0.0" y="360" width="375" height="50"/>
+                                <color key="backgroundColor" red="0.1215686275" green="0.1333333333" blue="0.1647058824" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="CCD-Xd-gPg"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <state key="normal" title="Leave Group">
+                                    <color key="titleColor" red="0.61960784310000006" green="0.21176470589999999" blue="0.12941176469999999" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="leaveGroupTapped:" destination="KRu-nJ-U9G" eventType="touchUpInside" id="1kl-SV-avs"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.16862745100000001" green="0.18823529410000001" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -78,10 +92,13 @@
                             <constraint firstItem="tXx-Qg-e9l" firstAttribute="top" secondItem="0nb-3n-zsd" secondAttribute="bottom" constant="20" id="4pt-yY-Zz0"/>
                             <constraint firstAttribute="trailing" secondItem="0nb-3n-zsd" secondAttribute="trailing" id="9L0-hd-ftf"/>
                             <constraint firstItem="0nb-3n-zsd" firstAttribute="width" secondItem="qnp-uP-EHJ" secondAttribute="width" id="Jpd-vU-hda"/>
+                            <constraint firstItem="Gp4-rZ-zN4" firstAttribute="trailing" secondItem="qnp-uP-EHJ" secondAttribute="trailing" id="Lvy-ND-16o"/>
+                            <constraint firstItem="Gp4-rZ-zN4" firstAttribute="top" secondItem="tXx-Qg-e9l" secondAttribute="bottom" constant="50" id="RKi-EW-1sQ"/>
                             <constraint firstItem="tXx-Qg-e9l" firstAttribute="leading" secondItem="qnp-uP-EHJ" secondAttribute="leading" id="UvD-do-8sD"/>
                             <constraint firstAttribute="trailing" secondItem="tXx-Qg-e9l" secondAttribute="trailing" id="jfV-at-6BQ"/>
                             <constraint firstItem="0nb-3n-zsd" firstAttribute="top" secondItem="qnp-uP-EHJ" secondAttribute="top" id="ltS-Uv-u6v"/>
                             <constraint firstItem="0nb-3n-zsd" firstAttribute="leading" secondItem="qnp-uP-EHJ" secondAttribute="leading" id="ukZ-NG-zlW"/>
+                            <constraint firstItem="Gp4-rZ-zN4" firstAttribute="leading" secondItem="qnp-uP-EHJ" secondAttribute="leading" id="xwd-en-gad"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="xJl-Hy-9oJ"/>
                     </scrollView>
@@ -103,7 +120,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SWZ-aR-782" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="183" y="138"/>
+            <point key="canvasLocation" x="181.59999999999999" y="137.18140929535232"/>
         </scene>
         <!--UsersList-->
         <scene sceneID="zVu-kO-JNN">

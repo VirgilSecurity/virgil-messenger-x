@@ -96,12 +96,19 @@ extension TwilioHelper {
     func leave(_ channel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { operation, completion in
             channel.leave { result in
-                guard result.isSuccessful() else {
-                    completion(nil, result.error)
-                    return
-                }
+                do {
+                    if let error = result.error {
+                        throw error
+                    }
 
-                completion((), nil)
+                    if let channel = CoreDataHelper.shared.getChannel(channel) {
+                        try CoreDataHelper.shared.delete(channel: channel)
+                    }
+
+                    completion((), nil)
+                } catch {
+                    completion(nil, error)
+                }
             }
         }
     }

@@ -172,10 +172,9 @@ class MessageProcessor {
                 try session.sessionStorage.deleteSession(identifier: session.identifier)
 
                 if !CoreDataHelper.shared.existsServiceMessages(from: author, withSessionId: sessionId) {
-                    try CoreDataHelper.shared.delete(serviceMessage)
-                    try CoreDataHelper.shared.delete(channel: channel)
-
                     try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
+
+                    try CoreDataHelper.shared.delete(serviceMessage)
 
                     DispatchQueue.main.async {
                         NotificationCenter.default.post(name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
