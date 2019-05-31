@@ -101,6 +101,11 @@
                             <constraint firstItem="Gp4-rZ-zN4" firstAttribute="leading" secondItem="qnp-uP-EHJ" secondAttribute="leading" id="xwd-en-gad"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="xJl-Hy-9oJ"/>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="Gp4-rZ-zN4"/>
+                            </mask>
+                        </variation>
                     </scrollView>
                     <navigationItem key="navigationItem" title="Group Info" id="1f6-CX-TNl">
                         <barButtonItem key="backBarButtonItem" title="Back" id="DOM-xr-amY"/>

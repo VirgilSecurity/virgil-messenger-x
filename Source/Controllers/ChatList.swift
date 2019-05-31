@@ -39,9 +39,10 @@ class ChatListViewController: ViewController {
 
         self.configurator.configure { error in
             DispatchQueue.main.async {
-                if let _ = error {
-//                    Log.error("\(error.localizedDescription)")
-                    self.goToLogin()
+                if let error = error {
+                    self.alert(title: ChatListViewController.name, error) { _ in
+                        self.goToLogin()
+                    }
                 }
 
                 self.noChatsView.isHidden = !CoreDataHelper.shared.getChannels().isEmpty

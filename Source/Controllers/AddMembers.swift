@@ -46,6 +46,10 @@ class AddMembersViewController: ViewController {
             }
         }
 
+        guard !cards.isEmpty else {
+            return
+        }
+
         HUD.show(.progress)
 
         self.dataSource.addChangeMembersMessage(add: cards).start { _, error in

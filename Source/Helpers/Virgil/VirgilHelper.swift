@@ -15,6 +15,7 @@ public enum VirgilHelperError: String, Error {
     case cardVerifierInitFailed
     case utf8ToDataFailed
     case missingServiceMessage
+    case nilGroupSession
 }
 
 public class VirgilHelper {

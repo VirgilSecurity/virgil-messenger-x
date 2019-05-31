@@ -115,15 +115,16 @@ class DataSource: ChatDataSourceProtocol {
             do {
                 let text = "\(TwilioHelper.shared.username) removed \(card.identity)"
 
-                guard let twilioChannel = TwilioHelper.shared.currentChannel,
-                    let coreChannel = CoreDataHelper.shared.currentChannel else {
-                        completion(nil, NSError())
-                        return
+                guard let twilioChannel = TwilioHelper.shared.currentChannel else {
+                    throw TwilioHelperError.nilCurrentChannel
+                }
+
+                guard let coreChannel = CoreDataHelper.shared.currentChannel else {
+                    throw CoreDataHelperError.nilCurrentChannel
                 }
 
                 guard let session = VirgilHelper.shared.getGroupSession(of: coreChannel) else {
-                    completion(nil, NSError())
-                    return
+                    throw VirgilHelperError.nilGroupSession
                 }
 
                 let ticket = try session.createChangeMembersTicket(add: [], removeCardIds: [card.identifier])
@@ -183,10 +184,12 @@ class DataSource: ChatDataSourceProtocol {
                     }
                 }
 
-                guard let twilioChannel = TwilioHelper.shared.currentChannel,
-                    let coreChannel = CoreDataHelper.shared.currentChannel else {
-                        completion(nil, NSError())
-                        return
+                guard let twilioChannel = TwilioHelper.shared.currentChannel else {
+                    throw TwilioHelperError.nilCurrentChannel
+                }
+
+                guard let coreChannel = CoreDataHelper.shared.currentChannel else {
+                    throw CoreDataHelperError.nilCurrentChannel
                 }
 
                 let identities = cards.map { $0.identity }
@@ -194,8 +197,7 @@ class DataSource: ChatDataSourceProtocol {
                 try CoreDataHelper.shared.add(cards, to: coreChannel)
 
                 guard let session = VirgilHelper.shared.getGroupSession(of: coreChannel) else {
-                    completion(nil, NSError())
-                    return
+                    throw VirgilHelperError.nilGroupSession
                 }
 
                 let ticket = try session.createChangeMembersTicket(add: cards, removeCardIds: [])

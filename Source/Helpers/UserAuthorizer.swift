@@ -19,8 +19,6 @@ public class UserAuthorizer {
 
     public let virgilAuthorizer: VirgilAuthorizer
 
-    private var queue: DispatchQueue?
-
     public init() {
         self.virgilAuthorizer = try! VirgilAuthorizer()
     }
@@ -44,9 +42,7 @@ public class UserAuthorizer {
     }
 
    public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
-        self.queue = DispatchQueue(label: "UserAuthorizerQueue")
-
-        self.queue!.async {
+        DispatchQueue.main.async {
             do {
                 _ = try self.virgilAuthorizer.signUp(identity: identity)
 

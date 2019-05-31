@@ -9,11 +9,11 @@
 import UIKit
 
 extension UIViewController {
-    func alert(title: String? = nil, _ anyError: Error) {
+    func alert(title: String? = nil, _ anyError: Error, handler: ((UIAlertAction) -> Void)? = nil) {
 //        let error = anyError as? UserFriendlyError ?? .unknownError
 
         let alert = UIAlertController(title: title, message: anyError.localizedDescription, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: handler))
 
         self.present(alert, animated: true)
     }

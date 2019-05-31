@@ -15,6 +15,7 @@ public enum TwilioHelperError: Int, Error {
     case initUsersFailed = 3
     case invalidChannel = 4
     case invalidMessage = 5
+    case nilCurrentChannel = 6
 }
 
 public class TwilioHelper: NSObject {
