@@ -81,7 +81,7 @@ extension VirgilHelper {
     }
 
     func startNewGroupSession(with cards: [Card]) throws -> SecureGroupSession {
-        let newSessionMessage = try self.secureChat.startNewGroupSession(with: cards)
+        let newSessionMessage = try self.secureChat.startNewGroupSession()
 
         let serviceMessage = try ServiceMessage(identifier: nil,
                                                 message: newSessionMessage,

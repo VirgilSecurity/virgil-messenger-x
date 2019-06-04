@@ -191,9 +191,9 @@ class MessageProcessor {
             } else {
                 let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
 
-                try session.useChangeMembersTicket(ticket: serviceMessage.message,
-                                                   addCards: serviceMessage.cardsAdd,
-                                                   removeCardIds: removeCardIds)
+                try session.updateMembers(ticket: serviceMessage.message,
+                                          addCards: serviceMessage.cardsAdd,
+                                          removeCardIds: removeCardIds)
                 try session.sessionStorage.storeSession(session)
 
                 try CoreDataHelper.shared.add(serviceMessage.cardsAdd, to: channel)

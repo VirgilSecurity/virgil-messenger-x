@@ -127,7 +127,7 @@ class DataSource: ChatDataSourceProtocol {
                     throw VirgilHelperError.nilGroupSession
                 }
 
-                let ticket = try session.createChangeMembersTicket(add: [], removeCardIds: [card.identifier])
+                let ticket = try session.createChangeMembersTicket()
 
                 let message = try CoreDataHelper.shared.createChangeMembersMessage(text, isIncoming: false)
 
@@ -142,7 +142,7 @@ class DataSource: ChatDataSourceProtocol {
 
                 try CoreDataHelper.shared.remove([card], from: coreChannel)
 
-                try session.useChangeMembersTicket(ticket: ticket, addCards: [], removeCardIds: [card.identifier])
+                try session.updateMembers(ticket: ticket, addCards: [], removeCardIds: [card.identifier])
                 try session.sessionStorage.storeSession(session)
 
                 try self.messageSender.sendChangeMembers(message: message, identifier: serviceMessage.identifier!).startSync().getResult()
@@ -200,7 +200,7 @@ class DataSource: ChatDataSourceProtocol {
                     throw VirgilHelperError.nilGroupSession
                 }
 
-                let ticket = try session.createChangeMembersTicket(add: cards, removeCardIds: [])
+                let ticket = try session.createChangeMembersTicket()
 
                 let message = try CoreDataHelper.shared.createChangeMembersMessage(text, isIncoming: false)
 
@@ -215,7 +215,7 @@ class DataSource: ChatDataSourceProtocol {
 
                 try TwilioHelper.shared.add(members: identities, to: twilioChannel).startSync().getResult()
 
-                try session.useChangeMembersTicket(ticket: ticket, addCards: cards, removeCardIds: [])
+                try session.updateMembers(ticket: ticket, addCards: cards, removeCardIds: [])
                 try session.sessionStorage.storeSession(session)
 
                 try self.messageSender.sendChangeMembers(message: message, identifier: serviceMessage.identifier!).startSync().getResult()
