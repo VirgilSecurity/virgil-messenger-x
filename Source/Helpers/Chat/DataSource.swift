@@ -131,14 +131,16 @@ class DataSource: ChatDataSourceProtocol {
 
                 let message = try CoreDataHelper.shared.createChangeMembersMessage(text, isIncoming: false)
 
+                let user = try VirgilHelper.shared.localKeyManager.retrieveUserData()
+                let serviceCards = coreChannel.cards + [user.card]
                 let serviceMessage = try ServiceMessage(identifier: UUID().uuidString,
                                                         message: ticket,
                                                         type: .changeMembers,
-                                                        members: coreChannel.cards,
+                                                        members: serviceCards,
                                                         add: [],
                                                         remove: [card])
 
-                try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serviceMessage).startSync().getResult()
+                try VirgilHelper.shared.makeSendServiceMessageOperation(cards: serviceCards, ticket: serviceMessage).startSync().getResult()
 
                 try CoreDataHelper.shared.remove([card], from: coreChannel)
 
@@ -204,14 +206,17 @@ class DataSource: ChatDataSourceProtocol {
 
                 let message = try CoreDataHelper.shared.createChangeMembersMessage(text, isIncoming: false)
 
+                let user = try VirgilHelper.shared.localKeyManager.retrieveUserData()
+                let serviceCards = coreChannel.cards + [user.card]
+
                 let serviceMessage = try ServiceMessage(identifier: UUID().uuidString,
                                                         message: ticket,
                                                         type: .changeMembers,
-                                                        members: coreChannel.cards,
+                                                        members: serviceCards,
                                                         add: cards,
                                                         remove: [])
 
-                try VirgilHelper.shared.makeSendServiceMessageOperation(cards: coreChannel.cards, ticket: serviceMessage).startSync().getResult()
+                try VirgilHelper.shared.makeSendServiceMessageOperation(cards: serviceCards, ticket: serviceMessage).startSync().getResult()
 
                 try TwilioHelper.shared.add(members: identities, to: twilioChannel).startSync().getResult()
 

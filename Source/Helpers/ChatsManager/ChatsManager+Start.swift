@@ -62,7 +62,9 @@ public enum ChatsManager {
 
                 let members = channels.map { $0.name }
 
-                let cards = channels.map { $0.cards.first! }
+                let user = try VirgilHelper.shared.localKeyManager.retrieveUserData()
+
+                let cards = channels.map { $0.cards.first! } + [user.card]
 
                 let session = try VirgilHelper.shared.startNewGroupSession(with: cards)
 

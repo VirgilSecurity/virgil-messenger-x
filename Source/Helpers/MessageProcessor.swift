@@ -103,6 +103,7 @@ class MessageProcessor {
             }
 
             let serviceMessage = try ServiceMessage.import(decrypted)
+            serviceMessage.cards = serviceMessage.cards.filter { $0.identity != TwilioHelper.shared.username }
 
             try TwilioHelper.shared.delete(twilioMessage, from: twilioChannel.messages!).startSync().getResult()
 
