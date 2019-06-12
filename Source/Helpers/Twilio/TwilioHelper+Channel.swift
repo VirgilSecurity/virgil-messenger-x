@@ -6,7 +6,6 @@
 //  Copyright © 2018 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import TwilioChatClient
 import VirgilSDK
 
@@ -194,9 +193,13 @@ extension TwilioHelper {
         }
     }
 
-    func remove(member: String, from channel: TCHChannel) -> CallbackOperation<Void> {
+    func remove(member: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
+                guard let channel = self.currentChannel else {
+                    throw TwilioHelperError.nilCurrentChannel
+                }
+
                 var attributes = try self.getAttributes(of: channel)
 
                 attributes.members = attributes.members.filter { $0 != member }

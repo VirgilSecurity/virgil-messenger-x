@@ -69,7 +69,7 @@ extension GroupInfoViewController: DeleteItemDelegate {
     func delete(_ user: Channel) {
         HUD.show(.progress)
 
-        self.dataSource.addRemoveMemberMessage(remove: user.cards.first!).start { _, error in
+        ChatsManager.removeMember(user.cards.first!, dataSource: self.dataSource).start { _, error in
             DispatchQueue.main.async {
                 if let error = error {
                     HUD.hide()

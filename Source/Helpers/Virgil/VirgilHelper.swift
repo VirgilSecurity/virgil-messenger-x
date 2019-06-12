@@ -106,32 +106,16 @@ public class VirgilHelper {
         }
     }
 
-    func makeSendServiceMessageOperation(cards: [Card], ticket: ServiceMessage) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            guard !cards.isEmpty else {
-                completion((), nil)
-                return
-            }
-
-            var operations: [CallbackOperation<Void>] = []
-            for card in cards {
-                guard let channel = CoreDataHelper.shared.getSingleChannel(with: card.identity) else {
-                    continue
-                }
-
-                let sendOperation = MessageSender.makeSendServiceMessageOperation(ticket, to: channel)
-                operations.append(sendOperation)
-            }
-
-            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-
-            operations.forEach {
-                completionOperation.addDependency($0)
-            }
-
-            let queue = OperationQueue()
-            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+    func changeMembers(add addCards: [Card], removeCards: [Card], in channel: Channel) throws -> RatchetGroupMessage {
+        guard let session = self.getGroupSession(of: channel) else {
+            throw VirgilHelperError.nilGroupSession
         }
+
+        let ticket = try session.createChangeMembersTicket()
+        try session.updateMembers(ticket: ticket, addCards: addCards, removeCardIds: [])
+        try session.sessionStorage.storeSession(session)
+
+        return ticket
     }
 
     func buildCard(_ card: String) -> Card? {

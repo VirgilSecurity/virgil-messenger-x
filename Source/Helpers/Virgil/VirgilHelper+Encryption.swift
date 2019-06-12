@@ -88,8 +88,7 @@ extension VirgilHelper {
                                                 type: .newSession,
                                                 members: cards)
 
-        try VirgilHelper.shared.makeSendServiceMessageOperation(cards: cards,
-                                                                ticket: serviceMessage).startSync().getResult()
+        try MessageSender.sendServiceMessage(to: cards, ticket: serviceMessage).startSync().getResult()
 
         let cards = cards.filter { $0.identity != TwilioHelper.shared.username }
         let session = try secureChat.startGroupSession(with: cards, using: newSessionMessage)

@@ -12,7 +12,7 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public static func makeSendServiceMessageOperation(_ message: ServiceMessage, to coreChannel: Channel) -> CallbackOperation<Void> {
+    public static func sendServiceMessage(_ message: ServiceMessage, to coreChannel: Channel) -> CallbackOperation<Void> {
         let twilioChannel = TwilioHelper.shared.getChannel(coreChannel)
 
         let plaintext = try! message.export()
@@ -32,6 +32,34 @@ public class MessageSender {
                                             messages: twilioChannel!.messages!,
                                             type: .service,
                                             identifier: message.identifier)
+        }
+    }
+
+    public static func sendServiceMessage(to cards: [Card], ticket: ServiceMessage) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            guard !cards.isEmpty else {
+                completion((), nil)
+                return
+            }
+
+            var operations: [CallbackOperation<Void>] = []
+            for card in cards {
+                guard let channel = CoreDataHelper.shared.getSingleChannel(with: card.identity) else {
+                    continue
+                }
+
+                let sendOperation = MessageSender.sendServiceMessage(ticket, to: channel)
+                operations.append(sendOperation)
+            }
+
+            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+            operations.forEach {
+                completionOperation.addDependency($0)
+            }
+
+            let queue = OperationQueue()
+            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
         }
     }
 

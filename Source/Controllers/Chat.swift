@@ -48,7 +48,7 @@ class ChatViewController: BaseChatViewController {
     }
 
     lazy private var dataSource: DataSource = {
-        let dataSource = DataSource(count: self.channel.messages.count)
+        let dataSource = DataSource(channel: self.channel)
         self.chatDataSource = dataSource
         return dataSource
     }()

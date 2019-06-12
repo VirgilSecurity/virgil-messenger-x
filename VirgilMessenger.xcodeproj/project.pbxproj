@@ -81,6 +81,7 @@
 		16CA51101FC5D9960042AF9D /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA510F1FC5D9960042AF9D /* Settings.storyboard */; };
 		16CA51131FC5DA3B0042AF9D /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51121FC5DA3B0042AF9D /* Settings.swift */; };
 		16CC9B7B21552D5800935AEC /* TabBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CC9B7A21552D5800935AEC /* TabBar.storyboard */; };
+		16D4614B22A15DE100B3C268 /* ChatsManager+Change.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D4614A22A15DE100B3C268 /* ChatsManager+Change.swift */; };
 		16D6CB3A1FDFEECC00302A05 /* Registration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16D6CB391FDFEECC00302A05 /* Registration.storyboard */; };
 		16D7072C214C060000452A16 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D70726214BF60E00452A16 /* Security.framework */; };
 		16D7072E214C060B00452A16 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D7072D214C060B00452A16 /* libz.tbd */; };
@@ -209,6 +210,7 @@
 		16CA510F1FC5D9960042AF9D /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		16CA51121FC5DA3B0042AF9D /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		16CC9B7A21552D5800935AEC /* TabBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBar.storyboard; sourceTree = "<group>"; };
+		16D4614A22A15DE100B3C268 /* ChatsManager+Change.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatsManager+Change.swift"; sourceTree = "<group>"; };
 		16D6CB391FDFEECC00302A05 /* Registration.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Registration.storyboard; sourceTree = "<group>"; };
 		16D70726214BF60E00452A16 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		16D7072D214C060B00452A16 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -330,6 +332,7 @@
 				16FE75F6224A5CC400B545AF /* ChatsManager+Start.swift */,
 				163952A5227C4DE600DD1FDC /* ChatsManager+Join.swift */,
 				163952A7227C4E5200DD1FDC /* ChatsManager+Update.swift */,
+				16D4614A22A15DE100B3C268 /* ChatsManager+Change.swift */,
 			);
 			path = ChatsManager;
 			sourceTree = "<group>";
@@ -851,6 +854,7 @@
 				16D8B0EA223A6FD200D7FA67 /* UserAuthorizer.swift in Sources */,
 				16F30D4D1FDAE6E6006C3DEB /* SignInCollection.swift in Sources */,
 				427D1E551F965569002F2CF3 /* SlidingDatasSource.swift in Sources */,
+				16D4614B22A15DE100B3C268 /* ChatsManager+Change.swift in Sources */,
 				4280C0E11F9734DD00075B3A /* TimeSeparatorCollectionViewCell.swift in Sources */,
 				4280C0CE1F97340B00075B3A /* BaseMessageHandler.swift in Sources */,
 				4280C0DF1F9734DD00075B3A /* TimeSeparatorModel.swift in Sources */,

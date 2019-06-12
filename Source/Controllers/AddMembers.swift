@@ -52,7 +52,7 @@ class AddMembersViewController: ViewController {
 
         HUD.show(.progress)
 
-        self.dataSource.addChangeMembersMessage(add: cards).start { _, error in
+        ChatsManager.addMembers(cards, dataSource: self.dataSource).start { _, error in
             DispatchQueue.main.async {
                 if let error = error {
                     HUD.hide()
