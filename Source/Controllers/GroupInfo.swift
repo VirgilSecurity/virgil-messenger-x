@@ -63,43 +63,6 @@ class GroupInfoViewController: ViewController {
     @IBAction func addMemberTapped(_ sender: Any) {
         self.performSegue(withIdentifier: "goToAddMembers", sender: self)
     }
-
-    @IBAction func leaveGroupTapped(_ sender: Any) {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
-        let logoutAction = UIAlertAction(title: "Leave Group", style: .destructive) { _ in
-            guard let channel = TwilioHelper.shared.currentChannel else {
-                return
-            }
-
-            let user = try! VirgilHelper.shared.localKeyManager.retrieveUserData()
-            self.dataSource.addRemoveMemberMessage(remove: user.card).start { _, error in
-                if let error = error {
-                    HUD.hide()
-                    self.alert(error)
-                } else {
-                    TwilioHelper.shared.leave(channel).start { _, error in
-                        DispatchQueue.main.async {
-                            if let error = error {
-                                HUD.hide()
-                                self.alert(error)
-                            } else {
-                                HUD.flash(.success)
-                                self.navigationController?.popToRootViewController(animated: true)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-
-        alert.addAction(logoutAction)
-        alert.addAction(cancelAction)
-
-        self.present(alert, animated: true)
-    }
 }
 
 extension GroupInfoViewController: DeleteItemDelegate {

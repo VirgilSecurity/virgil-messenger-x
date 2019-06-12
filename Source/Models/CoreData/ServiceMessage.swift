@@ -160,3 +160,21 @@ extension ServiceMessage {
         return try JSONEncoder().encode(self).base64EncodedString()
     }
 }
+
+extension ServiceMessage {
+    public func getChangeMembersText() throws -> String {
+        guard self.type == .changeMembers else {
+            throw NSError()
+        }
+
+        if self.cardsAdd.isEmpty && self.cardsRemove.isEmpty {
+            throw NSError()
+        }
+
+        let action = self.cardsAdd.isEmpty ? "removed" : "added"
+
+        let executors = self.cardsAdd.isEmpty ? self.cardsRemove.map { $0.identity } : self.cardsAdd.map { $0.identity }
+
+        return "\(action) \(executors)"
+    }
+}

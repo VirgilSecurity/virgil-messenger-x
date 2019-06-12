@@ -186,10 +186,6 @@ class DataSource: ChatDataSourceProtocol {
                     }
                 }
 
-                guard let twilioChannel = TwilioHelper.shared.currentChannel else {
-                    throw TwilioHelperError.nilCurrentChannel
-                }
-
                 guard let coreChannel = CoreDataHelper.shared.currentChannel else {
                     throw CoreDataHelperError.nilCurrentChannel
                 }
@@ -218,7 +214,7 @@ class DataSource: ChatDataSourceProtocol {
 
                 try VirgilHelper.shared.makeSendServiceMessageOperation(cards: serviceCards, ticket: serviceMessage).startSync().getResult()
 
-                try TwilioHelper.shared.add(members: identities, to: twilioChannel).startSync().getResult()
+                try TwilioHelper.shared.add(members: identities).startSync().getResult()
 
                 try session.updateMembers(ticket: ticket, addCards: cards, removeCardIds: [])
                 try session.sessionStorage.storeSession(session)

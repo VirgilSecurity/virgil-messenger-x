@@ -107,7 +107,6 @@ extension ChatsManager {
                 completion((), nil)
             } catch {
                 completion(nil, error)
-                Log.error("Updating channels: \(error.localizedDescription)")
             }
         }
     }

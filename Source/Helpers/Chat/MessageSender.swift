@@ -36,16 +36,28 @@ public class MessageSender {
     }
 
     public func sendChangeMembers(message: Message, identifier: String) -> CallbackOperation<Void> {
-        let channel = TwilioHelper.shared.currentChannel!
-        
-        let messages = channel.messages!
+        return CallbackOperation { _, completion in
+            do {
+                guard let channel = TwilioHelper.shared.currentChannel else {
+                    throw TwilioHelperError.nilCurrentChannel
+                }
 
-        let ciphertext = try! VirgilHelper.shared.encryptGroup(message.body!, channel: message.channel)
+                guard let messages = channel.messages, let body = message.body else {
+                    throw TwilioHelperError.invalidChannel
+                }
 
-        return TwilioHelper.shared.send(ciphertext: ciphertext,
-                                        messages: messages,
-                                        type: .service,
-                                        identifier: identifier)
+                let ciphertext = try VirgilHelper.shared.encryptGroup(body, channel: message.channel)
+
+                try TwilioHelper.shared.send(ciphertext: ciphertext,
+                                             messages: messages,
+                                             type: .service,
+                                             identifier: identifier).startSync().getResult()
+
+                completion((), nil)
+            } catch {
+                completion(nil, error)
+            }
+        }
     }
 
     public func send(message: Message, withId id: Int) throws -> UIMessageModelProtocol {

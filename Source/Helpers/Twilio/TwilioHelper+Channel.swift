@@ -160,9 +160,13 @@ extension TwilioHelper {
         }
     }
 
-    func add(members: [String], to channel: TCHChannel) -> CallbackOperation<Void> {
+    func add(members: [String]) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
+                guard let channel = TwilioHelper.shared.currentChannel else {
+                    throw TwilioHelperError.nilCurrentChannel
+                }
+
                 var attributes = try self.getAttributes(of: channel)
 
                 attributes.members += members
