@@ -126,12 +126,14 @@ class MessageProcessor {
 
         switch attributes.type {
         case .regular:
-            let decrypted: String
+            var decrypted: String
             do {
                 decrypted = try VirgilHelper.shared.decryptGroup(text, from: twilioMessage.author!, channel: channel, sessionId: sessionId)
             } catch {
                 return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
             }
+
+            decrypted = "\(twilioMessage.author!): \(decrypted)"
 
             return try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
         case .service:
@@ -141,7 +143,7 @@ class MessageProcessor {
                 return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
             }
 
-            let text = try serviceMessage.getChangeMembersText()
+            let text = "\(twilioMessage.author!) \(try serviceMessage.getChangeMembersText())"
 
             let deleted = try self.processGroupServiceMessage(serviceMessage,
                                                               from: twilioMessage.author!,
@@ -170,7 +172,7 @@ class MessageProcessor {
                 try VirgilHelper.shared.secureChat.deleteGroupSession(sessionId: session.identifier)
             }
 
-            if CoreDataHelper.shared.serviceMessagesCount(from: author, withSessionId: sessionId) < 2 {
+            if !CoreDataHelper.shared.existsServiceMessage(from: author, withSessionId: sessionId) {
                 try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
 
                 if CoreDataHelper.shared.currentChannel == channel {

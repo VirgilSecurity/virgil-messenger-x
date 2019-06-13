@@ -100,14 +100,13 @@ public class MessageSender {
             do {
                 switch message.type {
                 case .text:
-                    guard var plaintext = message.body else {
+                    guard let plaintext = message.body else {
                         throw CoreDataHelperError.invalidMessage
                     }
 
                     let ciphertext: String
                     switch message.channel.type {
                     case .group:
-                        plaintext = "\(TwilioHelper.shared.username): \(plaintext)"
                         ciphertext = try VirgilHelper.shared.encryptGroup(plaintext, channel: message.channel)
                     case .single:
                         ciphertext = try VirgilHelper.shared.encrypt(plaintext, card: cards.first!)
@@ -121,11 +120,10 @@ public class MessageSender {
                 case .audio:
                     break
                 case .changeMembers:
-                    guard var plaintext = message.body else {
+                    guard let plaintext = message.body else {
                         throw CoreDataHelperError.invalidMessage
                     }
 
-                    plaintext = "\(TwilioHelper.shared.username) \(plaintext)"
                     let ciphertext = try VirgilHelper.shared.encryptGroup(plaintext, channel: message.channel)
 
                     try TwilioHelper.shared.send(ciphertext: ciphertext,

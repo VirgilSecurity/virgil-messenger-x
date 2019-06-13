@@ -111,12 +111,12 @@ extension CoreDataHelper {
         return user.serviceMessages.first { $0.message.getSessionId() == sessionId && $0.identifier == identifier }
     }
 
-    func serviceMessagesCount(from identity: String, withSessionId sessionId: Data) -> Int {
+    func existsServiceMessage(from identity: String, withSessionId sessionId: Data) -> Bool {
         guard let user = self.getSingleChannel(with: identity) else {
-            return 0
+            return false
         }
 
-        return user.serviceMessages.filter { $0.message.getSessionId() == sessionId }.count
+        return user.serviceMessages.first { $0.message.getSessionId() == sessionId } == nil ? false : true
     }
 
     func delete(_ serviceMessage: ServiceMessage) throws {
