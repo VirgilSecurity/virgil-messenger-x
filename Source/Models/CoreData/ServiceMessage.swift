@@ -175,6 +175,6 @@ extension ServiceMessage {
 
         let executors = self.cardsAdd.isEmpty ? self.cardsRemove.map { $0.identity } : self.cardsAdd.map { $0.identity }
 
-        return "\(action) \(executors)"
+        return "\(action) \(executors.joined(separator: ", "))"
     }
 }

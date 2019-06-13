@@ -111,7 +111,8 @@ extension VirgilHelper {
             throw VirgilHelperError.missingServiceMessage
         }
 
-        let session = try secureChat.startGroupSession(with: serviceMessage.cards, using: serviceMessage.message)
+        let cards = serviceMessage.cards.filter { $0.identity != TwilioHelper.shared.username }
+        let session = try secureChat.startGroupSession(with: cards, using: serviceMessage.message)
         try self.secureChat.storeGroupSession(session: session)
 
         try CoreDataHelper.shared.delete(serviceMessage)
