@@ -131,7 +131,8 @@ class DataSource: ChatDataSourceProtocol {
         self.nextMessageId += 1
         let id = self.nextMessageId
 
-        let message = try CoreDataHelper.shared.createChangeMembersMessage(serviceMessage, isIncoming: false)
+        let text = try serviceMessage.getChangeMembersText()
+        let message = try CoreDataHelper.shared.createChangeMembersMessage(text, isIncoming: false)
 
         try self.messageSender.sendChangeMembers(message: message,
                                                  identifier: serviceMessage.identifier!).startSync().getResult()

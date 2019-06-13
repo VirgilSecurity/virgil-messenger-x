@@ -141,6 +141,8 @@ class MessageProcessor {
                 return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
             }
 
+            let text = try serviceMessage.getChangeMembersText()
+
             let deleted = try self.processGroupServiceMessage(serviceMessage,
                                                               from: twilioMessage.author!,
                                                               isIncoming: isIncoming,
@@ -148,7 +150,7 @@ class MessageProcessor {
                                                               twilioChannel: twilioChannel,
                                                               channel: channel)
 
-            return deleted ? nil : try CoreDataHelper.shared.createChangeMembersMessage(serviceMessage,
+            return deleted ? nil : try CoreDataHelper.shared.createChangeMembersMessage(text,
                                                                                         in: channel,
                                                                                         isIncoming: isIncoming,
                                                                                         date: date)
@@ -171,9 +173,11 @@ class MessageProcessor {
             if CoreDataHelper.shared.serviceMessagesCount(from: author, withSessionId: sessionId) < 2 {
                 try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
 
-                DispatchQueue.main.async {
-                    let name = Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue)
-                    NotificationCenter.default.post(name: name, object: self)
+                if CoreDataHelper.shared.currentChannel == channel {
+                    DispatchQueue.main.async {
+                        let name = Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue)
+                        NotificationCenter.default.post(name: name, object: self)
+                    }
                 }
 
                 return true

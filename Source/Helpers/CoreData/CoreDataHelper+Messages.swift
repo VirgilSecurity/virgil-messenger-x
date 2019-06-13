@@ -25,7 +25,7 @@ extension CoreDataHelper {
         try self.appDelegate.saveContext()
     }
 
-    func createChangeMembersMessage(_ serviceMessage: ServiceMessage,
+    func createChangeMembersMessage(_ text: String,
                                     in channel: Channel? = nil,
                                     isIncoming: Bool,
                                     date: Date = Date()) throws -> Message {
@@ -33,7 +33,7 @@ extension CoreDataHelper {
             throw CoreDataHelperError.nilCurrentChannel
         }
 
-        let message = try Message(body: serviceMessage.getChangeMembersText(),
+        let message = try Message(body: text,
                                   type: .changeMembers,
                                   isIncoming: isIncoming,
                                   date: date,
