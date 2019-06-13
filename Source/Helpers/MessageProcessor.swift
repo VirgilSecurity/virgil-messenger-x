@@ -141,19 +141,17 @@ class MessageProcessor {
                 return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
             }
 
-            let message = try CoreDataHelper.shared.createChangeMembersMessage(serviceMessage,
-                                                                               in: channel,
-                                                                               isIncoming: isIncoming,
-                                                                               date: date)
+            let deleted = try self.processGroupServiceMessage(serviceMessage,
+                                                              from: twilioMessage.author!,
+                                                              isIncoming: isIncoming,
+                                                              sessionId: sessionId,
+                                                              twilioChannel: twilioChannel,
+                                                              channel: channel)
 
-            try self.processGroupServiceMessage(serviceMessage,
-                                                from: twilioMessage.author!,
-                                                isIncoming: isIncoming,
-                                                sessionId: sessionId,
-                                                twilioChannel: twilioChannel,
-                                                channel: channel)
-
-            return message
+            return deleted ? nil : try CoreDataHelper.shared.createChangeMembersMessage(serviceMessage,
+                                                                                        in: channel,
+                                                                                        isIncoming: isIncoming,
+                                                                                        date: date)
         }
     }
 
@@ -162,7 +160,7 @@ class MessageProcessor {
                                                    isIncoming: Bool,
                                                    sessionId: Data,
                                                    twilioChannel: TCHChannel,
-                                                   channel: Channel) throws {
+                                                   channel: Channel) throws -> Bool {
         guard !serviceMessage.cardsRemove.contains(where: { $0.identity == TwilioHelper.shared.username}) else {
             try CoreDataHelper.shared.delete(serviceMessage)
 
@@ -177,9 +175,11 @@ class MessageProcessor {
                     let name = Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue)
                     NotificationCenter.default.post(name: name, object: self)
                 }
+
+                return true
             }
 
-            return
+            return false
         }
 
         let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
@@ -209,6 +209,8 @@ class MessageProcessor {
         try? ChatsManager.startSingle(with: members)
 
         try CoreDataHelper.shared.delete(serviceMessage)
+
+        return false
     }
 
     private static func processMedia(message: TCHMessage,
