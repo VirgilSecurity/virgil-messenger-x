@@ -42,7 +42,7 @@ public class UserAuthorizer {
     }
 
    public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
-        DispatchQueue.main.async {
+        DispatchQueue(label: "UserAuthorizer").async {
             do {
                 _ = try self.virgilAuthorizer.signUp(identity: identity)
 

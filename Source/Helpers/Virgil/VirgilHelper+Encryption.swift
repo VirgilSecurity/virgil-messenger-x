@@ -16,6 +16,7 @@ extension VirgilHelper {
         let session = try self.getGroupSession(of: channel) ?? self.startNewGroupSession(with: channel.cards)
 
         let ratchetMessage = try session.encrypt(string: text)
+        try self.secureChat.storeGroupSession(session: session)
 
         return ratchetMessage.serialize().base64EncodedString()
     }
@@ -29,13 +30,17 @@ extension VirgilHelper {
 
         let session = try self.getGroupSession(of: channel) ?? self.startNewGroupSession(identity: identity, sessionId: sessionId)
 
-        return try session.decryptString(from: ratchetMessage)
+        let decrypted = try session.decryptString(from: ratchetMessage)
+        try self.secureChat.storeGroupSession(session: session)
+
+        return decrypted
     }
 
     func encrypt(_ text: String, card: Card) throws -> String {
         let session = try self.getSessionAsSender(card: card)
 
         let ratchetMessage = try session.encrypt(string: text)
+        try self.secureChat.storeSession(session: session)
 
         return ratchetMessage.serialize().base64EncodedString()
     }
@@ -49,7 +54,10 @@ extension VirgilHelper {
 
         let session = try self.getSessionAsReceiver(message: ratchetMessage, receiverCard: card)
 
-        return try session.decryptString(from: ratchetMessage)
+        let decrypted = try session.decryptString(from: ratchetMessage)
+        try self.secureChat.storeSession(session: session)
+
+        return decrypted
     }
 }
 
@@ -92,7 +100,7 @@ extension VirgilHelper {
 
         let cards = cards.filter { $0.identity != TwilioHelper.shared.username }
         let session = try secureChat.startGroupSession(with: cards, using: newSessionMessage)
-        try session.sessionStorage.storeSession(session)
+        try self.secureChat.storeGroupSession(session: session)
 
         return session
     }
@@ -104,7 +112,7 @@ extension VirgilHelper {
         }
 
         let session = try secureChat.startGroupSession(with: serviceMessage.cards, using: serviceMessage.message)
-        try session.sessionStorage.storeSession(session)
+        try self.secureChat.storeGroupSession(session: session)
 
         try CoreDataHelper.shared.delete(serviceMessage)
 

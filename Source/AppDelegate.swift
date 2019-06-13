@@ -20,7 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
-        UIApplication.shared.delegate?.window??.rootViewController = UIStoryboard(name: StartViewController.name, bundle: Bundle.main).instantiateInitialViewController()!
+        let startController = UIStoryboard(name: StartViewController.name,
+                                           bundle: Bundle.main).instantiateInitialViewController()!
+
+        UIApplication.shared.delegate?.window??.rootViewController = startController
 
         if UserDefaults.standard.string(forKey: "first_launch")?.isEmpty ?? true {
             let context = self.persistentContainer.viewContext

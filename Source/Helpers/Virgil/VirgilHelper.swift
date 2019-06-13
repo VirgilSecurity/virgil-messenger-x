@@ -111,9 +111,11 @@ public class VirgilHelper {
             throw VirgilHelperError.nilGroupSession
         }
 
-        let ticket = try session.createChangeMembersTicket()
-        try session.updateMembers(ticket: ticket, addCards: addCards, removeCardIds: [])
-        try session.sessionStorage.storeSession(session)
+        let removeCardIds = removeCards.map { $0.identifier }
+
+        let ticket = try session.createChangeParticipantsTicket()
+        try session.updateParticipants(ticket: ticket, addCards: addCards, removeCardIds: removeCardIds)
+        try self.secureChat.storeGroupSession(session: session)
 
         return ticket
     }

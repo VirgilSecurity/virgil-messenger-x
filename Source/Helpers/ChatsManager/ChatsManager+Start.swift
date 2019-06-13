@@ -68,11 +68,9 @@ public enum ChatsManager {
 
                 let session = try VirgilHelper.shared.startNewGroupSession(with: cards)
 
-                let sessionId = Data(hexEncodedString: session.identifier)!
-
                 try TwilioHelper.shared.makeCreateGroupChannelOperation(with: members,
                                                                         name: name,
-                                                                        sessionId: sessionId).startSync().getResult()
+                                                                        sessionId: session.identifier).startSync().getResult()
 
                 completion(nil)
             } catch {
