@@ -28,6 +28,10 @@ class CreateGroupViewController: ViewController {
             return
         }
 
+        guard self.checkReachability() else {
+            return
+        }
+
         let hudShow = {
             DispatchQueue.main.async {
                 HUD.show(.progress)

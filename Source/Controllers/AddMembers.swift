@@ -50,6 +50,10 @@ class AddMembersViewController: ViewController {
             return
         }
 
+        guard self.checkReachability() else {
+            return
+        }
+
         HUD.show(.progress)
 
         ChatsManager.addMembers(cards, dataSource: self.dataSource).start { _, error in

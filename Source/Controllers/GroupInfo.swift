@@ -67,6 +67,10 @@ class GroupInfoViewController: ViewController {
 
 extension GroupInfoViewController: DeleteItemDelegate {
     func delete(_ user: Channel) {
+        guard self.checkReachability() else {
+            return
+        }
+        
         HUD.show(.progress)
 
         ChatsManager.removeMember(user.cards.first!, dataSource: self.dataSource).start { _, error in

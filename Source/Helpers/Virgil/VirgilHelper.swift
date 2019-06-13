@@ -106,18 +106,27 @@ public class VirgilHelper {
         }
     }
 
-    func changeMembers(add addCards: [Card], removeCards: [Card], in channel: Channel) throws -> RatchetGroupMessage {
+    func createChangeMemebersTicket(in channel: Channel) throws -> RatchetGroupMessage {
         guard let session = self.getGroupSession(of: channel) else {
             throw VirgilHelperError.nilGroupSession
         }
 
-        let removeCardIds = removeCards.map { $0.identifier }
+        return try session.createChangeParticipantsTicket()
+    }
 
-        let ticket = try session.createChangeParticipantsTicket()
+    func updateParticipants(ticket: RatchetGroupMessage,
+                            channel: Channel,
+                            addCards: [Card] = [],
+                            removeCards: [Card] = []) throws {
+        guard let session = self.getGroupSession(of: channel) else {
+            throw VirgilHelperError.nilGroupSession
+        }
+
+        let removeCardIds = removeCards.map{ $0.identifier }
+
         try session.updateParticipants(ticket: ticket, addCards: addCards, removeCardIds: removeCardIds)
-        try self.secureChat.storeGroupSession(session: session)
 
-        return ticket
+        try self.secureChat.storeGroupSession(session: session)
     }
 
     func buildCard(_ card: String) -> Card? {
