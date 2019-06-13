@@ -43,7 +43,7 @@ public enum ChatsManager {
 
         let cards = try cards ?? VirgilHelper.shared.makeGetCardsOperation(identities: identities).startSync().getResult()
 
-        try TwilioHelper.shared.makeCreateSingleChannelOperation(with: cards).startSync().getResult()
+        try TwilioHelper.shared.createSingleChannel(with: cards).startSync().getResult()
     }
     
     public static func startGroup(with channels: [Channel],
@@ -68,9 +68,9 @@ public enum ChatsManager {
 
                 let session = try VirgilHelper.shared.startNewGroupSession(with: cards)
 
-                try TwilioHelper.shared.makeCreateGroupChannelOperation(with: members,
-                                                                        name: name,
-                                                                        sessionId: session.identifier).startSync().getResult()
+                try TwilioHelper.shared.createGroupChannel(with: members,
+                                                           name: name,
+                                                           sessionId: session.identifier).startSync().getResult()
 
                 completion(nil)
             } catch {

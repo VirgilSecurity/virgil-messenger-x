@@ -11,6 +11,7 @@ import Chatto
 import ChattoAdditions
 import AVFoundation
 import VirgilCryptoRatchet
+import VirgilSDKRatchet
 
 class MessageProcessor {
     static func process(message: TCHMessage, from twilioChannel: TCHChannel) throws -> Message? {
@@ -134,97 +135,82 @@ class MessageProcessor {
 
             return try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
         case .service:
-            if let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!,
-                                                                                 withSessionId: sessionId,
-                                                                                 identifier: attributes.identifier) {
-                let (forceReturn, message) = try self.processGroup(serviceMessage: serviceMessage,
-                                                                   from: twilioMessage.author!,
-                                                                   isIncoming: isIncoming,
-                                                                   sessionId: sessionId,
-                                                                   twilioChannel: twilioChannel,
-                                                                   channel: channel)
-                if forceReturn { return message }
-            }
-
-            let decrypted: String
-            do {
-                decrypted = try VirgilHelper.shared.decryptGroup(text, from: twilioMessage.author!, channel: channel, sessionId: sessionId)
-            } catch {
+            guard let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!,
+                                                                                    withSessionId: sessionId,
+                                                                                    identifier: attributes.identifier) else {
                 return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
             }
 
-            return try CoreDataHelper.shared.createChangeMembersMessage(decrypted,
-                                                                        in: channel,
-                                                                        isIncoming: isIncoming,
-                                                                        date: date)
+            let deleted = try self.processGroupServiceMessage(serviceMessage,
+                                                              from: twilioMessage.author!,
+                                                              isIncoming: isIncoming,
+                                                              sessionId: sessionId,
+                                                              twilioChannel: twilioChannel,
+                                                              channel: channel)
+
+            return deleted ? nil : try CoreDataHelper.shared.createChangeMembersMessage(serviceMessage,
+                                                                                        in: channel,
+                                                                                        isIncoming: isIncoming,
+                                                                                        date: date)
         }
     }
 
-    private static func processGroup(serviceMessage: ServiceMessage,
-                                     from author: String,
-                                     isIncoming: Bool,
-                                     sessionId: Data,
-                                     twilioChannel: TCHChannel,
-                                     channel: Channel) throws -> (Bool, Message?) {
-        if let session = VirgilHelper.shared.getGroupSession(of: channel) {
-            if serviceMessage.cardsRemove.contains(where: { $0.identity == TwilioHelper.shared.username}) {
-                try CoreDataHelper.shared.delete(serviceMessage)
-                try VirgilHelper.shared.secureChat.deleteGroupSession(sessionId: session.identifier)
-
-                if !CoreDataHelper.shared.existsServiceMessages(from: author, withSessionId: sessionId) {
-                    try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
-
-                    try CoreDataHelper.shared.delete(serviceMessage)
-
-                    DispatchQueue.main.async {
-                        NotificationCenter.default.post(name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
-                                                        object: self)
-                    }
-
-                    return (true, nil)
-                } else {
-                    let text = "\(author) removed \(TwilioHelper.shared.username)"
-                    let message = try CoreDataHelper.shared.createTextMessage(text, in: channel, isIncoming: isIncoming)
-
-                    return (true, message)
-                }
-            } else {
-                let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
-
-                try session.updateParticipants(ticket: serviceMessage.message,
-                                               addCards: serviceMessage.cardsAdd,
-                                               removeCardIds: removeCardIds)
-                try VirgilHelper.shared.secureChat.storeGroupSession(session: session)
-
-                try CoreDataHelper.shared.add(serviceMessage.cardsAdd, to: channel)
-                try CoreDataHelper.shared.remove(serviceMessage.cardsRemove, from: channel)
-
-                let membersCards = serviceMessage.cardsAdd.filter {
-                    !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) && $0.identity != TwilioHelper.shared.username
-                }
-                let members = membersCards.map { $0.identity }
-
-                try CoreDataHelper.shared.delete(serviceMessage)
-
-                try? ChatsManager.startSingle(with: members)
-            }
-        } else {
-            let session = try VirgilHelper.shared.secureChat.startGroupSession(with: serviceMessage.cards, using: serviceMessage.message)
-            try VirgilHelper.shared.secureChat.storeGroupSession(session: session)
-
-            try CoreDataHelper.shared.add(serviceMessage.cardsAdd, to: channel)
-            try CoreDataHelper.shared.remove(serviceMessage.cardsRemove, from: channel)
-
-            let membersCards = serviceMessage.cardsAdd.filter {
-                !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) && $0.identity != TwilioHelper.shared.username }
-            let members = membersCards.map { $0.identity }
-
+    private static func processGroupServiceMessage(_ serviceMessage: ServiceMessage,
+                                                   from author: String,
+                                                   isIncoming: Bool,
+                                                   sessionId: Data,
+                                                   twilioChannel: TCHChannel,
+                                                   channel: Channel) throws -> Bool {
+        guard !serviceMessage.cardsRemove.contains(where: { $0.identity == TwilioHelper.shared.username}) else {
             try CoreDataHelper.shared.delete(serviceMessage)
 
-            try? ChatsManager.startSingle(with: members)
+            if let session = VirgilHelper.shared.getGroupSession(of: channel) {
+                try VirgilHelper.shared.secureChat.deleteGroupSession(sessionId: session.identifier)
+            }
+
+            if CoreDataHelper.shared.serviceMessagesCount(from: author, withSessionId: sessionId) < 2 {
+                try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
+
+                DispatchQueue.main.async {
+                    let name = Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue)
+                    NotificationCenter.default.post(name: name, object: self)
+                }
+
+                return true
+            }
+
+            return false
         }
 
-        return (false, nil)
+        let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
+
+        let session: SecureGroupSession
+        if let existing = VirgilHelper.shared.getGroupSession(of: channel) {
+            session = existing
+            try session.updateParticipants(ticket: serviceMessage.message,
+                                           addCards: serviceMessage.cardsAdd,
+                                           removeCardIds: removeCardIds)
+        } else {
+            let cards = serviceMessage.cards.filter { $0.identity != TwilioHelper.shared.username }
+            session = try VirgilHelper.shared.secureChat.startGroupSession(with: cards,
+                                                                           using: serviceMessage.message)
+        }
+
+        try VirgilHelper.shared.secureChat.storeGroupSession(session: session)
+
+        try CoreDataHelper.shared.add(serviceMessage.cardsAdd, to: channel)
+        try CoreDataHelper.shared.remove(serviceMessage.cardsRemove, from: channel)
+
+        let membersCards = serviceMessage.cardsAdd.filter {
+            !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) && $0.identity != TwilioHelper.shared.username
+        }
+        let members = membersCards.map { $0.identity }
+
+        try? ChatsManager.startSingle(with: members)
+
+        try CoreDataHelper.shared.delete(serviceMessage)
+
+        return false
     }
 
     private static func processMedia(message: TCHMessage,

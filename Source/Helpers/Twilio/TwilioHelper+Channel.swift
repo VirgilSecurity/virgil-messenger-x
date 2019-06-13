@@ -220,7 +220,7 @@ extension TwilioHelper {
         }
     }
 
-    func makeCreateSingleChannelOperation(with card: Card) -> CallbackOperation<Void> {
+    func createSingleChannel(with card: Card) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 let attributes = ChannelAttributes(initiator: self.username,
@@ -248,15 +248,7 @@ extension TwilioHelper {
         }
     }
 
-    func makeUniqueName(_ user1: String, _ user2: String) -> String {
-        if user1 > user2 {
-            return VirgilHelper.shared.makeHash(from: user1 + user2)!
-        } else {
-            return VirgilHelper.shared.makeHash(from: user2 + user1)!
-        }
-    }
-
-    func makeCreateSingleChannelOperation(with cards: [Card]) -> CallbackOperation<Void> {
+    func createSingleChannel(with cards: [Card]) -> CallbackOperation<Void> {
         return CallbackOperation { operation, completion in
             if let error = operation.findDependencyError() {
                 completion(nil, error)
@@ -273,7 +265,7 @@ extension TwilioHelper {
             var operations: [CallbackOperation<Void>] = []
 
             cards.forEach {
-                let operation = self.makeCreateSingleChannelOperation(with: $0)
+                let operation = self.createSingleChannel(with: $0)
                 completionOperation.addDependency(operation)
                 operations.append(operation)
             }
@@ -283,7 +275,15 @@ extension TwilioHelper {
         }
     }
 
-    func makeCreateGroupChannelOperation(with members: [String], name: String, sessionId: Data) -> CallbackOperation<Void> {
+    func makeUniqueName(_ user1: String, _ user2: String) -> String {
+        if user1 > user2 {
+            return VirgilHelper.shared.makeHash(from: user1 + user2)!
+        } else {
+            return VirgilHelper.shared.makeHash(from: user2 + user1)!
+        }
+    }
+
+    func createGroupChannel(with members: [String], name: String, sessionId: Data) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 let attributes = ChannelAttributes(initiator: self.username,

@@ -25,7 +25,7 @@ extension CoreDataHelper {
         try self.appDelegate.saveContext()
     }
 
-    func createChangeMembersMessage(_ body: String,
+    func createChangeMembersMessage(_ serviceMessage: ServiceMessage,
                                     in channel: Channel? = nil,
                                     isIncoming: Bool,
                                     date: Date = Date()) throws -> Message {
@@ -33,7 +33,7 @@ extension CoreDataHelper {
             throw CoreDataHelperError.nilCurrentChannel
         }
 
-        let message = try Message(body: body,
+        let message = try Message(body: serviceMessage.getChangeMembersText(),
                                   type: .changeMembers,
                                   isIncoming: isIncoming,
                                   date: date,
@@ -111,12 +111,12 @@ extension CoreDataHelper {
         return user.serviceMessages.first { $0.message.getSessionId() == sessionId && $0.identifier == identifier }
     }
 
-    func existsServiceMessages(from identity: String, withSessionId sessionId: Data) -> Bool {
+    func serviceMessagesCount(from identity: String, withSessionId sessionId: Data) -> Int {
         guard let user = self.getSingleChannel(with: identity) else {
-            return false
+            return 0
         }
 
-        return user.serviceMessages.first { $0.message.getSessionId() == sessionId } != nil
+        return user.serviceMessages.filter { $0.message.getSessionId() == sessionId }.count
     }
 
     func delete(_ serviceMessage: ServiceMessage) throws {

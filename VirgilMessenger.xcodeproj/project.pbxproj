@@ -65,7 +65,7 @@
 		169367942249181100EF9A42 /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169367932249181100EF9A42 /* LocalKeyManager.swift */; };
 		1696ADC720A0766600EF8C0D /* Collection+SafeSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1696ADC620A0766600EF8C0D /* Collection+SafeSubscript.swift */; };
 		16973338229B3E15009E30D0 /* Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16973337229B3E15009E30D0 /* Gradient.swift */; };
-		16A40B5E225B5CF800E9D305 /* Attributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A40B5D225B5CF800E9D305 /* Attributes.swift */; };
+		16A40B5E225B5CF800E9D305 /* TwilioHelper+Attributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A40B5D225B5CF800E9D305 /* TwilioHelper+Attributes.swift */; };
 		16AE1D7A2044315B005DF777 /* UIPhotoMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D772044315B005DF777 /* UIPhotoMessageModel.swift */; };
 		16AE1D7B2044315B005DF777 /* UIPhotoMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D782044315B005DF777 /* UIPhotoMessageHandler.swift */; };
 		16B6751322689D2C00B6D4D0 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B6751122689D2C00B6D4D0 /* User.swift */; };
@@ -194,7 +194,7 @@
 		1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCryptoRatchet.framework; path = Carthage/Build/iOS/VirgilCryptoRatchet.framework; sourceTree = "<group>"; };
 		1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCryptoFoundation.framework; path = Carthage/Build/iOS/VirgilCryptoFoundation.framework; sourceTree = "<group>"; };
 		1698B29B22392339003B8CBA /* VSCRatchet.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCRatchet.framework; path = Carthage/Build/iOS/VSCRatchet.framework; sourceTree = "<group>"; };
-		16A40B5D225B5CF800E9D305 /* Attributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attributes.swift; sourceTree = "<group>"; };
+		16A40B5D225B5CF800E9D305 /* TwilioHelper+Attributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TwilioHelper+Attributes.swift"; sourceTree = "<group>"; };
 		16AE1D772044315B005DF777 /* UIPhotoMessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIPhotoMessageModel.swift; sourceTree = "<group>"; };
 		16AE1D782044315B005DF777 /* UIPhotoMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIPhotoMessageHandler.swift; sourceTree = "<group>"; };
 		16B6751122689D2C00B6D4D0 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -594,7 +594,7 @@
 				429228E31F963DBE00DCECDF /* TwilioHelper+Delegates.swift */,
 				16FB2DCD204D832F00346FA0 /* TwilioHelper+Channel.swift */,
 				16FB2DD0204D846900346FA0 /* TwilioHelper+Message.swift */,
-				16A40B5D225B5CF800E9D305 /* Attributes.swift */,
+				16A40B5D225B5CF800E9D305 /* TwilioHelper+Attributes.swift */,
 			);
 			path = Twilio;
 			sourceTree = "<group>";
@@ -864,7 +864,7 @@
 				1696ADC720A0766600EF8C0D /* Collection+SafeSubscript.swift in Sources */,
 				1658BA181FD97497005EF9C1 /* Date.swift in Sources */,
 				16FB2DD3204D875400346FA0 /* UIView.swift in Sources */,
-				16A40B5E225B5CF800E9D305 /* Attributes.swift in Sources */,
+				16A40B5E225B5CF800E9D305 /* TwilioHelper+Attributes.swift in Sources */,
 				427D1E541F965569002F2CF3 /* DataSource.swift in Sources */,
 				16277242203C60DB0086127C /* CoreDataHelper+Channel.swift in Sources */,
 				163952A6227C4DE600DD1FDC /* ChatsManager+Join.swift in Sources */,

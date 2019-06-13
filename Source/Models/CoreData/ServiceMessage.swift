@@ -164,11 +164,11 @@ extension ServiceMessage {
 extension ServiceMessage {
     public func getChangeMembersText() throws -> String {
         guard self.type == .changeMembers else {
-            throw NSError()
+            throw CoreDataHelperError.invalidMessage
         }
 
         if self.cardsAdd.isEmpty && self.cardsRemove.isEmpty {
-            throw NSError()
+            throw CoreDataHelperError.invalidMessage
         }
 
         let action = self.cardsAdd.isEmpty ? "removed" : "added"

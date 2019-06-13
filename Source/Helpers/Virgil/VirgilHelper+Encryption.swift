@@ -26,11 +26,15 @@ extension VirgilHelper {
             throw VirgilHelperError.utf8ToDataFailed
         }
 
+        guard let card = channel.cards.first(where: { $0.identity == identity }) else {
+            throw CoreDataHelperError.invalidChannel
+        }
+
         let ratchetMessage = try RatchetGroupMessage.deserialize(input: data)
 
         let session = try self.getGroupSession(of: channel) ?? self.startNewGroupSession(identity: identity, sessionId: sessionId)
 
-        let decrypted = try session.decryptString(from: ratchetMessage)
+        let decrypted = try session.decryptString(from: ratchetMessage, senderCardId: card.identifier)
         try self.secureChat.storeGroupSession(session: session)
 
         return decrypted

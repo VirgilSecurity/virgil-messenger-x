@@ -74,9 +74,7 @@ public class MessageSender {
                     throw TwilioHelperError.invalidChannel
                 }
 
-                let ciphertext = try VirgilHelper.shared.encryptGroup(body, channel: message.channel)
-
-                try TwilioHelper.shared.send(ciphertext: ciphertext,
+                try TwilioHelper.shared.send(ciphertext: body,
                                              messages: messages,
                                              type: .service,
                                              identifier: identifier).startSync().getResult()
