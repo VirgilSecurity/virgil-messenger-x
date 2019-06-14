@@ -108,12 +108,6 @@ class ChatViewController: BaseChatViewController {
         }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self.dataSource)
-
-        NotificationCenter.default.removeObserver(self)
-    }
-
     @IBAction @objc func showChatDetails(_ sender: Any) {
         if self.channel.type == .group {
             self.performSegue(withIdentifier: "goToGroupInfo", sender: self)

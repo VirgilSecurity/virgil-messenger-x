@@ -35,6 +35,11 @@ class GroupInfoViewController: ViewController {
                                                selector: #selector(self.popToRoot(notification:)),
                                                name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
                                                object: nil)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.processMessage(notification:)),
+                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue),
+                                               object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -43,6 +48,12 @@ class GroupInfoViewController: ViewController {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc func processMessage(notification: Notification) {
+        DispatchQueue.main.async {
+            self.updateUserList()
+        }
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
