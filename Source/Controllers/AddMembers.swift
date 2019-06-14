@@ -31,6 +31,17 @@ class AddMembersViewController: ViewController {
         self.tableView.rowHeight = 60
         self.tableView.tableFooterView = UIView(frame: .zero)
         self.tableView.dataSource = self
+
+        NotificationCenter.default.removeObserver(self)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.popToRoot(notification:)),
+                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
+                                               object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     @IBAction func addTapped(_ sender: Any) {

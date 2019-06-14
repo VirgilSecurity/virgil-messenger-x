@@ -28,10 +28,21 @@ class GroupInfoViewController: ViewController {
 
         self.avatarView.gradientLayer.colors = [self.channel.colorPair.first, self.channel.colorPair.second]
         self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+
+        NotificationCenter.default.removeObserver(self)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.popToRoot(notification:)),
+                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
+                                               object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         self.updateUserList()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

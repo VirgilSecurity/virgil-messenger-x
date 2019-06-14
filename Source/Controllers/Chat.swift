@@ -83,6 +83,21 @@ class ChatViewController: BaseChatViewController {
         titleButton.addGestureRecognizer(tapRecognizer)
 
         self.navigationItem.titleView = titleButton
+
+        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(self.dataSource)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.popToRoot(notification:)),
+                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
+                                               object: nil)
+
+        self.dataSource.addObserver()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(self.dataSource)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -91,20 +106,6 @@ class ChatViewController: BaseChatViewController {
         if let rootVC = navigationController?.viewControllers.first {
             navigationController?.viewControllers = [rootVC, self]
         }
-
-        NotificationCenter.default.removeObserver(self.dataSource)
-        NotificationCenter.default.removeObserver(self)
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.popController(notification:)),
-                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
-                                               object: nil)
-        
-        self.dataSource.addObserver()
-    }
-
-    @objc func popController(notification: Notification) {
-        self.navigationController?.popViewController(animated: true)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -177,10 +178,6 @@ class ChatViewController: BaseChatViewController {
 //        items.append(self.createAudioInputItem())
 
         return items
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 }
 

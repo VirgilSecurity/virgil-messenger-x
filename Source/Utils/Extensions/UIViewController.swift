@@ -10,9 +10,9 @@ import UIKit
 
 extension UIViewController {
     func alert(title: String? = nil, _ anyError: Error, handler: ((UIAlertAction) -> Void)? = nil) {
-//        let error = anyError as? UserFriendlyError ?? .unknownError
+        let error = anyError as? UserFriendlyError ?? .unknownError
 
-        let alert = UIAlertController(title: title, message: anyError.localizedDescription, preferredStyle: .alert)
+        let alert = UIAlertController(title: title, message: error.rawValue, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: handler))
 
         self.present(alert, animated: true)
@@ -35,5 +35,11 @@ extension UIViewController: UITextFieldDelegate {
         let newLength = text.count + string.count - range.length
 
         return newLength <= ChatConstants.limitLength
+    }
+}
+
+extension UIViewController {
+    @objc func popToRoot(notification: Notification) {
+        self.navigationController?.popToRootViewController(animated: true)
     }
 }
