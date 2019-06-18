@@ -122,7 +122,7 @@ public class VirgilHelper {
             throw VirgilHelperError.nilGroupSession
         }
 
-        let removeCardIds = removeCards.map{ $0.identifier }
+        let removeCardIds = removeCards.map { $0.identifier }
 
         try session.updateParticipants(ticket: ticket, addCards: addCards, removeCardIds: removeCardIds)
 

@@ -61,20 +61,22 @@ extension TwilioHelper: TwilioChatClientDelegate {
     public func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
         self.queue.async {
             do {
-                try self.makeJoinOperation(channel: channel).startSync().getResult()
+                if channel.status != .joined {
+                    try self.makeJoinOperation(channel: channel).startSync().getResult()
 
-                let attributes = try self.getAttributes(of: channel)
+                    let attributes = try self.getAttributes(of: channel)
 
-                guard attributes.initiator != self.username else {
-                    return
+                    guard attributes.initiator != self.username else {
+                        return
+                    }
+
+                    try ChatsManager.join(channel)
+
+                    try ChatsManager.makeUpdateChannelOperation(twilioChannel: channel).startSync().getResult()
+
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.ChannelAdded.rawValue),
+                                                    object: self)
                 }
-
-                try ChatsManager.join(channel)
-
-                try ChatsManager.makeUpdateChannelOperation(twilioChannel: channel).startSync().getResult()
-
-                NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.ChannelAdded.rawValue),
-                                                object: self)
             } catch {
                 Log.error("\(error)")
             }
