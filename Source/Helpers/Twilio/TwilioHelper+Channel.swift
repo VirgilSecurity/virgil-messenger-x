@@ -303,11 +303,11 @@ extension TwilioHelper {
                     let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
 
                     try self.makeJoinOperation(channel: channel).startSync().getResult()
-                    
+
                     try CoreDataHelper.shared.createGroupChannel(name: name, members: members, sid: channel.sid!, sessionId: sessionId)
 
                     let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-                    
+
                     var operations: [CallbackOperation<Void>] = []
 
                     members.forEach {

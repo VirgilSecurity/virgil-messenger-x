@@ -13,25 +13,33 @@ public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
     public static func sendServiceMessage(_ message: ServiceMessage, to coreChannel: Channel) -> CallbackOperation<Void> {
-        let twilioChannel = TwilioHelper.shared.getChannel(coreChannel)
+        return CallbackOperation { _, completion in
+            do {
+                guard let twilioChannel = TwilioHelper.shared.getChannel(coreChannel) else {
+                    throw TwilioHelperError.nilCurrentChannel
+                }
 
-        let plaintext = try! message.export()
+                let plaintext = try message.export()
 
-        switch coreChannel.type {
-        case .single:
-            let ciphertext = try! VirgilHelper.shared.encrypt(plaintext, card: coreChannel.cards.first!)
+                guard let messages = twilioChannel.messages else {
+                    throw TwilioHelperError.invalidChannel
+                }
 
-            return TwilioHelper.shared.send(ciphertext: ciphertext,
-                                            messages: twilioChannel!.messages!,
-                                            type: .service,
-                                            identifier: message.identifier)
-        case .group:
-            let ciphertext = try! VirgilHelper.shared.encryptGroup(plaintext, channel: coreChannel)
+                let ciphertext: String
+                switch coreChannel.type {
+                case .single:
+                    ciphertext = try VirgilHelper.shared.encrypt(plaintext, card: coreChannel.cards.first!)
+                case .group:
+                    ciphertext = try VirgilHelper.shared.encryptGroup(plaintext, channel: coreChannel)
+                }
 
-            return TwilioHelper.shared.send(ciphertext: ciphertext,
-                                            messages: twilioChannel!.messages!,
-                                            type: .service,
-                                            identifier: message.identifier)
+                TwilioHelper.shared.send(ciphertext: ciphertext,
+                                         messages: messages,
+                                         type: .service,
+                                         identifier: message.identifier).start(completion: completion)
+            } catch {
+                completion(nil, error)
+            }
         }
     }
 

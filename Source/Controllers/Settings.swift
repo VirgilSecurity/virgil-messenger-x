@@ -59,9 +59,13 @@ class SettingsViewController: ViewController {
                                                 preferredStyle: .alert)
 
         let okAction = UIAlertAction(title: "OK", style: .default) { _ in
-            try! UserAuthorizer().deleteAccount()
+            do {
+                try UserAuthorizer().deleteAccount()
 
-            self.switchNavigationStack(to: AuthenticationViewController.name)
+                self.switchNavigationStack(to: AuthenticationViewController.name)
+            } catch {
+                self.alert(error)
+            }
         }
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)

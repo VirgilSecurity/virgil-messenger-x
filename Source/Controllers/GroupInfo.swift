@@ -72,7 +72,12 @@ class GroupInfoViewController: ViewController {
         if let userList = self.usersListController {
             userList.deleteItemDelegate = self.channel.cards.count > 1 ? self : nil
 
-            let members = self.channel.cards.map { CoreDataHelper.shared.getSingleChannel(with: $0.identity)! }
+            var members: [Channel] = []
+            for card in self.channel.cards {
+                if let item = CoreDataHelper.shared.getSingleChannel(with: card.identity) {
+                    members.append(item)
+                }
+            }
 
             userList.users = members
             userList.tableView.reloadData()

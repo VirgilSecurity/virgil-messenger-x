@@ -14,52 +14,54 @@ extension ChatsManager {
 
     public static func makeUpdateChannelsOperation() -> CallbackOperation<Void> {
         return CallbackOperation { operation, completion in
-
-            if let error = operation.findDependencyError() {
-                completion(nil, error)
-                return
-            }
-
             self.queue.async {
-                let twilioChannels = TwilioHelper.shared.channels.subscribedChannels()
-
-                guard twilioChannels.count > 0 else {
-                    completion((), nil)
-                    return
-                }
-
-                var singleChannelOperations: [CallbackOperation<Void>] = []
-                var groupChannelOperations: [CallbackOperation<Void>] = []
-
-                for twilioChannel in twilioChannels {
-                    let operation = self.makeUpdateChannelOperation(twilioChannel: twilioChannel)
-
-                    let attributes = try! TwilioHelper.shared.getAttributes(of: twilioChannel)
-
-                    switch attributes.type {
-                    case .single:
-                        singleChannelOperations.append(operation)
-                    case .group:
-                        groupChannelOperations.append(operation)
+                do {
+                    if let error = operation.findDependencyError() {
+                        throw error
                     }
-                }
 
-                for singleOperation in singleChannelOperations {
-                    for groupOperation in groupChannelOperations {
-                        groupOperation.addDependency(singleOperation)
+                    let twilioChannels = TwilioHelper.shared.channels.subscribedChannels()
+
+                    guard twilioChannels.count > 0 else {
+                        completion((), nil)
+                        return
                     }
+
+                    var singleChannelOperations: [CallbackOperation<Void>] = []
+                    var groupChannelOperations: [CallbackOperation<Void>] = []
+
+                    for twilioChannel in twilioChannels {
+                        let operation = self.makeUpdateChannelOperation(twilioChannel: twilioChannel)
+
+                        let attributes = try TwilioHelper.shared.getAttributes(of: twilioChannel)
+
+                        switch attributes.type {
+                        case .single:
+                            singleChannelOperations.append(operation)
+                        case .group:
+                            groupChannelOperations.append(operation)
+                        }
+                    }
+
+                    for singleOperation in singleChannelOperations {
+                        for groupOperation in groupChannelOperations {
+                            groupOperation.addDependency(singleOperation)
+                        }
+                    }
+
+                    let operations = singleChannelOperations + groupChannelOperations
+
+                    let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+                    operations.forEach {
+                        completionOperation.addDependency($0)
+                    }
+
+                    let queue = OperationQueue()
+                    queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+                } catch {
+                    completion(nil, error)
                 }
-
-                let operations = singleChannelOperations + groupChannelOperations
-
-                let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-
-                operations.forEach {
-                    completionOperation.addDependency($0)
-                }
-
-                let queue = OperationQueue()
-                queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
             }
         }
     }

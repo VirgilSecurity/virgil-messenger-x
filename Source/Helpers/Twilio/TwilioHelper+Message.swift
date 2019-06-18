@@ -12,16 +12,22 @@ import VirgilSDK
 
 extension TwilioHelper {
     public func send(ciphertext: String, messages: TCHMessages, type: MessageType, identifier: String? = nil) -> CallbackOperation<Void> {
-        let options = TCHMessageOptions()
-        options.withBody(ciphertext)
+        return CallbackOperation { _, completion in
+            do {
+                let options = TCHMessageOptions()
+                options.withBody(ciphertext)
 
-        let attributes = TwilioHelper.MessageAttributes(type: type, identifier: identifier)
-        // FIXME
-        try! options.withAttributes(attributes.export())
+                let attributes = TwilioHelper.MessageAttributes(type: type, identifier: identifier)
 
-        Log.debug("Message type to send: \(type.rawValue)")
+                try options.withAttributes(attributes.export())
 
-        return self.send(with: options, to: messages)
+                Log.debug("Message type to send: \(type.rawValue)")
+
+                self.send(with: options, to: messages).start(completion: completion)
+            } catch {
+                completion(nil, error)
+            }
+        }
     }
 
     private func send(with options: TCHMessageOptions, to messages: TCHMessages) -> CallbackOperation<Void> {
