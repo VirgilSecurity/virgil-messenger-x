@@ -6,29 +6,33 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
+import UserNotifications
 import UIKit
 import CoreData
 import VirgilSDK
 import Fabric
 import Crashlytics
 
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     var window: UIWindow?
+    var updatedPushToken: Data?
+    var receivedNotification: [NSObject : AnyObject]?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
 
+        // Defining start controller
         let startController = UIStoryboard(name: StartViewController.name,
                                            bundle: Bundle.main).instantiateInitialViewController()!
 
         UIApplication.shared.delegate?.window??.rootViewController = startController
 
+        // Clear core data if it's first launch
+        // FIXME: if it's first launch on new major version.
         if UserDefaults.standard.string(forKey: "first_launch")?.isEmpty ?? true {
             let context = self.persistentContainer.viewContext
-            let fetchRequest =
-                NSFetchRequest<NSManagedObject>(entityName: Account.EntityName)
+            let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: Account.EntityName)
             if let result = try? context.fetch(fetchRequest) {
                 for object in result {
                     context.delete(object)
@@ -39,9 +43,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.standard.synchronize()
         }
 
+        // Registering for remote notifications
+        let center = UNUserNotificationCenter.current()
+
+        center.getNotificationSettings { (settings) in
+            if settings.authorizationStatus == .notDetermined {
+                center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+                    Log.debug("User allowed notifications: \(granted)")
+                    if granted {
+                        DispatchQueue.main.async {
+                            UIApplication.shared.registerForRemoteNotifications()
+                        }
+                    }
+                }
+            }
+        }
+
         Fabric.with([Crashlytics.self])
 
         return true
+    }
+
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        Log.debug("Received notification")
+        // If your application supports multiple types of push notifications, you may wish to limit which ones you send to the TwilioChatClient here
+//        if let chatClient = chatClient, chatClient.user != nil {
+//            // If your reference to the Chat client exists and is initialized, send the notification to it
+//            chatClient.handleNotification(userInfo) { (result) in
+//                if (!result.isSuccessful()) {
+//                    // Handling of notification was not successful, retry?
+//                }
+//            }
+//        } else {
+//            // Store the notification for later handling
+//            receivedNotification = userInfo
+//        }
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -50,6 +88,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
             Log.error("Saving Core Data context failed with error: \(error.localizedDescription)")
         }
+    }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Log.debug("Received device token")
+        // FIXME
+//        if let chatClient = chatClient, chatClient.user != nil {
+//            chatClient.register(withNotificationToken: deviceToken) { (result) in
+//                if (!result.isSuccessful()) {
+//                    // try registration again or verify token
+//                }
+//            }
+//        } else {
+            self.updatedPushToken = deviceToken
+//        }
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        Log.error("Failed to get token, error: \(error)")
+        self.updatedPushToken = nil
     }
 
     // MARK: - Core Data stack

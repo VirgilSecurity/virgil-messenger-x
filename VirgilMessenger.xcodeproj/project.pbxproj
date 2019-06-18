@@ -140,6 +140,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		160093CA22B9315C0045D43F /* VirgilMessenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VirgilMessenger.entitlements; sourceTree = "<group>"; };
 		16013C7820B214460043EA29 /* AudioBubleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBubleView.swift; sourceTree = "<group>"; };
 		16013C7A20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageCollectionViewCellDefaultStyle.swift; sourceTree = "<group>"; };
 		16013C7C20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -640,6 +641,7 @@
 		429228B41F96261000DCECDF /* VirgilMessenger */ = {
 			isa = PBXGroup;
 			children = (
+				160093CA22B9315C0045D43F /* VirgilMessenger.entitlements */,
 				429228BC1F96261000DCECDF /* Assets.xcassets */,
 				429228C11F96261000DCECDF /* Info.plist */,
 				1621B8471FB333B100D1ABC1 /* VirgilMessenger-2.xcdatamodeld */,
@@ -719,6 +721,11 @@
 						CreatedOnToolsVersion = 9.0;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -1035,6 +1042,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = VirgilMessenger/VirgilMessenger.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1049,7 +1057,7 @@
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger-stg";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1062,6 +1070,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = VirgilMessenger/VirgilMessenger.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1075,7 +1084,7 @@
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger-stg";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

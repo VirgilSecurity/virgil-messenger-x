@@ -6,6 +6,7 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
+import UIKit
 import TwilioChatClient
 import VirgilSDK
 
@@ -44,7 +45,23 @@ public class TwilioHelper: NSObject {
                 let token = try client.getTwilioToken(identity: identity)
 
                 self.shared = TwilioHelper(identity: identity)
-                TwilioHelper.shared.initialize(token: token).start(completion: completion)
+
+                Log.debug("Initializing Twilio")
+
+                try self.shared.initialize(token: token).startSync().getResult()
+
+                if let app = UIApplication.shared.delegate as? AppDelegate, let token = app.updatedPushToken {
+                    try self.shared.register(withNotificationToken: token).startSync().getResult()
+                }
+
+                for channel in self.shared.channels.subscribedChannels() {
+                    // FIXME: Huge Twilio bug!!!
+                    while channel.messages == nil || channel.attributes() == nil { sleep(1) }
+
+                    Log.debug(String(describing: channel.attributes()))
+                }
+
+                Log.debug("Successfully initialized Twilio")
             } catch {
                 completion(nil, error)
             }
@@ -59,40 +76,43 @@ public class TwilioHelper: NSObject {
 
     private func initialize(token: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            Log.debug("Initializing Twilio")
-
-            self.queue.async {
-                TwilioChatClient.chatClient(withToken: token, properties: nil, delegate: self) { result, client in
-                    do {
-                        guard let client = client, result.isSuccessful() else {
-                            throw result.error ?? TwilioHelperError.initFailed
-                        }
-
-                        guard let channels = client.channelsList() else {
-                            throw TwilioHelperError.initChannelsFailed
-                        }
-
-                        guard let users = client.users() else {
-                            throw TwilioHelperError.initUsersFailed
-                        }
-
-                        self.client = client
-                        self.channels = channels
-                        self.users = users
-
-                        for channel in channels.subscribedChannels() {
-                            // FIXME: Huge Twilio bug!!!
-                            while channel.messages == nil || channel.attributes() == nil { sleep(1) }
-
-                            Log.debug(String(describing: channel.attributes()))
-                        }
-
-                        Log.debug("Successfully initialized Twilio")
-
-                        completion((), nil)
-                    } catch {
-                        completion(nil, error)
+            TwilioChatClient.chatClient(withToken: token, properties: nil, delegate: self) { result, client in
+                do {
+                    if let error = result.error {
+                        throw error
                     }
+
+                    guard let client = client else {
+                        throw TwilioHelperError.initFailed
+                    }
+
+                    guard let channels = client.channelsList() else {
+                        throw TwilioHelperError.initChannelsFailed
+                    }
+
+                    guard let users = client.users() else {
+                        throw TwilioHelperError.initUsersFailed
+                    }
+
+                    self.client = client
+                    self.channels = channels
+                    self.users = users
+
+                    completion((), nil)
+                } catch {
+                    completion(nil, error)
+                }
+            }
+        }
+    }
+
+    private func register(withNotificationToken token: Data) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            self.client.register(withNotificationToken: token) { result in
+                if let error = result.error {
+                    completion(nil, error)
+                } else {
+                    completion((), nil)
                 }
             }
         }
