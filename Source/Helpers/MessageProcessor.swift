@@ -188,21 +188,7 @@ class MessageProcessor {
             return false
         }
 
-        let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
-
-        let session: SecureGroupSession
-        if let existing = VirgilHelper.shared.getGroupSession(of: channel) {
-            session = existing
-            try session.updateParticipants(ticket: serviceMessage.message,
-                                           addCards: serviceMessage.cardsAdd,
-                                           removeCardIds: removeCardIds)
-        } else {
-            let cards = serviceMessage.cards.filter { $0.identity != TwilioHelper.shared.username }
-            session = try VirgilHelper.shared.secureChat.startGroupSession(with: cards,
-                                                                           using: serviceMessage.message)
-        }
-
-        try VirgilHelper.shared.secureChat.storeGroupSession(session: session)
+        try VirgilHelper.shared.updateParticipants(serviceMessage: serviceMessage, channel: channel)
 
         try CoreDataHelper.shared.add(serviceMessage.cardsAdd, to: channel)
         try CoreDataHelper.shared.remove(serviceMessage.cardsRemove, from: channel)

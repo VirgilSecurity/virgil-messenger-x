@@ -129,6 +129,30 @@ public class VirgilHelper {
         try self.secureChat.storeGroupSession(session: session)
     }
 
+    func updateParticipants(serviceMessage: ServiceMessage, channel: Channel) throws {
+        let cards = serviceMessage.cards.filter { $0.identity != TwilioHelper.shared.username }
+
+        let session: SecureGroupSession
+        if let existing = self.getGroupSession(of: channel) {
+            do {
+                let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
+
+                try existing.updateParticipants(ticket: serviceMessage.message,
+                                                addCards: serviceMessage.cardsAdd,
+                                                removeCardIds: removeCardIds)
+                session = existing
+            } catch {
+                session = try self.secureChat.startGroupSession(with: cards,
+                                                                using: serviceMessage.message)
+            }
+        } else {
+            session = try self.secureChat.startGroupSession(with: cards,
+                                                            using: serviceMessage.message)
+        }
+
+        try self.secureChat.storeGroupSession(session: session)
+    }
+
     func buildCard(_ card: String) -> Card? {
         do {
             let card = try self.importCard(fromBase64Encoded: card)
