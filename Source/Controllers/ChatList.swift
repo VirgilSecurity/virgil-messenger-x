@@ -40,7 +40,7 @@ class ChatListViewController: ViewController {
         self.configurator.configure { error in
             DispatchQueue.main.async {
                 if let error = error {
-                    self.alert(title: ChatListViewController.name, error) { _ in
+                    self.alert(error) { _ in
                         self.goToLogin()
                     }
                 }
