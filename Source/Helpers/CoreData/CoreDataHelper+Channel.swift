@@ -26,7 +26,7 @@ extension CoreDataHelper {
     }
 
     func createSingleChannel(sid: String, card: Card) throws {
-        guard !self.existsSingleChannel(with: card.identity), card.identity != TwilioHelper.shared.username else {
+        guard !self.existsSingleChannel(with: card.identity), card.identity != TwilioHelper.shared.identity else {
             return
         }
 
@@ -56,7 +56,7 @@ extension CoreDataHelper {
         var cardsToAdd: [Card] = []
 
         for card in cards {
-            if !members.contains(card.identity), card.identity != TwilioHelper.shared.username {
+            if !members.contains(card.identity), card.identity != TwilioHelper.shared.identity {
                 cardsToAdd.append(card)
             }
         }

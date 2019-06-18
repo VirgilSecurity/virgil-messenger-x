@@ -19,14 +19,14 @@ extension ChatsManager {
                 throw TwilioHelperError.invalidChannel
             }
 
-            let name = TwilioHelper.shared.getCompanion(from: attributes)
+            let name = try TwilioHelper.shared.getCompanion(from: attributes)
 
             let cards = try VirgilHelper.shared.makeGetCardsOperation(identities: [name]).startSync().getResult()
 
             try CoreDataHelper.shared.createSingleChannel(sid: sid, card: cards.first!)
 
         case .group:
-            let members = attributes.members.filter { !CoreDataHelper.shared.existsSingleChannel(with: $0) && $0 != TwilioHelper.shared.username }
+            let members = attributes.members.filter { !CoreDataHelper.shared.existsSingleChannel(with: $0) && $0 != TwilioHelper.shared.identity }
 
             var cards: [Card] = []
             if !members.isEmpty {

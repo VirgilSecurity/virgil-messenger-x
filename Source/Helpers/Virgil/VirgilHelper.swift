@@ -130,7 +130,7 @@ public class VirgilHelper {
     }
 
     func updateParticipants(serviceMessage: ServiceMessage, channel: Channel) throws {
-        let cards = serviceMessage.cards.filter { $0.identity != TwilioHelper.shared.username }
+        let cards = serviceMessage.cards.filter { $0.identity != TwilioHelper.shared.identity }
 
         let session: SecureGroupSession
         if let existing = self.getGroupSession(of: channel) {

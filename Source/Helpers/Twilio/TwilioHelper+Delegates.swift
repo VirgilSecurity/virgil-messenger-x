@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import TwilioChatClient
 
-extension TwilioHelper: TwilioChatClientDelegate {
+extension TwilioHelper {
     enum Notifications: String {
         case ConnectionStateUpdated = "TwilioHelper.Notifications.ConnectionStateUpdated"
         case MessageAdded = "TwilioHelper.Notifications.MessageAdded"
@@ -46,7 +46,9 @@ extension TwilioHelper: TwilioChatClientDelegate {
             }
         }
     }
+}
 
+extension TwilioHelper: TwilioChatClientDelegate {
     public func chatClient(_ client: TwilioChatClient, connectionStateUpdated state: TCHClientConnectionState) {
         let connectionState = ConnectionState(state: state)
 
@@ -64,12 +66,6 @@ extension TwilioHelper: TwilioChatClientDelegate {
                 if channel.status != .joined {
                     try self.makeJoinOperation(channel: channel).startSync().getResult()
 
-                    let attributes = try self.getAttributes(of: channel)
-
-                    guard attributes.initiator != self.username else {
-                        return
-                    }
-
                     try ChatsManager.join(channel)
 
                     try ChatsManager.makeUpdateChannelOperation(twilioChannel: channel).startSync().getResult()
@@ -84,7 +80,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
     }
 
     public func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
-        guard message.author != self.username, channel.status == .joined else {
+        guard message.author != self.identity, channel.status == .joined else {
             return
         }
 
@@ -115,7 +111,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
     public func chatClientTokenWillExpire(_ client: TwilioChatClient) {
         do {
-            let token = try VirgilHelper.shared.client.getTwilioToken(identity: self.username)
+            let token = try VirgilHelper.shared.client.getTwilioToken(identity: self.identity)
 
             self.client.updateToken(token)
         } catch {
@@ -125,7 +121,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
     public func chatClientTokenExpired(_ client: TwilioChatClient) {
         do {
-            let token = try VirgilHelper.shared.client.getTwilioToken(identity: self.username)
+            let token = try VirgilHelper.shared.client.getTwilioToken(identity: self.identity)
 
             self.client.updateToken(token)
         } catch {

@@ -15,7 +15,7 @@ import VirgilSDKRatchet
 
 class MessageProcessor {
     static func process(message: TCHMessage, from twilioChannel: TCHChannel) throws -> Message? {
-        let isIncoming = message.author == TwilioHelper.shared.username ? false : true
+        let isIncoming = message.author == TwilioHelper.shared.identity ? false : true
 
         guard let date = message.dateUpdatedAsDate, let index = message.index else {
             throw TwilioHelperError.invalidMessage
@@ -92,7 +92,7 @@ class MessageProcessor {
 
             return try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
         case .service:
-            if twilioMessage.author == TwilioHelper.shared.username {
+            if twilioMessage.author == TwilioHelper.shared.identity {
                 return nil
             }
 
@@ -165,7 +165,7 @@ class MessageProcessor {
                                                    sessionId: Data,
                                                    twilioChannel: TCHChannel,
                                                    channel: Channel) throws -> Bool {
-        guard !serviceMessage.cardsRemove.contains(where: { $0.identity == TwilioHelper.shared.username}) else {
+        guard !serviceMessage.cardsRemove.contains(where: { $0.identity == TwilioHelper.shared.identity}) else {
             try CoreDataHelper.shared.delete(serviceMessage)
 
             if let session = VirgilHelper.shared.getGroupSession(of: channel) {
@@ -194,7 +194,7 @@ class MessageProcessor {
         try CoreDataHelper.shared.remove(serviceMessage.cardsRemove, from: channel)
 
         let membersCards = serviceMessage.cardsAdd.filter {
-            !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) && $0.identity != TwilioHelper.shared.username
+            !CoreDataHelper.shared.existsSingleChannel(with: $0.identity) && $0.identity != TwilioHelper.shared.identity
         }
         let members = membersCards.map { $0.identity }
 

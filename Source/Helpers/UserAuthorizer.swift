@@ -66,7 +66,7 @@ public class UserAuthorizer {
 
         try CoreDataHelper.shared.deleteAccount()
 
-        self.virgilAuthorizer.logOut(identity: TwilioHelper.shared.username)
+        self.virgilAuthorizer.logOut(identity: TwilioHelper.shared.identity)
     }
 }
 

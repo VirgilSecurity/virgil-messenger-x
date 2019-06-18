@@ -18,8 +18,12 @@ extension TwilioHelper {
         return try ChannelAttributes.import(attributes)
     }
 
-    func getCompanion(from attributes: ChannelAttributes) -> String {
-        return attributes.members.first { $0 != self.username }!
+    func getCompanion(from attributes: ChannelAttributes) throws -> String {
+        guard let companion = attributes.members.first(where: { $0 != self.identity }) else {
+            throw TwilioHelperError.invalidChannel
+        }
+
+        return companion
     }
 
     func makeJoinOperation(channel: TCHChannel) -> CallbackOperation<Void> {
@@ -57,57 +61,6 @@ extension TwilioHelper {
                 }
 
                 completion((), nil)
-            }
-        }
-    }
-
-    private func makeRemoveOperation(identity: String, channel: TCHChannel) -> CallbackOperation<Void> {
-        return CallbackOperation { operation, completion in
-            // FIXME: add pages of members
-            channel.members!.members { result, paginator in
-                guard let paginator = paginator, result.isSuccessful() else {
-                    completion(nil, result.error)
-                    return
-                }
-
-                let members = paginator.items()
-
-                let candidate = members.first { $0.identity == identity }
-
-                guard let member = candidate else {
-                    // Already removed member
-                    completion((), nil)
-                    return
-                }
-
-                channel.members!.remove(member) { result in
-                    guard result.isSuccessful() else {
-                        completion(nil, result.error)
-                        return
-                    }
-
-                    completion((), nil)
-                }
-            }
-        }
-    }
-
-    func leave(_ channel: TCHChannel) -> CallbackOperation<Void> {
-        return CallbackOperation { operation, completion in
-            channel.leave { result in
-                do {
-                    if let error = result.error {
-                        throw error
-                    }
-
-                    if let channel = CoreDataHelper.shared.getChannel(channel) {
-                        try CoreDataHelper.shared.delete(channel: channel)
-                    }
-
-                    completion((), nil)
-                } catch {
-                    completion(nil, error)
-                }
             }
         }
     }
@@ -154,6 +107,113 @@ extension TwilioHelper {
                     completion(nil, error)
                 } else {
                     completion(messages ?? [], nil)
+                }
+            }
+        }
+    }
+
+    func makeUniqueName(_ user1: String, _ user2: String) -> String {
+        if user1 > user2 {
+            return VirgilHelper.shared.makeHash(from: user1 + user2)!
+        } else {
+            return VirgilHelper.shared.makeHash(from: user2 + user1)!
+        }
+    }
+}
+
+extension TwilioHelper {
+    func createSingleChannel(with cards: [Card]) -> CallbackOperation<Void> {
+        return CallbackOperation { operation, completion in
+            if let error = operation.findDependencyError() {
+                completion(nil, error)
+                return
+            }
+
+            guard !cards.isEmpty else {
+                completion((), nil)
+                return
+            }
+
+            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+            var operations: [CallbackOperation<Void>] = []
+
+            cards.forEach {
+                let operation = self.createSingleChannel(with: $0)
+                completionOperation.addDependency(operation)
+                operations.append(operation)
+            }
+
+            let queue = OperationQueue()
+            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+        }
+    }
+
+    func createSingleChannel(with card: Card) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            self.queue.async {
+                do {
+                    let attributes = ChannelAttributes(initiator: self.identity,
+                                                       friendlyName: nil,
+                                                       sessionId: nil,
+                                                       members: [self.identity, card.identity],
+                                                       type: .single)
+
+                    let uniqueName = self.makeUniqueName(card.identity, self.identity)
+                    let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
+                                                  TCHChannelOptionAttributes: try attributes.export(),
+                                                  TCHChannelOptionUniqueName: uniqueName]
+
+                    let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
+
+                    try self.makeJoinOperation(channel: channel).startSync().getResult()
+
+                    try CoreDataHelper.shared.createSingleChannel(sid: channel.sid!, card: card)
+
+                    try self.makeInviteOperation(identity: card.identity, channel: channel).startSync().getResult()
+
+                    completion((), nil)
+                } catch {
+                    completion(nil, error)
+                }
+            }
+        }
+    }
+
+    func createGroupChannel(with members: [String], name: String, sessionId: Data) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            self.queue.async {
+                do {
+                    let attributes = ChannelAttributes(initiator: self.identity,
+                                                       friendlyName: name,
+                                                       sessionId: sessionId,
+                                                       members: [self.identity] + members,
+                                                       type: .group)
+
+                    let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
+                                                  TCHChannelOptionFriendlyName: name,
+                                                  TCHChannelOptionAttributes: try attributes.export()]
+
+                    let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
+
+                    try self.makeJoinOperation(channel: channel).startSync().getResult()
+
+                    try CoreDataHelper.shared.createGroupChannel(name: name, members: members, sid: channel.sid!, sessionId: sessionId)
+
+                    let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+
+                    var operations: [CallbackOperation<Void>] = []
+
+                    members.forEach {
+                        let inviteOperation = self.makeInviteOperation(identity: $0, channel: channel)
+                        completionOperation.addDependency(inviteOperation)
+                        operations.append(inviteOperation)
+                    }
+
+                    let queue = OperationQueue()
+                    queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+                } catch {
+                    completion(nil, error)
                 }
             }
         }
@@ -220,104 +280,19 @@ extension TwilioHelper {
         }
     }
 
-    func createSingleChannel(with card: Card) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            self.queue.async {
-                do {
-                    let attributes = ChannelAttributes(initiator: self.username,
-                                                       friendlyName: nil,
-                                                       sessionId: nil,
-                                                       members: [self.username, card.identity],
-                                                       type: .single)
-
-                    let uniqueName = self.makeUniqueName(card.identity, self.username)
-                    let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
-                                                  TCHChannelOptionAttributes: try attributes.export(),
-                                                  TCHChannelOptionUniqueName: uniqueName]
-
-                    let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
-
-                    try self.makeJoinOperation(channel: channel).startSync().getResult()
-
-                    try CoreDataHelper.shared.createSingleChannel(sid: channel.sid!, card: card)
-
-                    try self.makeInviteOperation(identity: card.identity, channel: channel).startSync().getResult()
-
-                    completion((), nil)
-                } catch {
-                    completion(nil, error)
-                }
-            }
-        }
-    }
-
-    func createSingleChannel(with cards: [Card]) -> CallbackOperation<Void> {
+    func leave(_ channel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { operation, completion in
-            if let error = operation.findDependencyError() {
-                completion(nil, error)
-                return
-            }
-
-            guard !cards.isEmpty else {
-                completion((), nil)
-                return
-            }
-
-            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-
-            var operations: [CallbackOperation<Void>] = []
-
-            cards.forEach {
-                let operation = self.createSingleChannel(with: $0)
-                completionOperation.addDependency(operation)
-                operations.append(operation)
-            }
-
-            let queue = OperationQueue()
-            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
-        }
-    }
-
-    func makeUniqueName(_ user1: String, _ user2: String) -> String {
-        if user1 > user2 {
-            return VirgilHelper.shared.makeHash(from: user1 + user2)!
-        } else {
-            return VirgilHelper.shared.makeHash(from: user2 + user1)!
-        }
-    }
-
-    func createGroupChannel(with members: [String], name: String, sessionId: Data) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            self.queue.async {
+            channel.leave { result in
                 do {
-                    let attributes = ChannelAttributes(initiator: self.username,
-                                                       friendlyName: name,
-                                                       sessionId: sessionId,
-                                                       members: [self.username] + members,
-                                                       type: .group)
-
-                    let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
-                                                  TCHChannelOptionFriendlyName: name,
-                                                  TCHChannelOptionAttributes: try attributes.export()]
-
-                    let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
-
-                    try self.makeJoinOperation(channel: channel).startSync().getResult()
-
-                    try CoreDataHelper.shared.createGroupChannel(name: name, members: members, sid: channel.sid!, sessionId: sessionId)
-
-                    let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-
-                    var operations: [CallbackOperation<Void>] = []
-
-                    members.forEach {
-                        let inviteOperation = self.makeInviteOperation(identity: $0, channel: channel)
-                        completionOperation.addDependency(inviteOperation)
-                        operations.append(inviteOperation)
+                    if let error = result.error {
+                        throw error
                     }
 
-                    let queue = OperationQueue()
-                    queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+                    if let channel = CoreDataHelper.shared.getChannel(channel) {
+                        try CoreDataHelper.shared.delete(channel: channel)
+                    }
+
+                    completion((), nil)
                 } catch {
                     completion(nil, error)
                 }

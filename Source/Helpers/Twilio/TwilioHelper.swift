@@ -25,9 +25,8 @@ public class TwilioHelper: NSObject {
     private(set) var users: TCHUsers!
     private(set) var currentChannel: TCHChannel?
 
-    let username: String
+    let identity: String
     let queue = DispatchQueue(label: "TwilioHelper")
-    private let device: String
 
     public enum MessageType: String, Codable {
         case regular
@@ -39,73 +38,62 @@ public class TwilioHelper: NSObject {
         case audio = "audio/mp4"
     }
 
-    static func authorize(username: String, device: String) {
-        self.shared = TwilioHelper(username: username, device: device)
-    }
-
-    private init(username: String, device: String) {
-        self.username = username
-        self.device = device
-
-        super.init()
-    }
-
     public static func makeInitTwilioOperation(identity: String, client: Client) -> GenericOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 let token = try client.getTwilioToken(identity: identity)
 
-                TwilioHelper.authorize(username: identity, device: "iPhone")
-                TwilioHelper.shared.initialize(token: token) { error in
-                    if let error = error {
-                        completion(nil, error)
-                    } else {
-                        completion((), error)
-                    }
-                }
+                self.shared = TwilioHelper(identity: identity)
+                TwilioHelper.shared.initialize(token: token).start(completion: completion)
             } catch {
                 completion(nil, error)
             }
         }
     }
 
-    func initialize(token: String, completion: @escaping (Error?) -> Void) {
-        Log.debug("Initializing Twilio")
+    private init(identity: String) {
+        self.identity = identity
 
-        self.queue.async {
-            TwilioChatClient.chatClient(withToken: token, properties: nil, delegate: self) { result, client in
-                guard let client = client, result.isSuccessful() else {
-                    Log.error("Error while initializing Twilio: \(result.error?.localizedDescription ?? "")")
-                    completion(TwilioHelperError.initFailed)
-                    return
+        super.init()
+    }
+
+    private func initialize(token: String) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            Log.debug("Initializing Twilio")
+
+            self.queue.async {
+                TwilioChatClient.chatClient(withToken: token, properties: nil, delegate: self) { result, client in
+                    do {
+                        guard let client = client, result.isSuccessful() else {
+                            throw result.error ?? TwilioHelperError.initFailed
+                        }
+
+                        guard let channels = client.channelsList() else {
+                            throw TwilioHelperError.initChannelsFailed
+                        }
+
+                        guard let users = client.users() else {
+                            throw TwilioHelperError.initUsersFailed
+                        }
+
+                        self.client = client
+                        self.channels = channels
+                        self.users = users
+
+                        for channel in channels.subscribedChannels() {
+                            // FIXME: Huge Twilio bug!!!
+                            while channel.messages == nil || channel.attributes() == nil { sleep(1) }
+
+                            Log.debug(String(describing: channel.attributes()))
+                        }
+
+                        Log.debug("Successfully initialized Twilio")
+
+                        completion((), nil)
+                    } catch {
+                        completion(nil, error)
+                    }
                 }
-
-                guard let channels = client.channelsList() else {
-                    Log.error("Error while initializing Twilio channels")
-                    completion(TwilioHelperError.initChannelsFailed)
-                    return
-                }
-
-                guard let users = client.users() else {
-                    Log.error("Error while initializing Twilio users")
-                    completion(TwilioHelperError.initUsersFailed)
-                    return
-                }
-
-                self.client = client
-                self.channels = channels
-                self.users = users
-
-                Log.debug("Successfully initialized Twilio")
-
-                for channel in channels.subscribedChannels() {
-                    // FIXME: Huge Twilio bug!!!
-                    while channel.messages == nil || channel.attributes() == nil { sleep(1) }
-
-                    Log.debug(String(describing: channel.attributes()))
-                }
-
-                completion(nil)
             }
         }
     }

@@ -102,7 +102,7 @@ extension VirgilHelper {
 
         try MessageSender.sendServiceMessage(to: cards, ticket: serviceMessage).startSync().getResult()
 
-        let cards = cards.filter { $0.identity != TwilioHelper.shared.username }
+        let cards = cards.filter { $0.identity != TwilioHelper.shared.identity }
         let session = try secureChat.startGroupSession(with: cards, using: newSessionMessage)
         try self.secureChat.storeGroupSession(session: session)
 
@@ -115,7 +115,7 @@ extension VirgilHelper {
             throw VirgilHelperError.missingServiceMessage
         }
 
-        let cards = serviceMessage.cards.filter { $0.identity != TwilioHelper.shared.username }
+        let cards = serviceMessage.cards.filter { $0.identity != TwilioHelper.shared.identity }
         let session = try secureChat.startGroupSession(with: cards, using: serviceMessage.message)
         try self.secureChat.storeGroupSession(session: session)
 

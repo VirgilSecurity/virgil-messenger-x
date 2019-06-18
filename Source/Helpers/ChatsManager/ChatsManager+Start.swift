@@ -17,7 +17,7 @@ public enum ChatsManager {
             do {
                 let identity = identity.lowercased()
 
-                guard identity != TwilioHelper.shared.username else {
+                guard identity != TwilioHelper.shared.identity else {
                     throw UserFriendlyError.createSelfChatForbidded
                 }
 
