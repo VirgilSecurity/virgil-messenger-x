@@ -14,9 +14,11 @@ class AddMembersViewController: ViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var addButton: UIBarButtonItem!
 
-    private var members: [Channel] = [] {
+    private var channels: [Channel] = []
+
+    private var selected: [Channel] = [] {
         didSet {
-            self.addButton.isEnabled = !self.members.isEmpty
+            self.addButton.isEnabled = !self.selected.isEmpty
         }
     }
 
@@ -25,12 +27,7 @@ class AddMembersViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let chatListCellNib = UINib(nibName: ChooseMembersCell.name, bundle: Bundle.main)
-        self.tableView.register(chatListCellNib, forCellReuseIdentifier: ChooseMembersCell.name)
-
-        self.tableView.rowHeight = 60
-        self.tableView.tableFooterView = UIView(frame: .zero)
-        self.tableView.dataSource = self
+        self.setupTableView()
 
         NotificationCenter.default.removeObserver(self)
 
@@ -38,24 +35,42 @@ class AddMembersViewController: ViewController {
                                                selector: #selector(self.popToRoot(notification:)),
                                                name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
                                                object: nil)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.reloadTableView),
+                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue),
+                                               object: nil)
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
 
-    @IBAction func addTapped(_ sender: Any) {
-        let cards = self.members.map { $0.cards.first! }
+    private func setupTableView() {
+        let chatListCellNib = UINib(nibName: ChooseMembersCell.name, bundle: Bundle.main)
+        self.tableView.register(chatListCellNib, forCellReuseIdentifier: ChooseMembersCell.name)
 
-        // FIXME
-        for newCard in cards {
-            for card in CoreDataHelper.shared.currentChannel!.cards {
-                if card.identity == newCard.identity {
-                    self.alert(UserFriendlyError.memberAlreadyExists)
-                    return
-                }
+        self.tableView.rowHeight = 60
+        self.tableView.tableFooterView = UIView(frame: .zero)
+        self.tableView.dataSource = self
+
+        self.reloadTableView()
+    }
+
+    @objc private func reloadTableView() {
+        self.channels = CoreDataHelper.shared.getSingleChannels()
+
+        self.channels = self.channels.filter { channel in
+            !CoreDataHelper.shared.currentChannel!.cards.contains { card in
+                channel.cards.first?.identity == card.identity
             }
         }
+
+        self.tableView.reloadData()
+    }
+
+    @IBAction func addTapped(_ sender: Any) {
+        let cards = self.selected.map { $0.cards.first! }
 
         guard !cards.isEmpty else {
             return
@@ -83,18 +98,16 @@ class AddMembersViewController: ViewController {
 
 extension AddMembersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return CoreDataHelper.shared.getSingleChannels().count
+        return self.channels.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChooseMembersCell.name) as! ChooseMembersCell
 
-        let users = CoreDataHelper.shared.getSingleChannels()
-
-        cell.tag = users.count - indexPath.row - 1
+        cell.tag = indexPath.row
         cell.delegate = self
 
-        cell.configure(with: users)
+        cell.configure(with: self.channels)
 
         return cell
     }
@@ -103,12 +116,12 @@ extension AddMembersViewController: UITableViewDataSource {
 extension AddMembersViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         if let cell = cell as? ChooseMembersCell {
-            let channel = CoreDataHelper.shared.getSingleChannels()[cell.tag]
+            let channel = self.channels[cell.tag]
 
             if cell.isMember {
-                self.members.append(channel)
+                self.selected.append(channel)
             } else {
-                self.members = self.members.filter { $0 != channel }
+                self.selected = self.selected.filter { $0 != channel }
             }
         }
     }

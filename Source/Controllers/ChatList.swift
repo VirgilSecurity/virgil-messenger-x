@@ -22,9 +22,42 @@ class ChatListViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.configurate()
+
+        self.setupTableView()
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.reloadTableView),
+                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.reloadTableView),
+                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+                                               object: nil)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        if self.configurator.isConfigured {
+            TwilioHelper.shared.deselectChannel()
+        }
+
+        self.reloadTableView()
+    }
+
+    private func setupTableView() {
+        let chatListCellNib = UINib(nibName: ChatListCell.name, bundle: Bundle.main)
+        self.tableView.register(chatListCellNib, forCellReuseIdentifier: ChatListCell.name)
+        self.tableView.rowHeight = 94
+        self.tableView.tableFooterView = UIView(frame: .zero)
+        self.tableView.dataSource = self
+    }
+
+    private func configurate() {
         self.navigationController?.view.isUserInteractionEnabled = false
         self.tabBarController?.tabBar.isUserInteractionEnabled = false
-        
+
         let indicator = UIActivityIndicatorView()
         indicator.hidesWhenStopped = false
         indicator.startAnimating()
@@ -53,31 +86,6 @@ class ChatListViewController: ViewController {
                 indicator.stopAnimating()
             }
         }
-
-        let chatListCellNib = UINib(nibName: ChatListCell.name, bundle: Bundle.main)
-        self.tableView.register(chatListCellNib, forCellReuseIdentifier: ChatListCell.name)
-        self.tableView.rowHeight = 94
-        self.tableView.tableFooterView = UIView(frame: .zero)
-        self.tableView.dataSource = self
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.reloadTableView),
-                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.reloadTableView),
-                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
-                                               object: nil)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        if self.configurator.isConfigured {
-            TwilioHelper.shared.deselectChannel()
-        }
-
-        self.reloadTableView()
     }
 
     @objc private func reloadTableView() {
