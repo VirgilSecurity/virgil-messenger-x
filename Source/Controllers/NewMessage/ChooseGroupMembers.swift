@@ -11,7 +11,10 @@ import UIKit
 class ChooseMembersViewController: ViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var nextButton: UIBarButtonItem!
+    @IBOutlet weak var noContactsView: UIView!
 
+    private let channels = CoreDataHelper.shared.getSingleChannels()
+    
     private var members: [Channel] = [] {
         didSet {
             self.nextButton.isEnabled = !self.members.isEmpty
@@ -27,6 +30,8 @@ class ChooseMembersViewController: ViewController {
         self.tableView.rowHeight = 60
         self.tableView.tableFooterView = UIView(frame: .zero)
         self.tableView.dataSource = self
+
+        self.noContactsView.isHidden = !self.channels.isEmpty
     }
 
     @IBAction func nextTapped(_ sender: Any) {
@@ -44,18 +49,16 @@ class ChooseMembersViewController: ViewController {
 
 extension ChooseMembersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return CoreDataHelper.shared.getSingleChannels().count
+        return self.channels.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChooseMembersCell.name) as! ChooseMembersCell
 
-        let users = CoreDataHelper.shared.getSingleChannels()
-
-        cell.tag = users.count - indexPath.row - 1
+        cell.tag = indexPath.row
         cell.delegate = self
 
-        cell.configure(with: users)
+        cell.configure(with: self.channels)
 
         return cell
     }
@@ -64,7 +67,7 @@ extension ChooseMembersViewController: UITableViewDataSource {
 extension ChooseMembersViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         if let cell = cell as? ChooseMembersCell {
-            let channel = CoreDataHelper.shared.getSingleChannels()[cell.tag]
+            let channel = self.channels[cell.tag]
 
             if cell.isMember {
                 self.members.append(channel)

@@ -24,12 +24,49 @@
                                 <color key="separatorColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hf0-uK-GPe">
+                                <rect key="frame" x="107.5" y="263.5" width="160" height="160"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-placeholder-no-messages" translatesAutoresizingMaskIntoConstraints="NO" id="hZ8-iG-r3W">
+                                        <rect key="frame" x="59" y="46" width="42" height="36"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="HBO-mE-EIi"/>
+                                            <constraint firstAttribute="width" constant="42" id="TUg-QE-IJD"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ogz-Kg-wUK">
+                                        <rect key="frame" x="33.5" y="91" width="93" height="29"/>
+                                        <string key="text">No contacts yet.
+Add new one!</string>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.13677445050000001" green="0.1483380497" blue="0.18569371100000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstItem="hZ8-iG-r3W" firstAttribute="centerX" secondItem="hf0-uK-GPe" secondAttribute="centerX" id="OPC-3r-46R"/>
+                                    <constraint firstItem="ogz-Kg-wUK" firstAttribute="top" secondItem="hZ8-iG-r3W" secondAttribute="bottom" constant="9" id="Txa-9w-wyY"/>
+                                    <constraint firstAttribute="height" constant="160" id="ZAo-4Y-nQJ"/>
+                                    <constraint firstItem="hZ8-iG-r3W" firstAttribute="top" secondItem="hf0-uK-GPe" secondAttribute="top" constant="46" id="cUh-wj-gj6"/>
+                                    <constraint firstAttribute="width" constant="160" id="hfA-EB-HwR"/>
+                                    <constraint firstItem="ogz-Kg-wUK" firstAttribute="centerX" secondItem="hZ8-iG-r3W" secondAttribute="centerX" id="qje-MI-9RO"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="hf0-uK-GPe" firstAttribute="centerX" secondItem="bXy-SK-Z0d" secondAttribute="centerX" id="504-xc-BpJ"/>
                             <constraint firstItem="1pN-FD-4WI" firstAttribute="leading" secondItem="bXy-SK-Z0d" secondAttribute="leading" id="6Cg-Gf-k6I"/>
                             <constraint firstAttribute="bottom" secondItem="1pN-FD-4WI" secondAttribute="bottom" id="7fl-8j-iRL"/>
                             <constraint firstItem="1pN-FD-4WI" firstAttribute="top" secondItem="bXy-SK-Z0d" secondAttribute="top" id="MYR-Sa-aGG"/>
+                            <constraint firstItem="hf0-uK-GPe" firstAttribute="centerY" secondItem="bXy-SK-Z0d" secondAttribute="centerY" id="TQz-Rp-UdO"/>
                             <constraint firstItem="1pN-FD-4WI" firstAttribute="trailing" secondItem="bXy-SK-Z0d" secondAttribute="trailing" id="dje-6p-NlI"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="bXy-SK-Z0d"/>
@@ -45,6 +82,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="nextButton" destination="eyc-xx-Afq" id="Fm3-fK-pGI"/>
+                        <outlet property="noContactsView" destination="hf0-uK-GPe" id="Tlg-qC-RxW"/>
                         <outlet property="tableView" destination="1pN-FD-4WI" id="tEp-Sc-ITB"/>
                         <segue destination="Nab-eg-RuA" kind="show" identifier="goToNewGroup" id="Jie-XW-K7o"/>
                     </connections>
@@ -187,4 +225,7 @@
             <point key="canvasLocation" x="1643" y="195"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="icon-placeholder-no-messages" width="44" height="38"/>
+    </resources>
 </document>
