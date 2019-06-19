@@ -45,25 +45,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func registerRemoteNotifications(for app: UIApplication) {
-        let center = UNUserNotificationCenter.current()
+        if !app.isRegisteredForRemoteNotifications {
+            let center = UNUserNotificationCenter.current()
 
-        center.getNotificationSettings { settings in
+            center.getNotificationSettings { settings in
 
-            if settings.authorizationStatus == .notDetermined {
+                if settings.authorizationStatus == .notDetermined {
 
-                center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
-                    Log.debug("User allowed notifications: \(granted)")
+                    center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+                        Log.debug("User allowed notifications: \(granted)")
 
-                    if granted {
-                        DispatchQueue.main.async {
-                            app.registerForRemoteNotifications()
+                        if granted {
+                            DispatchQueue.main.async {
+                                app.registerForRemoteNotifications()
+                            }
                         }
                     }
-                }
 
-            } else if settings.authorizationStatus == .authorized {
-                DispatchQueue.main.async {
-                    app.registerForRemoteNotifications()
+                } else if settings.authorizationStatus == .authorized {
+                    DispatchQueue.main.async {
+                        app.registerForRemoteNotifications()
+                    }
                 }
             }
         }
