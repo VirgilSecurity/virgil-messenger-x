@@ -29,7 +29,7 @@ extension TCHMessage {
             let data = try JSONEncoder().encode(self)
 
             guard let result = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-                throw TwilioHelperError.invalidMessage
+                throw TwilioHelper.Error.invalidMessage
             }
 
             return result
@@ -40,10 +40,26 @@ extension TCHMessage {
 extension TCHMessage {
     func getAttributes() throws -> Attributes {
         guard let rawAttributes = self.attributes() else {
-            throw TwilioHelperError.invalidMessage
+            throw TwilioHelper.Error.invalidMessage
         }
 
         return try Attributes.import(rawAttributes)
+    }
+
+    func getDate() throws -> Date {
+        guard let date = self.dateUpdatedAsDate else {
+            throw TwilioHelper.Error.invalidMessage
+        }
+
+        return date
+    }
+
+    func getIndex() throws -> NSNumber {
+        guard let index = self.index else {
+            throw TwilioHelper.Error.invalidMessage
+        }
+
+        return index
     }
 
     func getMedia() -> CallbackOperation<Data> {

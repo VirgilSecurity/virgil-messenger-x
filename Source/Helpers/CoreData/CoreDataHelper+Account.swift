@@ -21,21 +21,23 @@ extension CoreDataHelper {
     }
 
     func loadAccount(withIdentity identity: String) throws {
-        guard let account = self.getAccount(withIdentity: identity) else {
+        guard let account = self.accounts.first(where: { $0.identity == identity }) else {
             throw UserFriendlyError.noUserOnDevice
         }
 
         self.setCurrent(account: account)
     }
 
-    func getAccount(withIdentity username: String) -> Account? {
-        return self.accounts.first { $0.identity == username }
+    func getCurrentAccount() throws -> Account {
+        guard let account = self.currentAccount else {
+            throw Error.nilCurrentAccount
+        }
+
+        return account
     }
 
     func deleteAccount() throws {
-        guard let account = self.currentAccount else {
-            fatalError("Current account is not set")
-        }
+        let account = try self.getCurrentAccount()
 
         try account.channels.forEach { try self.delete(channel: $0) }
 

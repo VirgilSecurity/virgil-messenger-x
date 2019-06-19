@@ -17,9 +17,8 @@ class MessageProcessor {
     static func process(message: TCHMessage, from twilioChannel: TCHChannel) throws -> Message? {
         let isIncoming = message.author == TwilioHelper.shared.identity ? false : true
 
-        guard let date = message.dateUpdatedAsDate, let index = message.index else {
-            throw TwilioHelperError.invalidMessage
-        }
+        let date = try message.getDate()
+        let index = try message.getIndex()
 
         let channel = try CoreDataHelper.shared.getChannel(twilioChannel)
 
@@ -40,7 +39,7 @@ class MessageProcessor {
                                         twilioChannel: twilioChannel,
                                         channel: channel)
         } else {
-            throw TwilioHelperError.invalidMessage
+            throw TwilioHelper.Error.invalidMessage
         }
     }
 
@@ -172,13 +171,6 @@ class MessageProcessor {
 
             if !CoreDataHelper.shared.existsServiceMessage(from: author, withSessionId: sessionId) {
                 try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
-                
-                if CoreDataHelper.shared.currentChannel == channel {
-                    DispatchQueue.main.async {
-                        let name = Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue)
-                        NotificationCenter.default.post(name: name, object: self)
-                    }
-                }
 
                 return true
             }

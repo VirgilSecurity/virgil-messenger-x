@@ -6,18 +6,8 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
-import UIKit
 import TwilioChatClient
 import VirgilSDK
-
-public enum TwilioHelperError: Int, Error {
-    case initFailed = 1
-    case initChannelsFailed = 2
-    case initUsersFailed = 3
-    case invalidChannel = 4
-    case invalidMessage = 5
-    case nilCurrentChannel = 6
-}
 
 public class TwilioHelper: NSObject {
     public static var updatedPushToken: Data?
@@ -35,12 +25,20 @@ public class TwilioHelper: NSObject {
         case audio = "audio/mp4"
     }
 
-    public func getCurrentChannel() throws -> TCHChannel {
-        guard let channel = self.currentChannel else {
-            throw TwilioHelperError.nilCurrentChannel
-        }
+    public enum Error: Int, Swift.Error {
+        case initFailed = 1
+        case initChannelsFailed = 2
+        case initUsersFailed = 3
+        case invalidChannel = 4
+        case invalidMessage = 5
+        case nilCurrentChannel = 6
+        case channelNotFound = 7
+    }
 
-        return channel
+    private init(identity: String) {
+        self.identity = identity
+
+        super.init()
     }
 
     public static func makeInitTwilioOperation(identity: String, client: Client) -> GenericOperation<Void> {
@@ -74,12 +72,6 @@ public class TwilioHelper: NSObject {
         }
     }
 
-    private init(identity: String) {
-        self.identity = identity
-
-        super.init()
-    }
-
     private func initialize(token: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             TwilioChatClient.chatClient(withToken: token, properties: nil, delegate: self) { result, client in
@@ -89,15 +81,15 @@ public class TwilioHelper: NSObject {
                     }
 
                     guard let client = client else {
-                        throw TwilioHelperError.initFailed
+                        throw Error.initFailed
                     }
 
                     guard let channels = client.channelsList() else {
-                        throw TwilioHelperError.initChannelsFailed
+                        throw Error.initChannelsFailed
                     }
 
                     guard let users = client.users() else {
-                        throw TwilioHelperError.initUsersFailed
+                        throw Error.initUsersFailed
                     }
 
                     self.client = client
@@ -139,12 +131,20 @@ public class TwilioHelper: NSObject {
 
 // Setters
 extension TwilioHelper {
-    func getChannel(_ channel: Channel) -> TCHChannel? {
-        return self.channels.subscribedChannels().first { $0.sid! == channel.sid }
+    func getChannel(_ channel: Channel) throws -> TCHChannel {
+        let channel = try self.channels.subscribedChannels().first {
+            try $0.getSid() == channel.sid
+        }
+
+        guard let result = channel else {
+            throw Error.channelNotFound
+        }
+
+        return result
     }
 
-    func setChannel(_ channel: Channel) {
-        self.currentChannel = self.getChannel(channel)
+    func setChannel(_ channel: Channel) throws {
+        self.currentChannel = try self.getChannel(channel)
     }
 
     func deselectChannel() {

@@ -37,6 +37,7 @@ class CoreDataHelper {
         case channelNotFound = 4
         case invalidChannel = 5
         case invalidMessage = 6
+        case accountNotFound = 7
     }
 
     private init() {

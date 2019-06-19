@@ -15,9 +15,7 @@ extension ChatsManager {
 
         switch attributes.type {
         case .single:
-            guard let sid = channel.sid else {
-                throw TwilioHelperError.invalidChannel
-            }
+            let sid = try channel.getSid()
 
             let name = try TwilioHelper.shared.getCompanion(from: attributes)
 
@@ -38,7 +36,7 @@ extension ChatsManager {
             guard let sessionId = attributes.sessionId,
                 let name = attributes.friendlyName,
                 let sid = channel.sid else {
-                    throw TwilioHelperError.invalidChannel
+                    throw TwilioHelper.Error.invalidChannel
             }
 
             try CoreDataHelper.shared.createGroupChannel(name: name,

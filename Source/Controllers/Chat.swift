@@ -71,7 +71,7 @@ class ChatViewController: BaseChatViewController {
         self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
 
         CoreDataHelper.shared.setCurrent(channel: self.channel)
-        TwilioHelper.shared.setChannel(self.channel)
+        try! TwilioHelper.shared.setChannel(self.channel)
 
         self.setupTitle()
 

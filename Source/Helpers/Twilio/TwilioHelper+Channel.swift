@@ -10,9 +10,17 @@ import TwilioChatClient
 import VirgilSDK
 
 extension TwilioHelper {
+    public func getCurrentChannel() throws -> TCHChannel {
+        guard let channel = self.currentChannel else {
+            throw Error.nilCurrentChannel
+        }
+
+        return channel
+    }
+
     func getCompanion(from attributes: TCHChannel.Attributes) throws -> String {
         guard let companion = attributes.members.first(where: { $0 != self.identity }) else {
-            throw TwilioHelperError.invalidChannel
+            throw Error.invalidChannel
         }
 
         return companion
@@ -141,9 +149,7 @@ extension TwilioHelper {
     func add(members: [String]) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                guard let channel = TwilioHelper.shared.currentChannel else {
-                    throw TwilioHelperError.nilCurrentChannel
-                }
+                let channel = try self.getCurrentChannel()
 
                 var attributes = try channel.getAttributes()
 
@@ -175,24 +181,13 @@ extension TwilioHelper {
     func remove(member: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                guard let channel = self.currentChannel else {
-                    throw TwilioHelperError.nilCurrentChannel
-                }
+                let channel = try self.getCurrentChannel()
 
                 var attributes = try channel.getAttributes()
 
                 attributes.members = attributes.members.filter { $0 != member }
 
-                let setAttributesOperation = channel.setAttributes(attributes)
-
-                let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-
-                completionOperation.addDependency(setAttributesOperation)
-
-                let operations = [setAttributesOperation, completionOperation]
-
-                let queue = OperationQueue()
-                queue.addOperations(operations, waitUntilFinished: false)
+                channel.setAttributes(attributes).start(completion: completion)
             } catch {
                 completion(nil, error)
             }

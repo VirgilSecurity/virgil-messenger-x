@@ -29,9 +29,7 @@ extension CoreDataHelper {
                                     in channel: Channel? = nil,
                                     isIncoming: Bool,
                                     date: Date = Date()) throws -> Message {
-        guard let channel = channel ?? self.currentChannel else {
-            throw Error.nilCurrentChannel
-        }
+        let channel = try channel ?? self.getCurrentChannel()
 
         let message = try Message(body: text,
                                   type: .changeMembers,
@@ -62,9 +60,7 @@ extension CoreDataHelper {
                            in channel: Channel? = nil,
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Message {
-        guard let channel = channel ?? self.currentChannel else {
-            throw Error.nilCurrentChannel
-        }
+        let channel = try channel ?? self.getCurrentChannel()
 
         let message = try Message(body: body,
                                   type: .text,
@@ -83,9 +79,7 @@ extension CoreDataHelper {
                             isIncoming: Bool,
                             date: Date = Date(),
                             type: MessageType) throws -> Message {
-        guard let channel = channel ?? self.currentChannel else {
-            throw Error.nilCurrentChannel
-        }
+        let channel = try channel ?? self.getCurrentChannel()
 
         let message = try Message(media: data,
                                   type: type,

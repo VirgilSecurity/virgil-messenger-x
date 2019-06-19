@@ -12,7 +12,9 @@ import TwilioChatClient
 
 extension CoreDataHelper {
     func createGroupChannel(name: String, members: [String], sid: String, sessionId: Data, additionalCards: [Card] = []) throws {
-        let members = members.filter { $0 != self.currentAccount?.identity }
+        let account = try self.getCurrentAccount()
+
+        let members = members.filter { $0 != account.identity }
 
         var cards: [Card] = additionalCards
         for member in members {
@@ -34,9 +36,7 @@ extension CoreDataHelper {
     }
 
     private func createChannel(type: ChannelType, sid: String, name: String, cards: [Card], sessionId: Data? = nil) throws -> Channel {
-        guard let account = self.currentAccount else {
-            throw Error.nilCurrentAccount
-        }
+        let account = try self.getCurrentAccount()
 
         let channel = try Channel(sid: sid,
                                   name: name,
@@ -83,6 +83,13 @@ extension CoreDataHelper {
         self.managedContext.delete(channel)
 
         try self.saveContext()
+
+        if channel == self.currentChannel {
+            DispatchQueue.main.async {
+                let name = Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue)
+                NotificationCenter.default.post(name: name, object: self)
+            }
+        }
     }
 
     func existsSingleChannel(with identity: String) -> Bool {
@@ -117,5 +124,13 @@ extension CoreDataHelper {
 
     func getSingleChannels() -> [Channel] {
         return self.getChannels().filter { $0.type == .single }
+    }
+
+    func getCurrentChannel() throws -> Channel {
+        guard let channel = self.currentChannel else {
+            throw Error.nilCurrentChannel
+        }
+
+        return channel
     }
 }

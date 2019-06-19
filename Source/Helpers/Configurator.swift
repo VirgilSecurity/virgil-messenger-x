@@ -13,9 +13,8 @@ public class Configurator {
 
     public func configure(completion: @escaping (Error?) -> Void) {
         do {
-            guard let identity = CoreDataHelper.shared.currentAccount?.identity else {
-                throw CoreDataHelper.Error.nilCurrentAccount
-            }
+            let account = try CoreDataHelper.shared.getCurrentAccount()
+            let identity = account.identity
 
             let initPFSOperation = VirgilHelper.shared.makeInitPFSOperation(identity: identity)
             let initTwilioOperation = TwilioHelper.makeInitTwilioOperation(identity: identity,

@@ -15,9 +15,7 @@ public class MessageSender {
     public static func sendServiceMessage(_ message: ServiceMessage, to coreChannel: Channel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                guard let twilioChannel = TwilioHelper.shared.getChannel(coreChannel) else {
-                    throw TwilioHelperError.nilCurrentChannel
-                }
+                let twilioChannel = try TwilioHelper.shared.getChannel(coreChannel)
 
                 let plaintext = try message.export()
 
@@ -83,9 +81,7 @@ public class MessageSender {
     public func send(message: Message, withId id: Int) throws -> UIMessageModelProtocol {
         let cards = message.channel.cards
 
-        guard let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel) else {
-            throw TwilioHelperError.invalidChannel
-        }
+        let channel = try TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel)
 
         let uiModel = message.exportAsUIModel(withId: id, status: .sending)
 
@@ -93,9 +89,7 @@ public class MessageSender {
             do {
                 switch message.type {
                 case .text:
-                    guard let plaintext = message.body else {
-                        throw CoreDataHelper.Error.invalidMessage
-                    }
+                    let plaintext = try message.getBody()
 
                     let ciphertext: String
                     switch message.channel.type {
@@ -111,9 +105,7 @@ public class MessageSender {
                 case .audio:
                     break
                 case .changeMembers:
-                    guard let plaintext = message.body else {
-                        throw CoreDataHelper.Error.invalidMessage
-                    }
+                    let plaintext = try message.getBody()
 
                     let ciphertext = try VirgilHelper.shared.encryptGroup(plaintext, channel: message.channel)
 
