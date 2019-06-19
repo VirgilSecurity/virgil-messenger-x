@@ -15,14 +15,14 @@ extension CoreDataHelper {
         let messages = message.channel.mutableOrderedSetValue(forKey: Channel.MessagesKey)
         messages.add(message)
 
-        try self.appDelegate.saveContext()
+        try self.saveContext()
     }
 
     func save(_ message: ServiceMessage, to channel: Channel) throws {
         let messages = channel.mutableOrderedSetValue(forKey: Channel.ServiceMessagesKey)
         messages.add(message)
 
-        try self.appDelegate.saveContext()
+        try self.saveContext()
     }
 
     func createChangeMembersMessage(_ text: String,
@@ -122,6 +122,6 @@ extension CoreDataHelper {
     func delete(_ serviceMessage: ServiceMessage) throws {
         self.managedContext.delete(serviceMessage)
 
-        try self.appDelegate.saveContext()
+        try self.saveContext()
     }
 }

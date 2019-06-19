@@ -17,7 +17,7 @@ extension CoreDataHelper {
         self.append(account: account)
         self.setCurrent(account: account)
 
-        try self.appDelegate.saveContext()
+        try self.saveContext()
     }
 
     func loadAccount(withIdentity identity: String) throws {
@@ -41,8 +41,8 @@ extension CoreDataHelper {
 
         self.managedContext.delete(account)
 
-        try self.appDelegate.saveContext()
+        try self.saveContext()
 
-        self.reloadData()
+        try self.reloadData()
     }
 }

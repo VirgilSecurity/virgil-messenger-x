@@ -51,8 +51,8 @@
                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V0u-S9-iJJ" customClass="BEMCheckBox">
-                        <rect key="frame" x="25" y="35" width="25" height="25"/>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V0u-S9-iJJ" customClass="BEMCheckBox">
+                        <rect key="frame" x="25" y="33" width="25" height="25"/>
                     </view>
                 </subviews>
                 <color key="backgroundColor" red="0.16862745098039217" green="0.18823529411764706" blue="0.23137254901960785" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

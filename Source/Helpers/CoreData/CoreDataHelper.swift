@@ -6,7 +6,6 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
-import UIKit
 import Foundation
 import CoreData
 
@@ -20,44 +19,61 @@ enum CoreDataHelperError: Int, Error {
 }
 
 class CoreDataHelper {
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    let managedContext: NSManagedObjectContext
-
     private(set) static var shared: CoreDataHelper = CoreDataHelper()
     private(set) var accounts: [Account] = []
     private(set) var currentChannel: Channel?
     private(set) var currentAccount: Account?
 
+    let managedContext: NSManagedObjectContext
+
+    let persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "VirgilMessenger-2")
+
+        container.loadPersistentStores { _, error in
+            if let error = error as NSError? {
+                Log.error("Load persistent store failed: \(error.localizedDescription)")
+
+                fatalError()
+            }
+        }
+
+        return container
+    }()
+
+    func saveContext() throws {
+        if self.managedContext.hasChanges {
+            try self.managedContext.save()
+        }
+    }
+
     private init() {
-        self.managedContext = self.appDelegate.persistentContainer.viewContext
+        self.managedContext = self.persistentContainer.viewContext
 
-        guard let accounts = self.fetch() else {
-            Log.error("Core Data: fetch error")
-            return
-        }
-
-        self.accounts = accounts
+        try? self.reloadData()
     }
 
-    func reloadData() {
-        guard let accounts = self.fetch() else {
-            Log.error("Core Data: fetch error")
-            return
-        }
-
-        self.accounts = accounts
+    func reloadData() throws {
+        self.accounts = try self.fetch()
     }
 
-    private func fetch() -> [Account]? {
+    private func fetch() throws -> [Account] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: Account.EntityName)
 
-        do {
-            let accounts = try managedContext.fetch(fetchRequest) as? [Account]
-            return accounts
-        } catch let error as NSError {
-            Log.error("Could not fetch. \(error), \(error.userInfo)")
-            return nil
+        let accounts = try self.managedContext.fetch(fetchRequest) as? [Account]
+
+        return accounts ?? []
+    }
+
+    public func clearStorage() throws {
+        for account in self.accounts {
+            try account.channels.forEach { try self.delete(channel: $0) }
+
+            self.managedContext.delete(account)
         }
+
+        try self.saveContext()
+
+        try self.reloadData()
     }
 
     func setCurrent(account: Account) {

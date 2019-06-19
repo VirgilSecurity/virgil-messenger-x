@@ -46,7 +46,7 @@ extension CoreDataHelper {
                                   sessionId: sessionId,
                                   managedContext: self.managedContext)
 
-        try self.appDelegate.saveContext()
+        try self.saveContext()
 
         return channel
     }
@@ -63,7 +63,7 @@ extension CoreDataHelper {
 
         channel.cards += cardsToAdd
 
-        try self.appDelegate.saveContext()
+        try self.saveContext()
     }
 
     func remove(_ cards: [Card], from channel: Channel) throws {
@@ -73,7 +73,7 @@ extension CoreDataHelper {
             }
         }
 
-        try self.appDelegate.saveContext()
+        try self.saveContext()
     }
 
     func delete(channel: Channel) throws {
@@ -82,7 +82,7 @@ extension CoreDataHelper {
 
         self.managedContext.delete(channel)
 
-        try self.appDelegate.saveContext()
+        try self.saveContext()
     }
 
     func existsSingleChannel(with identity: String) -> Bool {
