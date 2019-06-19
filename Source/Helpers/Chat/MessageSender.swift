@@ -21,10 +21,6 @@ public class MessageSender {
 
                 let plaintext = try message.export()
 
-                guard let messages = twilioChannel.messages else {
-                    throw TwilioHelperError.invalidChannel
-                }
-
                 let ciphertext: String
                 switch coreChannel.type {
                 case .single:
@@ -33,10 +29,9 @@ public class MessageSender {
                     ciphertext = try VirgilHelper.shared.encryptGroup(plaintext, channel: coreChannel)
                 }
 
-                TwilioHelper.shared.send(ciphertext: ciphertext,
-                                         messages: messages,
-                                         type: .service,
-                                         identifier: message.identifier).start(completion: completion)
+                twilioChannel.send(ciphertext: ciphertext,
+                                   type: .service,
+                                   identifier: message.identifier).start(completion: completion)
             } catch {
                 completion(nil, error)
             }
@@ -74,20 +69,11 @@ public class MessageSender {
     public func sendChangeMembers(message: Message, identifier: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                guard let channel = TwilioHelper.shared.currentChannel else {
-                    throw TwilioHelperError.nilCurrentChannel
-                }
+                let channel = try TwilioHelper.shared.getCurrentChannel()
 
-                guard let messages = channel.messages, let body = message.body else {
-                    throw TwilioHelperError.invalidChannel
-                }
+                let body = try message.getBody()
 
-                try TwilioHelper.shared.send(ciphertext: body,
-                                             messages: messages,
-                                             type: .service,
-                                             identifier: identifier).startSync().getResult()
-
-                completion((), nil)
+                channel.send(ciphertext: body, type: .service, identifier: identifier).start(completion: completion)
             } catch {
                 completion(nil, error)
             }
@@ -97,9 +83,8 @@ public class MessageSender {
     public func send(message: Message, withId id: Int) throws -> UIMessageModelProtocol {
         let cards = message.channel.cards
 
-        guard let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel),
-            let messages = channel.messages else {
-                throw TwilioHelperError.invalidChannel
+        guard let channel = TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel) else {
+            throw TwilioHelperError.invalidChannel
         }
 
         let uiModel = message.exportAsUIModel(withId: id, status: .sending)
@@ -109,7 +94,7 @@ public class MessageSender {
                 switch message.type {
                 case .text:
                     guard let plaintext = message.body else {
-                        throw CoreDataHelperError.invalidMessage
+                        throw CoreDataHelper.Error.invalidMessage
                     }
 
                     let ciphertext: String
@@ -120,23 +105,19 @@ public class MessageSender {
                         ciphertext = try VirgilHelper.shared.encrypt(plaintext, card: cards.first!)
                     }
 
-                    try TwilioHelper.shared.send(ciphertext: ciphertext,
-                                                 messages: messages,
-                                                 type: .regular).startSync().getResult()
+                    try channel.send(ciphertext: ciphertext, type: .regular).startSync().getResult()
                 case .photo:
                     break
                 case .audio:
                     break
                 case .changeMembers:
                     guard let plaintext = message.body else {
-                        throw CoreDataHelperError.invalidMessage
+                        throw CoreDataHelper.Error.invalidMessage
                     }
 
                     let ciphertext = try VirgilHelper.shared.encryptGroup(plaintext, channel: message.channel)
 
-                    try TwilioHelper.shared.send(ciphertext: ciphertext,
-                                                 messages: messages,
-                                                 type: .service).startSync().getResult()
+                    try channel.send(ciphertext: ciphertext, type: .service).startSync().getResult()
                 }
 
                 self.updateMessage(uiModel, status: .success)

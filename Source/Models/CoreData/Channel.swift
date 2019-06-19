@@ -107,7 +107,7 @@ public class Channel: NSManagedObject {
                      sessionId: Data?,
                      managedContext: NSManagedObjectContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Channel.EntityName, in: managedContext) else {
-            throw CoreDataHelperError.entityNotFound
+            throw CoreDataHelper.Error.entityNotFound
         }
 
         self.init(entity: entity, insertInto: managedContext)

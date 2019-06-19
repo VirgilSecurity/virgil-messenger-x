@@ -27,7 +27,7 @@ extension VirgilHelper {
         }
 
         guard let card = channel.cards.first(where: { $0.identity == identity }) else {
-            throw CoreDataHelperError.invalidChannel
+            throw CoreDataHelper.Error.invalidChannel
         }
 
         let ratchetMessage = try RatchetGroupMessage.deserialize(input: data)

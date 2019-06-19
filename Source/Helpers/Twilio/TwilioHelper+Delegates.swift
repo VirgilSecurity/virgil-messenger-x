@@ -6,8 +6,6 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
-import UIKit
-import CoreData
 import TwilioChatClient
 
 extension TwilioHelper {
@@ -64,7 +62,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
         self.queue.async {
             do {
                 if channel.status != .joined {
-                    try self.makeJoinOperation(channel: channel).startSync().getResult()
+                    try channel.join().startSync().getResult()
 
                     try ChatsManager.join(channel)
 

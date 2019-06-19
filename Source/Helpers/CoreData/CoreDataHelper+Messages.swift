@@ -30,7 +30,7 @@ extension CoreDataHelper {
                                     isIncoming: Bool,
                                     date: Date = Date()) throws -> Message {
         guard let channel = channel ?? self.currentChannel else {
-            throw CoreDataHelperError.nilCurrentChannel
+            throw Error.nilCurrentChannel
         }
 
         let message = try Message(body: text,
@@ -63,7 +63,7 @@ extension CoreDataHelper {
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Message {
         guard let channel = channel ?? self.currentChannel else {
-            throw CoreDataHelperError.nilCurrentChannel
+            throw Error.nilCurrentChannel
         }
 
         let message = try Message(body: body,
@@ -84,7 +84,7 @@ extension CoreDataHelper {
                             date: Date = Date(),
                             type: MessageType) throws -> Message {
         guard let channel = channel ?? self.currentChannel else {
-            throw CoreDataHelperError.nilCurrentChannel
+            throw Error.nilCurrentChannel
         }
 
         let message = try Message(media: data,
@@ -105,7 +105,7 @@ extension CoreDataHelper {
         }
 
         guard let user = self.getSingleChannel(with: identity) else {
-            throw CoreDataHelperError.channelNotFound
+            throw Error.channelNotFound
         }
 
         return user.serviceMessages.first { $0.message.getSessionId() == sessionId && $0.identifier == identifier }

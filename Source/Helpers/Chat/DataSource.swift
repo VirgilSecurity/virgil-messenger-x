@@ -129,7 +129,7 @@ class DataSource: ChatDataSourceProtocol {
 
     func addChangeMembers(_ serviceMessage: ServiceMessage) throws {
         guard let serviceMessageId = serviceMessage.identifier else {
-            throw CoreDataHelperError.invalidMessage
+            throw CoreDataHelper.Error.invalidMessage
         }
 
         self.nextMessageId += 1

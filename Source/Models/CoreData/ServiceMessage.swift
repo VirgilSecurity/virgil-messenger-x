@@ -114,7 +114,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
                      managedContext: NSManagedObjectContext = CoreDataHelper.shared.managedContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: ServiceMessage.EntityName,
                                                       in: managedContext) else {
-            throw CoreDataHelperError.entityNotFound
+            throw CoreDataHelper.Error.entityNotFound
         }
 
         self.init(entity: entity, insertInto: managedContext)
@@ -133,7 +133,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
         guard let entity = NSEntityDescription.entity(forEntityName: ServiceMessage.EntityName,
                                                       in: managedContext) else {
-            throw CoreDataHelperError.entityNotFound
+            throw CoreDataHelper.Error.entityNotFound
         }
 
         self.init(entity: entity, insertInto: managedContext)
@@ -150,7 +150,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
 extension ServiceMessage {
     static func `import`(_ base64EncodedString: String) throws -> ServiceMessage {
         guard let data = Data(base64Encoded: base64EncodedString) else {
-            throw CoreDataHelperError.invalidMessage
+            throw CoreDataHelper.Error.invalidMessage
         }
 
         return try JSONDecoder().decode(ServiceMessage.self, from: data)
@@ -164,11 +164,11 @@ extension ServiceMessage {
 extension ServiceMessage {
     public func getChangeMembersText() throws -> String {
         guard self.type == .changeMembers else {
-            throw CoreDataHelperError.invalidMessage
+            throw CoreDataHelper.Error.invalidMessage
         }
 
         if self.cardsAdd.isEmpty && self.cardsRemove.isEmpty {
-            throw CoreDataHelperError.invalidMessage
+            throw CoreDataHelper.Error.invalidMessage
         }
 
         let action = self.cardsAdd.isEmpty ? "removed" : "added"

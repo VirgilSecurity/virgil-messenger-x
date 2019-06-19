@@ -11,7 +11,7 @@ import TwilioChatClient
 
 extension ChatsManager {
     public static func join(_ channel: TCHChannel) throws {
-        let attributes = try TwilioHelper.shared.getAttributes(of: channel)
+        let attributes = try channel.getAttributes()
 
         switch attributes.type {
         case .single:

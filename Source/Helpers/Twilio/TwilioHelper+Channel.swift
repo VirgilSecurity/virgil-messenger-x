@@ -10,33 +10,12 @@ import TwilioChatClient
 import VirgilSDK
 
 extension TwilioHelper {
-    func getAttributes(of channel: TCHChannel) throws -> ChannelAttributes {
-        guard let attributes = channel.attributes() else {
-            throw TwilioHelperError.invalidChannel
-        }
-
-        return try ChannelAttributes.import(attributes)
-    }
-
-    func getCompanion(from attributes: ChannelAttributes) throws -> String {
+    func getCompanion(from attributes: TCHChannel.Attributes) throws -> String {
         guard let companion = attributes.members.first(where: { $0 != self.identity }) else {
             throw TwilioHelperError.invalidChannel
         }
 
         return companion
-    }
-
-    func makeJoinOperation(channel: TCHChannel) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            channel.join { result in
-                guard result.isSuccessful() else {
-                    completion(nil, result.error)
-                    return
-                }
-
-                completion((), nil)
-            }
-        }
     }
 
     private func makeCreateChannelOperation(with options: [String: Any]) -> CallbackOperation<TCHChannel> {
@@ -48,66 +27,6 @@ extension TwilioHelper {
                 }
 
                 completion(channel, nil)
-            }
-        }
-    }
-
-    private func makeInviteOperation(identity: String, channel: TCHChannel) -> CallbackOperation<Void> {
-        return CallbackOperation { operation, completion in
-            channel.members!.invite(byIdentity: identity) { result in
-                guard result.isSuccessful() else {
-                    completion(nil, result.error)
-                    return
-                }
-
-                completion((), nil)
-            }
-        }
-    }
-
-    func setAttributes(_ attributes: ChannelAttributes, to channel: TCHChannel) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            do {
-                let newAttributes = try attributes.export()
-
-                channel.setAttributes(newAttributes) { result in
-                    if let error = result.error {
-                        completion(nil, error)
-                    } else {
-                        completion((), nil)
-                    }
-                }
-            } catch {
-                completion(nil, error)
-            }
-        }
-    }
-
-    func getMessagesCount(in channel: TCHChannel) -> CallbackOperation<Int> {
-        return CallbackOperation { _, completion in
-            channel.getMessagesCount { result, count in
-                if let error = result.error {
-                    completion(nil, error)
-                } else {
-                    completion(Int(count), nil)
-                }
-            }
-        }
-    }
-
-    func getLastMessages(withCount count: UInt, from messages: TCHMessages?) -> CallbackOperation<[TCHMessage]> {
-        return CallbackOperation { _, completion in
-            guard let messages = messages else {
-                completion([], nil)
-                return
-            }
-
-            messages.getLastWithCount(count) { result, messages in
-                if let error = result.error {
-                    completion(nil, error)
-                } else {
-                    completion(messages ?? [], nil)
-                }
             }
         }
     }
@@ -153,11 +72,11 @@ extension TwilioHelper {
         return CallbackOperation { _, completion in
             self.queue.async {
                 do {
-                    let attributes = ChannelAttributes(initiator: self.identity,
-                                                       friendlyName: nil,
-                                                       sessionId: nil,
-                                                       members: [self.identity, card.identity],
-                                                       type: .single)
+                    let attributes = TCHChannel.Attributes(initiator: self.identity,
+                                                           friendlyName: nil,
+                                                           sessionId: nil,
+                                                           members: [self.identity, card.identity],
+                                                           type: .single)
 
                     let uniqueName = self.makeUniqueName(card.identity, self.identity)
                     let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
@@ -166,11 +85,11 @@ extension TwilioHelper {
 
                     let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
 
-                    try self.makeJoinOperation(channel: channel).startSync().getResult()
+                    try channel.join().startSync().getResult()
 
                     try CoreDataHelper.shared.createSingleChannel(sid: channel.sid!, card: card)
 
-                    try self.makeInviteOperation(identity: card.identity, channel: channel).startSync().getResult()
+                    try channel.invite(identity: card.identity).startSync().getResult()
 
                     completion((), nil)
                 } catch {
@@ -184,11 +103,11 @@ extension TwilioHelper {
         return CallbackOperation { _, completion in
             self.queue.async {
                 do {
-                    let attributes = ChannelAttributes(initiator: self.identity,
-                                                       friendlyName: name,
-                                                       sessionId: sessionId,
-                                                       members: [self.identity] + members,
-                                                       type: .group)
+                    let attributes = TCHChannel.Attributes(initiator: self.identity,
+                                                           friendlyName: name,
+                                                           sessionId: sessionId,
+                                                           members: [self.identity] + members,
+                                                           type: .group)
 
                     let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
                                                   TCHChannelOptionFriendlyName: name,
@@ -196,7 +115,7 @@ extension TwilioHelper {
 
                     let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
 
-                    try self.makeJoinOperation(channel: channel).startSync().getResult()
+                    try channel.join().startSync().getResult()
 
                     try CoreDataHelper.shared.createGroupChannel(name: name, members: members, sid: channel.sid!, sessionId: sessionId)
 
@@ -205,7 +124,7 @@ extension TwilioHelper {
                     var operations: [CallbackOperation<Void>] = []
 
                     members.forEach {
-                        let inviteOperation = self.makeInviteOperation(identity: $0, channel: channel)
+                        let inviteOperation = channel.invite(identity: $0)
                         completionOperation.addDependency(inviteOperation)
                         operations.append(inviteOperation)
                     }
@@ -226,11 +145,11 @@ extension TwilioHelper {
                     throw TwilioHelperError.nilCurrentChannel
                 }
 
-                var attributes = try self.getAttributes(of: channel)
+                var attributes = try channel.getAttributes()
 
                 attributes.members += members
 
-                let setAttributesOperation = self.setAttributes(attributes, to: channel)
+                let setAttributesOperation = channel.setAttributes(attributes)
 
                 let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
@@ -240,7 +159,7 @@ extension TwilioHelper {
                 operations.append(setAttributesOperation)
 
                 members.forEach {
-                    let operation = self.makeInviteOperation(identity: $0, channel: channel)
+                    let operation = channel.invite(identity: $0)
                     completionOperation.addDependency(operation)
                     operations.append(operation)
                 }
@@ -260,11 +179,11 @@ extension TwilioHelper {
                     throw TwilioHelperError.nilCurrentChannel
                 }
 
-                var attributes = try self.getAttributes(of: channel)
+                var attributes = try channel.getAttributes()
 
                 attributes.members = attributes.members.filter { $0 != member }
 
-                let setAttributesOperation = self.setAttributes(attributes, to: channel)
+                let setAttributesOperation = channel.setAttributes(attributes)
 
                 let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
@@ -288,9 +207,9 @@ extension TwilioHelper {
                         throw error
                     }
 
-                    if let channel = CoreDataHelper.shared.getChannel(channel) {
-                        try CoreDataHelper.shared.delete(channel: channel)
-                    }
+                    let channel = try CoreDataHelper.shared.getChannel(channel)
+
+                    try CoreDataHelper.shared.delete(channel: channel)
 
                     completion((), nil)
                 } catch {

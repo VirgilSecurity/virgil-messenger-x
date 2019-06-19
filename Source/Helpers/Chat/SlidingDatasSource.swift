@@ -36,6 +36,7 @@ public class SlidingDataSource<Element> {
     private(set) var itemGenerator: ((Int, [Message]) -> Element)
     private(set) var items = [Element]()
     private var itemsOffset: Int
+
     public var itemsInWindow: [Element] {
         let offset = self.windowOffset - self.itemsOffset
         let a = offset < 0 ? 0 : offset
@@ -51,11 +52,15 @@ public class SlidingDataSource<Element> {
         self.windowCount = 0
         self.itemGenerator = itemGenerator
         self.pageSize = pageSize
+
         self.showItems(min(pageSize, count), position: .top)
     }
 
     private func showItems(_ count: Int, position: InsertPosition) {
-        guard count > 0 else { return }
+        guard count > 0 else {
+            return
+        }
+
         guard let channel = CoreDataHelper.shared.currentChannel else {
             Log.error("Missing Core Data current channel")
             return

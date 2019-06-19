@@ -73,16 +73,7 @@ class ChatViewController: BaseChatViewController {
         CoreDataHelper.shared.setCurrent(channel: self.channel)
         TwilioHelper.shared.setChannel(self.channel)
 
-        let titleButton = UIButton(type: .custom)
-        titleButton.frame = CGRect(x: 0, y: 0, width: 200, height: 21)
-        titleButton.tintColor = .white
-        titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
-        titleButton.setTitle(self.channel.name, for: .normal)
-
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(showChatDetails(_:)))
-        titleButton.addGestureRecognizer(tapRecognizer)
-
-        self.navigationItem.titleView = titleButton
+        self.setupTitle()
 
         NotificationCenter.default.removeObserver(self)
         NotificationCenter.default.removeObserver(self.dataSource)
@@ -106,6 +97,19 @@ class ChatViewController: BaseChatViewController {
         if let rootVC = navigationController?.viewControllers.first {
             navigationController?.viewControllers = [rootVC, self]
         }
+    }
+
+    private func setupTitle() {
+        let titleButton = UIButton(type: .custom)
+        titleButton.frame = CGRect(x: 0, y: 0, width: 200, height: 21)
+        titleButton.tintColor = .white
+        titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
+        titleButton.setTitle(self.channel.name, for: .normal)
+
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(showChatDetails(_:)))
+        titleButton.addGestureRecognizer(tapRecognizer)
+
+        self.navigationItem.titleView = titleButton
     }
 
     @IBAction @objc func showChatDetails(_ sender: Any) {

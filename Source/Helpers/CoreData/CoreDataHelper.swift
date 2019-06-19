@@ -6,17 +6,7 @@
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import CoreData
-
-enum CoreDataHelperError: Int, Error {
-    case nilCurrentAccount = 1
-    case nilCurrentChannel = 2
-    case entityNotFound = 3
-    case channelNotFound = 4
-    case invalidChannel = 5
-    case invalidMessage = 6
-}
 
 class CoreDataHelper {
     private(set) static var shared: CoreDataHelper = CoreDataHelper()
@@ -40,16 +30,25 @@ class CoreDataHelper {
         return container
     }()
 
-    func saveContext() throws {
-        if self.managedContext.hasChanges {
-            try self.managedContext.save()
-        }
+    public enum Error: Int, Swift.Error {
+        case nilCurrentAccount = 1
+        case nilCurrentChannel = 2
+        case entityNotFound = 3
+        case channelNotFound = 4
+        case invalidChannel = 5
+        case invalidMessage = 6
     }
 
     private init() {
         self.managedContext = self.persistentContainer.viewContext
 
         try? self.reloadData()
+    }
+
+    func saveContext() throws {
+        if self.managedContext.hasChanges {
+            try self.managedContext.save()
+        }
     }
 
     func reloadData() throws {

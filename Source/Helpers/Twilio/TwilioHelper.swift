@@ -30,14 +30,17 @@ public class TwilioHelper: NSObject {
     let identity: String
     let queue = DispatchQueue(label: "TwilioHelper")
 
-    public enum MessageType: String, Codable {
-        case regular
-        case service
-    }
-
     enum MediaType: String {
         case photo = "image/bmp"
         case audio = "audio/mp4"
+    }
+
+    public func getCurrentChannel() throws -> TCHChannel {
+        guard let channel = self.currentChannel else {
+            throw TwilioHelperError.nilCurrentChannel
+        }
+
+        return channel
     }
 
     public static func makeInitTwilioOperation(identity: String, client: Client) -> GenericOperation<Void> {

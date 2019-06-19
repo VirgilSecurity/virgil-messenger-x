@@ -33,7 +33,7 @@ extension ChatsManager {
                     for twilioChannel in twilioChannels {
                         let operation = self.makeUpdateChannelOperation(twilioChannel: twilioChannel)
 
-                        let attributes = try TwilioHelper.shared.getAttributes(of: twilioChannel)
+                        let attributes = try twilioChannel.getAttributes()
 
                         switch attributes.type {
                         case .single:
@@ -70,24 +70,18 @@ extension ChatsManager {
         return CallbackOperation { _, completion in
             do {
                 let coreChannel: Channel
-                if let channel = CoreDataHelper.shared.getChannel(twilioChannel) {
+                if let channel = try? CoreDataHelper.shared.getChannel(twilioChannel) {
                     coreChannel = channel
                 } else {
-                    if twilioChannel.status != .joined {
-                        try TwilioHelper.shared.makeJoinOperation(channel: twilioChannel).startSync().getResult()
-                    }
+                    try twilioChannel.join().startSync().getResult()
 
                     try ChatsManager.join(twilioChannel)
 
-                    guard let channel = CoreDataHelper.shared.getChannel(twilioChannel) else {
-                        throw CoreDataHelperError.channelNotFound
-                    }
-
-                    coreChannel = channel
+                    coreChannel = try CoreDataHelper.shared.getChannel(twilioChannel)
                 }
 
                 let coreCount = coreChannel.messages.count
-                let twilioCount = try TwilioHelper.shared.getMessagesCount(in: twilioChannel).startSync().getResult()
+                let twilioCount = try twilioChannel.getMessagesCount().startSync().getResult()
 
                 let toLoad = twilioCount - coreCount
 
@@ -96,7 +90,7 @@ extension ChatsManager {
                     return
                 }
 
-                let messages = try TwilioHelper.shared.getLastMessages(withCount: UInt(toLoad), from: twilioChannel.messages).startSync().getResult()
+                let messages = try twilioChannel.getLastMessages(withCount: toLoad).startSync().getResult()
 
                 for message in messages {
                     if !CoreDataHelper.shared.existsChannel(sid: twilioChannel.sid!) {

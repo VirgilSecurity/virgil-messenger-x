@@ -21,9 +21,7 @@ class MessageProcessor {
             throw TwilioHelperError.invalidMessage
         }
 
-        guard let channel = CoreDataHelper.shared.getChannel(twilioChannel) else {
-            throw CoreDataHelperError.channelNotFound
-        }
+        let channel = try CoreDataHelper.shared.getChannel(twilioChannel)
 
         guard (Int(truncating: index) >= channel.messages.count) else {
             return nil
@@ -52,7 +50,7 @@ class MessageProcessor {
                                     twilioMessage: TCHMessage,
                                     twilioChannel: TCHChannel,
                                     channel: Channel) throws -> Message? {
-        let attributes = try TwilioHelper.MessageAttributes.import(twilioMessage.attributes()!)
+        let attributes = try twilioMessage.getAttributes()
 
         switch channel.type {
         case .single:
@@ -80,7 +78,7 @@ class MessageProcessor {
                                       twilioMessage: TCHMessage,
                                       twilioChannel: TCHChannel,
                                       channel: Channel,
-                                      attributes: TwilioHelper.MessageAttributes) throws -> Message? {
+                                      attributes: TCHMessage.Attributes) throws -> Message? {
         switch attributes.type {
         case .regular:
             let decrypted: String
@@ -105,7 +103,7 @@ class MessageProcessor {
 
             let serviceMessage = try ServiceMessage.import(decrypted)
 
-            try TwilioHelper.shared.delete(twilioMessage, from: twilioChannel.messages!).startSync().getResult()
+            try twilioChannel.delete(message: twilioMessage).startSync().getResult()
 
             try CoreDataHelper.shared.save(serviceMessage, to: channel)
 
@@ -119,9 +117,9 @@ class MessageProcessor {
                                      twilioMessage: TCHMessage,
                                      twilioChannel: TCHChannel,
                                      channel: Channel,
-                                     attributes: TwilioHelper.MessageAttributes) throws -> Message? {
+                                     attributes: TCHMessage.Attributes) throws -> Message? {
         guard let sessionId = channel.sessionId else {
-            throw CoreDataHelperError.invalidChannel
+            throw CoreDataHelper.Error.invalidChannel
         }
 
         switch attributes.type {
@@ -174,7 +172,7 @@ class MessageProcessor {
 
             if !CoreDataHelper.shared.existsServiceMessage(from: author, withSessionId: sessionId) {
                 try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
-
+                
                 if CoreDataHelper.shared.currentChannel == channel {
                     DispatchQueue.main.async {
                         let name = Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue)
@@ -215,7 +213,7 @@ class MessageProcessor {
                 throw NSError()
         }
 
-        let data = try TwilioHelper.shared.makeGetMediaOperation(message: message).startSync().getResult()
+        let data = try message.getMedia().startSync().getResult()
 
         return try CoreDataHelper.shared.createMediaMessage(data, in: channel, isIncoming: isIncoming, date: date, type: type)
     }

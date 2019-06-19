@@ -14,7 +14,7 @@ public class Configurator {
     public func configure(completion: @escaping (Error?) -> Void) {
         do {
             guard let identity = CoreDataHelper.shared.currentAccount?.identity else {
-                throw CoreDataHelperError.nilCurrentAccount
+                throw CoreDataHelper.Error.nilCurrentAccount
             }
 
             let initPFSOperation = VirgilHelper.shared.makeInitPFSOperation(identity: identity)

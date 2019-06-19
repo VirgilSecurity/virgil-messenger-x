@@ -34,6 +34,14 @@ public class Message: NSManagedObject {
         }
     }
 
+    func getBody() throws -> String {
+        guard let body = self.body else {
+            throw CoreDataHelper.Error.invalidMessage
+        }
+
+        return body
+    }
+
     convenience init(body: String? = nil,
                      media: Data? = nil,
                      type: MessageType,
@@ -42,7 +50,7 @@ public class Message: NSManagedObject {
                      channel: Channel,
                      managedContext: NSManagedObjectContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Message.EntityName, in: managedContext) else {
-            throw CoreDataHelperError.entityNotFound
+            throw CoreDataHelper.Error.entityNotFound
         }
 
         self.init(entity: entity, insertInto: managedContext)

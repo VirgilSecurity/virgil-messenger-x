@@ -35,7 +35,7 @@ extension CoreDataHelper {
 
     private func createChannel(type: ChannelType, sid: String, name: String, cards: [Card], sessionId: Data? = nil) throws -> Channel {
         guard let account = self.currentAccount else {
-            throw CoreDataHelperError.nilCurrentAccount
+            throw Error.nilCurrentAccount
         }
 
         let channel = try Channel(sid: sid,
@@ -93,8 +93,14 @@ extension CoreDataHelper {
         return self.getChannels().contains { $0.sid == sid }
     }
 
-    func getChannel(_ twilioChannel: TCHChannel) -> Channel? {
-        return self.getChannels().first { $0.sid == twilioChannel.sid! }
+    func getChannel(_ twilioChannel: TCHChannel) throws -> Channel {
+        let twilioSid = try twilioChannel.getSid()
+        
+        guard let channel = self.getChannels().first(where: { $0.sid == twilioSid }) else {
+            throw Error.channelNotFound
+        }
+
+        return channel
     }
 
     func getChannel(withName name: String) -> Channel? {
