@@ -108,14 +108,6 @@ class ChatViewController: BaseChatViewController {
         }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        self.dataSource.messageSender.messagesInProcess.forEach {
-            try? CoreDataHelper.shared.delete($0)
-        }
-    }
-
     @IBAction @objc func showChatDetails(_ sender: Any) {
         if self.channel.type == .group {
             self.performSegue(withIdentifier: "goToGroupInfo", sender: self)

@@ -10,8 +10,6 @@ public protocol UIMessageModelProtocol: MessageModelProtocol {
 public class MessageSender {
     public var onMessageChanged: ((_ message: UIMessageModelProtocol) -> Void)?
 
-    public var messagesInProcess: [Message] = []
-
     private let queue = DispatchQueue(label: "MessageSender")
 
     public static func sendServiceMessage(_ message: ServiceMessage, to coreChannel: Channel) -> CallbackOperation<Void> {
@@ -106,8 +104,6 @@ public class MessageSender {
 
         let uiModel = message.exportAsUIModel(withId: id, status: .sending)
 
-        self.messagesInProcess.append(message)
-
         self.queue.async {
             do {
                 switch message.type {
@@ -144,8 +140,6 @@ public class MessageSender {
                 }
 
                 self.updateMessage(uiModel, status: .success)
-
-                self.messagesInProcess = self.messagesInProcess.filter { $0 != message }
             } catch {
                 self.updateMessage(uiModel, status: .failed)
             }
