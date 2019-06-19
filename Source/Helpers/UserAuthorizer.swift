@@ -57,7 +57,11 @@ public class UserAuthorizer {
         }
     }
 
-    public func logOut() {
+    public func logOut() throws {
+        if let token = TwilioHelper.updatedPushToken {
+            try TwilioHelper.shared.deregister(withNotificationToken: token).startSync().getResult()
+        }
+
         UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
     }
 

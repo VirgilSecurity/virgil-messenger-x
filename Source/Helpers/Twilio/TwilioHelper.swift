@@ -20,6 +20,7 @@ public enum TwilioHelperError: Int, Error {
 }
 
 public class TwilioHelper: NSObject {
+    public static var updatedPushToken: Data?
     private(set) static var shared: TwilioHelper!
     private(set) var client: TwilioChatClient!
     private(set) var channels: TCHChannels!
@@ -50,7 +51,7 @@ public class TwilioHelper: NSObject {
 
                 try self.shared.initialize(token: token).startSync().getResult()
 
-                if let app = UIApplication.shared.delegate as? AppDelegate, let token = app.updatedPushToken {
+                if let token = self.updatedPushToken {
                     try self.shared.register(withNotificationToken: token).startSync().getResult()
                 }
 
@@ -62,6 +63,8 @@ public class TwilioHelper: NSObject {
                 }
 
                 Log.debug("Successfully initialized Twilio")
+
+                completion((), nil)
             } catch {
                 completion(nil, error)
             }
@@ -109,6 +112,18 @@ public class TwilioHelper: NSObject {
     private func register(withNotificationToken token: Data) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             self.client.register(withNotificationToken: token) { result in
+                if let error = result.error {
+                    completion(nil, error)
+                } else {
+                    completion((), nil)
+                }
+            }
+        }
+    }
+
+    public func deregister(withNotificationToken token: Data) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            self.client.deregister(withNotificationToken: token) { result in
                 if let error = result.error {
                     completion(nil, error)
                 } else {

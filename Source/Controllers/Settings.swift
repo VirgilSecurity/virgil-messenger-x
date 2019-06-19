@@ -40,9 +40,12 @@ class SettingsViewController: ViewController {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         let logoutAction = UIAlertAction(title: "Logout", style: .destructive) { _ in
-            UserAuthorizer().logOut()
-
-            self.switchNavigationStack(to: AuthenticationViewController.name)
+            do {
+                try UserAuthorizer().logOut()
+                self.switchNavigationStack(to: AuthenticationViewController.name)
+            } catch {
+                self.alert(error)
+            }
         }
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
