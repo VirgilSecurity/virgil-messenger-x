@@ -94,7 +94,7 @@ Add new one!</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DDd-4J-wX9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tapGestureRecognizer id="VRT-Hn-lvc">
                     <connections>
-                        <action selector="noChatsTap:" destination="zCn-H6-sIC" id="SxE-tI-2Oy"/>
+                        <action selector="didTapAdd:" destination="zCn-H6-sIC" id="tWP-tg-B3u"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>

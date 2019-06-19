@@ -15,9 +15,9 @@ class ChatListViewController: ViewController {
 
     static let name = "ChatList"
 
-    private var selectedChannel: Channel?
-
     private let configurator = Configurator()
+
+    private var channels: [Channel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,8 +45,7 @@ class ChatListViewController: ViewController {
                     }
                 }
 
-                self.noChatsView.isHidden = !CoreDataHelper.shared.getChannels().isEmpty
-                self.tableView.reloadData()
+                self.reloadTableView()
                 self.navigationItem.titleView = nil
                 self.title = "Chats"
                 self.navigationController?.view.isUserInteractionEnabled = true
@@ -62,11 +61,11 @@ class ChatListViewController: ViewController {
         self.tableView.dataSource = self
 
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(ChatListViewController.reloadTableView(notification:)),
+                                               selector: #selector(self.reloadTableView),
                                                name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
                                                object: nil)
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(ChatListViewController.reloadTableView(notification:)),
+                                               selector: #selector(self.reloadTableView),
                                                name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
                                                object: nil)
     }
@@ -78,19 +77,29 @@ class ChatListViewController: ViewController {
             TwilioHelper.shared.deselectChannel()
         }
 
-        self.noChatsView.isHidden = !CoreDataHelper.shared.getChannels().isEmpty
-        self.tableView.reloadData()
+        self.reloadTableView()
     }
 
-    @objc private func reloadTableView(notification: Notification) {
+    @objc private func reloadTableView() {
         DispatchQueue.main.async {
-            self.tableView.reloadData()
-            self.noChatsView.isHidden = true
-        }
-    }
+            self.channels = CoreDataHelper.shared.getChannels()
 
-    @IBAction func noChatsTap(_ sender: Any) {
-        self.didTapAdd(self)
+            self.channels.sort { first, second in
+                guard let firstDate = first.lastMessagesDate else {
+                    return false
+                }
+
+                guard let secondDate = second.lastMessagesDate else {
+                    return true
+                }
+
+                return firstDate > secondDate
+            }
+
+            self.noChatsView.isHidden = !self.channels.isEmpty
+
+            self.tableView.reloadData()
+        }
     }
 
     @IBAction func didTapAdd(_ sender: Any) {
@@ -110,18 +119,16 @@ extension ChatListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
 
-        let channels = CoreDataHelper.shared.getChannels()
-
-        cell.tag = channels.count - indexPath.row - 1
+        cell.tag = indexPath.row
         cell.delegate = self
 
-        cell.configure(with: channels)
+        cell.configure(with: self.channels)
 
         return cell
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return CoreDataHelper.shared.getChannels().count
+        return self.channels.count
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -131,13 +138,12 @@ extension ChatListViewController: UITableViewDataSource {
 
 extension ChatListViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
-        let channels = CoreDataHelper.shared.getChannels()
-
-        let selectedChannel = channels[safe: cell.tag]!
+        guard let selectedChannel = self.channels[safe: cell.tag] else {
+            Log.error("Channel is out of range")
+            return
+        }
 
         CoreDataHelper.shared.setCurrent(channel: selectedChannel)
-
-        self.selectedChannel = selectedChannel
 
         self.performSegue(withIdentifier: "goToChat", sender: self)
     }
@@ -145,7 +151,7 @@ extension ChatListViewController: CellTapDelegate {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let chatController = segue.destination as? ChatViewController,
-            let channel = self.selectedChannel {
+            let channel = CoreDataHelper.shared.currentChannel {
                 chatController.channel = channel
         }
 
