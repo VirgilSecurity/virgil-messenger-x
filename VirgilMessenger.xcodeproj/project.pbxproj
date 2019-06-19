@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		160093CC22B93AD10045D43F /* BEMCheckBox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 160093CB22B93AD10045D43F /* BEMCheckBox.framework */; };
 		16013C7920B214460043EA29 /* AudioBubleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C7820B214460043EA29 /* AudioBubleView.swift */; };
 		16013C7B20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C7A20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift */; };
 		16013C7D20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C7C20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift */; };
@@ -141,6 +142,7 @@
 
 /* Begin PBXFileReference section */
 		160093CA22B9315C0045D43F /* VirgilMessenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VirgilMessenger.entitlements; sourceTree = "<group>"; };
+		160093CB22B93AD10045D43F /* BEMCheckBox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BEMCheckBox.framework; path = Carthage/Build/iOS/BEMCheckBox.framework; sourceTree = "<group>"; };
 		16013C7820B214460043EA29 /* AudioBubleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBubleView.swift; sourceTree = "<group>"; };
 		16013C7A20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageCollectionViewCellDefaultStyle.swift; sourceTree = "<group>"; };
 		16013C7C20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				160093CC22B93AD10045D43F /* BEMCheckBox.framework in Frameworks */,
 				1640C021227B2C5300D585E3 /* TwilioChatClient.framework in Frameworks */,
 				1693677F2248FA0800EF9A42 /* Crashlytics.framework in Frameworks */,
 				169367802248FA0800EF9A42 /* Fabric.framework in Frameworks */,
@@ -652,6 +655,7 @@
 		429228C71F96287A00DCECDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				160093CB22B93AD10045D43F /* BEMCheckBox.framework */,
 				1640C020227B2C5300D585E3 /* TwilioChatClient.framework */,
 				162D2B462240F94300CE7FC2 /* Crashlytics.framework */,
 				162D2B472240F94300CE7FC2 /* Fabric.framework */,
@@ -811,6 +815,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoRatchet.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilSDKRatchet.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/TwilioChatClient.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BEMCheckBox.framework",
 			);
 			outputFileListPaths = (
 			);

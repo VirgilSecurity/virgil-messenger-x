@@ -19,7 +19,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WOj-LT-qEG" customClass="GradientView" customModule="VirgilMessenger" customModuleProvider="target">
-                        <rect key="frame" x="80" y="25" width="40" height="40"/>
+                        <rect key="frame" x="75" y="25" width="40" height="40"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="L" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WPD-pj-sAL">
                                 <rect key="frame" x="13" y="5" width="14" height="30"/>
@@ -43,7 +43,7 @@
                         </userDefinedRuntimeAttributes>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lto-Hw-dFW">
-                        <rect key="frame" x="135" y="36" width="250" height="18"/>
+                        <rect key="frame" x="130" y="36" width="250" height="18"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="250" id="Dnw-ji-xgW"/>
                         </constraints>
@@ -51,30 +51,24 @@
                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wU1-AZ-gK6">
-                        <rect key="frame" x="15" y="37.5" width="50" height="15"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="50" id="Q5x-Iw-vGl"/>
-                        </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V0u-S9-iJJ" customClass="BEMCheckBox">
+                        <rect key="frame" x="25" y="35" width="25" height="25"/>
+                    </view>
                 </subviews>
                 <color key="backgroundColor" red="0.16862745098039217" green="0.18823529411764706" blue="0.23137254901960785" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 <constraints>
                     <constraint firstItem="WOj-LT-qEG" firstAttribute="centerY" secondItem="fON-IK-da8" secondAttribute="centerY" id="6jp-t7-ybK"/>
                     <constraint firstItem="lto-Hw-dFW" firstAttribute="leading" secondItem="WOj-LT-qEG" secondAttribute="trailing" constant="15" id="709-md-EiB"/>
-                    <constraint firstItem="wU1-AZ-gK6" firstAttribute="leading" secondItem="fON-IK-da8" secondAttribute="leading" constant="15" id="MYl-0S-e5m"/>
                     <constraint firstItem="lto-Hw-dFW" firstAttribute="centerY" secondItem="fON-IK-da8" secondAttribute="centerY" id="U5e-g4-tLu"/>
-                    <constraint firstItem="WOj-LT-qEG" firstAttribute="leading" secondItem="wU1-AZ-gK6" secondAttribute="trailing" constant="15" id="VSg-Zh-sYv"/>
-                    <constraint firstItem="wU1-AZ-gK6" firstAttribute="centerY" secondItem="fON-IK-da8" secondAttribute="centerY" id="aDR-uw-hf0"/>
+                    <constraint firstItem="V0u-S9-iJJ" firstAttribute="leading" secondItem="fON-IK-da8" secondAttribute="leading" constant="25" id="chT-J8-Sa2"/>
+                    <constraint firstItem="V0u-S9-iJJ" firstAttribute="centerY" secondItem="fON-IK-da8" secondAttribute="centerY" id="dM1-4w-gQt"/>
+                    <constraint firstItem="WOj-LT-qEG" firstAttribute="leading" secondItem="V0u-S9-iJJ" secondAttribute="trailing" constant="25" id="giy-iP-QOf"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="avatarView" destination="WOj-LT-qEG" id="hit-LG-EFZ"/>
                 <outlet property="letterLabel" destination="WPD-pj-sAL" id="3c2-HZ-MmD"/>
-                <outlet property="radioButton" destination="wU1-AZ-gK6" id="fRy-t4-iai"/>
+                <outlet property="radioButton" destination="V0u-S9-iJJ" id="GIx-Ns-S3h"/>
                 <outlet property="usernameLabel" destination="lto-Hw-dFW" id="rI6-9m-9ZG"/>
             </connections>
             <point key="canvasLocation" x="-644.92753623188412" y="119.19642857142857"/>

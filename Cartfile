@@ -2,3 +2,4 @@ github "VirgilSecurity/virgil-ratchet-x" "develop"
 github "twilio/twilio-chat-ios" ~> 2.4
 github "Ogerets/Chatto" "messenger-stable"
 github "pkluz/PKHUD"
+github "Boris-Em/BEMCheckBox" ~> 1.4.1
