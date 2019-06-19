@@ -8,11 +8,8 @@
 
 import UserNotifications
 import UIKit
-import CoreData
-import VirgilSDK
 import Fabric
 import Crashlytics
-
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

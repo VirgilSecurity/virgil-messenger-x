@@ -124,4 +124,10 @@ extension CoreDataHelper {
 
         try self.saveContext()
     }
+
+    func delete(_ message: Message) throws {
+        self.managedContext.delete(message)
+
+        try self.saveContext()
+    }
 }
