@@ -24,40 +24,52 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let startController = UIStoryboard(name: StartViewController.name,
                                            bundle: Bundle.main).instantiateInitialViewController()!
 
-        UIApplication.shared.delegate?.window??.rootViewController = startController
+        self.window?.rootViewController = startController
 
         // Clear core data if it's first launch
         // FIXME: if it's first launch on new major version.
+        self.clearLocalStorage()
+
+        // Registering for remote notifications
+        self.registerRemoteNotifications(for: application)
+
+        Fabric.with([Crashlytics.self])
+
+        return true
+    }
+
+    private func clearLocalStorage() {
         if UserDefaults.standard.string(forKey: "first_launch")?.isEmpty ?? true {
             try? CoreDataHelper.shared.clearStorage()
 
             UserDefaults.standard.set("happened", forKey: "first_launch")
             UserDefaults.standard.synchronize()
         }
+    }
 
-        // Registering for remote notifications
+    private func registerRemoteNotifications(for app: UIApplication) {
         let center = UNUserNotificationCenter.current()
 
-        center.getNotificationSettings { (settings) in
+        center.getNotificationSettings { settings in
+
             if settings.authorizationStatus == .notDetermined {
+
                 center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
                     Log.debug("User allowed notifications: \(granted)")
+
                     if granted {
                         DispatchQueue.main.async {
-                            UIApplication.shared.registerForRemoteNotifications()
+                            app.registerForRemoteNotifications()
                         }
                     }
                 }
+
             } else if settings.authorizationStatus == .authorized {
                 DispatchQueue.main.async {
-                    UIApplication.shared.registerForRemoteNotifications()
+                    app.registerForRemoteNotifications()
                 }
             }
         }
-
-        Fabric.with([Crashlytics.self])
-
-        return true
     }
 
     func application(_ application: UIApplication,
