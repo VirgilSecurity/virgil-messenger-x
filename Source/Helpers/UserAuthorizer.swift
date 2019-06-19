@@ -57,12 +57,20 @@ public class UserAuthorizer {
         }
     }
 
-    public func logOut() throws {
-        if let token = TwilioHelper.updatedPushToken {
-            try TwilioHelper.shared.deregister(withNotificationToken: token).startSync().getResult()
-        }
+    public func logOut(completion: @escaping (Error?) -> Void) {
+        DispatchQueue(label: "UserAuthorizer").async {
+            do {
+                if let token = TwilioHelper.updatedPushToken {
+                    try TwilioHelper.shared.deregister(withNotificationToken: token).startSync().getResult()
+                }
 
-        UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+                UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+
+                completion(nil)
+            } catch {
+                completion(error)
+            }
+        }
     }
 
     public func deleteAccount() throws {
