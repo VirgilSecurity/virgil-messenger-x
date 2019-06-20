@@ -125,7 +125,9 @@ extension Twilio {
 
                     try channel.join().startSync().getResult()
 
-                    try CoreData.shared.createGroupChannel(name: name, members: members, sid: channel.sid!, sessionId: sessionId)
+                    let sid = try channel.getSid()
+
+                    try CoreData.shared.createGroupChannel(name: name, members: members, sid: sid, sessionId: sessionId)
 
                     let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 

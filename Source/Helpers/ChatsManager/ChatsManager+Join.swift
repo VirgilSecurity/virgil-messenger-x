@@ -40,10 +40,10 @@ extension ChatsManager {
             }
 
             try CoreData.shared.createGroupChannel(name: name,
-                                                         members: attributes.members,
-                                                         sid: sid,
-                                                         sessionId: sessionId,
-                                                         additionalCards: cards)
+                                                   members: attributes.members,
+                                                   sid: sid,
+                                                   sessionId: sessionId,
+                                                   additionalCards: cards)
 
             _ = try? Virgil.shared.startNewGroupSession(identity: attributes.initiator, sessionId: sessionId)
         }
