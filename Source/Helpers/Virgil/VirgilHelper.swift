@@ -59,8 +59,7 @@ public class VirgilHelper {
 
         let provider = client.makeAccessTokenProvider(identity: identity)
 
-        let context = SecureChatContext(identity: identity,
-                                        identityCard: user.card,
+        let context = SecureChatContext(identityCard: user.card,
                                         identityKeyPair: user.keyPair,
                                         accessTokenProvider: provider)
 

@@ -93,7 +93,10 @@ extension VirgilHelper {
     }
 
     func startNewGroupSession(with cards: [Card]) throws -> SecureGroupSession {
-        let newSessionMessage = try self.secureChat.startNewGroupSession()
+        let part = withUnsafeBytes(of: UUID().uuid, { Data($0) })
+        let sessionId = part + part
+
+        let newSessionMessage = try self.secureChat.startNewGroupSession(sessionId: sessionId)
 
         let serviceMessage = try ServiceMessage(identifier: nil,
                                                 message: newSessionMessage,
