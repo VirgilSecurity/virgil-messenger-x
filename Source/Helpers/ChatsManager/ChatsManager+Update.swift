@@ -80,7 +80,7 @@ extension ChatsManager {
                     coreChannel = try CoreDataHelper.shared.getChannel(twilioChannel)
                 }
 
-                let coreCount = coreChannel.messagesCount
+                let coreCount = coreChannel.allMessages.count
                 let twilioCount = try twilioChannel.getMessagesCount().startSync().getResult()
 
                 let toLoad = twilioCount - coreCount

@@ -22,7 +22,7 @@ class MessageProcessor {
 
         let channel = try CoreDataHelper.shared.getChannel(twilioChannel)
 
-        guard (Int(truncating: index) >= channel.messages.count) else {
+        guard (Int(truncating: index) >= channel.allMessages.count) else {
             return nil
         }
 

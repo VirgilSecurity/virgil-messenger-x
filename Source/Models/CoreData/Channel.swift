@@ -31,7 +31,7 @@ public class Channel: NSManagedObject {
     public static let MembersKey = "orderedMembers"
     public static let ServiceMessagesKey = "orderedServiceMessages"
 
-    public var messages: [Message] {
+    public var visibleMessages: [Message] {
         guard let messages = self.orderedMessages?.array as? [Message] else {
             return []
         }
@@ -39,10 +39,8 @@ public class Channel: NSManagedObject {
         return messages.filter { !$0.isHidden }
     }
 
-    public var messagesCount: Int {
-        let messages = self.orderedMessages?.array as? [Message] ?? []
-
-        return messages.count
+    public var allMessages: [Message] {
+        return self.orderedMessages?.array as? [Message] ?? []
     }
 
     public var members: [User] {
@@ -82,7 +80,7 @@ public class Channel: NSManagedObject {
     }
 
     public var lastMessagesBody: String {
-        guard let message = self.messages.last else {
+        guard let message = self.visibleMessages.last else {
             return ""
         }
 
@@ -97,7 +95,7 @@ public class Channel: NSManagedObject {
     }
 
     public var lastMessagesDate: Date? {
-        guard let message = self.messages.last else {
+        guard let message = self.visibleMessages.last else {
             return nil
         }
 

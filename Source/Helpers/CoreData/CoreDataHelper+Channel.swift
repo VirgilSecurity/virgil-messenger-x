@@ -77,7 +77,7 @@ extension CoreDataHelper {
     }
 
     func delete(channel: Channel) throws {
-        channel.messages.forEach { self.managedContext.delete($0) }
+        channel.allMessages.forEach { self.managedContext.delete($0) }
         channel.serviceMessages.forEach { self.managedContext.delete($0) }
 
         self.managedContext.delete(channel)

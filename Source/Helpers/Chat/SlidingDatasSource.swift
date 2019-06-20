@@ -66,7 +66,7 @@ public class SlidingDataSource<Element> {
             return
         }
 
-        let messages = channel.messages
+        let messages = channel.visibleMessages
 
         for _ in 0..<count {
             let messageNumber = messages.count - self.items.count - 1

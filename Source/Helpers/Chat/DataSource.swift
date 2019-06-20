@@ -37,7 +37,7 @@ class DataSource: ChatDataSourceProtocol {
     private var slidingWindow: SlidingDataSource<ChatItemProtocol>!
 
     private var count: Int {
-        return self.channel.messages.count
+        return self.channel.visibleMessages.count
     }
 
     init(channel: Channel) {
