@@ -120,35 +120,35 @@ class MessageProcessor {
                                      twilioChannel: TCHChannel,
                                      channel: Channel,
                                      attributes: TCHMessage.Attributes) throws -> Message? {
-        guard let sessionId = channel.sessionId else {
-            throw CoreDataHelper.Error.invalidChannel
-        }
+        let sessionId = try channel.getSessionId()
+
+        let author = try twilioMessage.getAuthor()
 
         switch attributes.type {
         case .regular:
             var decrypted: String
             do {
-                decrypted = try VirgilHelper.shared.decryptGroup(text, from: twilioMessage.author!, channel: channel, sessionId: sessionId)
+                decrypted = try VirgilHelper.shared.decryptGroup(text, from: author, channel: channel, sessionId: sessionId)
             } catch {
                 try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
                 return nil
             }
 
-            decrypted = "\(twilioMessage.author!): \(decrypted)"
+            decrypted = "\(author): \(decrypted)"
 
             return try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
         case .service:
-            guard let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!,
+            guard let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: author,
                                                                                     withSessionId: sessionId,
                                                                                     identifier: attributes.identifier) else {
                 try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
                 return nil
             }
 
-            let text = "\(twilioMessage.author!) \(try serviceMessage.getChangeMembersText())"
+            let text = "\(author) \(try serviceMessage.getChangeMembersText())"
 
             let deleted = try self.processGroupServiceMessage(serviceMessage,
-                                                              from: twilioMessage.author!,
+                                                              from: author,
                                                               isIncoming: isIncoming,
                                                               sessionId: sessionId,
                                                               twilioChannel: twilioChannel,
@@ -176,6 +176,14 @@ class MessageProcessor {
 
             guard CoreDataHelper.shared.existsServiceMessage(from: author, withSessionId: sessionId) else {
                 try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
+
+                if CoreDataHelper.shared.currentChannel == channel {
+                    DispatchQueue.main.async {
+                        let name = Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue)
+                        NotificationCenter.default.post(name: name, object: self)
+                    }
+                }
+
                 return true
             }
 

@@ -32,7 +32,7 @@ class GroupInfoViewController: ViewController {
         NotificationCenter.default.removeObserver(self)
 
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.popToRoot(notification:)),
+                                               selector: #selector(self.popToRoot),
                                                name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
                                                object: nil)
 

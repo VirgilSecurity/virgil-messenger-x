@@ -62,6 +62,14 @@ extension TCHMessage {
         return index
     }
 
+    func getAuthor() throws -> String {
+        guard let author = self.author else {
+            throw TwilioHelper.Error.invalidMessage
+        }
+
+        return author
+    }
+
     func getMedia() -> CallbackOperation<Data> {
         return CallbackOperation { _, completion in
             let tempFilename = (NSTemporaryDirectory() as NSString).appendingPathComponent(self.mediaFilename ?? "file.dat")

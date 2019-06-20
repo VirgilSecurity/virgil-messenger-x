@@ -43,7 +43,7 @@ extension UIViewController: UITextFieldDelegate {
 }
 
 extension UIViewController {
-    @objc func popToRoot(notification: Notification) {
+    @objc func popToRoot() {
         self.navigationController?.popToRootViewController(animated: true)
     }
 }

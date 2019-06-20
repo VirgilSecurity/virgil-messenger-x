@@ -83,13 +83,6 @@ extension CoreDataHelper {
         self.managedContext.delete(channel)
 
         try self.saveContext()
-
-        if channel == self.currentChannel {
-            DispatchQueue.main.async {
-                let name = Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue)
-                NotificationCenter.default.post(name: name, object: self)
-            }
-        }
     }
 
     func existsSingleChannel(with identity: String) -> Bool {

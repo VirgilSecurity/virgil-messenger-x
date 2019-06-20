@@ -132,4 +132,12 @@ public class Channel: NSManagedObject {
         let accountChannels = account.mutableOrderedSetValue(forKey: Account.ChannelsKey)
         accountChannels.add(self)
     }
+
+    public func getSessionId() throws -> Data {
+        guard let id = self.sessionId else {
+            throw CoreDataHelper.Error.invalidChannel
+        }
+
+        return id
+    }
 }
