@@ -1,5 +1,5 @@
 //
-//  CoreDataHelper+Messages.swift
+//  CoreData+Messages.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 2/20/18.
@@ -10,7 +10,7 @@ import CoreData
 import VirgilCryptoRatchet
 import VirgilSDK
 
-extension CoreDataHelper {
+extension CoreData {
     private func save(_ message: Message) throws {
         let messages = message.channel.mutableOrderedSetValue(forKey: Channel.MessagesKey)
         messages.add(message)

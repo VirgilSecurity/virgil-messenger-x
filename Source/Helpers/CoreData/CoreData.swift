@@ -1,5 +1,5 @@
 //
-//  CoreDataHelper.swift
+//  CoreData.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 11/9/17.
@@ -8,8 +8,8 @@
 
 import CoreData
 
-class CoreDataHelper {
-    private(set) static var shared: CoreDataHelper = CoreDataHelper()
+class CoreData {
+    private(set) static var shared: CoreData = CoreData()
     private(set) var accounts: [Account] = []
     private(set) var currentChannel: Channel?
     private(set) var currentAccount: Account?

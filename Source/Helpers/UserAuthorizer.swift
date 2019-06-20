@@ -28,13 +28,13 @@ public class UserAuthorizer {
             throw UserAuthorizerError.noIdentityAtDefaults
         }
 
-        try CoreDataHelper.shared.loadAccount(withIdentity: identity)
+        try CoreData.shared.loadAccount(withIdentity: identity)
 
         try self.virgilAuthorizer.signIn(identity: identity)
     }
 
     public func signIn(identity: String) throws {
-        try CoreDataHelper.shared.loadAccount(withIdentity: identity)
+        try CoreData.shared.loadAccount(withIdentity: identity)
 
         try self.virgilAuthorizer.signIn(identity: identity)
 
@@ -46,7 +46,7 @@ public class UserAuthorizer {
             do {
                 _ = try self.virgilAuthorizer.signUp(identity: identity)
 
-                try CoreDataHelper.shared.createAccount(withIdentity: identity)
+                try CoreData.shared.createAccount(withIdentity: identity)
 
                 UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
@@ -60,8 +60,8 @@ public class UserAuthorizer {
     public func logOut(completion: @escaping (Error?) -> Void) {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
-                if let token = TwilioHelper.updatedPushToken {
-                    try TwilioHelper.shared.deregister(withNotificationToken: token).startSync().getResult()
+                if let token = Twilio.updatedPushToken {
+                    try Twilio.shared.deregister(withNotificationToken: token).startSync().getResult()
                 }
 
                 UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
@@ -76,9 +76,9 @@ public class UserAuthorizer {
     public func deleteAccount() throws {
         UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
-        try CoreDataHelper.shared.deleteAccount()
+        try CoreData.shared.deleteAccount()
 
-        self.virgilAuthorizer.logOut(identity: TwilioHelper.shared.identity)
+        self.virgilAuthorizer.logOut(identity: Twilio.shared.identity)
     }
 }
 

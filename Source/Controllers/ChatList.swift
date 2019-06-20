@@ -28,11 +28,11 @@ class ChatListViewController: ViewController {
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.reloadTableView),
-                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelAdded.rawValue),
+                                               name: Notification.Name(rawValue: Twilio.Notifications.ChannelAdded.rawValue),
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.reloadTableView),
-                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAdded.rawValue),
+                                               name: Notification.Name(rawValue: Twilio.Notifications.MessageAdded.rawValue),
                                                object: nil)
     }
 
@@ -40,7 +40,7 @@ class ChatListViewController: ViewController {
         super.viewWillAppear(animated)
 
         if self.configurator.isConfigured {
-            TwilioHelper.shared.deselectChannel()
+            Twilio.shared.deselectChannel()
         }
 
         self.reloadTableView()
@@ -89,7 +89,7 @@ class ChatListViewController: ViewController {
     }
 
     @objc private func reloadTableView() {
-        self.channels = CoreDataHelper.shared.getChannels()
+        self.channels = CoreData.shared.getChannels()
 
         self.channels.sort { first, second in
             let firstDate = first.lastMessagesDate ?? first.createdAt
@@ -147,7 +147,7 @@ extension ChatListViewController: CellTapDelegate {
             return
         }
 
-        CoreDataHelper.shared.setCurrent(channel: selectedChannel)
+        CoreData.shared.setCurrent(channel: selectedChannel)
 
         self.performSegue(withIdentifier: "goToChat", sender: self)
     }
@@ -155,7 +155,7 @@ extension ChatListViewController: CellTapDelegate {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let chatController = segue.destination as? ChatViewController,
-            let channel = CoreDataHelper.shared.currentChannel {
+            let channel = CoreData.shared.currentChannel {
                 chatController.channel = channel
         }
 

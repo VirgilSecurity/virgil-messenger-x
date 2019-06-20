@@ -11,7 +11,7 @@ import UIKit
 class NewMessageViewController: ViewController {
     @IBOutlet weak var usersListHeight: NSLayoutConstraint!
 
-    private let users: [Channel] = CoreDataHelper.shared.getSingleChannels()
+    private let users: [Channel] = CoreData.shared.getSingleChannels()
 
     private var selectedUser: Channel?
 

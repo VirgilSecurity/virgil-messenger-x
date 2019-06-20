@@ -1,5 +1,5 @@
 //
-//  CoreDataHelper+Account.swift
+//  CoreData+Account.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 2/20/18.
@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 import VirgilSDK
 
-extension CoreDataHelper {
+extension CoreData {
     func createAccount(withIdentity identity: String) throws {
         let account = try Account(identity: identity, managedContext: self.managedContext)
 

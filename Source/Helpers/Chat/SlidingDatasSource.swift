@@ -61,7 +61,7 @@ public class SlidingDataSource<Element> {
             return
         }
 
-        guard let channel = CoreDataHelper.shared.currentChannel else {
+        guard let channel = CoreData.shared.currentChannel else {
             Log.error("Missing Core Data current channel")
             return
         }

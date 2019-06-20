@@ -20,7 +20,7 @@ extension ChatsManager {
                         throw error
                     }
 
-                    let twilioChannels = TwilioHelper.shared.channels.subscribedChannels()
+                    let twilioChannels = Twilio.shared.channels.subscribedChannels()
 
                     guard twilioChannels.count > 0 else {
                         completion((), nil)
@@ -70,14 +70,14 @@ extension ChatsManager {
         return CallbackOperation { _, completion in
             do {
                 let coreChannel: Channel
-                if let channel = try? CoreDataHelper.shared.getChannel(twilioChannel) {
+                if let channel = try? CoreData.shared.getChannel(twilioChannel) {
                     coreChannel = channel
                 } else {
                     try twilioChannel.join().startSync().getResult()
 
                     try ChatsManager.join(twilioChannel)
 
-                    coreChannel = try CoreDataHelper.shared.getChannel(twilioChannel)
+                    coreChannel = try CoreData.shared.getChannel(twilioChannel)
                 }
 
                 let coreCount = coreChannel.allMessages.count
@@ -93,7 +93,7 @@ extension ChatsManager {
                 let messages = try twilioChannel.getLastMessages(withCount: toLoad).startSync().getResult()
 
                 for message in messages {
-                    if !CoreDataHelper.shared.existsChannel(sid: twilioChannel.sid!) {
+                    if !CoreData.shared.existsChannel(sid: twilioChannel.sid!) {
                         break
                     }
 

@@ -14,7 +14,7 @@ public enum MessageType: String {
     case audio
     case changeMembers
 
-    init?(_ type: TwilioHelper.MediaType) {
+    init?(_ type: Twilio.MediaType) {
         switch type {
         case .photo:
             self = .photo

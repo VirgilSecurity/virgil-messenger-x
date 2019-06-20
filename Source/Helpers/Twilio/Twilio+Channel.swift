@@ -1,5 +1,5 @@
 //
-//  TwilioHelper+Channel.swift
+//  Twilio+Channel.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 3/5/18.
@@ -9,7 +9,7 @@
 import TwilioChatClient
 import VirgilSDK
 
-extension TwilioHelper {
+extension Twilio {
     public func getCurrentChannel() throws -> TCHChannel {
         guard let channel = self.currentChannel else {
             throw Error.nilCurrentChannel
@@ -41,14 +41,14 @@ extension TwilioHelper {
 
     func makeUniqueName(_ user1: String, _ user2: String) -> String {
         if user1 > user2 {
-            return VirgilHelper.shared.makeHash(from: user1 + user2)!
+            return Virgil.shared.makeHash(from: user1 + user2)!
         } else {
-            return VirgilHelper.shared.makeHash(from: user2 + user1)!
+            return Virgil.shared.makeHash(from: user2 + user1)!
         }
     }
 }
 
-extension TwilioHelper {
+extension Twilio {
     func createSingleChannel(with cards: [Card]) -> CallbackOperation<Void> {
         return CallbackOperation { operation, completion in
             if let error = operation.findDependencyError() {
@@ -95,7 +95,7 @@ extension TwilioHelper {
 
                     try channel.join().startSync().getResult()
 
-                    try CoreDataHelper.shared.createSingleChannel(sid: channel.sid!, card: card)
+                    try CoreData.shared.createSingleChannel(sid: channel.sid!, card: card)
 
                     try channel.invite(identity: card.identity).startSync().getResult()
 
@@ -125,7 +125,7 @@ extension TwilioHelper {
 
                     try channel.join().startSync().getResult()
 
-                    try CoreDataHelper.shared.createGroupChannel(name: name, members: members, sid: channel.sid!, sessionId: sessionId)
+                    try CoreData.shared.createGroupChannel(name: name, members: members, sid: channel.sid!, sessionId: sessionId)
 
                     let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
@@ -202,9 +202,9 @@ extension TwilioHelper {
                         throw error
                     }
 
-                    let channel = try CoreDataHelper.shared.getChannel(channel)
+                    let channel = try CoreData.shared.getChannel(channel)
 
-                    try CoreDataHelper.shared.delete(channel: channel)
+                    try CoreData.shared.delete(channel: channel)
 
                     completion((), nil)
                 } catch {

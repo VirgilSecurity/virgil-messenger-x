@@ -17,18 +17,18 @@ extension ChatsManager {
         case .single:
             let sid = try channel.getSid()
 
-            let name = try TwilioHelper.shared.getCompanion(from: attributes)
+            let name = try Twilio.shared.getCompanion(from: attributes)
 
-            let cards = try VirgilHelper.shared.makeGetCardsOperation(identities: [name]).startSync().getResult()
+            let cards = try Virgil.shared.makeGetCardsOperation(identities: [name]).startSync().getResult()
 
-            try CoreDataHelper.shared.createSingleChannel(sid: sid, card: cards.first!)
+            try CoreData.shared.createSingleChannel(sid: sid, card: cards.first!)
 
         case .group:
-            let members = attributes.members.filter { !CoreDataHelper.shared.existsSingleChannel(with: $0) && $0 != TwilioHelper.shared.identity }
+            let members = attributes.members.filter { !CoreData.shared.existsSingleChannel(with: $0) && $0 != Twilio.shared.identity }
 
             var cards: [Card] = []
             if !members.isEmpty {
-                cards = try VirgilHelper.shared.makeGetCardsOperation(identities: members).startSync().getResult()
+                cards = try Virgil.shared.makeGetCardsOperation(identities: members).startSync().getResult()
             }
 
             try? ChatsManager.startSingle(with: members, cards: cards)
@@ -36,16 +36,16 @@ extension ChatsManager {
             guard let sessionId = attributes.sessionId,
                 let name = attributes.friendlyName,
                 let sid = channel.sid else {
-                    throw TwilioHelper.Error.invalidChannel
+                    throw Twilio.Error.invalidChannel
             }
 
-            try CoreDataHelper.shared.createGroupChannel(name: name,
+            try CoreData.shared.createGroupChannel(name: name,
                                                          members: attributes.members,
                                                          sid: sid,
                                                          sessionId: sessionId,
                                                          additionalCards: cards)
 
-            _ = try? VirgilHelper.shared.startNewGroupSession(identity: attributes.initiator, sessionId: sessionId)
+            _ = try? Virgil.shared.startNewGroupSession(identity: attributes.initiator, sessionId: sessionId)
         }
     }
 }

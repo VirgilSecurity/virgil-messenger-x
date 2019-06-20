@@ -33,12 +33,12 @@ class AddMembersViewController: ViewController {
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.popToRoot),
-                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
+                                               name: Notification.Name(rawValue: Twilio.Notifications.ChannelDeleted.rawValue),
                                                object: nil)
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.reloadTableView),
-                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue),
+                                               name: Notification.Name(rawValue: Twilio.Notifications.MessageAddedToSelectedChannel.rawValue),
                                                object: nil)
     }
 
@@ -58,10 +58,10 @@ class AddMembersViewController: ViewController {
     }
 
     @objc private func reloadTableView() {
-        self.channels = CoreDataHelper.shared.getSingleChannels()
+        self.channels = CoreData.shared.getSingleChannels()
 
         self.channels = self.channels.filter { channel in
-            !CoreDataHelper.shared.currentChannel!.cards.contains { card in
+            !CoreData.shared.currentChannel!.cards.contains { card in
                 channel.cards.first?.identity == card.identity
             }
         }

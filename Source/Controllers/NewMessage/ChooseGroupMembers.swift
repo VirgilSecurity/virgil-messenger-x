@@ -13,7 +13,7 @@ class ChooseMembersViewController: ViewController {
     @IBOutlet weak var nextButton: UIBarButtonItem!
     @IBOutlet weak var noContactsView: UIView!
 
-    private let channels = CoreDataHelper.shared.getSingleChannels()
+    private let channels = CoreData.shared.getSingleChannels()
     
     private var members: [Channel] = [] {
         didSet {

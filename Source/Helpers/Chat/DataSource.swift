@@ -61,14 +61,14 @@ class DataSource: ChatDataSourceProtocol {
     func addObserver() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.processMessage(notification:)),
-                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue),
+                                               name: Notification.Name(rawValue: Twilio.Notifications.MessageAddedToSelectedChannel.rawValue),
                                                object: nil)
     }
 
     @objc private func processMessage(notification: Notification) {
         DispatchQueue.main.async {
             guard let userInfo = notification.userInfo,
-                let message = userInfo[TwilioHelper.NotificationKeys.Message.rawValue] as? Message else {
+                let message = userInfo[Twilio.NotificationKeys.Message.rawValue] as? Message else {
                     return
             }
 
@@ -116,7 +116,7 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addTextMessage(_ text: String) throws {
-        let message = try CoreDataHelper.shared.createTextMessage(text, isIncoming: false)
+        let message = try CoreData.shared.createTextMessage(text, isIncoming: false)
 
         self.nextMessageId += 1
         let id = self.nextMessageId
@@ -129,14 +129,14 @@ class DataSource: ChatDataSourceProtocol {
 
     func addChangeMembers(_ serviceMessage: ServiceMessage) throws {
         guard let serviceMessageId = serviceMessage.identifier else {
-            throw CoreDataHelper.Error.invalidMessage
+            throw CoreData.Error.invalidMessage
         }
 
         self.nextMessageId += 1
         let id = self.nextMessageId
 
         let text = try serviceMessage.getChangeMembersText()
-        let message = try CoreDataHelper.shared.createChangeMembersMessage(text, isIncoming: false)
+        let message = try CoreData.shared.createChangeMembersMessage(text, isIncoming: false)
 
         try self.messageSender.sendChangeMembers(message: message,
                                                  identifier: serviceMessageId).startSync().getResult()

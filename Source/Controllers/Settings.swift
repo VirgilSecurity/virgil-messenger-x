@@ -23,7 +23,7 @@ class SettingsViewController: ViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
 
-        let account = try! CoreDataHelper.shared.getCurrentAccount()
+        let account = try! CoreData.shared.getCurrentAccount()
         self.usernameLabel.text = account.identity
 
         self.letterLabel.text = String(describing: account.letter)

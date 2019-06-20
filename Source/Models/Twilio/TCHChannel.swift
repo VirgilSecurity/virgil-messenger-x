@@ -27,7 +27,7 @@ extension TCHChannel {
             let data = try JSONEncoder().encode(self)
 
             guard let result = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-                throw TwilioHelper.Error.invalidChannel
+                throw Twilio.Error.invalidChannel
             }
 
             return result
@@ -39,7 +39,7 @@ extension TCHChannel {
 extension TCHChannel {
     func getSid() throws -> String {
         guard let sid = self.sid else {
-            throw TwilioHelper.Error.invalidChannel
+            throw Twilio.Error.invalidChannel
         }
 
         return sid
@@ -47,7 +47,7 @@ extension TCHChannel {
 
     func getAttributes() throws -> Attributes {
         guard let attributes = self.attributes() else {
-            throw TwilioHelper.Error.invalidChannel
+            throw Twilio.Error.invalidChannel
         }
 
         return try Attributes.import(attributes)
@@ -91,7 +91,7 @@ extension TCHChannel {
     func invite(identity: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             guard let members = self.members else {
-                completion(nil, TwilioHelper.Error.invalidChannel)
+                completion(nil, Twilio.Error.invalidChannel)
                 return
             }
 
@@ -145,7 +145,7 @@ extension TCHChannel {
                 try options.withAttributes(attributes.export())
 
                 guard let messages = self.messages else {
-                    throw TwilioHelper.Error.invalidChannel
+                    throw Twilio.Error.invalidChannel
                 }
 
                 messages.sendMessage(with: options) { result, _ in
@@ -164,7 +164,7 @@ extension TCHChannel {
     public func delete(message: TCHMessage) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             guard let messages = self.messages else {
-                completion(nil, TwilioHelper.Error.invalidChannel)
+                completion(nil, Twilio.Error.invalidChannel)
                 return
             }
 

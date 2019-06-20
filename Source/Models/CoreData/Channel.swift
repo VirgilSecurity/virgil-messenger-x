@@ -54,7 +54,7 @@ public class Channel: NSManagedObject {
     public var cards: [Card] {
         get {
             let cards: [Card] = self.rawCards.map {
-                try! VirgilHelper.shared.importCard(fromBase64Encoded: $0)
+                try! Virgil.shared.importCard(fromBase64Encoded: $0)
             }
 
             return cards
@@ -116,7 +116,7 @@ public class Channel: NSManagedObject {
                      sessionId: Data?,
                      managedContext: NSManagedObjectContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Channel.EntityName, in: managedContext) else {
-            throw CoreDataHelper.Error.entityNotFound
+            throw CoreData.Error.entityNotFound
         }
 
         self.init(entity: entity, insertInto: managedContext)
@@ -135,7 +135,7 @@ public class Channel: NSManagedObject {
 
     public func getSessionId() throws -> Data {
         guard let id = self.sessionId else {
-            throw CoreDataHelper.Error.invalidChannel
+            throw CoreData.Error.invalidChannel
         }
 
         return id

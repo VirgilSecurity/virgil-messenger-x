@@ -37,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func clearLocalStorage() {
         if UserDefaults.standard.string(forKey: "first_launch")?.isEmpty ?? true {
-            try? CoreDataHelper.shared.clearStorage()
+            try? CoreData.shared.clearStorage()
 
             UserDefaults.standard.set("happened", forKey: "first_launch")
             UserDefaults.standard.synchronize()
@@ -79,7 +79,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         do {
-            try CoreDataHelper.shared.saveContext()
+            try CoreData.shared.saveContext()
         } catch {
             Log.error("Saving Core Data context failed with error: \(error.localizedDescription)")
         }
@@ -88,12 +88,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Log.debug("Received device token")
 
-        TwilioHelper.updatedPushToken = deviceToken
+        Twilio.updatedPushToken = deviceToken
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         Log.error("Failed to get token, error: \(error)")
 
-        TwilioHelper.updatedPushToken = nil
+        Twilio.updatedPushToken = nil
     }
 }

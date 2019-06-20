@@ -1,5 +1,5 @@
 //
-//  VirgilHelper.swift
+//  Virgil.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 11/4/17.
@@ -11,15 +11,15 @@ import VirgilCrypto
 import VirgilSDKRatchet
 import VirgilCryptoRatchet
 
-public enum VirgilHelperError: String, Error {
-    case cardVerifierInitFailed
-    case utf8ToDataFailed
-    case missingServiceMessage
-    case nilGroupSession
-}
+public class Virgil {
+    private(set) static var shared: Virgil!
 
-public class VirgilHelper {
-    private(set) static var shared: VirgilHelper!
+    public enum Error: String, Swift.Error {
+        case cardVerifierInitFailed
+        case utf8ToDataFailed
+        case missingServiceMessage
+        case nilGroupSession
+    }
 
     let identity: String
     let crypto: VirgilCrypto
@@ -52,7 +52,7 @@ public class VirgilHelper {
         let localKeyManager = try LocalKeyManager(identity: identity, crypto: crypto)
 
         guard let verifier = VirgilCardVerifier(cardCrypto: cardCrypto) else {
-            throw VirgilHelperError.cardVerifierInitFailed
+            throw Error.cardVerifierInitFailed
         }
 
         let user = try localKeyManager.retrieveUserData()
@@ -65,7 +65,7 @@ public class VirgilHelper {
 
         let secureChat = try SecureChat(context: context)
 
-        self.shared = VirgilHelper(crypto: crypto,
+        self.shared = Virgil(crypto: crypto,
                                    cardCrypto: cardCrypto,
                                    verifier: verifier,
                                    client: client,
@@ -107,7 +107,7 @@ public class VirgilHelper {
 
     func createChangeMemebersTicket(in channel: Channel) throws -> RatchetGroupMessage {
         guard let session = self.getGroupSession(of: channel) else {
-            throw VirgilHelperError.nilGroupSession
+            throw Error.nilGroupSession
         }
 
         return try session.createChangeParticipantsTicket()
@@ -118,7 +118,7 @@ public class VirgilHelper {
                             addCards: [Card] = [],
                             removeCards: [Card] = []) throws {
         guard let session = self.getGroupSession(of: channel) else {
-            throw VirgilHelperError.nilGroupSession
+            throw Error.nilGroupSession
         }
 
         let removeCardIds = removeCards.map { $0.identifier }
@@ -129,7 +129,7 @@ public class VirgilHelper {
     }
 
     func updateParticipants(serviceMessage: ServiceMessage, channel: Channel) throws {
-        let cards = serviceMessage.cards.filter { $0.identity != TwilioHelper.shared.identity }
+        let cards = serviceMessage.cards.filter { $0.identity != Twilio.shared.identity }
 
         let session: SecureGroupSession
         if let existing = self.getGroupSession(of: channel) {

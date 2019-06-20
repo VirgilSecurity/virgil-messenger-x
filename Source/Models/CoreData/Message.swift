@@ -37,7 +37,7 @@ public class Message: NSManagedObject {
 
     func getBody() throws -> String {
         guard let body = self.body else {
-            throw CoreDataHelper.Error.invalidMessage
+            throw CoreData.Error.invalidMessage
         }
 
         return body
@@ -52,7 +52,7 @@ public class Message: NSManagedObject {
                      isHidden: Bool = false,
                      managedContext: NSManagedObjectContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Message.EntityName, in: managedContext) else {
-            throw CoreDataHelper.Error.entityNotFound
+            throw CoreData.Error.entityNotFound
         }
 
         self.init(entity: entity, insertInto: managedContext)

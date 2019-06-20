@@ -40,7 +40,7 @@ public class Account: NSManagedObject {
 
     convenience init(identity: String, managedContext: NSManagedObjectContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Account.EntityName, in: managedContext) else {
-            throw CoreDataHelper.Error.entityNotFound
+            throw CoreData.Error.entityNotFound
         }
 
         self.init(entity: entity, insertInto: managedContext)

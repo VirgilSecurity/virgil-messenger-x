@@ -17,11 +17,11 @@ public enum ChatsManager {
             do {
                 let identity = identity.lowercased()
 
-                guard identity != TwilioHelper.shared.identity else {
+                guard identity != Twilio.shared.identity else {
                     throw UserFriendlyError.createSelfChatForbidded
                 }
 
-                guard !CoreDataHelper.shared.existsSingleChannel(with: identity) else {
+                guard !CoreData.shared.existsSingleChannel(with: identity) else {
                     throw UserFriendlyError.doubleChannelForbidded
                 }
 
@@ -41,9 +41,9 @@ public enum ChatsManager {
             return
         }
 
-        let cards = try cards ?? VirgilHelper.shared.makeGetCardsOperation(identities: identities).startSync().getResult()
+        let cards = try cards ?? Virgil.shared.makeGetCardsOperation(identities: identities).startSync().getResult()
 
-        try TwilioHelper.shared.createSingleChannel(with: cards).startSync().getResult()
+        try Twilio.shared.createSingleChannel(with: cards).startSync().getResult()
     }
     
     public static func startGroup(with channels: [Channel],
@@ -62,13 +62,13 @@ public enum ChatsManager {
 
                 let members = channels.map { $0.name }
 
-                let user = try VirgilHelper.shared.localKeyManager.retrieveUserData()
+                let user = try Virgil.shared.localKeyManager.retrieveUserData()
 
                 let cards = channels.map { $0.cards.first! } + [user.card]
 
-                let session = try VirgilHelper.shared.startNewGroupSession(with: cards)
+                let session = try Virgil.shared.startNewGroupSession(with: cards)
 
-                try TwilioHelper.shared.createGroupChannel(with: members,
+                try Twilio.shared.createGroupChannel(with: members,
                                                            name: name,
                                                            sessionId: session.identifier).startSync().getResult()
 

@@ -66,7 +66,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
     public var cards: [Card] {
         get {
             let cards: [Card] = self.rawCards.map {
-                try! VirgilHelper.shared.importCard(fromBase64Encoded: $0)
+                try! Virgil.shared.importCard(fromBase64Encoded: $0)
             }
 
             return cards
@@ -80,7 +80,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
     public var cardsAdd: [Card] {
         get {
             let cards: [Card] = self.rawCardsAdd.map {
-                try! VirgilHelper.shared.importCard(fromBase64Encoded: $0)
+                try! Virgil.shared.importCard(fromBase64Encoded: $0)
             }
 
             return cards
@@ -94,7 +94,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
     public var cardsRemove: [Card] {
         get {
             let cards: [Card] = self.rawCardsRemove.map {
-                try! VirgilHelper.shared.importCard(fromBase64Encoded: $0)
+                try! Virgil.shared.importCard(fromBase64Encoded: $0)
             }
 
             return cards
@@ -111,10 +111,10 @@ public final class ServiceMessage: NSManagedObject, Codable {
                      members: [Card],
                      add: [Card] = [],
                      remove: [Card] = [],
-                     managedContext: NSManagedObjectContext = CoreDataHelper.shared.managedContext) throws {
+                     managedContext: NSManagedObjectContext = CoreData.shared.managedContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: ServiceMessage.EntityName,
                                                       in: managedContext) else {
-            throw CoreDataHelper.Error.entityNotFound
+            throw CoreData.Error.entityNotFound
         }
 
         self.init(entity: entity, insertInto: managedContext)
@@ -129,11 +129,11 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
     public convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let managedContext = CoreDataHelper.shared.managedContext
+        let managedContext = CoreData.shared.managedContext
 
         guard let entity = NSEntityDescription.entity(forEntityName: ServiceMessage.EntityName,
                                                       in: managedContext) else {
-            throw CoreDataHelper.Error.entityNotFound
+            throw CoreData.Error.entityNotFound
         }
 
         self.init(entity: entity, insertInto: managedContext)
@@ -150,7 +150,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
 extension ServiceMessage {
     static func `import`(_ base64EncodedString: String) throws -> ServiceMessage {
         guard let data = Data(base64Encoded: base64EncodedString) else {
-            throw CoreDataHelper.Error.invalidMessage
+            throw CoreData.Error.invalidMessage
         }
 
         return try JSONDecoder().decode(ServiceMessage.self, from: data)
@@ -164,11 +164,11 @@ extension ServiceMessage {
 extension ServiceMessage {
     public func getChangeMembersText() throws -> String {
         guard self.type == .changeMembers else {
-            throw CoreDataHelper.Error.invalidMessage
+            throw CoreData.Error.invalidMessage
         }
 
         if self.cardsAdd.isEmpty && self.cardsRemove.isEmpty {
-            throw CoreDataHelper.Error.invalidMessage
+            throw CoreData.Error.invalidMessage
         }
 
         let action = self.cardsAdd.isEmpty ? "removed" : "added"

@@ -33,12 +33,12 @@ class GroupInfoViewController: ViewController {
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.popToRoot),
-                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
+                                               name: Notification.Name(rawValue: Twilio.Notifications.ChannelDeleted.rawValue),
                                                object: nil)
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.processMessage(notification:)),
-                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.MessageAddedToSelectedChannel.rawValue),
+                                               name: Notification.Name(rawValue: Twilio.Notifications.MessageAddedToSelectedChannel.rawValue),
                                                object: nil)
     }
 
@@ -74,7 +74,7 @@ class GroupInfoViewController: ViewController {
 
             var members: [Channel] = []
             for card in self.channel.cards {
-                if let item = CoreDataHelper.shared.getSingleChannel(with: card.identity) {
+                if let item = CoreData.shared.getSingleChannel(with: card.identity) {
                     members.append(item)
                 }
             }

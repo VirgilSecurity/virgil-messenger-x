@@ -70,10 +70,10 @@ class ChatViewController: BaseChatViewController {
         self.avatarView.gradientLayer.colors = [self.channel.colorPair.first, self.channel.colorPair.second]
         self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
 
-        CoreDataHelper.shared.setCurrent(channel: self.channel)
+        CoreData.shared.setCurrent(channel: self.channel)
 
         do {
-            try TwilioHelper.shared.setChannel(self.channel)
+            try Twilio.shared.setChannel(self.channel)
         } catch {
             self.popToRoot()
         }
@@ -85,7 +85,7 @@ class ChatViewController: BaseChatViewController {
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.popToRoot),
-                                               name: Notification.Name(rawValue: TwilioHelper.Notifications.ChannelDeleted.rawValue),
+                                               name: Notification.Name(rawValue: Twilio.Notifications.ChannelDeleted.rawValue),
                                                object: nil)
 
         self.dataSource.addObserver()

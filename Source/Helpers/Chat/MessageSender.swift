@@ -15,16 +15,16 @@ public class MessageSender {
     public static func sendServiceMessage(_ message: ServiceMessage, to coreChannel: Channel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                let twilioChannel = try TwilioHelper.shared.getChannel(coreChannel)
+                let twilioChannel = try Twilio.shared.getChannel(coreChannel)
 
                 let plaintext = try message.export()
 
                 let ciphertext: String
                 switch coreChannel.type {
                 case .single:
-                    ciphertext = try VirgilHelper.shared.encrypt(plaintext, card: coreChannel.cards.first!)
+                    ciphertext = try Virgil.shared.encrypt(plaintext, card: coreChannel.cards.first!)
                 case .group:
-                    ciphertext = try VirgilHelper.shared.encryptGroup(plaintext, channel: coreChannel)
+                    ciphertext = try Virgil.shared.encryptGroup(plaintext, channel: coreChannel)
                 }
 
                 twilioChannel.send(ciphertext: ciphertext,
@@ -45,7 +45,7 @@ public class MessageSender {
 
             var operations: [CallbackOperation<Void>] = []
             for card in cards {
-                guard let channel = CoreDataHelper.shared.getSingleChannel(with: card.identity) else {
+                guard let channel = CoreData.shared.getSingleChannel(with: card.identity) else {
                     continue
                 }
 
@@ -67,7 +67,7 @@ public class MessageSender {
     public func sendChangeMembers(message: Message, identifier: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                let channel = try TwilioHelper.shared.getCurrentChannel()
+                let channel = try Twilio.shared.getCurrentChannel()
 
                 let body = try message.getBody()
 
@@ -81,7 +81,7 @@ public class MessageSender {
     public func send(message: Message, withId id: Int) throws -> UIMessageModelProtocol {
         let cards = message.channel.cards
 
-        let channel = try TwilioHelper.shared.currentChannel ?? TwilioHelper.shared.getChannel(message.channel)
+        let channel = try Twilio.shared.currentChannel ?? Twilio.shared.getChannel(message.channel)
 
         let uiModel = message.exportAsUIModel(withId: id, status: .sending)
 
@@ -94,9 +94,9 @@ public class MessageSender {
                     let ciphertext: String
                     switch message.channel.type {
                     case .group:
-                        ciphertext = try VirgilHelper.shared.encryptGroup(plaintext, channel: message.channel)
+                        ciphertext = try Virgil.shared.encryptGroup(plaintext, channel: message.channel)
                     case .single:
-                        ciphertext = try VirgilHelper.shared.encrypt(plaintext, card: cards.first!)
+                        ciphertext = try Virgil.shared.encrypt(plaintext, card: cards.first!)
                     }
 
                     try channel.send(ciphertext: ciphertext, type: .regular).startSync().getResult()
@@ -107,7 +107,7 @@ public class MessageSender {
                 case .changeMembers:
                     let plaintext = try message.getBody()
 
-                    let ciphertext = try VirgilHelper.shared.encryptGroup(plaintext, channel: message.channel)
+                    let ciphertext = try Virgil.shared.encryptGroup(plaintext, channel: message.channel)
 
                     try channel.send(ciphertext: ciphertext, type: .service).startSync().getResult()
                 }

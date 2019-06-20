@@ -1,5 +1,5 @@
 //
-//  CoreDataHelper+Channel.swift
+//  CoreData+Channel.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 2/20/18.
@@ -10,7 +10,7 @@ import CoreData
 import VirgilSDK
 import TwilioChatClient
 
-extension CoreDataHelper {
+extension CoreData {
     func createGroupChannel(name: String, members: [String], sid: String, sessionId: Data, additionalCards: [Card] = []) throws {
         let account = try self.getCurrentAccount()
 
@@ -18,7 +18,7 @@ extension CoreDataHelper {
 
         var cards: [Card] = additionalCards
         for member in members {
-            if let channel = CoreDataHelper.shared.getSingleChannel(with: member),
+            if let channel = CoreData.shared.getSingleChannel(with: member),
                 !additionalCards.contains(where: { $0.identity ==  member }) {
                     cards.append(channel.cards.first!)
             }
@@ -28,7 +28,7 @@ extension CoreDataHelper {
     }
 
     func createSingleChannel(sid: String, card: Card) throws {
-        guard !self.existsSingleChannel(with: card.identity), card.identity != TwilioHelper.shared.identity else {
+        guard !self.existsSingleChannel(with: card.identity), card.identity != Twilio.shared.identity else {
             return
         }
 
@@ -56,7 +56,7 @@ extension CoreDataHelper {
         var cardsToAdd: [Card] = []
 
         for card in cards {
-            if !members.contains(card.identity), card.identity != TwilioHelper.shared.identity {
+            if !members.contains(card.identity), card.identity != Twilio.shared.identity {
                 cardsToAdd.append(card)
             }
         }

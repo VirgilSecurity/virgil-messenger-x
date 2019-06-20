@@ -1,5 +1,5 @@
 //
-//  TwilioHelper+Delegates.swift
+//  Twilio+Delegates.swift
 //  VirgilMessenger
 //
 //  Created by Oleksandr Deundiak on 10/17/17.
@@ -8,19 +8,19 @@
 
 import TwilioChatClient
 
-extension TwilioHelper {
+extension Twilio {
     enum Notifications: String {
-        case ConnectionStateUpdated = "TwilioHelper.Notifications.ConnectionStateUpdated"
-        case MessageAdded = "TwilioHelper.Notifications.MessageAdded"
-        case MessageAddedToSelectedChannel = "TwilioHelper.Notifications.MessageAddedToSelectedChannel"
-        case ChannelAdded = "TwilioHelper.Notifications.ChannelAdded"
-        case ChannelDeleted = "TwilioHelper.Notifications.ChannelDeleted"
+        case ConnectionStateUpdated = "Twilio.Notifications.ConnectionStateUpdated"
+        case MessageAdded = "Twilio.Notifications.MessageAdded"
+        case MessageAddedToSelectedChannel = "Twilio.Notifications.MessageAddedToSelectedChannel"
+        case ChannelAdded = "Twilio.Notifications.ChannelAdded"
+        case ChannelDeleted = "Twilio.Notifications.ChannelDeleted"
     }
 
     enum NotificationKeys: String {
-        case NewState = "TwilioHelper.NotificationKeys.NewState"
-        case Message = "TwilioHelper.NotificationKeys.Message"
-        case Channel = "TwilioHelper.NotificationKeys.Channel"
+        case NewState = "Twilio.NotificationKeys.NewState"
+        case Message = "Twilio.NotificationKeys.Message"
+        case Channel = "Twilio.NotificationKeys.Channel"
     }
 
     enum ConnectionState: String {
@@ -46,7 +46,7 @@ extension TwilioHelper {
     }
 }
 
-extension TwilioHelper: TwilioChatClientDelegate {
+extension Twilio: TwilioChatClientDelegate {
     public func chatClient(_ client: TwilioChatClient, connectionStateUpdated state: TCHClientConnectionState) {
         let connectionState = ConnectionState(state: state)
 
@@ -109,7 +109,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
     public func chatClientTokenWillExpire(_ client: TwilioChatClient) {
         do {
-            let token = try VirgilHelper.shared.client.getTwilioToken(identity: self.identity)
+            let token = try Virgil.shared.client.getTwilioToken(identity: self.identity)
 
             self.client.updateToken(token)
         } catch {
@@ -119,7 +119,7 @@ extension TwilioHelper: TwilioChatClientDelegate {
 
     public func chatClientTokenExpired(_ client: TwilioChatClient) {
         do {
-            let token = try VirgilHelper.shared.client.getTwilioToken(identity: self.identity)
+            let token = try Virgil.shared.client.getTwilioToken(identity: self.identity)
 
             self.client.updateToken(token)
         } catch {

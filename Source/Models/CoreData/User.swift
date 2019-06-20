@@ -24,7 +24,7 @@ public class User: NSManagedObject {
 
     public var card: Card {
         get {
-            return try! VirgilHelper.shared.importCard(fromBase64Encoded: self.rawCard)
+            return try! Virgil.shared.importCard(fromBase64Encoded: self.rawCard)
         }
 
         set {

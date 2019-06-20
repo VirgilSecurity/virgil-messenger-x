@@ -1,5 +1,5 @@
 //
-//  VirgilHelper+Encryption.swift
+//  Virgil+Encryption.swift
 //  VirgilMessenger
 //
 //  Created by Yevhen Pyvovarov on 3/26/19.
@@ -11,7 +11,7 @@ import VirgilCrypto
 import VirgilSDKRatchet
 import VirgilCryptoRatchet
 
-extension VirgilHelper {
+extension Virgil {
     func encryptGroup(_ text: String, channel: Channel) throws -> String {
         let session = try self.getGroupSession(of: channel) ?? self.startNewGroupSession(with: channel.cards)
 
@@ -23,11 +23,11 @@ extension VirgilHelper {
 
     func decryptGroup(_ encrypted: String, from identity: String, channel: Channel, sessionId: Data) throws -> String {
         guard let data = Data(base64Encoded: encrypted) else {
-            throw VirgilHelperError.utf8ToDataFailed
+            throw Error.utf8ToDataFailed
         }
 
         guard let card = channel.cards.first(where: { $0.identity == identity }) else {
-            throw CoreDataHelper.Error.invalidChannel
+            throw CoreData.Error.invalidChannel
         }
 
         let ratchetMessage = try RatchetGroupMessage.deserialize(input: data)
@@ -51,7 +51,7 @@ extension VirgilHelper {
 
     func decrypt(_ encrypted: String, from card: Card) throws -> String {
         guard let data = Data(base64Encoded: encrypted) else {
-            throw VirgilHelperError.utf8ToDataFailed
+            throw Error.utf8ToDataFailed
         }
 
         let ratchetMessage = try RatchetMessage.deserialize(input: data)
@@ -66,7 +66,7 @@ extension VirgilHelper {
 }
 
 // MARK: - Extension with session operations
-extension VirgilHelper {
+extension Virgil {
     func getGroupSession(of channel: Channel) -> SecureGroupSession? {
         guard let sessionId = channel.sessionId,
             let session = self.secureChat.existingGroupSession(sessionId: sessionId) else {
@@ -105,7 +105,7 @@ extension VirgilHelper {
 
         try MessageSender.sendServiceMessage(to: cards, ticket: serviceMessage).startSync().getResult()
 
-        let cards = cards.filter { $0.identity != TwilioHelper.shared.identity }
+        let cards = cards.filter { $0.identity != Twilio.shared.identity }
         let session = try secureChat.startGroupSession(with: cards, using: newSessionMessage)
         try self.secureChat.storeGroupSession(session: session)
 
@@ -113,16 +113,16 @@ extension VirgilHelper {
     }
 
     func startNewGroupSession(identity: String, sessionId: Data) throws -> SecureGroupSession {
-        guard let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: identity,
+        guard let serviceMessage = try CoreData.shared.findServiceMessage(from: identity,
                                                                                 withSessionId: sessionId) else {
-            throw VirgilHelperError.missingServiceMessage
+            throw Error.missingServiceMessage
         }
 
-        let cards = serviceMessage.cards.filter { $0.identity != TwilioHelper.shared.identity }
+        let cards = serviceMessage.cards.filter { $0.identity != Twilio.shared.identity }
         let session = try secureChat.startGroupSession(with: cards, using: serviceMessage.message)
         try self.secureChat.storeGroupSession(session: session)
 
-        try CoreDataHelper.shared.delete(serviceMessage)
+        try CoreData.shared.delete(serviceMessage)
 
         return session
     }

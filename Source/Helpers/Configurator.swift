@@ -13,12 +13,12 @@ public class Configurator {
 
     public func configure(completion: @escaping (Error?) -> Void) {
         do {
-            let account = try CoreDataHelper.shared.getCurrentAccount()
+            let account = try CoreData.shared.getCurrentAccount()
             let identity = account.identity
 
-            let initPFSOperation = VirgilHelper.shared.makeInitPFSOperation(identity: identity)
-            let initTwilioOperation = TwilioHelper.makeInitTwilioOperation(identity: identity,
-                                                                           client: VirgilHelper.shared.client)
+            let initPFSOperation = Virgil.shared.makeInitPFSOperation(identity: identity)
+            let initTwilioOperation = Twilio.makeInitTwilioOperation(identity: identity,
+                                                                           client: Virgil.shared.client)
             let updateChannelsOperation = ChatsManager.makeUpdateChannelsOperation()
 
             let operations = [initPFSOperation, initTwilioOperation, updateChannelsOperation]

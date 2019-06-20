@@ -1,5 +1,5 @@
 //
-//  TwilioHelper.swift
+//  Twilio.swift
 //  VirgilMessenger
 //
 //  Created by Oleksandr Deundiak on 10/17/17.
@@ -9,16 +9,16 @@
 import TwilioChatClient
 import VirgilSDK
 
-public class TwilioHelper: NSObject {
+public class Twilio: NSObject {
     public static var updatedPushToken: Data?
-    private(set) static var shared: TwilioHelper!
+    private(set) static var shared: Twilio!
     private(set) var client: TwilioChatClient!
     private(set) var channels: TCHChannels!
     private(set) var users: TCHUsers!
     private(set) var currentChannel: TCHChannel?
 
     let identity: String
-    let queue = DispatchQueue(label: "TwilioHelper")
+    let queue = DispatchQueue(label: "Twilio")
 
     enum MediaType: String {
         case photo = "image/bmp"
@@ -46,7 +46,7 @@ public class TwilioHelper: NSObject {
             do {
                 let token = try client.getTwilioToken(identity: identity)
 
-                self.shared = TwilioHelper(identity: identity)
+                self.shared = Twilio(identity: identity)
 
                 Log.debug("Initializing Twilio")
 
@@ -130,7 +130,7 @@ public class TwilioHelper: NSObject {
 }
 
 // Setters
-extension TwilioHelper {
+extension Twilio {
     func getChannel(_ channel: Channel) throws -> TCHChannel {
         let channel = try self.channels.subscribedChannels().first {
             try $0.getSid() == channel.sid
