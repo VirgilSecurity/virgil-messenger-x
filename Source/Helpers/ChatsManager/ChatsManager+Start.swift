@@ -43,7 +43,7 @@ public enum ChatsManager {
 
         let cards = try cards ?? Virgil.shared.makeGetCardsOperation(identities: identities).startSync().getResult()
 
-        try Twilio.shared.createSingleChannel(with: cards).startSync().getResult()
+        try Twilio.shared.createSingleChannel(with: cards)
     }
     
     public static func startGroup(with channels: [Channel],

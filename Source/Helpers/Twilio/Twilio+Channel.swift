@@ -49,35 +49,15 @@ extension Twilio {
 }
 
 extension Twilio {
-    func createSingleChannel(with cards: [Card]) -> CallbackOperation<Void> {
-        return CallbackOperation { operation, completion in
-            if let error = operation.findDependencyError() {
-                completion(nil, error)
-                return
-            }
-
-            guard !cards.isEmpty else {
-                completion((), nil)
-                return
-            }
-
-            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-
-            var operations: [CallbackOperation<Void>] = []
-
-            cards.forEach {
-                let operation = self.createSingleChannel(with: $0)
-                completionOperation.addDependency(operation)
-                operations.append(operation)
-            }
-
-            let queue = OperationQueue()
-            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+    func createSingleChannel(with cards: [Card]) throws {
+        try cards.forEach {
+            try self.createSingleChannel(with: $0).startSync().getResult()
         }
     }
 
     func createSingleChannel(with card: Card) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
+            self.creatingChannel = true
 //            self.queue.async {
                 do {
                     let attributes = TCHChannel.Attributes(initiator: self.identity,
@@ -101,8 +81,10 @@ extension Twilio {
 
                     try channel.invite(identity: card.identity).startSync().getResult()
 
+                    self.creatingChannel = false
                     completion((), nil)
                 } catch {
+                    self.creatingChannel = false
                     completion(nil, error)
                 }
             }
@@ -113,6 +95,8 @@ extension Twilio {
         return CallbackOperation { _, completion in
 //            self.queue.async {
                 do {
+                    self.creatingChannel = true
+
                     let attributes = TCHChannel.Attributes(initiator: self.identity,
                                                            friendlyName: name,
                                                            sessionId: sessionId,
@@ -131,7 +115,11 @@ extension Twilio {
 
                     try CoreData.shared.createGroupChannel(name: name, members: members, sid: sid, sessionId: sessionId)
 
-                    let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+                    let completionOperation = OperationUtils.makeCompletionOperation(completion: { (result: Void?, error: Swift.Error?) in
+                        self.creatingChannel = false
+
+                        completion(result, error)
+                    })
 
                     var operations: [CallbackOperation<Void>] = []
 
@@ -144,10 +132,11 @@ extension Twilio {
                     let queue = OperationQueue()
                     queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
                 } catch {
+                    self.creatingChannel = false
                     completion(nil, error)
                 }
-//            }
-        }
+            }
+//        }
     }
 
     func add(members: [String]) -> CallbackOperation<Void> {

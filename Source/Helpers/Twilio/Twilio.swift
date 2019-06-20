@@ -20,6 +20,8 @@ public class Twilio: NSObject {
     let identity: String
     let queue = DispatchQueue(label: "Twilio")
 
+    var creatingChannel: Bool = false
+
     enum MediaType: String {
         case photo = "image/bmp"
         case audio = "audio/mp4"
