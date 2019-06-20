@@ -11,7 +11,7 @@ import VirgilSDK
 
 extension TCHChannel {
     struct Attributes: Codable {
-        let initiator: String
+        var initiator: String
         let friendlyName: String?
         let sessionId: Data?
         var members: [String]

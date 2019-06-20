@@ -57,8 +57,6 @@ extension Twilio {
 
     func createSingleChannel(with card: Card) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            self.creatingChannel = true
-//            self.queue.async {
                 do {
                     let attributes = TCHChannel.Attributes(initiator: self.identity,
                                                            friendlyName: nil,
@@ -73,70 +71,54 @@ extension Twilio {
 
                     let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
 
-                    try channel.join().startSync().getResult()
-
                     let sid = try channel.getSid()
 
                     try CoreData.shared.createSingleChannel(sid: sid, card: card)
 
                     try channel.invite(identity: card.identity).startSync().getResult()
 
-                    self.creatingChannel = false
                     completion((), nil)
                 } catch {
-                    self.creatingChannel = false
                     completion(nil, error)
                 }
             }
-//        }
     }
 
     func createGroupChannel(with members: [String], name: String, sessionId: Data) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-//            self.queue.async {
-                do {
-                    self.creatingChannel = true
+            do {
+                let attributes = TCHChannel.Attributes(initiator: self.identity,
+                                                       friendlyName: name,
+                                                       sessionId: sessionId,
+                                                       members: [self.identity] + members,
+                                                       type: .group)
 
-                    let attributes = TCHChannel.Attributes(initiator: self.identity,
-                                                           friendlyName: name,
-                                                           sessionId: sessionId,
-                                                           members: [self.identity] + members,
-                                                           type: .group)
+                let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
+                                              TCHChannelOptionFriendlyName: name,
+                                              TCHChannelOptionAttributes: try attributes.export()]
 
-                    let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
-                                                  TCHChannelOptionFriendlyName: name,
-                                                  TCHChannelOptionAttributes: try attributes.export()]
+                let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
 
-                    let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
+                let sid = try channel.getSid()
 
-                    try channel.join().startSync().getResult()
+                try CoreData.shared.createGroupChannel(name: name, members: members, sid: sid, sessionId: sessionId)
 
-                    let sid = try channel.getSid()
+                let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
-                    try CoreData.shared.createGroupChannel(name: name, members: members, sid: sid, sessionId: sessionId)
+                var operations: [CallbackOperation<Void>] = []
 
-                    let completionOperation = OperationUtils.makeCompletionOperation(completion: { (result: Void?, error: Swift.Error?) in
-                        self.creatingChannel = false
-
-                        completion(result, error)
-                    })
-
-                    var operations: [CallbackOperation<Void>] = []
-
-                    members.forEach {
-                        let inviteOperation = channel.invite(identity: $0)
-                        completionOperation.addDependency(inviteOperation)
-                        operations.append(inviteOperation)
-                    }
-
-                    let queue = OperationQueue()
-                    queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
-                } catch {
-                    self.creatingChannel = false
-                    completion(nil, error)
+                members.forEach {
+                    let inviteOperation = channel.invite(identity: $0)
+                    completionOperation.addDependency(inviteOperation)
+                    operations.append(inviteOperation)
                 }
+
+                let queue = OperationQueue()
+                queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+            } catch {
+                completion(nil, error)
             }
-//        }
+        }
     }
 
     func add(members: [String]) -> CallbackOperation<Void> {
@@ -146,16 +128,14 @@ extension Twilio {
 
                 var attributes = try channel.getAttributes()
 
+                attributes.initiator = self.identity
                 attributes.members += members
 
-                let setAttributesOperation = channel.setAttributes(attributes)
+                try channel.setAttributes(attributes).startSync().getResult()
 
                 let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
                 var operations: [CallbackOperation<Void>] = []
-
-                completionOperation.addDependency(setAttributesOperation)
-                operations.append(setAttributesOperation)
 
                 members.forEach {
                     let operation = channel.invite(identity: $0)
@@ -178,6 +158,7 @@ extension Twilio {
 
                 var attributes = try channel.getAttributes()
 
+                attributes.initiator = self.identity
                 attributes.members = attributes.members.filter { $0 != member }
 
                 channel.setAttributes(attributes).start(completion: completion)

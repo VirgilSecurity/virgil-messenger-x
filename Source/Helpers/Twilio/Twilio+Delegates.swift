@@ -61,9 +61,15 @@ extension Twilio: TwilioChatClientDelegate {
     public func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
         self.queue.async {
             do {
-                if channel.status != .joined, !self.creatingChannel {
+                if channel.status != .joined {
                     try channel.join().startSync().getResult()
 
+                    let attributes = try channel.getAttributes()
+
+                    guard attributes.initiator != self.identity else {
+                        return
+                    }
+                    
                     try ChatsManager.join(channel)
 
                     try ChatsManager.makeUpdateChannelOperation(twilioChannel: channel).startSync().getResult()
