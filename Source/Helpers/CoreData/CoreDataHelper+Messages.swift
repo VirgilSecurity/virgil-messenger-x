@@ -43,17 +43,16 @@ extension CoreDataHelper {
         return message
     }
 
-    func createEncryptedMessage(in channel: Channel, isIncoming: Bool, date: Date) throws -> Message {
+    func createEncryptedMessage(in channel: Channel, isIncoming: Bool, date: Date) throws {
         let message = try Message(body: "Message encrypted",
                                   type: .text,
                                   isIncoming: isIncoming,
                                   date: date,
                                   channel: channel,
+                                  isHidden: true,
                                   managedContext: self.managedContext)
 
         try self.save(message)
-
-        return message
     }
 
     func createTextMessage(_ body: String,

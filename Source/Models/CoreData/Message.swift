@@ -19,6 +19,7 @@ public class Message: NSManagedObject {
     @NSManaged public var isIncoming: Bool
     @NSManaged public var media: Data?
     @NSManaged public var channel: Channel
+    @NSManaged public var isHidden: Bool
 
     @NSManaged private var rawType: String
 
@@ -48,6 +49,7 @@ public class Message: NSManagedObject {
                      isIncoming: Bool,
                      date: Date,
                      channel: Channel,
+                     isHidden: Bool = false,
                      managedContext: NSManagedObjectContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Message.EntityName, in: managedContext) else {
             throw CoreDataHelper.Error.entityNotFound
@@ -61,6 +63,7 @@ public class Message: NSManagedObject {
         self.isIncoming = isIncoming
         self.date = date
         self.channel = channel
+        self.isHidden = isHidden
     }
 }
 

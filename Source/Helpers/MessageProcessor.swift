@@ -84,7 +84,9 @@ class MessageProcessor {
             do {
                 decrypted = try VirgilHelper.shared.decrypt(text, from: channel.cards.first!)
             } catch {
-                return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+                try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+
+                return nil
             }
 
             return try CoreDataHelper.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
@@ -97,7 +99,8 @@ class MessageProcessor {
             do {
                 decrypted = try VirgilHelper.shared.decrypt(text, from: channel.cards.first!)
             } catch {
-                return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+                try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+                return nil
             }
 
             let serviceMessage = try ServiceMessage.import(decrypted)
@@ -127,7 +130,8 @@ class MessageProcessor {
             do {
                 decrypted = try VirgilHelper.shared.decryptGroup(text, from: twilioMessage.author!, channel: channel, sessionId: sessionId)
             } catch {
-                return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+                try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+                return nil
             }
 
             decrypted = "\(twilioMessage.author!): \(decrypted)"
@@ -137,7 +141,8 @@ class MessageProcessor {
             guard let serviceMessage = try CoreDataHelper.shared.findServiceMessage(from: twilioMessage.author!,
                                                                                     withSessionId: sessionId,
                                                                                     identifier: attributes.identifier) else {
-                return try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+                try CoreDataHelper.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+                return nil
             }
 
             let text = "\(twilioMessage.author!) \(try serviceMessage.getChangeMembersText())"
@@ -169,9 +174,8 @@ class MessageProcessor {
                 try VirgilHelper.shared.secureChat.deleteGroupSession(sessionId: session.identifier)
             }
 
-            if !CoreDataHelper.shared.existsServiceMessage(from: author, withSessionId: sessionId) {
+            guard CoreDataHelper.shared.existsServiceMessage(from: author, withSessionId: sessionId) else {
                 try TwilioHelper.shared.leave(twilioChannel).startSync().getResult()
-
                 return true
             }
 

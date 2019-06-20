@@ -31,7 +31,17 @@ public class Channel: NSManagedObject {
     public static let ServiceMessagesKey = "orderedServiceMessages"
 
     public var messages: [Message] {
-        return self.orderedMessages?.array as? [Message] ?? []
+        guard let messages = self.orderedMessages?.array as? [Message] else {
+            return []
+        }
+
+        return messages.filter { !$0.isHidden }
+    }
+
+    public var messagesCount: Int {
+        let messages = self.orderedMessages?.array as? [Message] ?? []
+
+        return messages.count
     }
 
     public var members: [User] {

@@ -20,6 +20,7 @@
     <entity name="Message" representedClassName="Message" syncable="YES">
         <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="date" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="isHidden" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="isIncoming" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="media" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="rawType" attributeType="String" syncable="YES"/>
@@ -43,7 +44,7 @@
     <elements>
         <element name="Account" positionX="-450" positionY="45" width="128" height="90"/>
         <element name="Channel" positionX="-407" positionY="243" width="128" height="195"/>
-        <element name="Message" positionX="-128" positionY="198" width="128" height="135"/>
+        <element name="Message" positionX="-128" positionY="198" width="128" height="150"/>
         <element name="ServiceMessage" positionX="-288" positionY="198" width="128" height="150"/>
         <element name="User" positionX="-288" positionY="198" width="128" height="105"/>
     </elements>
