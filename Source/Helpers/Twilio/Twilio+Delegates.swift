@@ -92,7 +92,7 @@ extension Twilio: TwilioChatClientDelegate {
 
                 let notification: String
 
-                if let currentChannel = self.currentChannel, channel.sid! == currentChannel.sid! {
+                if let currentChannel = self.currentChannel, try channel.getSid() == currentChannel.getSid() {
                     notification = Notifications.MessageAddedToSelectedChannel.rawValue
                 } else {
                     notification = Notifications.MessageAdded.rawValue

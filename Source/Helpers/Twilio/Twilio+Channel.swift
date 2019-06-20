@@ -78,7 +78,7 @@ extension Twilio {
 
     func createSingleChannel(with card: Card) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            self.queue.async {
+//            self.queue.async {
                 do {
                     let attributes = TCHChannel.Attributes(initiator: self.identity,
                                                            friendlyName: nil,
@@ -95,7 +95,9 @@ extension Twilio {
 
                     try channel.join().startSync().getResult()
 
-                    try CoreData.shared.createSingleChannel(sid: channel.sid!, card: card)
+                    let sid = try channel.getSid()
+
+                    try CoreData.shared.createSingleChannel(sid: sid, card: card)
 
                     try channel.invite(identity: card.identity).startSync().getResult()
 
@@ -104,12 +106,12 @@ extension Twilio {
                     completion(nil, error)
                 }
             }
-        }
+//        }
     }
 
     func createGroupChannel(with members: [String], name: String, sessionId: Data) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            self.queue.async {
+//            self.queue.async {
                 do {
                     let attributes = TCHChannel.Attributes(initiator: self.identity,
                                                            friendlyName: name,
@@ -144,7 +146,7 @@ extension Twilio {
                 } catch {
                     completion(nil, error)
                 }
-            }
+//            }
         }
     }
 

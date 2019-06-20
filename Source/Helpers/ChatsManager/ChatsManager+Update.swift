@@ -93,7 +93,8 @@ extension ChatsManager {
                 let messages = try twilioChannel.getLastMessages(withCount: toLoad).startSync().getResult()
 
                 for message in messages {
-                    if !CoreData.shared.existsChannel(sid: twilioChannel.sid!) {
+                    let sid = try twilioChannel.getSid()
+                    if !CoreData.shared.existsChannel(sid: sid) {
                         break
                     }
 
