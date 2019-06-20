@@ -93,13 +93,9 @@ class ChatListViewController: ViewController {
             self.channels = CoreDataHelper.shared.getChannels()
 
             self.channels.sort { first, second in
-                guard let firstDate = first.lastMessagesDate else {
-                    return false
-                }
+                let firstDate = first.lastMessagesDate ?? first.createdAt
 
-                guard let secondDate = second.lastMessagesDate else {
-                    return true
-                }
+                let secondDate = second.lastMessagesDate ?? second.createdAt
 
                 return firstDate > secondDate
             }

@@ -16,6 +16,7 @@ public class Channel: NSManagedObject {
     @NSManaged public var name: String
     @NSManaged public var account: Account
     @NSManaged public var sessionId: Data?
+    @NSManaged public var createdAt: Date
 
     @NSManaged private var rawType: String
     @NSManaged private var numColorPair: Int32
@@ -127,6 +128,7 @@ public class Channel: NSManagedObject {
         self.type = type
         self.cards = cards
         self.sessionId = sessionId
+        self.createdAt = Date()
         self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
 
         let accountChannels = account.mutableOrderedSetValue(forKey: Account.ChannelsKey)

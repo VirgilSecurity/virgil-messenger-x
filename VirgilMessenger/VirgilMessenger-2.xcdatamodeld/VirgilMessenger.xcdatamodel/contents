@@ -6,6 +6,7 @@
         <relationship name="orderedChannels" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Channel" inverseName="account" inverseEntity="Channel" syncable="YES"/>
     </entity>
     <entity name="Channel" representedClassName="Channel" syncable="YES">
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="name" attributeType="String" minValueString="1" syncable="YES"/>
         <attribute name="numColorPair" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="rawCards" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
@@ -43,7 +44,7 @@
     </entity>
     <elements>
         <element name="Account" positionX="-450" positionY="45" width="128" height="90"/>
-        <element name="Channel" positionX="-407" positionY="243" width="128" height="195"/>
+        <element name="Channel" positionX="-407" positionY="243" width="128" height="210"/>
         <element name="Message" positionX="-128" positionY="198" width="128" height="150"/>
         <element name="ServiceMessage" positionX="-288" positionY="198" width="128" height="150"/>
         <element name="User" positionX="-288" positionY="198" width="128" height="105"/>
