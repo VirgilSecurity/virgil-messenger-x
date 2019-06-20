@@ -89,17 +89,17 @@ class ChatListViewController: ViewController {
     }
 
     @objc private func reloadTableView() {
+        self.channels = CoreDataHelper.shared.getChannels()
+
+        self.channels.sort { first, second in
+            let firstDate = first.lastMessagesDate ?? first.createdAt
+
+            let secondDate = second.lastMessagesDate ?? second.createdAt
+
+            return firstDate > secondDate
+        }
+
         DispatchQueue.main.async {
-            self.channels = CoreDataHelper.shared.getChannels()
-
-            self.channels.sort { first, second in
-                let firstDate = first.lastMessagesDate ?? first.createdAt
-
-                let secondDate = second.lastMessagesDate ?? second.createdAt
-
-                return firstDate > secondDate
-            }
-
             self.noChatsView.isHidden = !self.channels.isEmpty
 
             self.tableView.reloadData()
