@@ -113,8 +113,8 @@ extension Virgil {
     }
 
     func startNewGroupSession(identity: String, sessionId: Data) throws -> SecureGroupSession {
-        guard let serviceMessage = try CoreData.shared.findServiceMessage(from: identity,
-                                                                          withSessionId: sessionId) else {
+        guard let serviceMessage = CoreData.shared.findServiceMessage(from: identity,
+                                                                      withSessionId: sessionId) else {
             throw Error.missingServiceMessage
         }
 

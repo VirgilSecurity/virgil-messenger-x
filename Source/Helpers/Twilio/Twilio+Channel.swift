@@ -57,31 +57,31 @@ extension Twilio {
 
     func createSingleChannel(with card: Card) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-                do {
-                    let attributes = TCHChannel.Attributes(initiator: self.identity,
-                                                           friendlyName: nil,
-                                                           sessionId: nil,
-                                                           members: [self.identity, card.identity],
-                                                           type: .single)
+            do {
+                let attributes = TCHChannel.Attributes(initiator: self.identity,
+                                                       friendlyName: nil,
+                                                       sessionId: nil,
+                                                       members: [self.identity, card.identity],
+                                                       type: .single)
 
-                    let uniqueName = self.makeUniqueName(card.identity, self.identity)
-                    let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
-                                                  TCHChannelOptionAttributes: try attributes.export(),
-                                                  TCHChannelOptionUniqueName: uniqueName]
+                let uniqueName = self.makeUniqueName(card.identity, self.identity)
+                let options: [String: Any] = [TCHChannelOptionType: TCHChannelType.private.rawValue,
+                                              TCHChannelOptionAttributes: try attributes.export(),
+                                              TCHChannelOptionUniqueName: uniqueName]
 
-                    let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
+                let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
 
-                    let sid = try channel.getSid()
+                let sid = try channel.getSid()
 
-                    try CoreData.shared.createSingleChannel(sid: sid, card: card)
+                try CoreData.shared.createSingleChannel(sid: sid, card: card)
 
-                    try channel.invite(identity: card.identity).startSync().getResult()
+                try channel.invite(identity: card.identity).startSync().getResult()
 
-                    completion((), nil)
-                } catch {
-                    completion(nil, error)
-                }
+                completion((), nil)
+            } catch {
+                completion(nil, error)
             }
+        }
     }
 
     func createGroupChannel(with members: [String], name: String, sessionId: Data) -> CallbackOperation<Void> {

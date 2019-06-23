@@ -92,13 +92,10 @@ extension CoreData {
         return message
     }
 
-    func findServiceMessage(from identity: String, withSessionId sessionId: Data, identifier: String? = nil) throws -> ServiceMessage? {
-        guard identity != self.currentAccount?.identity else {
-            return nil
-        }
-
-        guard let user = self.getSingleChannel(with: identity) else {
-            throw Error.channelNotFound
+    func findServiceMessage(from identity: String, withSessionId sessionId: Data, identifier: String? = nil) -> ServiceMessage? {
+        guard identity != self.currentAccount?.identity,
+            let user = self.getSingleChannel(with: identity) else {
+                return nil
         }
 
         return user.serviceMessages.first { $0.message.getSessionId() == sessionId && $0.identifier == identifier }

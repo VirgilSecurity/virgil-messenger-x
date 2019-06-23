@@ -138,9 +138,9 @@ class MessageProcessor {
 
             return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
         case .service:
-            guard let serviceMessage = try CoreData.shared.findServiceMessage(from: author,
-                                                                                    withSessionId: sessionId,
-                                                                                    identifier: attributes.identifier) else {
+            guard let serviceMessage = CoreData.shared.findServiceMessage(from: author,
+                                                                          withSessionId: sessionId,
+                                                                          identifier: attributes.identifier) else {
                 try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
                 return nil
             }
@@ -155,9 +155,9 @@ class MessageProcessor {
                                                               channel: channel)
 
             return deleted ? nil : try CoreData.shared.createChangeMembersMessage(text,
-                                                                                        in: channel,
-                                                                                        isIncoming: isIncoming,
-                                                                                        date: date)
+                                                                                  in: channel,
+                                                                                  isIncoming: isIncoming,
+                                                                                  date: date)
         }
     }
 
