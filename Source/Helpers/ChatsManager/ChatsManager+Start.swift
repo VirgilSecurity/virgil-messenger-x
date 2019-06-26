@@ -70,11 +70,11 @@ public enum ChatsManager {
 
                 let cards = try channels.map { try $0.getCard() }
 
-                let session = try Virgil.shared.startNewGroupSession(with: cards)
+                let id = try Virgil.shared.crypto.generateRandomData(ofSize: 32)
 
-                try Twilio.shared.createGroupChannel(with: cards,
-                                                     name: name,
-                                                     sessionId: session.identifier).startSync().getResult()
+                try Virgil.shared.startNewGroupSession(with: cards, sessionId: id)
+
+                try Twilio.shared.createGroupChannel(with: cards, name: name, id: id).startSync().getResult()
 
                 completion(nil)
             } catch {

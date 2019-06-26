@@ -13,7 +13,9 @@ import VirgilCryptoRatchet
 
 extension Virgil {
     func encryptGroup(_ text: String, channel: Channel) throws -> String {
-        let session = try self.getGroupSession(of: channel) ?? self.startNewGroupSession(with: channel.cards)
+        guard let session = self.getGroupSession(of: channel) else {
+            throw Error.nilGroupSession
+        }
 
         let ratchetMessage = try session.encrypt(string: text)
         try self.secureChat.storeGroupSession(session: session)
@@ -92,10 +94,7 @@ extension Virgil {
         return session
     }
 
-    func startNewGroupSession(with cards: [Card]) throws -> SecureGroupSession {
-        let part = withUnsafeBytes(of: UUID().uuid, { Data($0) })
-        let sessionId = part + part
-
+    func startNewGroupSession(with cards: [Card], sessionId: Data) throws {
         let newSessionMessage = try self.secureChat.startNewGroupSession(sessionId: sessionId)
 
         let members = cards.map { $0.identity }
@@ -107,10 +106,8 @@ extension Virgil {
 
         try MessageSender.sendServiceMessage(to: members, ticket: serviceMessage).startSync().getResult()
 
-        let session = try self.secureChat.startGroupSession(with: cards, using: newSessionMessage)
+        let session = try self.secureChat.startGroupSession(with: cards, sessionId: sessionId, using: newSessionMessage)
         try self.secureChat.storeGroupSession(session: session)
-
-        return session
     }
 
     func startNewGroupSession(identity: String, sessionId: Data) throws -> SecureGroupSession {
@@ -122,7 +119,7 @@ extension Virgil {
         let members = serviceMessage.members.filter { $0 != Twilio.shared.identity }
         let cards = try CoreData.shared.getSingleChannelsCards(users: members)
 
-        let session = try secureChat.startGroupSession(with: cards, using: serviceMessage.message)
+        let session = try secureChat.startGroupSession(with: cards, sessionId: sessionId, using: serviceMessage.message)
         try self.secureChat.storeGroupSession(session: session)
 
         try CoreData.shared.delete(serviceMessage)

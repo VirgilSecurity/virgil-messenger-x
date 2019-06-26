@@ -11,11 +11,10 @@ import VirgilSDK
 
 extension TCHChannel {
     struct Attributes: Codable {
-        var initiator: String
-        let friendlyName: String?
-        let sessionId: Data?
-        var members: [String]
         let type: ChannelType
+
+        var initiator: String
+        var members: [String]
 
         static func `import`(_ json: [String: Any]) throws -> Attributes {
             let data = try JSONSerialization.data(withJSONObject: json, options: [])
@@ -35,6 +34,33 @@ extension TCHChannel {
     }
 }
 
+extension TCHChannel {
+    class Options {
+        let uniqueName: String
+        let friendlyName: String?
+        let scope: Int
+        let attributes: Attributes
+
+        public init(uniqueName: String,
+                    friendlyName: String?,
+                    initiator: String,
+                    members: [String],
+                    scope: Int = TCHChannelType.private.rawValue,
+                    type: ChannelType) {
+            self.uniqueName = uniqueName
+            self.friendlyName = friendlyName
+            self.scope = scope
+            self.attributes = Attributes(type: type, initiator: initiator, members: members)
+        }
+
+        func export() throws -> [String: Any] {
+            return [TCHChannelOptionUniqueName: self.uniqueName,
+                    TCHChannelOptionFriendlyName: self.friendlyName as Any,
+                    TCHChannelOptionAttributes: try self.attributes.export(),
+                    TCHChannelOptionType: self.scope]
+        }
+    }
+}
 
 extension TCHChannel {
     func getSid() throws -> String {
@@ -43,6 +69,23 @@ extension TCHChannel {
         }
 
         return sid
+    }
+
+    func getSessionId() throws -> Data {
+        guard let name = self.uniqueName,
+            let sessionId = Data(hexEncodedString: name) else {
+                throw Twilio.Error.invalidChannel
+        }
+
+        return sessionId
+    }
+
+    func getFriendlyName() throws -> String {
+        guard let name = self.friendlyName else {
+            throw Twilio.Error.invalidChannel
+        }
+
+        return name
     }
 
     func getAttributes() throws -> Attributes {

@@ -142,10 +142,12 @@ public class Virgil {
                 session = existing
             } catch {
                 session = try self.secureChat.startGroupSession(with: members,
+                                                                sessionId: try channel.getSessionId(),
                                                                 using: serviceMessage.message)
             }
         } else {
             session = try self.secureChat.startGroupSession(with: members,
+                                                            sessionId: try channel.getSessionId(),
                                                             using: serviceMessage.message)
         }
 

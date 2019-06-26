@@ -26,12 +26,9 @@ extension ChatsManager {
         case .group:
             let cards = try Virgil.shared.getCards(of: attributes.members)
 
-            // FIXME
-            guard let sessionId = attributes.sessionId,
-                let name = attributes.friendlyName,
-                let sid = channel.sid else {
-                    throw Twilio.Error.invalidChannel
-            }
+            let sessionId = try channel.getSessionId()
+            let name = try channel.getFriendlyName()
+            let sid = try channel.getSid()
 
             try CoreData.shared.createGroupChannel(name: name,
                                                    members: attributes.members,
