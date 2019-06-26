@@ -14,7 +14,6 @@
         <attribute name="sessionId" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="sid" attributeType="String" syncable="YES"/>
         <relationship name="account" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="orderedChannels" inverseEntity="Account" syncable="YES"/>
-        <relationship name="orderedMembers" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="User" inverseName="orderedChannels" inverseEntity="User" syncable="YES"/>
         <relationship name="orderedMessages" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Message" inverseName="channel" inverseEntity="Message" syncable="YES"/>
         <relationship name="orderedServiceMessages" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ServiceMessage" inverseName="channel" inverseEntity="ServiceMessage" syncable="YES"/>
     </entity>
@@ -34,17 +33,10 @@
         <attribute name="remove" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
         <relationship name="channel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Channel" inverseName="orderedServiceMessages" inverseEntity="Channel" syncable="YES"/>
     </entity>
-    <entity name="User" representedClassName="User" syncable="YES">
-        <attribute name="identity" attributeType="String" minValueString="1" syncable="YES"/>
-        <attribute name="numColorPair" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="rawCard" attributeType="String" minValueString="0" syncable="YES"/>
-        <relationship name="orderedChannels" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Channel" inverseName="orderedMembers" inverseEntity="Channel" syncable="YES"/>
-    </entity>
     <elements>
         <element name="Account" positionX="-450" positionY="45" width="128" height="90"/>
-        <element name="Channel" positionX="-407" positionY="243" width="128" height="210"/>
+        <element name="Channel" positionX="-407" positionY="243" width="128" height="195"/>
         <element name="Message" positionX="-128" positionY="198" width="128" height="150"/>
         <element name="ServiceMessage" positionX="-288" positionY="198" width="128" height="120"/>
-        <element name="User" positionX="-288" positionY="198" width="128" height="105"/>
     </elements>
 </model>

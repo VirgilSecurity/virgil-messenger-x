@@ -70,7 +70,6 @@
 		16973338229B3E15009E30D0 /* Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16973337229B3E15009E30D0 /* Gradient.swift */; };
 		16AE1D7A2044315B005DF777 /* UIPhotoMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D772044315B005DF777 /* UIPhotoMessageModel.swift */; };
 		16AE1D7B2044315B005DF777 /* UIPhotoMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D782044315B005DF777 /* UIPhotoMessageHandler.swift */; };
-		16B6751322689D2C00B6D4D0 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B6751122689D2C00B6D4D0 /* User.swift */; };
 		16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
 		16B796692269D34900FD0B0B /* ServiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B796672269D34900FD0B0B /* ServiceMessage.swift */; };
 		16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */; };
@@ -200,7 +199,6 @@
 		1698B29B22392339003B8CBA /* VSCRatchet.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCRatchet.framework; path = Carthage/Build/iOS/VSCRatchet.framework; sourceTree = "<group>"; };
 		16AE1D772044315B005DF777 /* UIPhotoMessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIPhotoMessageModel.swift; sourceTree = "<group>"; };
 		16AE1D782044315B005DF777 /* UIPhotoMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIPhotoMessageHandler.swift; sourceTree = "<group>"; };
-		16B6751122689D2C00B6D4D0 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
 		16B796672269D34900FD0B0B /* ServiceMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceMessage.swift; sourceTree = "<group>"; };
 		16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
@@ -434,7 +432,6 @@
 			isa = PBXGroup;
 			children = (
 				16FCF27C1FE46756000348BC /* Account.swift */,
-				16B6751122689D2C00B6D4D0 /* User.swift */,
 				16FCF27A1FE46756000348BC /* Channel.swift */,
 				16C0D45622660A5D001F23ED /* Message.swift */,
 				16B796672269D34900FD0B0B /* ServiceMessage.swift */,
@@ -843,7 +840,6 @@
 				16FB2DCC204D806E00346FA0 /* UIPhotoMessageViewModel.swift in Sources */,
 				16C0D45822660A5D001F23ED /* Message.swift in Sources */,
 				16973338229B3E15009E30D0 /* Gradient.swift in Sources */,
-				16B6751322689D2C00B6D4D0 /* User.swift in Sources */,
 				163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */,
 				163E89A322BAD94000051D4B /* TCHChannel.swift in Sources */,
 				166D3E5E1FB495F90032BAAD /* CoreData.swift in Sources */,

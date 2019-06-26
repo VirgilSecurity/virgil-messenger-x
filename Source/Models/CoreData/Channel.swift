@@ -21,7 +21,6 @@ public class Channel: NSManagedObject {
     @NSManaged private var rawType: String
     @NSManaged private var numColorPair: Int32
     @NSManaged private var orderedMessages: NSOrderedSet?
-    @NSManaged private var orderedMembers: NSOrderedSet?
     @NSManaged private var orderedServiceMessages: NSOrderedSet?
     @NSManaged private var rawCards: [String]
 
@@ -41,10 +40,6 @@ public class Channel: NSManagedObject {
 
     public var allMessages: [Message] {
         return self.orderedMessages?.array as? [Message] ?? []
-    }
-
-    public var members: [User] {
-        return self.orderedMembers?.array as? [User] ?? []
     }
 
     public var serviceMessages: [ServiceMessage] {
