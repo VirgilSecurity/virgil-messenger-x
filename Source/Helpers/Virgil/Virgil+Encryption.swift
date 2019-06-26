@@ -34,7 +34,9 @@ extension Virgil {
 
         let ratchetMessage = try RatchetGroupMessage.deserialize(input: data)
 
-        let session = try self.getGroupSession(of: channel) ?? self.startNewGroupSession(identity: identity, sessionId: sessionId)
+        guard let session = self.getGroupSession(of: channel) else {
+            throw Error.nilGroupSession
+        }
 
         let decrypted = try session.decryptString(from: ratchetMessage, senderCardId: card.identifier)
         try self.secureChat.storeGroupSession(session: session)
