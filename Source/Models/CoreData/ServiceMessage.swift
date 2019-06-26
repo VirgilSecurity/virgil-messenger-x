@@ -53,19 +53,8 @@ public final class ServiceMessage: NSManagedObject, Codable {
         }
     }
 
-    public var type: ServiceMessageType {
-        get {
-            return ServiceMessageType(rawValue: self.rawType) ?? .newSession
-        }
-
-        set {
-            self.rawType = newValue.rawValue
-        }
-    }
-
     convenience init(identifier: String?,
                      message: RatchetGroupMessage,
-                     type: ServiceMessageType,
                      members: [String],
                      add: [String] = [],
                      remove: [String] = [],
@@ -79,7 +68,6 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
         self.identifier = identifier
         self.message = message
-        self.type = type
         self.members = members
         self.add = add
         self.remove = remove
@@ -121,10 +109,6 @@ extension ServiceMessage {
 
 extension ServiceMessage {
     public func getChangeMembersText() throws -> String {
-        guard self.type == .changeMembers else {
-            throw CoreData.Error.invalidMessage
-        }
-
         if self.add.isEmpty && self.remove.isEmpty {
             throw CoreData.Error.invalidMessage
         }

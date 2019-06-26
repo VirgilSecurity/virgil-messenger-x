@@ -14,15 +14,15 @@ public struct UserData {
     public let card: Card
 }
 
-public enum LocalKeyManagerError: Int, Error {
-    case retrieveFailed = 1
-}
-
 public class LocalKeyManager {
     private let identity: String
     private let keychainStorage: KeychainStorage
     private let crypto: VirgilCrypto
     private let cardCrypto: VirgilCardCrypto
+
+    public enum Error: Int, Swift.Error {
+        case retrieveFailed = 1
+    }
 
     public enum KeychainMetaKeys: String {
         case rawCard = "rawCard"
@@ -44,7 +44,7 @@ public class LocalKeyManager {
             let rawCardBase64 = meta[KeychainMetaKeys.rawCard.rawValue],
             let rawCard = try? RawSignedModel.import(fromBase64Encoded: rawCardBase64),
             let card = try? CardManager.parseCard(from: rawCard, cardCrypto: cardCrypto) else {
-                throw LocalKeyManagerError.retrieveFailed
+                throw Error.retrieveFailed
         }
 
         return UserData(keyPair: keyPair, card: card)

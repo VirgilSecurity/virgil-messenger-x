@@ -6,20 +6,19 @@
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import VirgilSDK
 import VirgilCrypto
-
-enum ClientError: String, Error {
-    case jsonParsingFailed
-    case stringToDataFailed
-    case gettingJWTFailed
-}
 
 public class Client {
     private let connection = HttpConnection()
     private let crypto: VirgilCrypto
     private let cardCrypto: VirgilCardCrypto
+
+    enum Error: String, Swift.Error {
+        case jsonParsingFailed
+        case stringToDataFailed
+        case gettingJWTFailed
+    }
 
     init(crypto: VirgilCrypto, cardCrypto: VirgilCardCrypto) {
         self.crypto = crypto
@@ -45,7 +44,7 @@ public class Client {
         let stringToSign = "\(cardId).\(Int(Date().timeIntervalSince1970))"
 
         guard let dataToSign = stringToSign.data(using: .utf8) else {
-            throw ClientError.stringToDataFailed
+            throw Error.stringToDataFailed
         }
 
         let signature = try crypto.generateSignature(of: dataToSign, using: privateKey)
@@ -96,7 +95,7 @@ extension Client {
         guard let responseBody = response.body,
             let json = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any] else {
                 Log.error("Json parsing failed")
-                throw ClientError.jsonParsingFailed
+                throw Error.jsonParsingFailed
         }
 
         guard let exportedCard = json["virgil_card"] as? [String: Any] else {
@@ -129,7 +128,7 @@ extension Client {
         guard let responseBody = response.body,
             let tokenJson = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
             let token = tokenJson["token"] as? String else {
-                throw ClientError.jsonParsingFailed
+                throw Error.jsonParsingFailed
         }
 
         return token
@@ -154,7 +153,7 @@ extension Client {
         guard let responseBody = response.body,
             let tokenJson = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
             let token = tokenJson["token"] as? String else {
-                throw ClientError.jsonParsingFailed
+                throw Error.jsonParsingFailed
         }
 
         return token

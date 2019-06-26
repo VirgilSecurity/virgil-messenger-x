@@ -21,7 +21,6 @@ extension ChatsManager {
                 // Create Single Service Message with ticket and send it
                 let serviceMessage = try ServiceMessage(identifier: UUID().uuidString,
                                                         message: ticket,
-                                                        type: .changeMembers,
                                                         members: members + [Twilio.shared.identity],
                                                         add: newMembers,
                                                         remove: [])
@@ -64,7 +63,6 @@ extension ChatsManager {
                 // Create Single Service Message with ticket and send it
                 let serviceMessage = try ServiceMessage(identifier: UUID().uuidString,
                                                         message: ticket,
-                                                        type: .changeMembers,
                                                         members: members + [Twilio.shared.identity],
                                                         add: [],
                                                         remove: [remove])

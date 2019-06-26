@@ -15,7 +15,7 @@ public class VirgilAuthorizer {
     public let verifier: VirgilCardVerifier
     public let client: Client
 
-    public enum VirgilAuthorizerError: Error {
+    public enum Error: Swift.Error {
         case cardVerifierInitFailed
     }
 
@@ -25,7 +25,7 @@ public class VirgilAuthorizer {
         self.client = Client(crypto: crypto, cardCrypto: self.cardCrypto)
 
         guard let verifier = VirgilCardVerifier(cardCrypto: self.cardCrypto) else {
-            throw VirgilAuthorizerError.cardVerifierInitFailed
+            throw Error.cardVerifierInitFailed
         }
 
         self.verifier = verifier

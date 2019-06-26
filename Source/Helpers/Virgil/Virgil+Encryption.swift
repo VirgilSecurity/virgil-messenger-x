@@ -101,7 +101,6 @@ extension Virgil {
 
         let serviceMessage = try ServiceMessage(identifier: nil,
                                                 message: newSessionMessage,
-                                                type: .newSession,
                                                 members: members + [Twilio.shared.identity])
 
         try MessageSender.sendServiceMessage(to: members, ticket: serviceMessage).startSync().getResult()

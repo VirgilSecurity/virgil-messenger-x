@@ -6,11 +6,9 @@
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import VirgilSDK
 
 enum UserAuthorizerError: String, Error {
-    case gettingJwtFailed
     case noIdentityAtDefaults
 }
 
