@@ -19,8 +19,7 @@ extension ChatsManager {
                 let ticket = try Virgil.shared.createChangeMemebersTicket(in: dataSource.channel)
 
                 // Create Single Service Message with ticket and send it
-                let serviceMessage = try ServiceMessage(identifier: UUID().uuidString,
-                                                        message: ticket,
+                let serviceMessage = try ServiceMessage(message: ticket,
                                                         members: members + [Twilio.shared.identity],
                                                         add: newMembers,
                                                         remove: [])
@@ -61,8 +60,7 @@ extension ChatsManager {
                 let ticket = try Virgil.shared.createChangeMemebersTicket(in: dataSource.channel)
 
                 // Create Single Service Message with ticket and send it
-                let serviceMessage = try ServiceMessage(identifier: UUID().uuidString,
-                                                        message: ticket,
+                let serviceMessage = try ServiceMessage(message: ticket,
                                                         members: members + [Twilio.shared.identity],
                                                         add: [],
                                                         remove: [remove])

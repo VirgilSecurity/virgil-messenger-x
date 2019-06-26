@@ -99,8 +99,7 @@ extension Virgil {
 
         let members = cards.map { $0.identity }
 
-        let serviceMessage = try ServiceMessage(identifier: nil,
-                                                message: newSessionMessage,
+        let serviceMessage = try ServiceMessage(message: newSessionMessage,
                                                 members: members + [Twilio.shared.identity])
 
         try MessageSender.sendServiceMessage(to: members, ticket: serviceMessage).startSync().getResult()

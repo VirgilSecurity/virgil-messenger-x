@@ -13,14 +13,11 @@ import VirgilSDK
 
 @objc(ServiceMessage)
 public final class ServiceMessage: NSManagedObject, Codable {
-    @NSManaged public var identifier: String?
     @NSManaged public var rawMessage: Data
     @NSManaged public var channel: Channel?
     @NSManaged public var members: [String]
     @NSManaged public var add: [String]
     @NSManaged public var remove: [String]
-
-    @NSManaged private var rawType: String
 
     private static let EntityName = "ServiceMessage"
 
@@ -35,12 +32,10 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.identifier, forKey: .identifier)
         try container.encode(self.rawMessage, forKey: .rawMessage)
         try container.encode(self.members, forKey: .members)
         try container.encode(self.add, forKey: .add)
         try container.encode(self.remove, forKey: .remove)
-        try container.encode(self.rawType, forKey: .rawType)
     }
 
     public var message: RatchetGroupMessage {
@@ -53,8 +48,22 @@ public final class ServiceMessage: NSManagedObject, Codable {
         }
     }
 
-    convenience init(identifier: String?,
-                     message: RatchetGroupMessage,
+    public var identifier: String? {
+        var epoch = self.message.getEpoch()
+
+        guard epoch != 0 else {
+            return nil
+        }
+        
+        let sessionId = self.message.getSessionId()
+        let epochData = Data(bytes: &epoch, count: MemoryLayout.size(ofValue: epoch))
+
+        let identifier = sessionId + epochData
+
+        return identifier.base64EncodedString()
+    }
+
+    convenience init(message: RatchetGroupMessage,
                      members: [String],
                      add: [String] = [],
                      remove: [String] = [],
@@ -66,7 +75,6 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
         self.init(entity: entity, insertInto: managedContext)
 
-        self.identifier = identifier
         self.message = message
         self.members = members
         self.add = add
@@ -84,9 +92,7 @@ public final class ServiceMessage: NSManagedObject, Codable {
 
         self.init(entity: entity, insertInto: managedContext)
 
-        self.identifier = try container.decodeIfPresent(String.self, forKey: .identifier)
         self.rawMessage = try container.decode(Data.self, forKey: .rawMessage)
-        self.rawType = try container.decode(String.self, forKey: .rawType)
         self.members = try container.decode([String].self, forKey: .members)
         self.add = try container.decode([String].self, forKey: .add)
         self.remove = try container.decode([String].self, forKey: .remove)

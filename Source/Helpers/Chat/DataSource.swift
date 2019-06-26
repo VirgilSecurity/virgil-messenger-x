@@ -128,7 +128,7 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addChangeMembers(_ serviceMessage: ServiceMessage) throws {
-        guard let serviceMessageId = serviceMessage.identifier else {
+        guard let identifier = serviceMessage.identifier else {
             throw CoreData.Error.invalidMessage
         }
 
@@ -139,7 +139,7 @@ class DataSource: ChatDataSourceProtocol {
         let message = try CoreData.shared.createChangeMembersMessage(text, isIncoming: false)
 
         try self.messageSender.sendChangeMembers(message: message,
-                                                 identifier: serviceMessageId).startSync().getResult()
+                                                 identifier: identifier).startSync().getResult()
 
         let uiModel = message.exportAsUIModel(withId: id)
         

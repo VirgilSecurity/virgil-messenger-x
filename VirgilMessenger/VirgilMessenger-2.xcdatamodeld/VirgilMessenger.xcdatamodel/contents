@@ -29,7 +29,6 @@
     </entity>
     <entity name="ServiceMessage" representedClassName="ServiceMessage" syncable="YES">
         <attribute name="add" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
-        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="members" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
         <attribute name="rawMessage" attributeType="Binary" minValueString="1" syncable="YES"/>
         <attribute name="remove" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
@@ -45,7 +44,7 @@
         <element name="Account" positionX="-450" positionY="45" width="128" height="90"/>
         <element name="Channel" positionX="-407" positionY="243" width="128" height="210"/>
         <element name="Message" positionX="-128" positionY="198" width="128" height="150"/>
-        <element name="ServiceMessage" positionX="-288" positionY="198" width="128" height="135"/>
+        <element name="ServiceMessage" positionX="-288" positionY="198" width="128" height="120"/>
         <element name="User" positionX="-288" positionY="198" width="128" height="105"/>
     </elements>
 </model>
