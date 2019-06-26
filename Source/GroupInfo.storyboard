@@ -87,7 +87,7 @@
                     </scrollView>
                     <navigationItem key="navigationItem" title="Group Info" id="1f6-CX-TNl">
                         <barButtonItem key="backBarButtonItem" title="Back" id="DOM-xr-amY"/>
-                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="add" id="vI9-sY-xkl">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="vI9-sY-xkl">
                             <connections>
                                 <action selector="addMemberTapped:" destination="KRu-nJ-U9G" id="IeN-HP-cHc"/>
                             </connections>
