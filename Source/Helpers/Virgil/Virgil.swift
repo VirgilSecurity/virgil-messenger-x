@@ -115,41 +115,71 @@ public class Virgil {
 
     func updateParticipants(ticket: RatchetGroupMessage,
                             channel: Channel,
-                            addCards: [Card] = [],
-                            removeCards: [Card] = []) throws {
+                            add: [Card] = [],
+                            remove: [Card] = []) throws {
         guard let session = self.getGroupSession(of: channel) else {
             throw Error.nilGroupSession
         }
 
-        let removeCardIds = removeCards.map { $0.identifier }
+        let removeIds = remove.map { $0.identifier }
 
-        try session.updateParticipants(ticket: ticket, addCards: addCards, removeCardIds: removeCardIds)
+        try session.updateParticipants(ticket: ticket, addCards: add, removeCardIds: removeIds)
 
         try self.secureChat.storeGroupSession(session: session)
     }
 
-    func updateParticipants(serviceMessage: ServiceMessage, channel: Channel) throws {
-        let cards = serviceMessage.cards.filter { $0.identity != Twilio.shared.identity }
+    func updateParticipants(add: [Card], remove: [Card], members: [Card], serviceMessage: ServiceMessage, channel: Channel) throws {
+        let members = members.filter { $0.identity != Twilio.shared.identity }
+
+        let removeCardIds = remove.map { $0.identifier }
 
         let session: SecureGroupSession
         if let existing = self.getGroupSession(of: channel) {
             do {
-                let removeCardIds = serviceMessage.cardsRemove.map { $0.identifier }
-
                 try existing.updateParticipants(ticket: serviceMessage.message,
-                                                addCards: serviceMessage.cardsAdd,
+                                                addCards: add,
                                                 removeCardIds: removeCardIds)
                 session = existing
             } catch {
-                session = try self.secureChat.startGroupSession(with: cards,
+                session = try self.secureChat.startGroupSession(with: members,
                                                                 using: serviceMessage.message)
             }
         } else {
-            session = try self.secureChat.startGroupSession(with: cards,
+            session = try self.secureChat.startGroupSession(with: members,
                                                             using: serviceMessage.message)
         }
 
         try self.secureChat.storeGroupSession(session: session)
+    }
+
+    // FIXME: Should be in separate class
+    func getCards(of users: [String]) throws -> [Card] {
+        var cachedCards: [Card] = []
+        var cardsToLoad: [String] = []
+
+        let users = users.filter { $0 != Twilio.shared.identity }
+
+        guard !users.isEmpty else {
+            return []
+        }
+
+        for user in users {
+            if let cachedCard = try CoreData.shared.getSingleChannel(with: user)?.getCard() {
+                cachedCards.append(cachedCard)
+            } else {
+                cardsToLoad.append(user)
+            }
+        }
+
+        guard !cardsToLoad.isEmpty else {
+            return cachedCards
+        }
+
+        let cards = try self.makeGetCardsOperation(identities: cardsToLoad).startSync().getResult()
+
+        try? ChatsManager.startSingle(cards: cards)
+
+        return cachedCards + cards
     }
 
     func buildCard(_ card: String) -> Card? {

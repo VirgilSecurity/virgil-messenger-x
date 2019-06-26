@@ -74,7 +74,11 @@ class ChatListViewController: ViewController {
             DispatchQueue.main.async {
                 if let error = error {
                     self.alert(error) { _ in
-                        self.goToLogin()
+                        UserAuthorizer().logOut { error in
+                            if error == nil {
+                                self.goToLogin()
+                            }
+                        }
                     }
                 }
 
@@ -111,7 +115,9 @@ class ChatListViewController: ViewController {
     }
 
     private func goToLogin() {
-        self.switchNavigationStack(to: AuthenticationViewController.name)
+        DispatchQueue.main.async {
+            self.switchNavigationStack(to: AuthenticationViewController.name)
+        }
     }
 
     deinit {

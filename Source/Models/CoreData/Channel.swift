@@ -140,4 +140,12 @@ public class Channel: NSManagedObject {
 
         return id
     }
+
+    public func getCard() throws -> Card {
+        guard self.type == .single, let card = self.cards.first else {
+            throw CoreData.Error.invalidChannel
+        }
+
+        return card
+    }
 }

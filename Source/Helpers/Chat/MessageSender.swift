@@ -36,16 +36,16 @@ public class MessageSender {
         }
     }
 
-    public static func sendServiceMessage(to cards: [Card], ticket: ServiceMessage) -> CallbackOperation<Void> {
+    public static func sendServiceMessage(to users: [String], ticket: ServiceMessage) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
-            guard !cards.isEmpty else {
+            guard !users.isEmpty else {
                 completion((), nil)
                 return
             }
 
             var operations: [CallbackOperation<Void>] = []
-            for card in cards {
-                guard let channel = CoreData.shared.getSingleChannel(with: card.identity) else {
+            for user in users {
+                guard let channel = CoreData.shared.getSingleChannel(with: user) else {
                     continue
                 }
 

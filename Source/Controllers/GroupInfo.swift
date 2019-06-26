@@ -100,7 +100,7 @@ extension GroupInfoViewController: DeleteItemDelegate {
         
         HUD.show(.progress)
 
-        ChatsManager.removeMember(user.cards.first!, dataSource: self.dataSource).start { _, error in
+        ChatsManager.removeMember(user.name, dataSource: self.dataSource).start { _, error in
             DispatchQueue.main.async {
                 if let error = error {
                     HUD.hide()

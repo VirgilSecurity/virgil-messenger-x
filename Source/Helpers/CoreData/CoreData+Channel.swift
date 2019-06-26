@@ -11,19 +11,7 @@ import VirgilSDK
 import TwilioChatClient
 
 extension CoreData {
-    func createGroupChannel(name: String, members: [String], sid: String, sessionId: Data, additionalCards: [Card] = []) throws {
-        let account = try self.getCurrentAccount()
-
-        let members = members.filter { $0 != account.identity }
-
-        var cards: [Card] = additionalCards
-        for member in members {
-            if let channel = CoreData.shared.getSingleChannel(with: member),
-                !additionalCards.contains(where: { $0.identity ==  member }) {
-                    cards.append(channel.cards.first!)
-            }
-        }
-
+    func createGroupChannel(name: String, members: [String], sid: String, sessionId: Data, cards: [Card]) throws {
         _ = try self.createChannel(type: .group, sid: sid, name: name, cards: cards, sessionId: sessionId)
     }
 
@@ -67,9 +55,9 @@ extension CoreData {
     }
 
     func remove(_ cards: [Card], from channel: Channel) throws {
-        channel.cards = channel.cards.filter { card1 in
-            !cards.contains { card2 in
-                card1.identity == card2.identity
+        channel.cards = channel.cards.filter { card in
+            !cards.contains { toRemove in
+                card.identity == toRemove.identity
             }
         }
 
@@ -125,5 +113,21 @@ extension CoreData {
         }
 
         return channel
+    }
+
+    func getSingleChannelsCards(users: [String]) throws -> [Card] {
+        let cards: [Card] = try users.map {
+            guard let channel = self.getSingleChannel(with: $0) else {
+                throw Error.channelNotFound
+            }
+
+            guard let card = channel.cards.first else {
+                throw Error.invalidChannel
+            }
+
+            return card
+        }
+
+        return cards
     }
 }

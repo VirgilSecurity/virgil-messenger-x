@@ -24,15 +24,9 @@ extension ChatsManager {
             try CoreData.shared.createSingleChannel(sid: sid, card: cards.first!)
 
         case .group:
-            let members = attributes.members.filter { !CoreData.shared.existsSingleChannel(with: $0) && $0 != Twilio.shared.identity }
+            let cards = try Virgil.shared.getCards(of: attributes.members)
 
-            var cards: [Card] = []
-            if !members.isEmpty {
-                cards = try Virgil.shared.makeGetCardsOperation(identities: members).startSync().getResult()
-            }
-
-            try? ChatsManager.startSingle(with: members, cards: cards)
-
+            // FIXME
             guard let sessionId = attributes.sessionId,
                 let name = attributes.friendlyName,
                 let sid = channel.sid else {
@@ -43,8 +37,9 @@ extension ChatsManager {
                                                    members: attributes.members,
                                                    sid: sid,
                                                    sessionId: sessionId,
-                                                   additionalCards: cards)
+                                                   cards: cards)
 
+            // FIXME
             _ = try? Virgil.shared.startNewGroupSession(identity: attributes.initiator, sessionId: sessionId)
         }
     }

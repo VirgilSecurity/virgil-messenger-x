@@ -167,7 +167,7 @@ class MessageProcessor {
                                                    sessionId: Data,
                                                    twilioChannel: TCHChannel,
                                                    channel: Channel) throws -> Bool {
-        guard !serviceMessage.cardsRemove.contains(where: { $0.identity == Twilio.shared.identity}) else {
+        guard !serviceMessage.remove.contains(where: { $0 == Twilio.shared.identity}) else {
             try CoreData.shared.delete(serviceMessage)
 
             if let session = Virgil.shared.getGroupSession(of: channel) {
@@ -190,17 +190,18 @@ class MessageProcessor {
             return false
         }
 
-        try Virgil.shared.updateParticipants(serviceMessage: serviceMessage, channel: channel)
+        let addCards = try Virgil.shared.getCards(of: serviceMessage.add)
+        let removeCards = try Virgil.shared.getCards(of: serviceMessage.remove)
+        let members = try Virgil.shared.getCards(of: serviceMessage.members)
 
-        try CoreData.shared.add(serviceMessage.cardsAdd, to: channel)
-        try CoreData.shared.remove(serviceMessage.cardsRemove, from: channel)
+        try Virgil.shared.updateParticipants(add: addCards,
+                                             remove: removeCards,
+                                             members: members,
+                                             serviceMessage: serviceMessage,
+                                             channel: channel)
 
-        let membersCards = serviceMessage.cardsAdd.filter {
-            !CoreData.shared.existsSingleChannel(with: $0.identity) && $0.identity != Twilio.shared.identity
-        }
-        let members = membersCards.map { $0.identity }
-
-        try? ChatsManager.startSingle(with: members)
+        try CoreData.shared.add(addCards, to: channel)
+        try CoreData.shared.remove(removeCards, from: channel)
 
         try CoreData.shared.delete(serviceMessage)
 

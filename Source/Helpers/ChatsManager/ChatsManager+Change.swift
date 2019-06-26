@@ -9,38 +9,38 @@
 import VirgilSDK
 
 extension ChatsManager {
-    internal static func addMembers(_ cards: [Card], dataSource: DataSource) -> CallbackOperation<Void> {
+    internal static func addMembers(_ newMembers: [String], dataSource: DataSource) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                let newCards = dataSource.channel.cards + cards
+                let currentMembers  = dataSource.channel.cards.map { $0.identity }
+                let members = currentMembers + newMembers
 
                 // Generating ticket
                 let ticket = try Virgil.shared.createChangeMemebersTicket(in: dataSource.channel)
 
                 // Create Single Service Message with ticket and send it
-                let user = try Virgil.shared.localKeyManager.retrieveUserData()
-
                 let serviceMessage = try ServiceMessage(identifier: UUID().uuidString,
                                                         message: ticket,
                                                         type: .changeMembers,
-                                                        members: newCards + [user.card],
-                                                        add: cards,
+                                                        members: members + [Twilio.shared.identity],
+                                                        add: newMembers,
                                                         remove: [])
 
-                try MessageSender.sendServiceMessage(to: newCards, ticket: serviceMessage).startSync().getResult()
+                try MessageSender.sendServiceMessage(to: members, ticket: serviceMessage).startSync().getResult()
 
                 // Send Service Message to group chat
                 try dataSource.addChangeMembers(serviceMessage)
 
                 // Invite members to Twilio Channel
-                let identities = cards.map { $0.identity }
-                try Twilio.shared.add(members: identities).startSync().getResult()
+                try Twilio.shared.add(members: newMembers).startSync().getResult()
+
+                let newCards = try Virgil.shared.getCards(of: newMembers)
 
                 // Use ticket on session
-                try Virgil.shared.updateParticipants(ticket: ticket, channel: dataSource.channel, addCards: cards)
+                try Virgil.shared.updateParticipants(ticket: ticket, channel: dataSource.channel, add: newCards)
 
                 // Adding cards to Core Data
-                try CoreData.shared.add(cards, to: dataSource.channel)
+                try CoreData.shared.add(newCards, to: dataSource.channel)
 
                 // Delete Single Service Message from Core Data
                 try CoreData.shared.delete(serviceMessage)
@@ -52,37 +52,38 @@ extension ChatsManager {
         }
     }
 
-    internal static func removeMember(_ card: Card, dataSource: DataSource) -> CallbackOperation<Void> {
+    internal static func removeMember(_ remove: String, dataSource: DataSource) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                let newCards = dataSource.channel.cards.filter { $0.identity != card.identity }
+                let currentMembers = dataSource.channel.cards.map { $0.identity }
+                let members = currentMembers.filter { $0 != remove}
 
                 // Generating ticket
                 let ticket = try Virgil.shared.createChangeMemebersTicket(in: dataSource.channel)
 
                 // Create Single Service Message with ticket and send it
-                let user = try Virgil.shared.localKeyManager.retrieveUserData()
-
                 let serviceMessage = try ServiceMessage(identifier: UUID().uuidString,
                                                         message: ticket,
                                                         type: .changeMembers,
-                                                        members: newCards + [user.card],
+                                                        members: members + [Twilio.shared.identity],
                                                         add: [],
-                                                        remove: [card])
+                                                        remove: [remove])
 
-                try MessageSender.sendServiceMessage(to: newCards + [card], ticket: serviceMessage).startSync().getResult()
+                try MessageSender.sendServiceMessage(to: members + [remove], ticket: serviceMessage).startSync().getResult()
 
                 // Send Service Message to Group chat
                 try dataSource.addChangeMembers(serviceMessage)
 
                 // Remove guy from Twilio channel (attributes for now)
-                try Twilio.shared.remove(member: card.identity).startSync().getResult()
+                try Twilio.shared.remove(member: remove).startSync().getResult()
+
+                let removeCards = try Virgil.shared.getCards(of: [remove])
 
                 // Use ticket on session
-                try Virgil.shared.updateParticipants(ticket: ticket, channel: dataSource.channel, removeCards: [card])
+                try Virgil.shared.updateParticipants(ticket: ticket, channel: dataSource.channel, remove: removeCards)
 
                 // Remove cards from Core Data
-                try CoreData.shared.remove([card], from: dataSource.channel)
+                try CoreData.shared.remove(removeCards, from: dataSource.channel)
 
                 // Delete Single Service Message from Core Data
                 try CoreData.shared.delete(serviceMessage)

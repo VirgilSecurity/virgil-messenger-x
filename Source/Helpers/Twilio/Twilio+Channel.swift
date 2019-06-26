@@ -84,9 +84,11 @@ extension Twilio {
         }
     }
 
-    func createGroupChannel(with members: [String], name: String, sessionId: Data) -> CallbackOperation<Void> {
+    func createGroupChannel(with cards: [Card], name: String, sessionId: Data) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
+                let members = cards.map { $0.identity }
+
                 let attributes = TCHChannel.Attributes(initiator: self.identity,
                                                        friendlyName: name,
                                                        sessionId: sessionId,
@@ -101,7 +103,7 @@ extension Twilio {
 
                 let sid = try channel.getSid()
 
-                try CoreData.shared.createGroupChannel(name: name, members: members, sid: sid, sessionId: sessionId)
+                try CoreData.shared.createGroupChannel(name: name, members: members, sid: sid, sessionId: sessionId, cards: cards)
 
                 let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 

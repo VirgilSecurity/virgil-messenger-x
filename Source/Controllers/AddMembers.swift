@@ -70,9 +70,9 @@ class AddMembersViewController: ViewController {
     }
 
     @IBAction func addTapped(_ sender: Any) {
-        let cards = self.selected.map { $0.cards.first! }
+        let add = self.selected.map { $0.name }
 
-        guard !cards.isEmpty else {
+        guard !add.isEmpty else {
             return
         }
 
@@ -82,7 +82,7 @@ class AddMembersViewController: ViewController {
 
         HUD.show(.progress)
 
-        ChatsManager.addMembers(cards, dataSource: self.dataSource).start { _, error in
+        ChatsManager.addMembers(add, dataSource: self.dataSource).start { _, error in
             DispatchQueue.main.async {
                 if let error = error {
                     HUD.hide()

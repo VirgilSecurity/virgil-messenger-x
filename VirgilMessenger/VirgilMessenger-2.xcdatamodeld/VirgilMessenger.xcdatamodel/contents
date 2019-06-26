@@ -28,12 +28,12 @@
         <relationship name="channel" maxCount="1" deletionRule="Nullify" destinationEntity="Channel" inverseName="orderedMessages" inverseEntity="Channel" syncable="YES"/>
     </entity>
     <entity name="ServiceMessage" representedClassName="ServiceMessage" syncable="YES">
+        <attribute name="add" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="rawCards" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
-        <attribute name="rawCardsAdd" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
-        <attribute name="rawCardsRemove" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
+        <attribute name="members" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
         <attribute name="rawMessage" attributeType="Binary" minValueString="1" syncable="YES"/>
         <attribute name="rawType" attributeType="String" minValueString="1" syncable="YES"/>
+        <attribute name="remove" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
         <relationship name="channel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Channel" inverseName="orderedServiceMessages" inverseEntity="Channel" syncable="YES"/>
     </entity>
     <entity name="User" representedClassName="User" syncable="YES">

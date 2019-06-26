@@ -98,15 +98,16 @@ extension Virgil {
 
         let newSessionMessage = try self.secureChat.startNewGroupSession(sessionId: sessionId)
 
+        let members = cards.map { $0.identity }
+
         let serviceMessage = try ServiceMessage(identifier: nil,
                                                 message: newSessionMessage,
                                                 type: .newSession,
-                                                members: cards)
+                                                members: members + [Twilio.shared.identity])
 
-        try MessageSender.sendServiceMessage(to: cards, ticket: serviceMessage).startSync().getResult()
+        try MessageSender.sendServiceMessage(to: members, ticket: serviceMessage).startSync().getResult()
 
-        let cards = cards.filter { $0.identity != Twilio.shared.identity }
-        let session = try secureChat.startGroupSession(with: cards, using: newSessionMessage)
+        let session = try self.secureChat.startGroupSession(with: cards, using: newSessionMessage)
         try self.secureChat.storeGroupSession(session: session)
 
         return session
@@ -118,7 +119,9 @@ extension Virgil {
             throw Error.missingServiceMessage
         }
 
-        let cards = serviceMessage.cards.filter { $0.identity != Twilio.shared.identity }
+        let members = serviceMessage.members.filter { $0 != Twilio.shared.identity }
+        let cards = try CoreData.shared.getSingleChannelsCards(users: members)
+
         let session = try secureChat.startGroupSession(with: cards, using: serviceMessage.message)
         try self.secureChat.storeGroupSession(session: session)
 

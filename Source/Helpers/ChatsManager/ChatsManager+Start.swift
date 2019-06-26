@@ -36,12 +36,20 @@ public enum ChatsManager {
         }
     }
 
-    public static func startSingle(with identities: [String], cards: [Card]? = nil) throws {
+    public static func startSingle(with identities: [String]) throws {
         guard !identities.isEmpty else {
             return
         }
 
-        let cards = try cards ?? Virgil.shared.makeGetCardsOperation(identities: identities).startSync().getResult()
+        let cards = try Virgil.shared.makeGetCardsOperation(identities: identities).startSync().getResult()
+
+        try self.startSingle(cards: cards)
+    }
+
+    public static func startSingle(cards: [Card]) throws {
+        guard !cards.isEmpty else {
+            return
+        }
 
         try Twilio.shared.createSingleChannel(with: cards)
     }
@@ -60,17 +68,13 @@ public enum ChatsManager {
 
                 startProgressBar()
 
-                let members = channels.map { $0.name }
-
-                let user = try Virgil.shared.localKeyManager.retrieveUserData()
-
-                let cards = channels.map { $0.cards.first! } + [user.card]
+                let cards = try channels.map { try $0.getCard() }
 
                 let session = try Virgil.shared.startNewGroupSession(with: cards)
 
-                try Twilio.shared.createGroupChannel(with: members,
-                                                           name: name,
-                                                           sessionId: session.identifier).startSync().getResult()
+                try Twilio.shared.createGroupChannel(with: cards,
+                                                     name: name,
+                                                     sessionId: session.identifier).startSync().getResult()
 
                 completion(nil)
             } catch {
