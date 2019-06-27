@@ -82,15 +82,13 @@ extension TCHMessage {
                                   onCompleted: { _ in Log.debug("Media upload completed") })
                 { result in
                     if let error = result.error {
-                        completion(nil, error)
-                        return
+                        return completion(nil, error)
                     }
 
                     let url = URL(fileURLWithPath: tempFilename)
 
                     guard let data = try? Data(contentsOf: url) else {
-                        completion(nil, NSError())
-                        return
+                        return completion(nil, NSError())
                     }
 
                     completion(data, nil)

@@ -30,8 +30,7 @@ extension Twilio {
         return CallbackOperation { _, completion in
             self.channels.createChannel(options: options) { result, channel in
                 guard result.isSuccessful() else {
-                    completion(nil, result.error)
-                    return
+                    return completion(nil, result.error)
                 }
 
                 completion(channel, nil)

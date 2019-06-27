@@ -47,7 +47,7 @@ class CreateGroupViewController: ViewController {
                     self.alert(error)
                 } else {
                     HUD.flash(.success)
-                    self.navigationController?.popToRootViewController(animated: true)
+                    self.popToRoot()
                 }
             }
         }
