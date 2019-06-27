@@ -22,7 +22,6 @@
  THE SOFTWARE.
 */
 
-import Foundation
 import ChattoAdditions
 
 protocol PhotoObserverProtocol: class {

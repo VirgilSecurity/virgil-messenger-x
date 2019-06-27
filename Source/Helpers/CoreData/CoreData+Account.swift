@@ -6,7 +6,6 @@
 //  Copyright © 2018 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import CoreData
 import VirgilSDK
 
