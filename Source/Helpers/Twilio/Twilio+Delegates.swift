@@ -9,21 +9,7 @@
 import TwilioChatClient
 
 extension Twilio {
-    enum Notifications: String {
-        case ConnectionStateUpdated = "Twilio.Notifications.ConnectionStateUpdated"
-        case MessageAdded = "Twilio.Notifications.MessageAdded"
-        case MessageAddedToSelectedChannel = "Twilio.Notifications.MessageAddedToSelectedChannel"
-        case ChannelAdded = "Twilio.Notifications.ChannelAdded"
-        case ChannelDeleted = "Twilio.Notifications.ChannelDeleted"
-    }
-
-    enum NotificationKeys: String {
-        case NewState = "Twilio.NotificationKeys.NewState"
-        case Message = "Twilio.NotificationKeys.Message"
-        case Channel = "Twilio.NotificationKeys.Channel"
-    }
-
-    enum ConnectionState: String {
+    public enum ConnectionState: String {
         case unknown = "unknown"
         case disconnected = "disconnected"
         case connected = "connected"
@@ -53,9 +39,7 @@ extension Twilio: TwilioChatClientDelegate {
         let stateStr = connectionState.rawValue
         Log.debug("\(stateStr)")
 
-        NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.ConnectionStateUpdated.rawValue),
-                                        object: self,
-                                        userInfo: [NotificationKeys.NewState.rawValue: connectionState])
+        Notifications.post(connectionState: connectionState)
     }
 
     public func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
@@ -72,10 +56,9 @@ extension Twilio: TwilioChatClientDelegate {
                     
                     try ChatsManager.join(channel)
 
-                    try ChatsManager.makeUpdateChannelOperation(twilioChannel: channel).startSync().getResult()
+                    try ChatsManager.update(twilioChannel: channel).startSync().getResult()
 
-                    NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.ChannelAdded.rawValue),
-                                                    object: self)
+                    Notifications.post(.channelAdded)
                 }
             } catch {
                 Log.error("\(error)")
@@ -91,22 +74,14 @@ extension Twilio: TwilioChatClientDelegate {
         self.queue.async {
             do {
                 guard let message = try MessageProcessor.process(message: message, from: channel) else {
-                    NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.MessageAdded.rawValue),
-                                                    object: self)
-                    return
+                    return Notifications.post(.messageAdded)
                 }
-
-                let notification: String
 
                 if let currentChannel = self.currentChannel, try channel.getSid() == currentChannel.getSid() {
-                    notification = Notifications.MessageAddedToSelectedChannel.rawValue
+                    Notifications.post(message: message)
                 } else {
-                    notification = Notifications.MessageAdded.rawValue
+                    Notifications.post(.messageAdded)
                 }
-
-                NotificationCenter.default.post(name: Notification.Name(rawValue: notification),
-                                                object: self,
-                                                userInfo: [NotificationKeys.Message.rawValue: message])
             } catch {
                 Log.error("\(error)")
             }

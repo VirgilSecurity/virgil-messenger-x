@@ -72,9 +72,11 @@ extension TCHChannel {
     }
 
     func getSessionId() throws -> Data {
-        guard let name = self.uniqueName,
-            let sessionId = Data(hexEncodedString: name) else {
-                throw Twilio.Error.invalidChannel
+        guard
+            let name = self.uniqueName,
+            let sessionId = Data(hexEncodedString: name)
+        else {
+            throw Twilio.Error.invalidChannel
         }
 
         return sessionId
@@ -207,8 +209,7 @@ extension TCHChannel {
     public func delete(message: TCHMessage) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             guard let messages = self.messages else {
-                completion(nil, Twilio.Error.invalidChannel)
-                return
+                return completion(nil, Twilio.Error.invalidChannel)
             }
 
             messages.remove(message) { result in

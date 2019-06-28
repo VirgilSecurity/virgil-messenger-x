@@ -80,20 +80,17 @@ class ChatViewController: BaseChatViewController {
 
         self.setupTitle()
 
-        NotificationCenter.default.removeObserver(self)
-        NotificationCenter.default.removeObserver(self.dataSource)
+        Notifications.removeObservers(self)
+        Notifications.removeObservers(self.dataSource)
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.popToRoot),
-                                               name: Notification.Name(rawValue: Twilio.Notifications.ChannelDeleted.rawValue),
-                                               object: nil)
+        Notifications.observe(self, for: .channelDeleted, task: self.popToRoot)
 
         self.dataSource.addObserver()
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
-        NotificationCenter.default.removeObserver(self.dataSource)
+        Notifications.removeObservers(self)
+        Notifications.removeObservers(self.dataSource)
     }
 
     override func viewWillAppear(_ animated: Bool) {

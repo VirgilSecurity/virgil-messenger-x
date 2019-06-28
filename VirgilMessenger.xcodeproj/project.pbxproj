@@ -26,6 +26,7 @@
 		162E22EB225F8F6000AAE7C4 /* ChooseGroupMembers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EA225F8F6000AAE7C4 /* ChooseGroupMembers.swift */; };
 		162E22ED225F953D00AAE7C4 /* ChooseMembersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EC225F953D00AAE7C4 /* ChooseMembersCell.swift */; };
 		162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */; };
+		16317B9922C506A200A3144A /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16317B9822C506A200A3144A /* Notifications.swift */; };
 		163952A6227C4DE600DD1FDC /* ChatsManager+Join.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163952A5227C4DE600DD1FDC /* ChatsManager+Join.swift */; };
 		163952A8227C4E5200DD1FDC /* ChatsManager+Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163952A7227C4E5200DD1FDC /* ChatsManager+Update.swift */; };
 		163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */; };
@@ -162,6 +163,7 @@
 		162E22EA225F8F6000AAE7C4 /* ChooseGroupMembers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseGroupMembers.swift; sourceTree = "<group>"; };
 		162E22EC225F953D00AAE7C4 /* ChooseMembersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseMembersCell.swift; sourceTree = "<group>"; };
 		162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellTapDelegate.swift; sourceTree = "<group>"; };
+		16317B9822C506A200A3144A /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		163952A5227C4DE600DD1FDC /* ChatsManager+Join.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatsManager+Join.swift"; sourceTree = "<group>"; };
 		163952A7227C4E5200DD1FDC /* ChatsManager+Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatsManager+Update.swift"; sourceTree = "<group>"; };
 		163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewZeroPaddings.swift; sourceTree = "<group>"; };
@@ -347,6 +349,7 @@
 				163952A4227C4D8A00DD1FDC /* ChatsManager */,
 				16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */,
 				16D8B0EE223A8FCF00D7FA67 /* Client.swift */,
+				16317B9822C506A200A3144A /* Notifications.swift */,
 				16FE75EF224A3DA000B545AF /* Configurator.swift */,
 				16132FC5225514D0008FD754 /* MessageProcessor.swift */,
 			);
@@ -924,6 +927,7 @@
 				16277244203C62040086127C /* CoreData+Messages.swift in Sources */,
 				16013C7F20B2C99C0043EA29 /* AudioMessagePresenter.swift in Sources */,
 				16AE1D7B2044315B005DF777 /* UIPhotoMessageHandler.swift in Sources */,
+				16317B9922C506A200A3144A /* Notifications.swift in Sources */,
 				4280C0D41F97341300075B3A /* SendingStatusPresenter.swift in Sources */,
 				16013C8320B30A180043EA29 /* UIAudioMessageViewModel.swift in Sources */,
 			);

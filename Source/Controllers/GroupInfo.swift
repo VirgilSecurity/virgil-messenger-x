@@ -29,17 +29,9 @@ class GroupInfoViewController: ViewController {
         self.avatarView.gradientLayer.colors = [self.channel.colorPair.first, self.channel.colorPair.second]
         self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
 
-        NotificationCenter.default.removeObserver(self)
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.popToRoot),
-                                               name: Notification.Name(rawValue: Twilio.Notifications.ChannelDeleted.rawValue),
-                                               object: nil)
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.processMessage(notification:)),
-                                               name: Notification.Name(rawValue: Twilio.Notifications.MessageAddedToSelectedChannel.rawValue),
-                                               object: nil)
+        Notifications.removeObservers(self)
+        Notifications.observe(self, for: .channelDeleted, task: self.popToRoot)
+        Notifications.observe(self, for: .messageAddedToCurrentChannel, task: self.processMessage)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -47,10 +39,10 @@ class GroupInfoViewController: ViewController {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        Notifications.removeObservers(self)
     }
 
-    @objc func processMessage(notification: Notification) {
+    func processMessage() {
         DispatchQueue.main.async {
             self.updateUserList()
         }

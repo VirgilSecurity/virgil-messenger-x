@@ -29,21 +29,13 @@ class AddMembersViewController: ViewController {
 
         self.setupTableView()
 
-        NotificationCenter.default.removeObserver(self)
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.popToRoot),
-                                               name: Notification.Name(rawValue: Twilio.Notifications.ChannelDeleted.rawValue),
-                                               object: nil)
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.reloadTableView),
-                                               name: Notification.Name(rawValue: Twilio.Notifications.MessageAddedToSelectedChannel.rawValue),
-                                               object: nil)
+        Notifications.removeObservers(self)
+        Notifications.observe(self, for: .channelDeleted, task: self.popToRoot)
+        Notifications.observe(self, for: .messageAddedToCurrentChannel, task: self.reloadTableView)
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        Notifications.removeObservers(self)
     }
 
     private func setupTableView() {

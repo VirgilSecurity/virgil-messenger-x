@@ -12,7 +12,7 @@ import TwilioChatClient
 extension ChatsManager {
     private static let queue = DispatchQueue(label: "ChatsManager")
 
-    public static func makeUpdateChannelsOperation() -> CallbackOperation<Void> {
+    public static func updateChannels() -> CallbackOperation<Void> {
         return CallbackOperation { operation, completion in
             self.queue.async {
                 do {
@@ -31,7 +31,7 @@ extension ChatsManager {
                     var groupChannelOperations: [CallbackOperation<Void>] = []
 
                     for twilioChannel in twilioChannels {
-                        let operation = self.makeUpdateChannelOperation(twilioChannel: twilioChannel)
+                        let operation = self.update(twilioChannel: twilioChannel)
 
                         let attributes = try twilioChannel.getAttributes()
 
@@ -66,7 +66,7 @@ extension ChatsManager {
         }
     }
 
-    public static func makeUpdateChannelOperation(twilioChannel: TCHChannel) -> CallbackOperation<Void> {
+    public static func update(twilioChannel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 let coreChannel: Channel

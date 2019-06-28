@@ -179,8 +179,7 @@ class MessageProcessor {
 
                 if CoreData.shared.currentChannel == channel {
                     DispatchQueue.main.async {
-                        let name = Notification.Name(rawValue: Twilio.Notifications.ChannelDeleted.rawValue)
-                        NotificationCenter.default.post(name: name, object: self)
+                        Notifications.post(.channelDeleted)
                     }
                 }
 

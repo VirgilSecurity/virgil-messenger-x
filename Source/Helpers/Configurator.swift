@@ -9,35 +9,66 @@
 import VirgilSDK
 
 public class Configurator {
-    private(set) var isConfigured: Bool = false
-
-    public func configure(completion: @escaping (Error?) -> Void) {
-        do {
-            let account = try CoreData.shared.getCurrentAccount()
-            let identity = account.identity
-
-            let initPFSOperation = Virgil.shared.makeInitPFSOperation(identity: identity)
-            let initTwilioOperation = Twilio.makeInitTwilioOperation(identity: identity,
-                                                                           client: Virgil.shared.client)
-            let updateChannelsOperation = ChatsManager.makeUpdateChannelsOperation()
-
-            let operations = [initPFSOperation, initTwilioOperation, updateChannelsOperation]
-            let completionOperation = OperationUtils.makeCompletionOperation { (_: Void?, error: Error?) in
-                self.isConfigured = true
-                completion(error)
+    private(set) static var isInitialized: Bool = false {
+        didSet {
+            if isInitialized == true {
+                Notifications.post(.initializingSucceed)
             }
-
-            updateChannelsOperation.addDependency(initPFSOperation)
-            updateChannelsOperation.addDependency(initTwilioOperation)
-
-            operations.forEach {
-                completionOperation.addDependency($0)
-            }
-
-            let queue = OperationQueue()
-            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
-        } catch {
-            completion(error)
         }
+    }
+    private(set) static var isUpdated: Bool = false {
+        didSet {
+            if isUpdated == true {
+                Notifications.post(.updatingSucceed)
+            }
+        }
+    }
+
+    private static func initialize() -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            do {
+                let account = try CoreData.shared.getCurrentAccount()
+                let identity = account.identity
+
+                let initPFS = Virgil.shared.makeInitPFSOperation(identity: identity)
+                let initTwilio = Twilio.makeInitTwilioOperation(identity: identity,
+                                                                client: Virgil.shared.client)
+                let completion = OperationUtils.makeCompletionOperation { (_ result: Void?, error: Error?) in
+                    if error == nil {
+                        self.isInitialized = true
+                    }
+
+                    completion(result, error)
+                }
+
+                completion.addDependency(initPFS)
+                completion.addDependency(initTwilio)
+
+                let queue = OperationQueue()
+                queue.addOperations([initPFS, initTwilio, completion], waitUntilFinished: false)
+            } catch {
+                completion(nil, error)
+            }
+        }
+    }
+
+    public static func configure() {
+        let initialize = self.initialize()
+        let update = ChatsManager.updateChannels()
+
+        update.addDependency(initialize)
+
+        let completion = OperationUtils.makeCompletionOperation { (_ result: Void?, error: Error?) in
+            if let error = error {
+                Notifications.post(error: error)
+            } else {
+                self.isUpdated = true
+            }
+        }
+
+        completion.addDependency(update)
+
+        let queue = OperationQueue()
+        queue.addOperations([initialize, update, completion], waitUntilFinished: false)
     }
 }

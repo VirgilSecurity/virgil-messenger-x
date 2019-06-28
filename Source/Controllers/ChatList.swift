@@ -13,9 +13,10 @@ class ChatListViewController: ViewController {
     @IBOutlet weak var noChatsView: UIView!
     @IBOutlet weak var tableView: UITableView!
 
-    static let name = "ChatList"
+    private let indicator = UIActivityIndicatorView()
+    private let indicatorLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
 
-    private let configurator = Configurator()
+    static let name = "ChatList"
 
     private var channels: [Channel] = []
 
@@ -26,20 +27,13 @@ class ChatListViewController: ViewController {
 
         self.setupTableView()
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.reloadTableView),
-                                               name: Notification.Name(rawValue: Twilio.Notifications.ChannelAdded.rawValue),
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.reloadTableView),
-                                               name: Notification.Name(rawValue: Twilio.Notifications.MessageAdded.rawValue),
-                                               object: nil)
+        Notifications.observe(self, for: [.channelAdded, .messageAdded], task: self.reloadTableView)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if self.configurator.isConfigured {
+        if Configurator.isInitialized {
             Twilio.shared.deselectChannel()
         }
 
@@ -58,37 +52,51 @@ class ChatListViewController: ViewController {
         self.navigationController?.view.isUserInteractionEnabled = false
         self.tabBarController?.tabBar.isUserInteractionEnabled = false
 
-        let indicator = UIActivityIndicatorView()
-        indicator.hidesWhenStopped = false
-        indicator.startAnimating()
+        self.indicator.hidesWhenStopped = false
+        self.indicator.startAnimating()
 
-        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
-        titleLabel.textColor = .white
-        titleLabel.text = "Updating"
-        let titleView = UIStackView(arrangedSubviews: [indicator, titleLabel])
+        self.indicatorLabel.textColor = .white
+        self.indicatorLabel.text = "Connecting"
+        let titleView = UIStackView(arrangedSubviews: [self.indicator, self.indicatorLabel])
         titleView.spacing = 5
 
         self.navigationItem.titleView = titleView
 
-        self.configurator.configure { error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    self.alert(error) { _ in
-                        UserAuthorizer().logOut { error in
-                            if error == nil {
-                                self.goToLogin()
-                            }
-                        }
+        Configurator.configure()
+
+        Notifications.observe(self, task: self.initFailed(error:))
+        Notifications.observe(self, for: .initializingSucceed, task: self.initialized)
+        Notifications.observe(self, for: .updatingSucceed, task: self.updated)
+    }
+
+    private func initFailed(error: Error) {
+        DispatchQueue.main.async {
+            self.alert(error) { _ in
+                UserAuthorizer().logOut { error in
+                    if let error = error {
+                        self.alert(error)
+                    } else {
+                        self.goToLogin()
                     }
                 }
-
-                self.reloadTableView()
-                self.navigationItem.titleView = nil
-                self.title = "Chats"
-                self.navigationController?.view.isUserInteractionEnabled = true
-                self.tabBarController?.tabBar.isUserInteractionEnabled = true
-                indicator.stopAnimating()
             }
+        }
+    }
+
+    private func initialized() {
+        DispatchQueue.main.async {
+            self.indicatorLabel.text = "Updating"
+        }
+    }
+
+    private func updated() {
+        DispatchQueue.main.async {
+            self.reloadTableView()
+            self.navigationItem.titleView = nil
+            self.title = "Chats"
+            self.navigationController?.view.isUserInteractionEnabled = true
+            self.tabBarController?.tabBar.isUserInteractionEnabled = true
+            self.indicator.stopAnimating()
         }
     }
 
@@ -121,7 +129,7 @@ class ChatListViewController: ViewController {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        Notifications.removeObservers(self)
     }
 }
 

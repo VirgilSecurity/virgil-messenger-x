@@ -59,19 +59,11 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addObserver() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.processMessage(notification:)),
-                                               name: Notification.Name(rawValue: Twilio.Notifications.MessageAddedToSelectedChannel.rawValue),
-                                               object: nil)
+        Notifications.observe(self, task: self.process)
     }
 
-    @objc private func processMessage(notification: Notification) {
+    @objc private func process(message: Message) {
         DispatchQueue.main.async {
-            guard let userInfo = notification.userInfo,
-                let message = userInfo[Twilio.NotificationKeys.Message.rawValue] as? Message else {
-                    return
-            }
-
             self.nextMessageId += 1
             let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
 
@@ -195,6 +187,6 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        Notifications.removeObservers(self)
     }
 }

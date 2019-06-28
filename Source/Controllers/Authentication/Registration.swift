@@ -92,7 +92,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        Notifications.removeObservers(self)
     }
 
     @IBAction func signupButtonPressed(_ sender: Any) {
@@ -122,7 +122,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
     }
 
     private func goToChatList() {
-        NotificationCenter.default.removeObserver(self)
+        Notifications.removeObservers(self)
 
         self.switchNavigationStack(to: "TabBar")
     }
