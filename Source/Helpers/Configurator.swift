@@ -9,6 +9,16 @@
 import VirgilSDK
 
 public class Configurator {
+    public static var state: String? {
+        if !Configurator.isInitialized {
+            return "Connecting"
+        } else if !Configurator.isUpdated {
+            return "Updating"
+        }
+
+        return nil
+    }
+
     private(set) static var isInitialized: Bool = false {
         didSet {
             if isInitialized == true {
@@ -34,11 +44,18 @@ public class Configurator {
                 let initTwilio = Twilio.makeInitTwilioOperation(identity: identity,
                                                                 client: Virgil.shared.client)
                 let completion = OperationUtils.makeCompletionOperation { (_ result: Void?, error: Error?) in
-                    if error == nil {
-                        self.isInitialized = true
-                    }
+                    do {
+                        if error == nil {
+                            self.isInitialized = true
+                            if let channel = CoreData.shared.currentChannel {
+                                try Twilio.shared.setChannel(channel)
+                            }
+                        }
 
-                    completion(result, error)
+                        completion(result, error)
+                    } catch (let error) {
+                        completion(nil, error)
+                    }
                 }
 
                 completion.addDependency(initPFS)

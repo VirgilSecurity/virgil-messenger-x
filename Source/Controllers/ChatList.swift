@@ -49,14 +49,11 @@ class ChatListViewController: ViewController {
     }
 
     private func configurate() {
-        self.navigationController?.view.isUserInteractionEnabled = false
-        self.tabBarController?.tabBar.isUserInteractionEnabled = false
-
         self.indicator.hidesWhenStopped = false
         self.indicator.startAnimating()
 
         self.indicatorLabel.textColor = .white
-        self.indicatorLabel.text = "Connecting"
+        self.indicatorLabel.text = Configurator.state
         let titleView = UIStackView(arrangedSubviews: [self.indicator, self.indicatorLabel])
         titleView.spacing = 5
 
@@ -85,7 +82,7 @@ class ChatListViewController: ViewController {
 
     private func initialized() {
         DispatchQueue.main.async {
-            self.indicatorLabel.text = "Updating"
+            self.indicatorLabel.text = Configurator.state
         }
     }
 
@@ -94,8 +91,6 @@ class ChatListViewController: ViewController {
             self.reloadTableView()
             self.navigationItem.titleView = nil
             self.title = "Chats"
-            self.navigationController?.view.isUserInteractionEnabled = true
-            self.tabBarController?.tabBar.isUserInteractionEnabled = true
             self.indicator.stopAnimating()
         }
     }

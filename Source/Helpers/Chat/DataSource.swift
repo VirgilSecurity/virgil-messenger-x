@@ -33,7 +33,6 @@ class DataSource: ChatDataSourceProtocol {
     public var nextMessageId: Int = 0
 
     private let preferredMaxWindowSize = 500
-    private let pageSize = ChatConstants.chatPageSize
     private var slidingWindow: SlidingDataSource<ChatItemProtocol>!
 
     private var count: Int {
@@ -43,7 +42,7 @@ class DataSource: ChatDataSourceProtocol {
     init(channel: Channel) {
         self.channel = channel
 
-        self.slidingWindow = SlidingDataSource(count: count, pageSize: pageSize) { [weak self] (messageNumber, messages) -> ChatItemProtocol in
+        self.slidingWindow = SlidingDataSource(count: count) { [weak self] (messageNumber, messages) -> ChatItemProtocol in
             self?.nextMessageId += 1
             let id = self?.nextMessageId ?? 0
 
@@ -58,8 +57,17 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
+    private func updateMessageList() {
+        self.slidingWindow.updateMessageList()
+
+        DispatchQueue.main.async {
+            self.delegate?.chatDataSourceDidUpdate(self, updateType: .messageCountReduction)
+        }
+    }
+
     func addObserver() {
         Notifications.observe(self, task: self.process)
+        Notifications.observe(self, for: .updatingSucceed, task: self.updateMessageList)
     }
 
     @objc private func process(message: Message) {

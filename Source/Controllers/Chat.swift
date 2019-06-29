@@ -32,6 +32,9 @@ class ChatViewController: BaseChatViewController {
     @IBOutlet weak var avatarView: GradientView!
     @IBOutlet weak var letterLabel: UILabel!
 
+    private let indicator = UIActivityIndicatorView()
+    private let indicatorLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
+
     public var channel: Channel!
 
     private var soundPlayer: AVAudioPlayer?
@@ -72,10 +75,12 @@ class ChatViewController: BaseChatViewController {
 
         CoreData.shared.setCurrent(channel: self.channel)
 
-        do {
-            try Twilio.shared.setChannel(self.channel)
-        } catch {
-            self.popToRoot()
+        if Configurator.isInitialized {
+            do {
+                try Twilio.shared.setChannel(self.channel)
+            } catch {
+                self.popToRoot()
+            }
         }
 
         self.setupTitle()
@@ -84,6 +89,7 @@ class ChatViewController: BaseChatViewController {
         Notifications.removeObservers(self.dataSource)
 
         Notifications.observe(self, for: .channelDeleted, task: self.popToRoot)
+        Notifications.observe(self, for: [.initializingSucceed, .updatingSucceed], task: self.updateTitle)
 
         self.dataSource.addObserver()
     }
@@ -102,6 +108,32 @@ class ChatViewController: BaseChatViewController {
     }
 
     private func setupTitle() {
+        if let state = Configurator.state {
+            self.setupIndicatorTitle(state)
+        } else {
+            self.setupRegularTitle()
+        }
+    }
+
+    private func updateTitle() {
+        DispatchQueue.main.async {
+            self.setupTitle()
+        }
+    }
+
+    private func setupIndicatorTitle(_ state: String) {
+        self.indicator.hidesWhenStopped = false
+        self.indicator.startAnimating()
+
+        self.indicatorLabel.textColor = .white
+        self.indicatorLabel.text = state
+        let titleView = UIStackView(arrangedSubviews: [self.indicator, self.indicatorLabel])
+        titleView.spacing = 5
+
+        self.navigationItem.titleView = titleView
+    }
+
+    private func setupRegularTitle() {
         let titleButton = UIButton(type: .custom)
         titleButton.frame = CGRect(x: 0, y: 0, width: 200, height: 21)
         titleButton.tintColor = .white

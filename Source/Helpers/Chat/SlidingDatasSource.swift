@@ -30,7 +30,7 @@ public enum InsertPosition {
 }
 
 public class SlidingDataSource<Element> {
-    private var pageSize: Int
+    private var pageSize: Int = ChatConstants.chatPageSize
     private var windowOffset: Int
     private var windowCount: Int
     private(set) var itemGenerator: ((Int, [Message]) -> Element)
@@ -46,17 +46,16 @@ public class SlidingDataSource<Element> {
         return Array(items[a..<b])
     }
 
-    init(count: Int, pageSize: Int, itemGenerator: @escaping ((Int, [Message]) -> Element)) {
+    init(count: Int, itemGenerator: @escaping ((Int, [Message]) -> Element)) {
         self.windowOffset = count
         self.itemsOffset = count
         self.windowCount = 0
         self.itemGenerator = itemGenerator
-        self.pageSize = pageSize
 
-        self.showItems(min(pageSize, count), position: .top)
+        self.showItems(min(self.pageSize, count), position: .top)
     }
 
-    private func showItems(_ count: Int, position: InsertPosition) {
+    public func showItems(_ count: Int, position: InsertPosition) {
         guard count > 0 else {
             return
         }
@@ -72,6 +71,21 @@ public class SlidingDataSource<Element> {
             let messageNumber = messages.count - self.items.count - 1
             if messageNumber >= 0 {
                 self.insertItem(itemGenerator(messages.count - self.items.count - 1, messages), position: position)
+            }
+        }
+    }
+
+    public func updateMessageList() {
+        guard let channel = CoreData.shared.currentChannel else {
+            Log.error("Missing Core Data current channel")
+            return
+        }
+
+        let messages = channel.visibleMessages
+
+        if self.items.count < messages.count {
+            while self.items.count < messages.count {
+                self.insertItem(itemGenerator(self.items.count, messages), position: .bottom)
             }
         }
     }
