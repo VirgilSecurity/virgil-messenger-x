@@ -58,7 +58,9 @@ class AddMembersViewController: ViewController {
             }
         }
 
-        self.tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 
     @IBAction func addTapped(_ sender: Any) {

@@ -9,7 +9,7 @@
 import UIKit
 import BEMCheckBox
 
-class ChooseMembersCell: UITableViewCell {
+class ChooseMembersCell: UITableViewCell, BEMCheckBoxDelegate {
     static let name = "ChooseMembersCell"
 
     weak var delegate: CellTapDelegate?
@@ -33,12 +33,17 @@ class ChooseMembersCell: UITableViewCell {
         self.radioButton.onFillColor = .white
         self.radioButton.onTintColor = .black
         self.radioButton.onCheckColor = .black
+        self.radioButton.delegate = self
 
         self.contentView.addGestureRecognizer(UITapGestureRecognizer(target: self,
-                                                                     action: #selector(self.didTap)))
+                                                                     action: #selector(self.didTapOnRow)))
     }
 
-    @objc func didTap() {
+    func didTap(_ checkBox: BEMCheckBox) {
+        self.delegate?.didTapOn(self)
+    }
+
+    @objc func didTapOnRow() {
         self.switchMembership()
 
         self.delegate?.didTapOn(self)
