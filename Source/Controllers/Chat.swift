@@ -279,6 +279,7 @@ extension ChatViewController {
 
         item.textInputHandler = { [weak self] text in
             if self?.checkReachability() ?? false,
+                Configurator.isUpdated,
                 !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     try? self?.dataSource.addTextMessage(text)
             }
@@ -296,7 +297,7 @@ extension ChatViewController {
                                          inputViewAppearance: photosAppearence)
 
         item.photoInputHandler = { [weak self] image in
-            if self?.checkReachability() ?? false {
+            if self?.checkReachability() ?? false, Configurator.isUpdated {
                 self?.dataSource.addPhotoMessage(image)
             }
         }
@@ -306,7 +307,7 @@ extension ChatViewController {
     private func createAudioInputItem() -> AudioChatInputItem {
         let item = AudioChatInputItem(presentingController: self)
         item.audioInputHandler = { [weak self] audioData in
-            if self?.checkReachability() ?? false {
+            if self?.checkReachability() ?? false, Configurator.isUpdated {
                 self?.dataSource.addAudioMessage(audioData)
             }
         }

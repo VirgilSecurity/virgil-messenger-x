@@ -88,4 +88,9 @@ public class Configurator {
         let queue = OperationQueue()
         queue.addOperations([initialize, update, completion], waitUntilFinished: false)
     }
+
+    public static func reset() {
+        self.isInitialized = false
+        self.isUpdated = false
+    }
 }

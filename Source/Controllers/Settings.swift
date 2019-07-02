@@ -37,6 +37,10 @@ class SettingsViewController: ViewController {
     }
 
     private func logOut() {
+        guard Configurator.isUpdated else {
+            return
+        }
+
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         let logoutAction = UIAlertAction(title: "Logout", style: .destructive) { _ in
@@ -60,6 +64,10 @@ class SettingsViewController: ViewController {
     }
 
     private func deleteAccount() {
+        guard Configurator.isUpdated else {
+            return
+        }
+        
         let alertController = UIAlertController(title: "Delete account",
                                                 message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.",
                                                 preferredStyle: .alert)

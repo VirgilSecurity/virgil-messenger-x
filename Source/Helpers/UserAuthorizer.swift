@@ -62,6 +62,8 @@ public class UserAuthorizer {
                     try Twilio.shared.deregister(withNotificationToken: token).startSync().getResult()
                 }
 
+                Configurator.reset()
+
                 UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
                 completion(nil)
@@ -73,6 +75,8 @@ public class UserAuthorizer {
 
     public func deleteAccount() throws {
         UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+
+        Configurator.reset()
 
         try CoreData.shared.deleteAccount()
 

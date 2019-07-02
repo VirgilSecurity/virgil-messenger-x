@@ -128,6 +128,10 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addChangeMembers(_ serviceMessage: ServiceMessage) throws {
+        guard Configurator.isUpdated else {
+            return
+        }
+
         guard let identifier = serviceMessage.identifier else {
             throw CoreData.Error.invalidMessage
         }
