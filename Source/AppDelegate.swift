@@ -25,17 +25,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Clear core data if it's first launch
         // FIXME: if it's first launch on new major version.
-        self.clearLocalStorage()
+        self.cleanLocalStorage()
 
         // Registering for remote notifications
         self.registerRemoteNotifications(for: application)
+
+        // Clean notifications
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
 
         Fabric.with([Crashlytics.self])
 
         return true
     }
 
-    private func clearLocalStorage() {
+    private func cleanLocalStorage() {
         if UserDefaults.standard.string(forKey: "first_launch")?.isEmpty ?? true {
             try? CoreData.shared.clearStorage()
 
