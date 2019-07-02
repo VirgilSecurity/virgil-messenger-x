@@ -64,11 +64,11 @@ class AddMembersViewController: ViewController {
     @IBAction func addTapped(_ sender: Any) {
         let add = self.selected.map { $0.name }
 
-        guard !add.isEmpty else {
-            return
-        }
-
-        guard self.checkReachability() else {
+        guard
+            !add.isEmpty,
+            self.checkReachability(),
+            Configurator.isUpdated
+        else {
             return
         }
 

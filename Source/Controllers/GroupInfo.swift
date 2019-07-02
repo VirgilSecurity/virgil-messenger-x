@@ -86,7 +86,7 @@ class GroupInfoViewController: ViewController {
 
 extension GroupInfoViewController: DeleteItemDelegate {
     func delete(_ user: Channel) {
-        guard self.checkReachability() else {
+        guard self.checkReachability(), Configurator.isUpdated else {
             return
         }
         
