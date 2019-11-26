@@ -42,10 +42,6 @@ public class Channel: NSManagedObject {
         return self.orderedMessages?.array as? [Message] ?? []
     }
 
-    public var serviceMessages: [ServiceMessage] {
-        return self.orderedServiceMessages?.array as? [ServiceMessage] ?? []
-    }
-
     public var cards: [Card] {
         get {
             let cards: [Card] = self.rawCards.map {

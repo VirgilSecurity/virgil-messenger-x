@@ -40,7 +40,6 @@ public class Configurator {
                 let account = try CoreData.shared.getCurrentAccount()
                 let identity = account.identity
 
-                let initPFS = Virgil.shared.makeInitPFSOperation(identity: identity)
                 let initTwilio = Twilio.makeInitTwilioOperation(identity: identity,
                                                                 client: Virgil.shared.client)
                 let completion = OperationUtils.makeCompletionOperation { (_ result: Void?, error: Error?) in
@@ -58,11 +57,10 @@ public class Configurator {
                     }
                 }
 
-                completion.addDependency(initPFS)
                 completion.addDependency(initTwilio)
 
                 let queue = OperationQueue()
-                queue.addOperations([initPFS, initTwilio, completion], waitUntilFinished: false)
+                queue.addOperations([initTwilio, completion], waitUntilFinished: false)
             } catch {
                 completion(nil, error)
             }

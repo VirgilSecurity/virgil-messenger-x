@@ -19,12 +19,13 @@ extension ChatsManager {
 
             let name = try Twilio.shared.getCompanion(from: attributes)
 
-            let cards = try Virgil.shared.makeGetCardsOperation(identities: [name]).startSync().get()
+            let card = try Virgil.ethree.findUser(with: name).startSync().get()
 
-            try CoreData.shared.createSingleChannel(sid: sid, card: cards.first!)
+            try CoreData.shared.createSingleChannel(sid: sid, card: card)
 
         case .group:
-            let cards = try Virgil.shared.getCards(of: attributes.members)
+            let result = try Virgil.ethree.findUsers(with: attributes.members).startSync().get()
+            let cards = Array(result.values)
 
             let sessionId = try channel.getSessionId()
             let name = try channel.getFriendlyName()
@@ -37,7 +38,7 @@ extension ChatsManager {
                                                    cards: cards)
 
             // FIXME
-            _ = try? Virgil.shared.startNewGroupSession(identity: attributes.initiator, sessionId: sessionId)
+//            _ = try? Virgil.shared.startNewGroupSession(identity: attributes.initiator, sessionId: sessionId)
         }
     }
 }

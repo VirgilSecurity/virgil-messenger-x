@@ -36,7 +36,7 @@ public class VirgilAuthorizer {
             throw UserFriendlyError.noUserOnDevice
         }
 
-        try Virgil.initialize(identity: identity)
+        try Virgil.initialize(identity: identity, client: self.client)
     }
 
     public func signUp(identity: String) throws {
@@ -53,12 +53,10 @@ public class VirgilAuthorizer {
         let user = UserData(keyPair: keyPair, card: card)
         try localKeyManager.store(user)
 
-        try Virgil.initialize(identity: identity)
+        try Virgil.initialize(identity: identity, client: self.client)
     }
 
     public func logOut(identity: String) {
-        let localKeyManager = try? LocalKeyManager(identity: identity, crypto: self.crypto)
-
-        try? localKeyManager?.delete()
+        try? Virgil.ethree.cleanUp() 
     }
 }

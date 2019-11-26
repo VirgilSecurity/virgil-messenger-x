@@ -1,42 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.99" systemVersion="18F132" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15508" systemVersion="19B88" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
-        <attribute name="identity" attributeType="String" minValueString="1" syncable="YES"/>
-        <attribute name="numColorPair" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="orderedChannels" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Channel" inverseName="account" inverseEntity="Channel" syncable="YES"/>
+        <attribute name="identity" attributeType="String" minValueString="1"/>
+        <attribute name="numColorPair" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="orderedChannels" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Channel" inverseName="account" inverseEntity="Channel"/>
     </entity>
     <entity name="Channel" representedClassName="Channel" syncable="YES">
-        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="name" attributeType="String" minValueString="1" syncable="YES"/>
-        <attribute name="numColorPair" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="rawCards" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
-        <attribute name="rawType" attributeType="String" minValueString="1" syncable="YES"/>
-        <attribute name="sessionId" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="sid" attributeType="String" syncable="YES"/>
-        <relationship name="account" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="orderedChannels" inverseEntity="Account" syncable="YES"/>
-        <relationship name="orderedMessages" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Message" inverseName="channel" inverseEntity="Message" syncable="YES"/>
-        <relationship name="orderedServiceMessages" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ServiceMessage" inverseName="channel" inverseEntity="ServiceMessage" syncable="YES"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String" minValueString="1"/>
+        <attribute name="numColorPair" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="rawCards" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="rawType" attributeType="String" minValueString="1"/>
+        <attribute name="sessionId" optional="YES" attributeType="Binary"/>
+        <attribute name="sid" attributeType="String"/>
+        <relationship name="account" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="orderedChannels" inverseEntity="Account"/>
+        <relationship name="orderedMessages" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Message" inverseName="channel" inverseEntity="Message"/>
     </entity>
     <entity name="Message" representedClassName="Message" syncable="YES">
-        <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="date" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="isHidden" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="isIncoming" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="media" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
-        <attribute name="rawType" attributeType="String" syncable="YES"/>
-        <relationship name="channel" maxCount="1" deletionRule="Nullify" destinationEntity="Channel" inverseName="orderedMessages" inverseEntity="Channel" syncable="YES"/>
-    </entity>
-    <entity name="ServiceMessage" representedClassName="ServiceMessage" syncable="YES">
-        <attribute name="add" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
-        <attribute name="members" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
-        <attribute name="rawMessage" attributeType="Binary" minValueString="1" syncable="YES"/>
-        <attribute name="remove" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
-        <relationship name="channel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Channel" inverseName="orderedServiceMessages" inverseEntity="Channel" syncable="YES"/>
+        <attribute name="body" optional="YES" attributeType="String"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="isHidden" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isIncoming" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="media" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="rawType" attributeType="String"/>
+        <relationship name="channel" maxCount="1" deletionRule="Nullify" destinationEntity="Channel" inverseName="orderedMessages" inverseEntity="Channel"/>
     </entity>
     <elements>
         <element name="Account" positionX="-450" positionY="45" width="128" height="90"/>
-        <element name="Channel" positionX="-407" positionY="243" width="128" height="195"/>
+        <element name="Channel" positionX="-407" positionY="243" width="128" height="178"/>
         <element name="Message" positionX="-128" positionY="198" width="128" height="150"/>
-        <element name="ServiceMessage" positionX="-288" positionY="198" width="128" height="120"/>
     </elements>
 </model>

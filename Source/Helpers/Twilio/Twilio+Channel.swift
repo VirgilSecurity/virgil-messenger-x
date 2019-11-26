@@ -40,19 +40,19 @@ extension Twilio {
 
     func makeUniqueName(_ user1: String, _ user2: String) -> String {
         if user1 > user2 {
-            return Virgil.shared.makeHash(from: user1 + user2)!
+            return Virgil.shared.makeHash(from: user1 + user2)
         } else {
-            return Virgil.shared.makeHash(from: user2 + user1)!
+            return Virgil.shared.makeHash(from: user2 + user1)
         }
     }
 }
 
 extension Twilio {
-    func createSingleChannel(with cards: [Card]) throws {
-        try cards.forEach {
-            try self.createSingleChannel(with: $0).startSync().get()
-        }
-    }
+//    func createSingleChannel(with cards: [Card]) throws {
+//        try cards.forEach {
+//            try self.createSingleChannel(with: $0).startSync().get()
+//        }
+//    }
 
     func createSingleChannel(with card: Card) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in

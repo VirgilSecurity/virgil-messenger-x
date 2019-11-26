@@ -82,7 +82,7 @@ class MessageProcessor {
         case .regular:
             let decrypted: String
             do {
-                decrypted = try Virgil.shared.decrypt(text, from: channel.cards.first!)
+                decrypted = try Virgil.ethree.authDecrypt(text: text, from: channel.cards.first)
             } catch {
                 try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
 
@@ -91,23 +91,7 @@ class MessageProcessor {
 
             return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
         case .service:
-            if twilioMessage.author == Twilio.shared.identity {
-                return nil
-            }
-
-            let decrypted: String
-            do {
-                decrypted = try Virgil.shared.decrypt(text, from: channel.cards.first!)
-            } catch {
-                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
-                return nil
-            }
-
-            let serviceMessage = try ServiceMessage.import(decrypted)
-
-            try twilioChannel.delete(message: twilioMessage).startSync().get()
-
-            try CoreData.shared.save(serviceMessage, to: channel)
+            try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
 
             return nil
         }
@@ -120,92 +104,93 @@ class MessageProcessor {
                                      twilioChannel: TCHChannel,
                                      channel: Channel,
                                      attributes: TCHMessage.Attributes) throws -> Message? {
-        let sessionId = try channel.getSessionId()
-
-        let author = try twilioMessage.getAuthor()
-
-        switch attributes.type {
-        case .regular:
-            var decrypted: String
-            do {
-                decrypted = try Virgil.shared.decryptGroup(text, from: author, channel: channel, sessionId: sessionId)
-            } catch {
-                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
-                return nil
-            }
-
-            decrypted = "\(author): \(decrypted)"
-
-            return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
-        case .service:
-            guard let serviceMessage = CoreData.shared.findServiceMessage(from: author,
-                                                                          withSessionId: sessionId,
-                                                                          identifier: attributes.identifier) else {
-                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
-                return nil
-            }
-
-            let text = "\(author) \(try serviceMessage.getChangeMembersText())"
-
-            let deleted = try self.processGroupServiceMessage(serviceMessage,
-                                                              from: author,
-                                                              isIncoming: isIncoming,
-                                                              sessionId: sessionId,
-                                                              twilioChannel: twilioChannel,
-                                                              channel: channel)
-
-            return deleted ? nil : try CoreData.shared.createChangeMembersMessage(text,
-                                                                                  in: channel,
-                                                                                  isIncoming: isIncoming,
-                                                                                  date: date)
-        }
+        return nil
+//        let sessionId = try channel.getSessionId()
+//
+//        let author = try twilioMessage.getAuthor()
+//
+//        switch attributes.type {
+//        case .regular:
+//            var decrypted: String
+//            do {
+//                decrypted = try Virgil.shared.decryptGroup(text, from: author, channel: channel, sessionId: sessionId)
+//            } catch {
+//                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+//                return nil
+//            }
+//
+//            decrypted = "\(author): \(decrypted)"
+//
+//            return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
+//        case .service:
+//            guard let serviceMessage = CoreData.shared.findServiceMessage(from: author,
+//                                                                          withSessionId: sessionId,
+//                                                                          identifier: attributes.identifier) else {
+//                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+//                return nil
+//            }
+//
+//            let text = "\(author) \(try serviceMessage.getChangeMembersText())"
+//
+//            let deleted = try self.processGroupServiceMessage(serviceMessage,
+//                                                              from: author,
+//                                                              isIncoming: isIncoming,
+//                                                              sessionId: sessionId,
+//                                                              twilioChannel: twilioChannel,
+//                                                              channel: channel)
+//
+//            return deleted ? nil : try CoreData.shared.createChangeMembersMessage(text,
+//                                                                                  in: channel,
+//                                                                                  isIncoming: isIncoming,
+//                                                                                  date: date)
+//        }
     }
 
-    private static func processGroupServiceMessage(_ serviceMessage: ServiceMessage,
-                                                   from author: String,
-                                                   isIncoming: Bool,
-                                                   sessionId: Data,
-                                                   twilioChannel: TCHChannel,
-                                                   channel: Channel) throws -> Bool {
-        guard !serviceMessage.remove.contains(where: { $0 == Twilio.shared.identity}) else {
-            try CoreData.shared.delete(serviceMessage)
-
-            if let session = Virgil.shared.getGroupSession(of: channel) {
-                try Virgil.shared.secureChat.deleteGroupSession(sessionId: session.identifier)
-            }
-
-            guard CoreData.shared.existsServiceMessage(from: author, withSessionId: sessionId) else {
-                try Twilio.shared.leave(twilioChannel).startSync().get()
-
-                if CoreData.shared.currentChannel == channel {
-                    DispatchQueue.main.async {
-                        Notifications.post(.channelDeleted)
-                    }
-                }
-
-                return true
-            }
-
-            return false
-        }
-
-        let addCards = try Virgil.shared.getCards(of: serviceMessage.add)
-        let removeCards = try Virgil.shared.getCards(of: serviceMessage.remove)
-        let members = try Virgil.shared.getCards(of: serviceMessage.members)
-
-        try Virgil.shared.updateParticipants(add: addCards,
-                                             remove: removeCards,
-                                             members: members,
-                                             serviceMessage: serviceMessage,
-                                             channel: channel)
-
-        try CoreData.shared.add(addCards, to: channel)
-        try CoreData.shared.remove(removeCards, from: channel)
-
-        try CoreData.shared.delete(serviceMessage)
-
-        return false
-    }
+//    private static func processGroupServiceMessage(_ serviceMessage: ServiceMessage,
+//                                                   from author: String,
+//                                                   isIncoming: Bool,
+//                                                   sessionId: Data,
+//                                                   twilioChannel: TCHChannel,
+//                                                   channel: Channel) throws -> Bool {
+//        guard !serviceMessage.remove.contains(where: { $0 == Twilio.shared.identity}) else {
+//            try CoreData.shared.delete(serviceMessage)
+//
+//            if let session = Virgil.shared.getGroupSession(of: channel) {
+//                try Virgil.shared.secureChat.deleteGroupSession(sessionId: session.identifier)
+//            }
+//
+//            guard CoreData.shared.existsServiceMessage(from: author, withSessionId: sessionId) else {
+//                try Twilio.shared.leave(twilioChannel).startSync().get()
+//
+//                if CoreData.shared.currentChannel == channel {
+//                    DispatchQueue.main.async {
+//                        Notifications.post(.channelDeleted)
+//                    }
+//                }
+//
+//                return true
+//            }
+//
+//            return false
+//        }
+//
+//        let addCards = try Virgil.shared.getCards(of: serviceMessage.add)
+//        let removeCards = try Virgil.shared.getCards(of: serviceMessage.remove)
+//        let members = try Virgil.shared.getCards(of: serviceMessage.members)
+//
+//        try Virgil.shared.updateParticipants(add: addCards,
+//                                             remove: removeCards,
+//                                             members: members,
+//                                             serviceMessage: serviceMessage,
+//                                             channel: channel)
+//
+//        try CoreData.shared.add(addCards, to: channel)
+//        try CoreData.shared.remove(removeCards, from: channel)
+//
+//        try CoreData.shared.delete(serviceMessage)
+//
+//        return false
+//    }
 
     private static func processMedia(message: TCHMessage,
                                      date: Date,

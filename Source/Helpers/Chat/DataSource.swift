@@ -127,32 +127,32 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
-    func addChangeMembers(_ serviceMessage: ServiceMessage) throws {
-        guard Configurator.isUpdated else {
-            return
-        }
-
-        guard let identifier = serviceMessage.identifier else {
-            throw CoreData.Error.invalidMessage
-        }
-
-        self.nextMessageId += 1
-        let id = self.nextMessageId
-
-        let text = try serviceMessage.getChangeMembersText()
-        let message = try CoreData.shared.createChangeMembersMessage(text, isIncoming: false)
-
-        try self.messageSender.sendChangeMembers(message: message,
-                                                 identifier: identifier).startSync().get()
-
-        let uiModel = message.exportAsUIModel(withId: id)
-        
-        self.slidingWindow.insertItem(uiModel, position: .bottom)
-        
-        DispatchQueue.main.async {
-            self.delegate?.chatDataSourceDidUpdate(self)
-        }
-    }
+//    func addChangeMembers(_ serviceMessage: ServiceMessage) throws {
+//        guard Configurator.isUpdated else {
+//            return
+//        }
+//
+//        guard let identifier = serviceMessage.identifier else {
+//            throw CoreData.Error.invalidMessage
+//        }
+//
+//        self.nextMessageId += 1
+//        let id = self.nextMessageId
+//
+//        let text = try serviceMessage.getChangeMembersText()
+//        let message = try CoreData.shared.createChangeMembersMessage(text, isIncoming: false)
+//
+//        try self.messageSender.sendChangeMembers(message: message,
+//                                                 identifier: identifier).startSync().get()
+//
+//        let uiModel = message.exportAsUIModel(withId: id)
+//        
+//        self.slidingWindow.insertItem(uiModel, position: .bottom)
+//        
+//        DispatchQueue.main.async {
+//            self.delegate?.chatDataSourceDidUpdate(self)
+//        }
+//    }
 
     func addPhotoMessage(_ image: UIImage) {
         // TODO

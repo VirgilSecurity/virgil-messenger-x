@@ -39,34 +39,33 @@ extension CoreData {
         return channel
     }
 
-    func add(_ cards: [Card], to channel: Channel) throws {
-        let members = channel.cards.map { $0.identity }
-        var cardsToAdd: [Card] = []
-
-        for card in cards {
-            if !members.contains(card.identity), card.identity != Twilio.shared.identity {
-                cardsToAdd.append(card)
-            }
-        }
-
-        channel.cards += cardsToAdd
-
-        try self.saveContext()
-    }
-
-    func remove(_ cards: [Card], from channel: Channel) throws {
-        channel.cards = channel.cards.filter { card in
-            !cards.contains { toRemove in
-                card.identity == toRemove.identity
-            }
-        }
-
-        try self.saveContext()
-    }
+//    func add(_ cards: [Card], to channel: Channel) throws {
+//        let members = channel.cards.map { $0.identity }
+//        var cardsToAdd: [Card] = []
+//
+//        for card in cards {
+//            if !members.contains(card.identity), card.identity != Twilio.shared.identity {
+//                cardsToAdd.append(card)
+//            }
+//        }
+//
+//        channel.cards += cardsToAdd
+//
+//        try self.saveContext()
+//    }
+//
+//    func remove(_ cards: [Card], from channel: Channel) throws {
+//        channel.cards = channel.cards.filter { card in
+//            !cards.contains { toRemove in
+//                card.identity == toRemove.identity
+//            }
+//        }
+//
+//        try self.saveContext()
+//    }
 
     func delete(channel: Channel) throws {
         channel.allMessages.forEach { self.managedContext.delete($0) }
-        channel.serviceMessages.forEach { self.managedContext.delete($0) }
 
         self.managedContext.delete(channel)
 

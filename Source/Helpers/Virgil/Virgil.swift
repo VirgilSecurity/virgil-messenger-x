@@ -11,186 +11,77 @@ import VirgilCrypto
 import VirgilSDKRatchet
 import VirgilCryptoRatchet
 
+import VirgilE3Kit
+
 public class Virgil {
     private(set) static var shared: Virgil!
+    private(set) static var ethree: EThree!
 
-    public enum Error: String, Swift.Error {
-        case cardVerifierInitFailed
-        case utf8ToDataFailed
-        case missingServiceMessage
-        case nilGroupSession
+    private let verifier: VirgilCardVerifier
+    internal let client: Client
+
+    private var crypto: VirgilCrypto {
+        return self.client.crypto
     }
 
-    let identity: String
-    let crypto: VirgilCrypto
-    let verifier: VirgilCardVerifier
-    let client: Client
-    let secureChat: SecureChat
-    let localKeyManager: LocalKeyManager
-
-    private init(crypto: VirgilCrypto,
-                 verifier: VirgilCardVerifier,
-                 client: Client,
-                 identity: String,
-                 secureChat: SecureChat,
-                 localKeyManager: LocalKeyManager) {
-        self.crypto = crypto
-        self.verifier = verifier
+    private init(client: Client,
+                 verifier: VirgilCardVerifier) {
         self.client = client
-        self.identity = identity
-        self.secureChat = secureChat
-        self.localKeyManager = localKeyManager
+        self.verifier = verifier
     }
 
-    public static func initialize(identity: String) throws {
-        let crypto = try VirgilCrypto()
-        let client = Client(crypto: crypto)
-        let localKeyManager = try LocalKeyManager(identity: identity, crypto: crypto)
+    public static func initialize(identity: String, client: Client) throws {
+        let tokenCallback = client.makeTokenCallback(identity: identity)
+        let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
 
-        guard let verifier = VirgilCardVerifier(crypto: crypto) else {
-            throw Error.cardVerifierInitFailed
-        }
+        self.ethree = try EThree(params: params)
 
-        let user = try localKeyManager.retrieveUserData()
+        let verifier = VirgilCardVerifier(crypto: client.crypto)!
 
-        let provider = client.makeAccessTokenProvider(identity: identity)
-
-        let keyWrapper = PrivateKeyWrapper(keyPair: user.keyPair)
-        let context = SecureChatContext(identityCard: user.card,
-                                        identityPrivateKey: keyWrapper,
-                                        accessTokenProvider: provider)
-
-        let secureChat = try SecureChat(context: context)
-
-        self.shared = Virgil(crypto: crypto,
-                             verifier: verifier,
-                             client: client,
-                             identity: identity,
-                             secureChat: secureChat,
-                             localKeyManager: localKeyManager)
-    }
-
-    public func makeInitPFSOperation(identity: String) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            do {
-                let rotationLog = try self.secureChat.rotateKeys().startSync().get()
-                Log.debug(rotationLog.description)
-
-                completion((), nil)
-            } catch {
-                completion(nil, error)
-            }
-        }
-    }
-
-    func makeGetCardsOperation(identities: [String]) -> CallbackOperation<[Card]> {
-        return CallbackOperation { _, completion in
-            do {
-                let cards = try self.client.searchCards(identities: identities,
-                                                        selfIdentity: self.identity,
-                                                        verifier: self.verifier)
-
-                guard !cards.isEmpty else {
-                    throw UserFriendlyError.userNotFound
-                }
-
-                completion(cards, nil)
-            } catch {
-                completion(nil, error)
-            }
-        }
-    }
-
-    func createChangeMemebersTicket(in channel: Channel) throws -> RatchetGroupMessage {
-        guard let session = self.getGroupSession(of: channel) else {
-            throw Error.nilGroupSession
-        }
-
-        return try session.createChangeParticipantsTicket()
-    }
-
-    func updateParticipants(ticket: RatchetGroupMessage,
-                            channel: Channel,
-                            add: [Card] = [],
-                            remove: [Card] = []) throws {
-        guard let session = self.getGroupSession(of: channel) else {
-            throw Error.nilGroupSession
-        }
-
-        let removeIds = remove.map { $0.identifier }
-
-        try session.updateParticipants(ticket: ticket, addCards: add, removeCardIds: removeIds)
-
-        try self.secureChat.storeGroupSession(session)
-    }
-
-    func updateParticipants(add: [Card], remove: [Card], members: [Card], serviceMessage: ServiceMessage, channel: Channel) throws {
-        let members = members.filter { $0.identity != Twilio.shared.identity }
-
-        let removeCardIds = remove.map { $0.identifier }
-
-        let session: SecureGroupSession
-        if let existing = self.getGroupSession(of: channel) {
-            do {
-                try existing.updateParticipants(ticket: serviceMessage.message,
-                                                addCards: add,
-                                                removeCardIds: removeCardIds)
-                session = existing
-            } catch {
-                session = try self.secureChat.startGroupSession(with: members,
-                                                                sessionId: try channel.getSessionId(),
-                                                                using: serviceMessage.message)
-            }
-        } else {
-            session = try self.secureChat.startGroupSession(with: members,
-                                                            sessionId: try channel.getSessionId(),
-                                                            using: serviceMessage.message)
-        }
-
-        try self.secureChat.storeGroupSession(session)
+        self.shared = Virgil(client: client, verifier: verifier)
     }
 
     // FIXME: Should be in separate class
-    func getCards(of users: [String]) throws -> [Card] {
-        var cachedCards: [Card] = []
-        var cardsToLoad: [String] = []
-
-        let users = users.filter { $0 != Twilio.shared.identity }
-
-        guard !users.isEmpty else {
-            return []
-        }
-
-        for user in users {
-            if let cachedCard = try CoreData.shared.getSingleChannel(with: user)?.getCard() {
-                cachedCards.append(cachedCard)
-            } else {
-                cardsToLoad.append(user)
-            }
-        }
-
-        guard !cardsToLoad.isEmpty else {
-            return cachedCards
-        }
-
-        let cards = try self.makeGetCardsOperation(identities: cardsToLoad).startSync().get()
-
-        try? ChatsManager.startSingle(cards: cards)
-
-        return cachedCards + cards
-    }
-
-    func buildCard(_ card: String) -> Card? {
-        do {
-            let card = try self.importCard(fromBase64Encoded: card)
-
-            return card
-        } catch {
-            Log.error("Importing Card failed with: \(error.localizedDescription)")
-
-            return nil
-        }
-    }
+//    func getCards(of users: [String]) throws -> [Card] {
+//        var cachedCards: [Card] = []
+//        var cardsToLoad: [String] = []
+//
+//        let users = users.filter { $0 != Twilio.shared.identity }
+//
+//        guard !users.isEmpty else {
+//            return []
+//        }
+//
+//        for user in users {
+//            if let cachedCard = try CoreData.shared.getSingleChannel(with: user)?.getCard() {
+//                cachedCards.append(cachedCard)
+//            } else {
+//                cardsToLoad.append(user)
+//            }
+//        }
+//
+//        guard !cardsToLoad.isEmpty else {
+//            return cachedCards
+//        }
+//
+//        let cards = try self.makeGetCardsOperation(identities: cardsToLoad).startSync().get()
+//
+//        try? ChatsManager.startSingle(cards: cards)
+//
+//        return cachedCards + cards
+//    }
+//
+//    func buildCard(_ card: String) -> Card? {
+//        do {
+//            let card = try self.importCard(fromBase64Encoded: card)
+//
+//            return card
+//        } catch {
+//            Log.error("Importing Card failed with: \(error.localizedDescription)")
+//
+//            return nil
+//        }
+//    }
 
     func importCard(fromBase64Encoded card: String) throws -> Card {
         return try CardManager.importCard(fromBase64Encoded: card,
@@ -198,10 +89,8 @@ public class Virgil {
                                           cardVerifier: self.verifier)
     }
 
-    func makeHash(from string: String) -> String? {
-        guard let data = string.data(using: .utf8) else {
-            return nil
-        }
+    func makeHash(from string: String) -> String {
+        let data = string.data(using: .utf8)!
 
         return self.crypto.computeHash(for: data, using: .sha256).hexEncodedString()
     }

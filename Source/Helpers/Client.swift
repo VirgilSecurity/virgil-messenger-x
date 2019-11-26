@@ -8,10 +8,11 @@
 
 import VirgilSDK
 import VirgilCrypto
+import VirgilE3Kit
 
 public class Client {
     private let connection = HttpConnection()
-    private let crypto: VirgilCrypto
+    internal let crypto: VirgilCrypto
 
     enum Error: String, Swift.Error {
         case jsonParsingFailed
@@ -23,18 +24,25 @@ public class Client {
         self.crypto = crypto
     }
 
-    func makeAccessTokenProvider(identity: String) -> AccessTokenProvider {
-        let accessTokenProvider = CachingJwtProvider(renewTokenCallback: { _, completion in
+    func makeTokenCallback(identity: String) -> EThree.RenewJwtCallback {
+        return { completion in
             do {
                 let token = try self.getVirgilToken(identity: identity)
 
                 completion(token, nil)
-            } catch {
+            }
+            catch {
                 completion(nil, error)
             }
-        })
+        }
+    }
 
-        return accessTokenProvider
+    func makeAccessTokenProvider(identity: String) -> AccessTokenProvider {
+        return CachingJwtProvider(renewTokenCallback: { _, completion in
+            let tokenCallback = self.makeTokenCallback(identity: identity)
+
+            tokenCallback(completion)
+        })
     }
 
     private func makeAuthHeader(cardId: String,

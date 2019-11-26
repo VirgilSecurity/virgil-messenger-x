@@ -38,19 +38,19 @@ class CreateGroupViewController: ViewController {
             }
         }
 
-        ChatsManager.startGroup(with: self.members,
-                                name: name,
-                                startProgressBar: hudShow) { error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    HUD.hide()
-                    self.alert(error)
-                } else {
-                    HUD.flash(.success)
-                    self.popToRoot()
-                }
-            }
-        }
+//        ChatsManager.startGroup(with: self.members,
+//                                name: name,
+//                                startProgressBar: hudShow) { error in
+//            DispatchQueue.main.async {
+//                if let error = error {
+//                    HUD.hide()
+//                    self.alert(error)
+//                } else {
+//                    HUD.flash(.success)
+//                    self.popToRoot()
+//                }
+//            }
+//        }
     }
 
     @IBAction func nameChanged(_ sender: Any) {

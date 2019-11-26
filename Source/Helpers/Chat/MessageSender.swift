@@ -12,57 +12,57 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public static func sendServiceMessage(_ message: ServiceMessage, to coreChannel: Channel) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            do {
-                let twilioChannel = try Twilio.shared.getChannel(coreChannel)
-
-                let plaintext = try message.export()
-
-                let ciphertext: String
-                switch coreChannel.type {
-                case .single:
-                    ciphertext = try Virgil.shared.encrypt(plaintext, card: coreChannel.cards.first!)
-                case .group:
-                    ciphertext = try Virgil.shared.encryptGroup(plaintext, channel: coreChannel)
-                }
-
-                twilioChannel.send(ciphertext: ciphertext,
-                                   type: .service,
-                                   identifier: message.identifier).start(completion: completion)
-            } catch {
-                completion(nil, error)
-            }
-        }
-    }
-
-    public static func sendServiceMessage(to users: [String], ticket: ServiceMessage) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            guard !users.isEmpty else {
-                completion((), nil)
-                return
-            }
-
-            var operations: [CallbackOperation<Void>] = []
-            for user in users {
-                guard let channel = CoreData.shared.getSingleChannel(with: user) else {
-                    continue
-                }
-
-                let sendOperation = MessageSender.sendServiceMessage(ticket, to: channel)
-                operations.append(sendOperation)
-            }
-
-            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-
-            operations.forEach {
-                completionOperation.addDependency($0)
-            }
-
-            let queue = OperationQueue()
-            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
-        }
-    }
+//    public static func sendServiceMessage(_ message: ServiceMessage, to coreChannel: Channel) -> CallbackOperation<Void> {
+//        return CallbackOperation { _, completion in
+//            do {
+//                let twilioChannel = try Twilio.shared.getChannel(coreChannel)
+//
+//                let plaintext = try message.export()
+//
+//                let ciphertext: String
+//                switch coreChannel.type {
+//                case .single: 
+//                    ciphertext = try Virgil.shared.encrypt(plaintext, card: coreChannel.cards.first!)
+//                case .group:
+//                    ciphertext = try Virgil.shared.encryptGroup(plaintext, channel: coreChannel)
+//                }
+//
+//                twilioChannel.send(ciphertext: ciphertext,
+//                                   type: .service,
+//                                   identifier: message.identifier).start(completion: completion)
+//            } catch {
+//                completion(nil, error)
+//            }
+//        }
+//    }
+//
+//    public static func sendServiceMessage(to users: [String], ticket: ServiceMessage) -> CallbackOperation<Void> {
+//        return CallbackOperation { _, completion in
+//            guard !users.isEmpty else {
+//                completion((), nil)
+//                return
+//            }
+//
+//            var operations: [CallbackOperation<Void>] = []
+//            for user in users {
+//                guard let channel = CoreData.shared.getSingleChannel(with: user) else {
+//                    continue
+//                }
+//
+//                let sendOperation = MessageSender.sendServiceMessage(ticket, to: channel)
+//                operations.append(sendOperation)
+//            }
+//
+//            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+//
+//            operations.forEach {
+//                completionOperation.addDependency($0)
+//            }
+//
+//            let queue = OperationQueue()
+//            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
+//        }
+//    }
 
     public func sendChangeMembers(message: Message, identifier: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
@@ -94,9 +94,10 @@ public class MessageSender {
                     let ciphertext: String
                     switch message.channel.type {
                     case .group:
-                        ciphertext = try Virgil.shared.encryptGroup(plaintext, channel: message.channel)
+                        // FIXME
+                        ciphertext = "" /* try Virgil.shared.encryptGroup(plaintext, channel: message.channel) */
                     case .single:
-                        ciphertext = try Virgil.shared.encrypt(plaintext, card: cards.first!)
+                        ciphertext = try Virgil.ethree.authEncrypt(text: plaintext, for: cards.first!)
                     }
 
                     try channel.send(ciphertext: ciphertext, type: .regular).startSync().get()
@@ -107,9 +108,10 @@ public class MessageSender {
                 case .changeMembers:
                     let plaintext = try message.getBody()
 
-                    let ciphertext = try Virgil.shared.encryptGroup(plaintext, channel: message.channel)
+                    // FIXME
+//                    let ciphertext = try Virgil.shared.encryptGroup(plaintext, channel: message.channel)
 
-                    try channel.send(ciphertext: ciphertext, type: .service).startSync().get()
+                    try channel.send(ciphertext: plaintext, type: .service).startSync().get()
                 }
 
                 self.updateMessage(uiModel, status: .success)

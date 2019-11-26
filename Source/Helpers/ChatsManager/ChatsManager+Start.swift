@@ -27,7 +27,7 @@ public enum ChatsManager {
 
                 startProgressBar()
 
-                try ChatsManager.startSingle(with: [identity])
+                try ChatsManager.startSingle(with: identity)
 
                 completion(nil)
             } catch {
@@ -36,50 +36,38 @@ public enum ChatsManager {
         }
     }
 
-    public static func startSingle(with identities: [String]) throws {
-        guard !identities.isEmpty else {
-            return
-        }
+    public static func startSingle(with identity: String) throws {
+        let card = try Virgil.ethree.findUser(with: identity).startSync().get()
 
-        let cards = try Virgil.shared.makeGetCardsOperation(identities: identities).startSync().get()
-
-        try self.startSingle(cards: cards)
-    }
-
-    public static func startSingle(cards: [Card]) throws {
-        guard !cards.isEmpty else {
-            return
-        }
-
-        try Twilio.shared.createSingleChannel(with: cards)
+        try Twilio.shared.createSingleChannel(with: card).startSync().get()
     }
     
-    public static func startGroup(with channels: [Channel],
-                                  name: String,
-                                  startProgressBar: @escaping () -> Void,
-                                  completion: @escaping (Error?) -> Void) {
-        DispatchQueue(label: "ChatsManager").async {
-            do {
-                let name = name.lowercased()
-
-                guard !channels.isEmpty else {
-                    throw UserFriendlyError.unknownError
-                }
-
-                startProgressBar()
-
-                let cards = try channels.map { try $0.getCard() }
-
-                let id = try Virgil.shared.crypto.generateRandomData(ofSize: 32)
-
-                try Virgil.shared.startNewGroupSession(with: cards, sessionId: id)
-
-                try Twilio.shared.createGroupChannel(with: cards, name: name, id: id).startSync().get()
-
-                completion(nil)
-            } catch {
-                completion(error)
-            }
-        }
-    }
+//    public static func startGroup(with channels: [Channel],
+//                                  name: String,
+//                                  startProgressBar: @escaping () -> Void,
+//                                  completion: @escaping (Error?) -> Void) {
+//        DispatchQueue(label: "ChatsManager").async {
+//            do {
+//                let name = name.lowercased()
+//
+//                guard !channels.isEmpty else {
+//                    throw UserFriendlyError.unknownError
+//                }
+//
+//                startProgressBar()
+//
+//                let cards = try channels.map { try $0.getCard() }
+//
+//                let id = try Virgil.shared.crypto.generateRandomData(ofSize: 32)
+//
+//                try Virgil.shared.startNewGroupSession(with: cards, sessionId: id)
+//
+//                try Twilio.shared.createGroupChannel(with: cards, name: name, id: id).startSync().get()
+//
+//                completion(nil)
+//            } catch {
+//                completion(error)
+//            }
+//        }
+//    }
 }

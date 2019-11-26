@@ -18,13 +18,6 @@ extension CoreData {
         try self.saveContext()
     }
 
-    func save(_ message: ServiceMessage, to channel: Channel) throws {
-        let messages = channel.mutableOrderedSetValue(forKey: Channel.ServiceMessagesKey)
-        messages.add(message)
-
-        try self.saveContext()
-    }
-
     func createChangeMembersMessage(_ text: String,
                                     in channel: Channel? = nil,
                                     isIncoming: Bool,
@@ -90,28 +83,5 @@ extension CoreData {
         try self.save(message)
 
         return message
-    }
-
-    func findServiceMessage(from identity: String, withSessionId sessionId: Data, identifier: String? = nil) -> ServiceMessage? {
-        guard identity != self.currentAccount?.identity,
-            let user = self.getSingleChannel(with: identity) else {
-                return nil
-        }
-
-        return user.serviceMessages.first { $0.message.getSessionId() == sessionId && $0.identifier == identifier }
-    }
-
-    func existsServiceMessage(from identity: String, withSessionId sessionId: Data) -> Bool {
-        guard let user = self.getSingleChannel(with: identity) else {
-            return false
-        }
-
-        return user.serviceMessages.first { $0.message.getSessionId() == sessionId } == nil ? false : true
-    }
-
-    func delete(_ serviceMessage: ServiceMessage) throws {
-        self.managedContext.delete(serviceMessage)
-
-        try self.saveContext()
     }
 }
