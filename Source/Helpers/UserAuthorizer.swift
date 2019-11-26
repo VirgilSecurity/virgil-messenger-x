@@ -59,7 +59,7 @@ public class UserAuthorizer {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
                 if let token = Twilio.updatedPushToken {
-                    try Twilio.shared.deregister(withNotificationToken: token).startSync().getResult()
+                    try Twilio.shared.deregister(withNotificationToken: token).startSync().get()
                 }
 
                 Configurator.reset()

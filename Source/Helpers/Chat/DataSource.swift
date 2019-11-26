@@ -143,7 +143,7 @@ class DataSource: ChatDataSourceProtocol {
         let message = try CoreData.shared.createChangeMembersMessage(text, isIncoming: false)
 
         try self.messageSender.sendChangeMembers(message: message,
-                                                 identifier: identifier).startSync().getResult()
+                                                 identifier: identifier).startSync().get()
 
         let uiModel = message.exportAsUIModel(withId: id)
         

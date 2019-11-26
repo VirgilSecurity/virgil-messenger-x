@@ -27,7 +27,6 @@ public final class ServiceMessage: NSManagedObject, Codable {
         case members
         case add
         case remove
-        case rawType
     }
 
     public func encode(to encoder: Encoder) throws {

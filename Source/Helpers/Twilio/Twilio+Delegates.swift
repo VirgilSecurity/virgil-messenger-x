@@ -46,7 +46,7 @@ extension Twilio: TwilioChatClientDelegate {
         self.queue.async {
             do {
                 if channel.status != .joined {
-                    try channel.join().startSync().getResult()
+                    try channel.join().startSync().get()
 
                     let attributes = try channel.getAttributes()
 
@@ -56,7 +56,7 @@ extension Twilio: TwilioChatClientDelegate {
                     
                     try ChatsManager.join(channel)
 
-                    try ChatsManager.update(twilioChannel: channel).startSync().getResult()
+                    try ChatsManager.update(twilioChannel: channel).startSync().get()
 
                     Notifications.post(.channelAdded)
                 }

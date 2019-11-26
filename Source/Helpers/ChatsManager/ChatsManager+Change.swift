@@ -24,13 +24,13 @@ extension ChatsManager {
                                                         add: newMembers,
                                                         remove: [])
 
-                try MessageSender.sendServiceMessage(to: members, ticket: serviceMessage).startSync().getResult()
+                try MessageSender.sendServiceMessage(to: members, ticket: serviceMessage).startSync().get()
 
                 // Send Service Message to group chat
                 try dataSource.addChangeMembers(serviceMessage)
 
                 // Invite members to Twilio Channel
-                try Twilio.shared.add(members: newMembers).startSync().getResult()
+                try Twilio.shared.add(members: newMembers).startSync().get()
 
                 let newCards = try Virgil.shared.getCards(of: newMembers)
 
@@ -65,13 +65,13 @@ extension ChatsManager {
                                                         add: [],
                                                         remove: [remove])
 
-                try MessageSender.sendServiceMessage(to: members + [remove], ticket: serviceMessage).startSync().getResult()
+                try MessageSender.sendServiceMessage(to: members + [remove], ticket: serviceMessage).startSync().get()
 
                 // Send Service Message to Group chat
                 try dataSource.addChangeMembers(serviceMessage)
 
                 // Remove guy from Twilio channel (attributes for now)
-                try Twilio.shared.remove(member: remove).startSync().getResult()
+                try Twilio.shared.remove(member: remove).startSync().get()
 
                 let removeCards = try Virgil.shared.getCards(of: [remove])
 

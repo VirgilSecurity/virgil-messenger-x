@@ -18,7 +18,6 @@ public class LocalKeyManager {
     private let identity: String
     private let keychainStorage: KeychainStorage
     private let crypto: VirgilCrypto
-    private let cardCrypto: VirgilCardCrypto
 
     public enum Error: Int, Swift.Error {
         case retrieveFailed = 1
@@ -31,7 +30,6 @@ public class LocalKeyManager {
     public init(identity: String, crypto: VirgilCrypto) throws {
         self.identity = identity
         self.crypto = crypto
-        self.cardCrypto = VirgilCardCrypto(virgilCrypto: crypto)
 
         let storageParams = try KeychainStorageParams.makeKeychainStorageParams()
         self.keychainStorage = KeychainStorage(storageParams: storageParams)
@@ -43,7 +41,7 @@ public class LocalKeyManager {
             let meta = keyEntry.meta,
             let rawCardBase64 = meta[KeychainMetaKeys.rawCard.rawValue],
             let rawCard = try? RawSignedModel.import(fromBase64Encoded: rawCardBase64),
-            let card = try? CardManager.parseCard(from: rawCard, cardCrypto: cardCrypto) else {
+            let card = try? CardManager.parseCard(from: rawCard, crypto: self.crypto) else {
                 throw Error.retrieveFailed
         }
 

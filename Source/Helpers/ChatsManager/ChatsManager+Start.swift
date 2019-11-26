@@ -41,7 +41,7 @@ public enum ChatsManager {
             return
         }
 
-        let cards = try Virgil.shared.makeGetCardsOperation(identities: identities).startSync().getResult()
+        let cards = try Virgil.shared.makeGetCardsOperation(identities: identities).startSync().get()
 
         try self.startSingle(cards: cards)
     }
@@ -74,7 +74,7 @@ public enum ChatsManager {
 
                 try Virgil.shared.startNewGroupSession(with: cards, sessionId: id)
 
-                try Twilio.shared.createGroupChannel(with: cards, name: name, id: id).startSync().getResult()
+                try Twilio.shared.createGroupChannel(with: cards, name: name, id: id).startSync().get()
 
                 completion(nil)
             } catch {

@@ -50,10 +50,10 @@ public class Twilio: NSObject {
 
                 Log.debug("Initializing Twilio")
 
-                try self.shared.initialize(token: token).startSync().getResult()
+                try self.shared.initialize(token: token).startSync().get()
 
                 if let token = self.updatedPushToken {
-                    try self.shared.register(withNotificationToken: token).startSync().getResult()
+                    try self.shared.register(withNotificationToken: token).startSync().get()
                 }
 
                 for channel in self.shared.channels.subscribedChannels() {

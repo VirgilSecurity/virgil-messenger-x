@@ -99,7 +99,7 @@ public class MessageSender {
                         ciphertext = try Virgil.shared.encrypt(plaintext, card: cards.first!)
                     }
 
-                    try channel.send(ciphertext: ciphertext, type: .regular).startSync().getResult()
+                    try channel.send(ciphertext: ciphertext, type: .regular).startSync().get()
                 case .photo:
                     break
                 case .audio:
@@ -109,7 +109,7 @@ public class MessageSender {
 
                     let ciphertext = try Virgil.shared.encryptGroup(plaintext, channel: message.channel)
 
-                    try channel.send(ciphertext: ciphertext, type: .service).startSync().getResult()
+                    try channel.send(ciphertext: ciphertext, type: .service).startSync().get()
                 }
 
                 self.updateMessage(uiModel, status: .success)

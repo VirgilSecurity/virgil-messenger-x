@@ -105,7 +105,7 @@ class MessageProcessor {
 
             let serviceMessage = try ServiceMessage.import(decrypted)
 
-            try twilioChannel.delete(message: twilioMessage).startSync().getResult()
+            try twilioChannel.delete(message: twilioMessage).startSync().get()
 
             try CoreData.shared.save(serviceMessage, to: channel)
 
@@ -175,7 +175,7 @@ class MessageProcessor {
             }
 
             guard CoreData.shared.existsServiceMessage(from: author, withSessionId: sessionId) else {
-                try Twilio.shared.leave(twilioChannel).startSync().getResult()
+                try Twilio.shared.leave(twilioChannel).startSync().get()
 
                 if CoreData.shared.currentChannel == channel {
                     DispatchQueue.main.async {
@@ -217,7 +217,7 @@ class MessageProcessor {
                 throw NSError()
         }
 
-        let data = try message.getMedia().startSync().getResult()
+        let data = try message.getMedia().startSync().get()
 
         return try CoreData.shared.createMediaMessage(data, in: channel, isIncoming: isIncoming, date: date, type: type)
     }

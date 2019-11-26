@@ -19,7 +19,7 @@ extension ChatsManager {
 
             let name = try Twilio.shared.getCompanion(from: attributes)
 
-            let cards = try Virgil.shared.makeGetCardsOperation(identities: [name]).startSync().getResult()
+            let cards = try Virgil.shared.makeGetCardsOperation(identities: [name]).startSync().get()
 
             try CoreData.shared.createSingleChannel(sid: sid, card: cards.first!)
 

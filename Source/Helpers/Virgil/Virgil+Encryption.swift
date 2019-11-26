@@ -18,7 +18,7 @@ extension Virgil {
         }
 
         let ratchetMessage = try session.encrypt(string: text)
-        try self.secureChat.storeGroupSession(session: session)
+        try self.secureChat.storeGroupSession(session)
 
         return ratchetMessage.serialize().base64EncodedString()
     }
@@ -39,7 +39,7 @@ extension Virgil {
         }
 
         let decrypted = try session.decryptString(from: ratchetMessage, senderCardId: card.identifier)
-        try self.secureChat.storeGroupSession(session: session)
+        try self.secureChat.storeGroupSession(session)
 
         return decrypted
     }
@@ -48,7 +48,7 @@ extension Virgil {
         let session = try self.getSessionAsSender(card: card)
 
         let ratchetMessage = try session.encrypt(string: text)
-        try self.secureChat.storeSession(session: session)
+        try self.secureChat.storeSession(session)
 
         return ratchetMessage.serialize().base64EncodedString()
     }
@@ -63,7 +63,7 @@ extension Virgil {
         let session = try self.getSessionAsReceiver(message: ratchetMessage, receiverCard: card)
 
         let decrypted = try session.decryptString(from: ratchetMessage)
-        try self.secureChat.storeSession(session: session)
+        try self.secureChat.storeSession(session)
 
         return decrypted
     }
@@ -81,15 +81,15 @@ extension Virgil {
     }
 
     private func getSessionAsSender(card: Card) throws -> SecureSession {
-        guard let session = self.secureChat.existingSession(withParticpantIdentity: card.identity) else {
-            return try secureChat.startNewSessionAsSender(receiverCard: card).startSync().getResult()
+        guard let session = self.secureChat.existingSession(withParticipantIdentity: card.identity) else {
+            return try secureChat.startNewSessionAsSender(receiverCard: card).startSync().get()
         }
 
         return session
     }
 
     private func getSessionAsReceiver(message: RatchetMessage, receiverCard card: Card) throws -> SecureSession {
-        guard let session = self.secureChat.existingSession(withParticpantIdentity: card.identity) else {
+        guard let session = self.secureChat.existingSession(withParticipantIdentity: card.identity) else {
             return try secureChat.startNewSessionAsReceiver(senderCard: card, ratchetMessage: message)
         }
 
@@ -104,10 +104,10 @@ extension Virgil {
         let serviceMessage = try ServiceMessage(message: newSessionMessage,
                                                 members: members + [Twilio.shared.identity])
 
-        try MessageSender.sendServiceMessage(to: members, ticket: serviceMessage).startSync().getResult()
+        try MessageSender.sendServiceMessage(to: members, ticket: serviceMessage).startSync().get()
 
         let session = try self.secureChat.startGroupSession(with: cards, sessionId: sessionId, using: newSessionMessage)
-        try self.secureChat.storeGroupSession(session: session)
+        try self.secureChat.storeGroupSession(session)
     }
 
     func startNewGroupSession(identity: String, sessionId: Data) throws -> SecureGroupSession {
@@ -120,7 +120,7 @@ extension Virgil {
         let cards = try CoreData.shared.getSingleChannelsCards(users: members)
 
         let session = try secureChat.startGroupSession(with: cards, sessionId: sessionId, using: serviceMessage.message)
-        try self.secureChat.storeGroupSession(session: session)
+        try self.secureChat.storeGroupSession(session)
 
         try CoreData.shared.delete(serviceMessage)
 

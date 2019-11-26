@@ -73,7 +73,7 @@ extension ChatsManager {
                 if let channel = try? CoreData.shared.getChannel(twilioChannel) {
                     coreChannel = channel
                 } else {
-                    try twilioChannel.join().startSync().getResult()
+                    try twilioChannel.join().startSync().get()
 
                     try ChatsManager.join(twilioChannel)
 
@@ -81,7 +81,7 @@ extension ChatsManager {
                 }
 
                 let coreCount = coreChannel.allMessages.count
-                let twilioCount = try twilioChannel.getMessagesCount().startSync().getResult()
+                let twilioCount = try twilioChannel.getMessagesCount().startSync().get()
 
                 let toLoad = twilioCount - coreCount
 
@@ -90,7 +90,7 @@ extension ChatsManager {
                     return
                 }
 
-                let messages = try twilioChannel.getLastMessages(withCount: toLoad).startSync().getResult()
+                let messages = try twilioChannel.getLastMessages(withCount: toLoad).startSync().get()
 
                 for message in messages {
                     let sid = try twilioChannel.getSid()

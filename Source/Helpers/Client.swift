@@ -12,7 +12,6 @@ import VirgilCrypto
 public class Client {
     private let connection = HttpConnection()
     private let crypto: VirgilCrypto
-    private let cardCrypto: VirgilCardCrypto
 
     enum Error: String, Swift.Error {
         case jsonParsingFailed
@@ -20,9 +19,8 @@ public class Client {
         case gettingJWTFailed
     }
 
-    init(crypto: VirgilCrypto, cardCrypto: VirgilCardCrypto) {
+    init(crypto: VirgilCrypto) {
         self.crypto = crypto
-        self.cardCrypto = cardCrypto
     }
 
     func makeAccessTokenProvider(identity: String) -> AccessTokenProvider {
@@ -60,17 +58,17 @@ extension Client {
                             verifier: VirgilCardVerifier) throws -> [Card] {
         let provider = self.makeAccessTokenProvider(identity: selfIdentity)
 
-        let params = CardManagerParams(cardCrypto: self.cardCrypto, accessTokenProvider: provider, cardVerifier: verifier)
+        let params = CardManagerParams(crypto: self.crypto, accessTokenProvider: provider, cardVerifier: verifier)
         let cardManager = CardManager(params: params)
 
-        return try cardManager.searchCards(identities: identities).startSync().getResult()
+        return try cardManager.searchCards(identities: identities).startSync().get()
     }
 
     public func signUp(identity: String,
                        keyPair: VirgilKeyPair,
                        verifier: VirgilCardVerifier) throws -> Card {
-        let modelSigner = ModelSigner(cardCrypto: self.cardCrypto)
-        let rawCard = try CardManager.generateRawCard(cardCrypto: self.cardCrypto,
+        let modelSigner = ModelSigner(crypto: self.crypto)
+        let rawCard = try CardManager.generateRawCard(crypto: self.crypto,
                                                       modelSigner: modelSigner,
                                                       privateKey: keyPair.privateKey,
                                                       publicKey: keyPair.publicKey,
@@ -84,7 +82,7 @@ extension Client {
 
         let request = Request(url: requestURL, method: .post, headers: headers, body: body)
 
-        let response = try self.connection.send(request)
+        let response = try self.connection.send(request).startSync().get()
 
         if let body = response.body,
             let text = String(data: body, encoding: .utf8),
@@ -104,7 +102,7 @@ extension Client {
         }
 
         return try CardManager.importCard(fromJson: exportedCard,
-                                          cardCrypto: self.cardCrypto,
+                                          crypto: self.crypto,
                                           cardVerifier: verifier)
     }
 
@@ -123,7 +121,7 @@ extension Client {
         let body = try JSONSerialization.data(withJSONObject: params, options: [])
 
         let request = Request(url: requestURL, method: .post, headers: headers, body: body)
-        let response = try self.connection.send(request)
+        let response = try self.connection.send(request).startSync().get()
 
         guard let responseBody = response.body,
             let tokenJson = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
@@ -148,7 +146,7 @@ extension Client {
         let body = try JSONSerialization.data(withJSONObject: params, options: [])
 
         let request = Request(url: requestURL, method: .post, headers: headers, body: body)
-        let response = try self.connection.send(request)
+        let response = try self.connection.send(request).startSync().get()
 
         guard let responseBody = response.body,
             let tokenJson = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],

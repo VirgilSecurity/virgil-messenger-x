@@ -23,21 +23,18 @@ public class Virgil {
 
     let identity: String
     let crypto: VirgilCrypto
-    let cardCrypto: VirgilCardCrypto
     let verifier: VirgilCardVerifier
     let client: Client
     let secureChat: SecureChat
     let localKeyManager: LocalKeyManager
 
     private init(crypto: VirgilCrypto,
-                 cardCrypto: VirgilCardCrypto,
                  verifier: VirgilCardVerifier,
                  client: Client,
                  identity: String,
                  secureChat: SecureChat,
                  localKeyManager: LocalKeyManager) {
         self.crypto = crypto
-        self.cardCrypto = cardCrypto
         self.verifier = verifier
         self.client = client
         self.identity = identity
@@ -47,11 +44,10 @@ public class Virgil {
 
     public static func initialize(identity: String) throws {
         let crypto = try VirgilCrypto()
-        let cardCrypto = VirgilCardCrypto(virgilCrypto: crypto)
-        let client = Client(crypto: crypto, cardCrypto: cardCrypto)
+        let client = Client(crypto: crypto)
         let localKeyManager = try LocalKeyManager(identity: identity, crypto: crypto)
 
-        guard let verifier = VirgilCardVerifier(cardCrypto: cardCrypto) else {
+        guard let verifier = VirgilCardVerifier(crypto: crypto) else {
             throw Error.cardVerifierInitFailed
         }
 
@@ -59,25 +55,25 @@ public class Virgil {
 
         let provider = client.makeAccessTokenProvider(identity: identity)
 
+        let keyWrapper = PrivateKeyWrapper(keyPair: user.keyPair)
         let context = SecureChatContext(identityCard: user.card,
-                                        identityKeyPair: user.keyPair,
+                                        identityPrivateKey: keyWrapper,
                                         accessTokenProvider: provider)
 
         let secureChat = try SecureChat(context: context)
 
         self.shared = Virgil(crypto: crypto,
-                                   cardCrypto: cardCrypto,
-                                   verifier: verifier,
-                                   client: client,
-                                   identity: identity,
-                                   secureChat: secureChat,
-                                   localKeyManager: localKeyManager)
+                             verifier: verifier,
+                             client: client,
+                             identity: identity,
+                             secureChat: secureChat,
+                             localKeyManager: localKeyManager)
     }
 
     public func makeInitPFSOperation(identity: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                let rotationLog = try self.secureChat.rotateKeys().startSync().getResult()
+                let rotationLog = try self.secureChat.rotateKeys().startSync().get()
                 Log.debug(rotationLog.description)
 
                 completion((), nil)
@@ -125,7 +121,7 @@ public class Virgil {
 
         try session.updateParticipants(ticket: ticket, addCards: add, removeCardIds: removeIds)
 
-        try self.secureChat.storeGroupSession(session: session)
+        try self.secureChat.storeGroupSession(session)
     }
 
     func updateParticipants(add: [Card], remove: [Card], members: [Card], serviceMessage: ServiceMessage, channel: Channel) throws {
@@ -151,7 +147,7 @@ public class Virgil {
                                                             using: serviceMessage.message)
         }
 
-        try self.secureChat.storeGroupSession(session: session)
+        try self.secureChat.storeGroupSession(session)
     }
 
     // FIXME: Should be in separate class
@@ -177,7 +173,7 @@ public class Virgil {
             return cachedCards
         }
 
-        let cards = try self.makeGetCardsOperation(identities: cardsToLoad).startSync().getResult()
+        let cards = try self.makeGetCardsOperation(identities: cardsToLoad).startSync().get()
 
         try? ChatsManager.startSingle(cards: cards)
 
@@ -198,7 +194,7 @@ public class Virgil {
 
     func importCard(fromBase64Encoded card: String) throws -> Card {
         return try CardManager.importCard(fromBase64Encoded: card,
-                                          cardCrypto: self.cardCrypto,
+                                          crypto: self.crypto,
                                           cardVerifier: self.verifier)
     }
 

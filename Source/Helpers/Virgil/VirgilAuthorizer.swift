@@ -11,7 +11,6 @@ import VirgilSDK
 
 public class VirgilAuthorizer {
     public let crypto: VirgilCrypto
-    public let cardCrypto: VirgilCardCrypto
     public let verifier: VirgilCardVerifier
     public let client: Client
 
@@ -21,10 +20,9 @@ public class VirgilAuthorizer {
 
     public init() throws {
         self.crypto = try VirgilCrypto()
-        self.cardCrypto = VirgilCardCrypto(virgilCrypto: crypto)
-        self.client = Client(crypto: crypto, cardCrypto: self.cardCrypto)
+        self.client = Client(crypto: crypto)
 
-        guard let verifier = VirgilCardVerifier(cardCrypto: self.cardCrypto) else {
+        guard let verifier = VirgilCardVerifier(crypto: self.crypto) else {
             throw Error.cardVerifierInitFailed
         }
 

@@ -50,7 +50,7 @@ extension Twilio {
 extension Twilio {
     func createSingleChannel(with cards: [Card]) throws {
         try cards.forEach {
-            try self.createSingleChannel(with: $0).startSync().getResult()
+            try self.createSingleChannel(with: $0).startSync().get()
         }
     }
 
@@ -65,13 +65,13 @@ extension Twilio {
                                                      members: [self.identity, card.identity],
                                                      type: .single).export()
 
-                let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
+                let channel = try self.makeCreateChannelOperation(with: options).startSync().get()
 
                 let sid = try channel.getSid()
 
                 try CoreData.shared.createSingleChannel(sid: sid, card: card)
 
-                try channel.invite(identity: card.identity).startSync().getResult()
+                try channel.invite(identity: card.identity).startSync().get()
 
                 completion((), nil)
             } catch {
@@ -91,7 +91,7 @@ extension Twilio {
                                                      members: [self.identity] + members,
                                                      type: .group).export()
 
-                let channel = try self.makeCreateChannelOperation(with: options).startSync().getResult()
+                let channel = try self.makeCreateChannelOperation(with: options).startSync().get()
 
                 let sid = try channel.getSid()
 
@@ -125,7 +125,7 @@ extension Twilio {
                 attributes.initiator = self.identity
                 attributes.members += members
 
-                try channel.setAttributes(attributes).startSync().getResult()
+                try channel.setAttributes(attributes).startSync().get()
 
                 let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
