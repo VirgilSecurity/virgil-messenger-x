@@ -42,32 +42,38 @@ public enum ChatsManager {
         try Twilio.shared.createSingleChannel(with: card).startSync().get()
     }
     
-//    public static func startGroup(with channels: [Channel],
-//                                  name: String,
-//                                  startProgressBar: @escaping () -> Void,
-//                                  completion: @escaping (Error?) -> Void) {
-//        DispatchQueue(label: "ChatsManager").async {
-//            do {
-//                let name = name.lowercased()
-//
-//                guard !channels.isEmpty else {
-//                    throw UserFriendlyError.unknownError
-//                }
-//
-//                startProgressBar()
-//
-//                let cards = try channels.map { try $0.getCard() }
-//
-//                let id = try Virgil.shared.crypto.generateRandomData(ofSize: 32)
-//
-//                try Virgil.shared.startNewGroupSession(with: cards, sessionId: id)
-//
-//                try Twilio.shared.createGroupChannel(with: cards, name: name, id: id).startSync().get()
-//
-//                completion(nil)
-//            } catch {
-//                completion(error)
-//            }
-//        }
-//    }
+    public static func startGroup(with channels: [Channel],
+                                  name: String,
+                                  startProgressBar: @escaping () -> Void,
+                                  completion: @escaping (Error?) -> Void) {
+        DispatchQueue(label: "ChatsManager").async {
+            do {
+                let name = name.lowercased()
+
+                guard !channels.isEmpty else {
+                    throw UserFriendlyError.unknownError
+                }
+
+                startProgressBar()
+
+                let cards = try channels.map { try $0.getCard() }
+
+                let id = try Virgil.shared.crypto.generateRandomData(ofSize: 32)
+
+                var result: [String: Card] = [:]
+                cards.forEach {
+                    result[$0.identity] = $0
+                }
+
+                // FIXME: add already exists handler
+                _ = try Virgil.ethree.createGroup(id: id, with: result).startSync().get()
+
+                try Twilio.shared.createGroupChannel(with: cards, name: name, id: id).startSync().get()
+
+                completion(nil)
+            } catch {
+                completion(error)
+            }
+        }
+    }
 }

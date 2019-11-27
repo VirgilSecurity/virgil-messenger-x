@@ -20,7 +20,7 @@ public class Virgil {
     private let verifier: VirgilCardVerifier
     internal let client: Client
 
-    private var crypto: VirgilCrypto {
+    internal var crypto: VirgilCrypto {
         return self.client.crypto
     }
 
@@ -39,6 +39,15 @@ public class Virgil {
         let verifier = VirgilCardVerifier(crypto: client.crypto)!
 
         self.shared = Virgil(client: client, verifier: verifier)
+    }
+
+    public func getGroup(id: Data) throws -> Group {
+        guard let group = try Virgil.ethree.getGroup(id: id) else {
+            // FIXME
+            throw NSError()
+        }
+
+        return group
     }
 
     // FIXME: Should be in separate class

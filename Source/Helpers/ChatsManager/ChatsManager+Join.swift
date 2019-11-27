@@ -37,8 +37,14 @@ extension ChatsManager {
                                                    sessionId: sessionId,
                                                    cards: cards)
 
-            // FIXME
-//            _ = try? Virgil.shared.startNewGroupSession(identity: attributes.initiator, sessionId: sessionId)
+            let initiatorCard = try Virgil.ethree.findUser(with: attributes.initiator).startSync().get()
+
+            do {
+                _ = try Virgil.ethree.loadGroup(id: sessionId, initiator: initiatorCard).startSync().get()
+            }
+            catch {
+                throw error
+            }
         }
     }
 }

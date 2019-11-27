@@ -104,25 +104,29 @@ class MessageProcessor {
                                      twilioChannel: TCHChannel,
                                      channel: Channel,
                                      attributes: TCHMessage.Attributes) throws -> Message? {
-        return nil
-//        let sessionId = try channel.getSessionId()
-//
-//        let author = try twilioMessage.getAuthor()
-//
-//        switch attributes.type {
-//        case .regular:
-//            var decrypted: String
-//            do {
-//                decrypted = try Virgil.shared.decryptGroup(text, from: author, channel: channel, sessionId: sessionId)
-//            } catch {
-//                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
-//                return nil
-//            }
-//
-//            decrypted = "\(author): \(decrypted)"
-//
-//            return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
-//        case .service:
+        let sessionId = try channel.getSessionId()
+
+        let author = try twilioMessage.getAuthor()
+
+        switch attributes.type {
+        case .regular:
+            var decrypted: String
+            do {
+                let group = try Virgil.shared.getGroup(id: sessionId)
+
+                let authorCard = try Virgil.ethree.findUser(with: author).startSync().get()
+
+                decrypted = try group.decrypt(text: text, from: authorCard)
+            } catch {
+                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+                return nil
+            }
+
+            decrypted = "\(author): \(decrypted)"
+
+            return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
+        case .service:
+            return nil
 //            guard let serviceMessage = CoreData.shared.findServiceMessage(from: author,
 //                                                                          withSessionId: sessionId,
 //                                                                          identifier: attributes.identifier) else {
@@ -143,7 +147,7 @@ class MessageProcessor {
 //                                                                                  in: channel,
 //                                                                                  isIncoming: isIncoming,
 //                                                                                  date: date)
-//        }
+        }
     }
 
 //    private static func processGroupServiceMessage(_ serviceMessage: ServiceMessage,

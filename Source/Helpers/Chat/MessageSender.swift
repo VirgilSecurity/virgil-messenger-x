@@ -94,8 +94,9 @@ public class MessageSender {
                     let ciphertext: String
                     switch message.channel.type {
                     case .group:
-                        // FIXME
-                        ciphertext = "" /* try Virgil.shared.encryptGroup(plaintext, channel: message.channel) */
+                        let group = try Virgil.shared.getGroup(id: message.channel.getSessionId())
+
+                        ciphertext = try group.encrypt(text: plaintext)
                     case .single:
                         ciphertext = try Virgil.ethree.authEncrypt(text: plaintext, for: cards.first!)
                     }
@@ -108,10 +109,12 @@ public class MessageSender {
                 case .changeMembers:
                     let plaintext = try message.getBody()
 
-                    // FIXME
-//                    let ciphertext = try Virgil.shared.encryptGroup(plaintext, channel: message.channel)
+                    // FIXME: Loading group on each encrypt/decrypt
+                    let group = try Virgil.shared.getGroup(id: message.channel.getSessionId())
 
-                    try channel.send(ciphertext: plaintext, type: .service).startSync().get()
+                    let ciphertext = try group.encrypt(text: plaintext)
+
+                    try channel.send(ciphertext: ciphertext, type: .service).startSync().get()
                 }
 
                 self.updateMessage(uiModel, status: .success)
