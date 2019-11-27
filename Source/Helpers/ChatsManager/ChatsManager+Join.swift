@@ -39,12 +39,7 @@ extension ChatsManager {
 
             let initiatorCard = try Virgil.ethree.findUser(with: attributes.initiator).startSync().get()
 
-            do {
-                _ = try Virgil.ethree.loadGroup(id: sessionId, initiator: initiatorCard).startSync().get()
-            }
-            catch {
-                throw error
-            }
+            _ = try Virgil.ethree.loadGroup(id: sessionId, initiator: initiatorCard).startSync().get()
         }
     }
 }

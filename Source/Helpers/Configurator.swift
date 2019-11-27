@@ -40,27 +40,16 @@ public class Configurator {
                 let account = try CoreData.shared.getCurrentAccount()
                 let identity = account.identity
 
-                let initTwilio = Twilio.makeInitTwilioOperation(identity: identity,
-                                                                client: Virgil.shared.client)
-                let completion = OperationUtils.makeCompletionOperation { (_ result: Void?, error: Error?) in
-                    do {
-                        if error == nil {
-                            self.isInitialized = true
-                            if let channel = CoreData.shared.currentChannel {
-                                try Twilio.shared.setChannel(channel)
-                            }
-                        }
+                try Twilio.makeInitTwilioOperation(identity: identity,
+                                                   client: Virgil.shared.client)
+                    .startSync()
+                    .get()
 
-                        completion(result, error)
-                    } catch (let error) {
-                        completion(nil, error)
-                    }
+                self.isInitialized = true
+
+                if let channel = CoreData.shared.currentChannel {
+                    try Twilio.shared.setChannel(channel)
                 }
-
-                completion.addDependency(initTwilio)
-
-                let queue = OperationQueue()
-                queue.addOperations([initTwilio, completion], waitUntilFinished: false)
             } catch {
                 completion(nil, error)
             }
