@@ -36,8 +36,7 @@ class ChatListCell: UITableViewCell {
 
         self.usernameLabel.text = channel.name
         self.letterLabel.text = channel.letter
-        self.avatarView.gradientLayer.colors = [channel.colorPair.first, channel.colorPair.second]
-        self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+        self.avatarView.draw(with: channel.colors)
 
         self.lastMessageLabel.text = channel.lastMessagesBody
         self.lastMessageDateLabel.text = channel.lastMessagesDate?.shortString() ?? ""

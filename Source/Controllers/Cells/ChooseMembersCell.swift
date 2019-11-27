@@ -60,7 +60,6 @@ class ChooseMembersCell: UITableViewCell, BEMCheckBoxDelegate {
 
         self.usernameLabel.text = user.name
         self.letterLabel.text = user.letter
-        self.avatarView.gradientLayer.colors = [user.colorPair.first, user.colorPair.second]
-        self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+        self.avatarView.draw(with: user.colors)
     }
 }

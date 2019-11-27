@@ -10,6 +10,6 @@ import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var usernameLabel: UILabel!
-    @IBOutlet weak var avatarView: UIView!
+    @IBOutlet weak var avatarView: GradientView!
     @IBOutlet weak var letterLabel: UILabel!
 }

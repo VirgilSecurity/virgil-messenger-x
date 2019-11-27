@@ -28,8 +28,7 @@ class SettingsViewController: ViewController {
 
         self.letterLabel.text = String(describing: account.letter)
 
-        self.avatarView.gradientLayer.colors = [account.colorPair.first, account.colorPair.second]
-        self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+        self.avatarView.draw(with: account.colors)
     }
 
     override func viewWillAppear(_ animated: Bool) {

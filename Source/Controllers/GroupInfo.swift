@@ -26,8 +26,7 @@ class GroupInfoViewController: ViewController {
         self.letterLabel.text = String(describing: self.channel.letter)
         self.nameLabel.text = self.channel.name
 
-        self.avatarView.gradientLayer.colors = [self.channel.colorPair.first, self.channel.colorPair.second]
-        self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+        self.avatarView.draw(with: self.channel.colors)
 
         Notifications.removeObservers(self)
         Notifications.observe(self, for: .channelDeleted, task: self.popToRoot)

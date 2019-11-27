@@ -9,6 +9,7 @@
 
 import CoreData
 import VirgilSDK
+import UIKit
 
 @objc(Account)
 public class Account: NSManagedObject {
@@ -26,10 +27,10 @@ public class Account: NSManagedObject {
         }
     }
 
-    public var colorPair: ColorPair {
-        get {
-            return UIConstants.colorPairs[Int(self.numColorPair)]
-        }
+    public var colors: [CGColor] {
+        let colorPair = UIConstants.colorPairs[Int(self.numColorPair)]
+
+        return [colorPair.first, colorPair.second]
     }
 
     public var letter: String {

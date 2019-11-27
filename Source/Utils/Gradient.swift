@@ -57,6 +57,12 @@ class GradientView: UIView {
             return GradientLayer.self
         }
     }
+
+    func draw(with colors: [CGColor]) {
+        self.gradientLayer.colors = colors
+
+        self.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+    }
 }
 
 protocol GradientViewProvider {

@@ -70,7 +70,7 @@ class ChatViewController: BaseChatViewController {
         super.collectionView?.backgroundColor = UIColor(rgb: 0x2B303B)
 
         self.letterLabel.text = self.channel.letter
-        self.avatarView.gradientLayer.colors = [self.channel.colorPair.first, self.channel.colorPair.second]
+        self.avatarView.gradientLayer.colors = self.channel.colors
         self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
 
         CoreData.shared.setCurrent(channel: self.channel)

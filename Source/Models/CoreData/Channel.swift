@@ -9,6 +9,7 @@
 
 import CoreData
 import VirgilSDK
+import UIKit
 
 @objc(Channel)
 public class Channel: NSManagedObject {
@@ -66,8 +67,10 @@ public class Channel: NSManagedObject {
         }
     }
 
-    public var colorPair: ColorPair {
-        return UIConstants.colorPairs[Int(self.numColorPair)]
+    public var colors: [CGColor] {
+        let colorPair = UIConstants.colorPairs[Int(self.numColorPair)]
+
+        return [colorPair.first, colorPair.second]
     }
 
     public var lastMessagesBody: String {

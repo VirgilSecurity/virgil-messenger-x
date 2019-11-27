@@ -21,7 +21,8 @@ class CollectionViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionCell", for: indexPath) as! CollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionCell",
+                                                      for: indexPath) as! CollectionViewCell
 
         let account = CoreData.shared.accounts[indexPath.row] as Account
 
@@ -29,8 +30,7 @@ class CollectionViewController: UICollectionViewController {
 
         cell.letterLabel.text = account.letter
 
-        cell.avatarView.gradientLayer.colors = [account.colorPair.first, account.colorPair.second]
-        cell.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
+        cell.avatarView.draw(with: account.colors)
 
         return cell
     }
