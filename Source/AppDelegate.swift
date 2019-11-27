@@ -18,8 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         // Defining start controller
-        let startController = UIStoryboard(name: StartViewController.name,
-                                           bundle: Bundle.main).instantiateInitialViewController()!
+        let startStoryboard = UIStoryboard(name: StartViewController.name, bundle: Bundle.main)
+        let startController = startStoryboard.instantiateInitialViewController()!
 
         self.window?.rootViewController = startController
 

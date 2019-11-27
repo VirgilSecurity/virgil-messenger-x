@@ -50,48 +50,6 @@ public class Virgil {
         return group
     }
 
-    // FIXME: Should be in separate class
-//    func getCards(of users: [String]) throws -> [Card] {
-//        var cachedCards: [Card] = []
-//        var cardsToLoad: [String] = []
-//
-//        let users = users.filter { $0 != Twilio.shared.identity }
-//
-//        guard !users.isEmpty else {
-//            return []
-//        }
-//
-//        for user in users {
-//            if let cachedCard = try CoreData.shared.getSingleChannel(with: user)?.getCard() {
-//                cachedCards.append(cachedCard)
-//            } else {
-//                cardsToLoad.append(user)
-//            }
-//        }
-//
-//        guard !cardsToLoad.isEmpty else {
-//            return cachedCards
-//        }
-//
-//        let cards = try self.makeGetCardsOperation(identities: cardsToLoad).startSync().get()
-//
-//        try? ChatsManager.startSingle(cards: cards)
-//
-//        return cachedCards + cards
-//    }
-//
-//    func buildCard(_ card: String) -> Card? {
-//        do {
-//            let card = try self.importCard(fromBase64Encoded: card)
-//
-//            return card
-//        } catch {
-//            Log.error("Importing Card failed with: \(error.localizedDescription)")
-//
-//            return nil
-//        }
-//    }
-
     func importCard(fromBase64Encoded card: String) throws -> Card {
         return try CardManager.importCard(fromBase64Encoded: card,
                                           crypto: self.crypto,

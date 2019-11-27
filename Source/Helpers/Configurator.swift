@@ -50,6 +50,8 @@ public class Configurator {
                 if let channel = CoreData.shared.currentChannel {
                     try Twilio.shared.setChannel(channel)
                 }
+
+                completion((), nil)
             } catch {
                 completion(nil, error)
             }
