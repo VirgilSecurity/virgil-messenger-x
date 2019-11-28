@@ -10,6 +10,7 @@
 import CoreData
 import VirgilSDK
 import UIKit
+import VirgilE3Kit
 
 @objc(Channel)
 public class Channel: NSManagedObject {
@@ -25,11 +26,13 @@ public class Channel: NSManagedObject {
     @NSManaged private var orderedServiceMessages: NSOrderedSet?
     @NSManaged private var rawCards: [String]
 
-    private static let EntityName = "Channel"
+    private(set) var group: Group?
 
     public static let MessagesKey = "orderedMessages"
     public static let MembersKey = "orderedMembers"
     public static let ServiceMessagesKey = "orderedServiceMessages"
+
+    private static let EntityName = "Channel"
 
     public var visibleMessages: [Message] {
         guard let messages = self.orderedMessages?.array as? [Message] else {
@@ -141,5 +144,17 @@ public class Channel: NSManagedObject {
         }
 
         return card
+    }
+
+    public func getGroup() throws -> Group {
+        guard self.type == .group, let group = self.group else {
+            throw NSError()
+        }
+
+        return group
+    }
+
+    public func set(group: Group) {
+        self.group = group
     }
 }

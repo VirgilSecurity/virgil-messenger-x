@@ -66,9 +66,9 @@ public enum ChatsManager {
                 }
 
                 // FIXME: add already exists handler
-                _ = try Virgil.ethree.createGroup(id: id, with: result).startSync().get()
+                let group = try Virgil.ethree.createGroup(id: id, with: result).startSync().get()
 
-                try Twilio.shared.createGroupChannel(with: cards, name: name, id: id).startSync().get()
+                try Twilio.shared.createGroupChannel(with: cards, group: group, name: name, id: id).startSync().get()
 
                 completion(nil)
             } catch {

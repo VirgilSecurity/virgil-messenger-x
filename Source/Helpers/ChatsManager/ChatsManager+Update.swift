@@ -8,6 +8,7 @@
 
 import VirgilSDK
 import TwilioChatClient
+import VirgilE3Kit
 
 extension ChatsManager {
     private static let queue = DispatchQueue(label: "ChatsManager")
@@ -72,12 +73,22 @@ extension ChatsManager {
                 let coreChannel: Channel
                 if let channel = try? CoreData.shared.getChannel(twilioChannel) {
                     coreChannel = channel
-                } else {
+
+                    if coreChannel.type == .group {
+                        let id = try twilioChannel.getSessionId()
+
+                        guard let group = try Virgil.ethree.getGroup(id: id) else {
+                            throw NSError()
+                        }
+
+                        try group.update().startSync().get()
+                        coreChannel.set(group: group)
+                    }
+                }
+                else {
                     try twilioChannel.join().startSync().get()
 
-                    try ChatsManager.join(twilioChannel)
-
-                    coreChannel = try CoreData.shared.getChannel(twilioChannel)
+                    coreChannel = try ChatsManager.join(twilioChannel)
                 }
 
                 let coreCount = coreChannel.allMessages.count

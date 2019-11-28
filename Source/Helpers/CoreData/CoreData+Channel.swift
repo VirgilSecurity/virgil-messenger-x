@@ -11,16 +11,20 @@ import VirgilSDK
 import TwilioChatClient
 
 extension CoreData {
-    func createGroupChannel(name: String, members: [String], sid: String, sessionId: Data, cards: [Card]) throws {
-        _ = try self.createChannel(type: .group, sid: sid, name: name, cards: cards, sessionId: sessionId)
+    func createGroupChannel(name: String, members: [String], sid: String, sessionId: Data, cards: [Card]) throws -> Channel {
+        return try self.createChannel(type: .group, sid: sid, name: name, cards: cards, sessionId: sessionId)
     }
 
-    func createSingleChannel(sid: String, card: Card) throws {
-        guard !self.existsSingleChannel(with: card.identity), card.identity != Twilio.shared.identity else {
-            return
+    func createSingleChannel(sid: String, card: Card) throws -> Channel {
+        guard card.identity != Twilio.shared.identity else {
+            throw NSError()
         }
 
-        _ = try self.createChannel(type: .single, sid: sid, name: card.identity, cards: [card])
+        if let channel = self.getChannel(withName: card.identifier) {
+            return channel
+        }
+
+        return try self.createChannel(type: .single, sid: sid, name: card.identity, cards: [card])
     }
 
     private func createChannel(type: ChannelType, sid: String, name: String, cards: [Card], sessionId: Data? = nil) throws -> Channel {
@@ -39,30 +43,11 @@ extension CoreData {
         return channel
     }
 
-//    func add(_ cards: [Card], to channel: Channel) throws {
-//        let members = channel.cards.map { $0.identity }
-//        var cardsToAdd: [Card] = []
-//
-//        for card in cards {
-//            if !members.contains(card.identity), card.identity != Twilio.shared.identity {
-//                cardsToAdd.append(card)
-//            }
-//        }
-//
-//        channel.cards += cardsToAdd
-//
-//        try self.saveContext()
-//    }
-//
-//    func remove(_ cards: [Card], from channel: Channel) throws {
-//        channel.cards = channel.cards.filter { card in
-//            !cards.contains { toRemove in
-//                card.identity == toRemove.identity
-//            }
-//        }
-//
-//        try self.saveContext()
-//    }
+    func updateCards(with cards: [Card], for channel: Channel) throws {
+        channel.cards = cards
+
+        try self.saveContext()
+    }
 
     func delete(channel: Channel) throws {
         channel.allMessages.forEach { self.managedContext.delete($0) }

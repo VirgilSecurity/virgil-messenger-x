@@ -179,13 +179,13 @@ extension TCHChannel {
         }
     }
 
-    func send(ciphertext: String, type: TCHMessage.Kind, identifier: String? = nil) -> CallbackOperation<Void> {
+    func send(ciphertext: String, type: TCHMessage.Kind) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 let options = TCHMessageOptions()
                 options.withBody(ciphertext)
 
-                let attributes = TCHMessage.Attributes(type: type, identifier: identifier)
+                let attributes = TCHMessage.Attributes(type: type)
 
                 try options.withAttributes(attributes.export())
 

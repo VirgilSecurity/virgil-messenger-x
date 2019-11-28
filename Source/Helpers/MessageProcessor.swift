@@ -36,7 +36,6 @@ class MessageProcessor {
                                         date: date,
                                         isIncoming: isIncoming,
                                         twilioMessage: message,
-                                        twilioChannel: twilioChannel,
                                         channel: channel)
         } else {
             throw Twilio.Error.invalidMessage
@@ -47,7 +46,6 @@ class MessageProcessor {
                                     date: Date,
                                     isIncoming: Bool,
                                     twilioMessage: TCHMessage,
-                                    twilioChannel: TCHChannel,
                                     channel: Channel) throws -> Message? {
         let attributes = try twilioMessage.getAttributes()
 
@@ -56,8 +54,6 @@ class MessageProcessor {
             return try self.processSingle(text: text,
                                           date: date,
                                           isIncoming: isIncoming,
-                                          twilioMessage: twilioMessage,
-                                          twilioChannel: twilioChannel,
                                           channel: channel,
                                           attributes: attributes)
         case .group:
@@ -65,7 +61,6 @@ class MessageProcessor {
                                          date: date,
                                          isIncoming: isIncoming,
                                          twilioMessage: twilioMessage,
-                                         twilioChannel: twilioChannel,
                                          channel: channel,
                                          attributes: attributes)
         }
@@ -74,8 +69,6 @@ class MessageProcessor {
     private static func processSingle(text: String,
                                       date: Date,
                                       isIncoming: Bool,
-                                      twilioMessage: TCHMessage,
-                                      twilioChannel: TCHChannel,
                                       channel: Channel,
                                       attributes: TCHMessage.Attributes) throws -> Message? {
         switch attributes.type {
@@ -101,100 +94,39 @@ class MessageProcessor {
                                      date: Date,
                                      isIncoming: Bool,
                                      twilioMessage: TCHMessage,
-                                     twilioChannel: TCHChannel,
                                      channel: Channel,
                                      attributes: TCHMessage.Attributes) throws -> Message? {
-        let sessionId = try channel.getSessionId()
-
         let author = try twilioMessage.getAuthor()
+        let group = try channel.getGroup()
+        let authorCard = try Virgil.ethree.findUser(with: author).startSync().get()
+
+        var decrypted: String
+        do {
+            decrypted = try group.decrypt(text: text, from: authorCard)
+        }
+        catch {
+            Log.debug("AAA: \(error.localizedDescription)")
+            try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+            return nil
+        }
 
         switch attributes.type {
         case .regular:
-            var decrypted: String
-            do {
-                let group = try Virgil.shared.getGroup(id: sessionId)
-
-                let authorCard = try Virgil.ethree.findUser(with: author).startSync().get()
-
-                decrypted = try group.decrypt(text: text, from: authorCard)
-            } catch {
-                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
-                return nil
-            }
-
             decrypted = "\(author): \(decrypted)"
 
             return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
         case .service:
-            return nil
-//            guard let serviceMessage = CoreData.shared.findServiceMessage(from: author,
-//                                                                          withSessionId: sessionId,
-//                                                                          identifier: attributes.identifier) else {
-//                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
-//                return nil
-//            }
-//
-//            let text = "\(author) \(try serviceMessage.getChangeMembersText())"
-//
-//            let deleted = try self.processGroupServiceMessage(serviceMessage,
-//                                                              from: author,
-//                                                              isIncoming: isIncoming,
-//                                                              sessionId: sessionId,
-//                                                              twilioChannel: twilioChannel,
-//                                                              channel: channel)
-//
-//            return deleted ? nil : try CoreData.shared.createChangeMembersMessage(text,
-//                                                                                  in: channel,
-//                                                                                  isIncoming: isIncoming,
-//                                                                                  date: date)
+            try group.update().startSync().get()
+
+            decrypted = "\(author) \(decrypted)"
+
+            let participants = try Virgil.ethree.findUsers(with: Array(group.participants)).startSync().get()
+            let cards = Array(participants.values)
+            try CoreData.shared.updateCards(with: cards, for: channel)
+
+            return try CoreData.shared.createChangeMembersMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
         }
     }
-
-//    private static func processGroupServiceMessage(_ serviceMessage: ServiceMessage,
-//                                                   from author: String,
-//                                                   isIncoming: Bool,
-//                                                   sessionId: Data,
-//                                                   twilioChannel: TCHChannel,
-//                                                   channel: Channel) throws -> Bool {
-//        guard !serviceMessage.remove.contains(where: { $0 == Twilio.shared.identity}) else {
-//            try CoreData.shared.delete(serviceMessage)
-//
-//            if let session = Virgil.shared.getGroupSession(of: channel) {
-//                try Virgil.shared.secureChat.deleteGroupSession(sessionId: session.identifier)
-//            }
-//
-//            guard CoreData.shared.existsServiceMessage(from: author, withSessionId: sessionId) else {
-//                try Twilio.shared.leave(twilioChannel).startSync().get()
-//
-//                if CoreData.shared.currentChannel == channel {
-//                    DispatchQueue.main.async {
-//                        Notifications.post(.channelDeleted)
-//                    }
-//                }
-//
-//                return true
-//            }
-//
-//            return false
-//        }
-//
-//        let addCards = try Virgil.shared.getCards(of: serviceMessage.add)
-//        let removeCards = try Virgil.shared.getCards(of: serviceMessage.remove)
-//        let members = try Virgil.shared.getCards(of: serviceMessage.members)
-//
-//        try Virgil.shared.updateParticipants(add: addCards,
-//                                             remove: removeCards,
-//                                             members: members,
-//                                             serviceMessage: serviceMessage,
-//                                             channel: channel)
-//
-//        try CoreData.shared.add(addCards, to: channel)
-//        try CoreData.shared.remove(removeCards, from: channel)
-//
-//        try CoreData.shared.delete(serviceMessage)
-//
-//        return false
-//    }
 
     private static func processMedia(message: TCHMessage,
                                      date: Date,

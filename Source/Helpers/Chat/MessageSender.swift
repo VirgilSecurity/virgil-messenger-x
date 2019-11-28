@@ -12,66 +12,18 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-//    public static func sendServiceMessage(_ message: ServiceMessage, to coreChannel: Channel) -> CallbackOperation<Void> {
-//        return CallbackOperation { _, completion in
-//            do {
-//                let twilioChannel = try Twilio.shared.getChannel(coreChannel)
-//
-//                let plaintext = try message.export()
-//
-//                let ciphertext: String
-//                switch coreChannel.type {
-//                case .single: 
-//                    ciphertext = try Virgil.shared.encrypt(plaintext, card: coreChannel.cards.first!)
-//                case .group:
-//                    ciphertext = try Virgil.shared.encryptGroup(plaintext, channel: coreChannel)
-//                }
-//
-//                twilioChannel.send(ciphertext: ciphertext,
-//                                   type: .service,
-//                                   identifier: message.identifier).start(completion: completion)
-//            } catch {
-//                completion(nil, error)
-//            }
-//        }
-//    }
-//
-//    public static func sendServiceMessage(to users: [String], ticket: ServiceMessage) -> CallbackOperation<Void> {
-//        return CallbackOperation { _, completion in
-//            guard !users.isEmpty else {
-//                completion((), nil)
-//                return
-//            }
-//
-//            var operations: [CallbackOperation<Void>] = []
-//            for user in users {
-//                guard let channel = CoreData.shared.getSingleChannel(with: user) else {
-//                    continue
-//                }
-//
-//                let sendOperation = MessageSender.sendServiceMessage(ticket, to: channel)
-//                operations.append(sendOperation)
-//            }
-//
-//            let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
-//
-//            operations.forEach {
-//                completionOperation.addDependency($0)
-//            }
-//
-//            let queue = OperationQueue()
-//            queue.addOperations(operations + [completionOperation], waitUntilFinished: false)
-//        }
-//    }
-
-    public func sendChangeMembers(message: Message, identifier: String) -> CallbackOperation<Void> {
+    public func sendChangeMembers(message: Message) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 let channel = try Twilio.shared.getCurrentChannel()
 
-                let body = try message.getBody()
+                let plaintext = try message.getBody()
 
-                channel.send(ciphertext: body, type: .service, identifier: identifier).start(completion: completion)
+                let group = try message.channel.getGroup()
+
+                let ciphertext = try group.encrypt(text: plaintext)
+
+                channel.send(ciphertext: ciphertext, type: .service).start(completion: completion)
             } catch {
                 completion(nil, error)
             }
@@ -94,7 +46,7 @@ public class MessageSender {
                     let ciphertext: String
                     switch message.channel.type {
                     case .group:
-                        let group = try Virgil.shared.getGroup(id: message.channel.getSessionId())
+                        let group = try message.channel.getGroup()
 
                         ciphertext = try group.encrypt(text: plaintext)
                     case .single:
@@ -109,8 +61,7 @@ public class MessageSender {
                 case .changeMembers:
                     let plaintext = try message.getBody()
 
-                    // FIXME: Loading group on each encrypt/decrypt
-                    let group = try Virgil.shared.getGroup(id: message.channel.getSessionId())
+                    let group = try message.channel.getGroup()
 
                     let ciphertext = try group.encrypt(text: plaintext)
 

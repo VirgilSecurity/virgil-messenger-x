@@ -10,7 +10,7 @@ import VirgilSDK
 import TwilioChatClient
 
 extension ChatsManager {
-    public static func join(_ channel: TCHChannel) throws {
+    public static func join(_ channel: TCHChannel) throws -> Channel {
         let attributes = try channel.getAttributes()
 
         switch attributes.type {
@@ -21,8 +21,7 @@ extension ChatsManager {
 
             let card = try Virgil.ethree.findUser(with: name).startSync().get()
 
-            try CoreData.shared.createSingleChannel(sid: sid, card: card)
-
+            return try CoreData.shared.createSingleChannel(sid: sid, card: card)
         case .group:
             let result = try Virgil.ethree.findUsers(with: attributes.members).startSync().get()
             let cards = Array(result.values)
@@ -31,15 +30,16 @@ extension ChatsManager {
             let name = try channel.getFriendlyName()
             let sid = try channel.getSid()
 
-            try CoreData.shared.createGroupChannel(name: name,
-                                                   members: attributes.members,
-                                                   sid: sid,
-                                                   sessionId: sessionId,
-                                                   cards: cards)
+            let group = try Virgil.ethree.loadGroup(id: sessionId, initiator: attributes.initiator).startSync().get()
 
-            let initiatorCard = try Virgil.ethree.findUser(with: attributes.initiator).startSync().get()
+            let coreChannel = try CoreData.shared.createGroupChannel(name: name,
+                                                                     members: attributes.members,
+                                                                     sid: sid,
+                                                                     sessionId: sessionId,
+                                                                     cards: cards)
+            coreChannel.set(group: group)
 
-            _ = try Virgil.ethree.loadGroup(id: sessionId, initiator: initiatorCard).startSync().get()
+            return coreChannel
         }
     }
 }

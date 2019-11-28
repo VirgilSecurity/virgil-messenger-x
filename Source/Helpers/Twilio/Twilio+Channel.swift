@@ -8,6 +8,7 @@
 
 import TwilioChatClient
 import VirgilSDK
+import VirgilE3Kit
 
 extension Twilio {
     public func getCurrentChannel() throws -> TCHChannel {
@@ -69,7 +70,7 @@ extension Twilio {
 
                 let sid = try channel.getSid()
 
-                try CoreData.shared.createSingleChannel(sid: sid, card: card)
+                _ = try CoreData.shared.createSingleChannel(sid: sid, card: card)
 
                 try channel.invite(identity: card.identity).startSync().get()
 
@@ -80,7 +81,7 @@ extension Twilio {
         }
     }
 
-    func createGroupChannel(with cards: [Card], name: String, id: Data) -> CallbackOperation<Void> {
+    func createGroupChannel(with cards: [Card], group: Group, name: String, id: Data) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 let members = cards.map { $0.identity }
@@ -95,7 +96,8 @@ extension Twilio {
 
                 let sid = try channel.getSid()
 
-                try CoreData.shared.createGroupChannel(name: name, members: members, sid: sid, sessionId: id, cards: cards)
+                let coreChannel = try CoreData.shared.createGroupChannel(name: name, members: members, sid: sid, sessionId: id, cards: cards)
+                coreChannel.set(group: group)
 
                 let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 

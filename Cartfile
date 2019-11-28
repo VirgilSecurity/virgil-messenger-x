@@ -1,4 +1,4 @@
-github "VirgilSecurity/virgil-e3kit-x" "biometric"
+github "VirgilSecurity/virgil-e3kit-x" "develop-strings"
 github "twilio/twilio-chat-ios" ~> 2.6
 github "Ogerets/Chatto" "messenger-stable"
 github "pkluz/PKHUD"

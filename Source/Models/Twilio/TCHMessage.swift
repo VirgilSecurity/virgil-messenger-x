@@ -17,7 +17,6 @@ extension TCHMessage {
 
     struct Attributes: Codable {
         let type: Kind
-        let identifier: String?
 
         static func `import`(_ json: [String: Any]) throws -> Attributes {
             let data = try JSONSerialization.data(withJSONObject: json, options: [])

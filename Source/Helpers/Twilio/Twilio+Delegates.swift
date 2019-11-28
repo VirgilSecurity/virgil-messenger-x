@@ -54,7 +54,7 @@ extension Twilio: TwilioChatClientDelegate {
                         return
                     }
                     
-                    try ChatsManager.join(channel)
+                    _ = try ChatsManager.join(channel)
 
                     try ChatsManager.update(twilioChannel: channel).startSync().get()
 

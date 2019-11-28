@@ -11,6 +11,7 @@ import UIKit
 extension UIViewController {
     func alert(title: String? = nil, _ anyError: Error, handler: ((UIAlertAction) -> Void)? = nil) {
         let alert: UIAlertController
+        
         if let error = anyError as? UserFriendlyError {
             alert = UIAlertController(title: title, message: error.rawValue, preferredStyle: .alert)
         } else {
