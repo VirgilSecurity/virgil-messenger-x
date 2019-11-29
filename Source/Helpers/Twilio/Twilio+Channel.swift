@@ -147,7 +147,7 @@ extension Twilio {
         }
     }
 
-    func remove(member: String) -> CallbackOperation<Void> {
+    private func delete(member: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 let channel = try self.getCurrentChannel()
@@ -158,6 +158,25 @@ extension Twilio {
                 attributes.members = attributes.members.filter { $0 != member }
 
                 channel.setAttributes(attributes).start(completion: completion)
+            } catch {
+                completion(nil, error)
+            }
+        }
+    }
+
+    func remove(member: String) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            do {
+                let channel = try self.getCurrentChannel()
+
+                var attributes = try channel.getAttributes()
+
+                attributes.initiator = self.identity
+                attributes.members = attributes.members.filter { $0 != member }
+
+                try channel.setAttributes(attributes).startSync().get()
+
+                channel.remove(member: member).start(completion: completion)
             } catch {
                 completion(nil, error)
             }

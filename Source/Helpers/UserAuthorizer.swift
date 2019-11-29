@@ -81,6 +81,8 @@ public class UserAuthorizer {
         Configurator.reset()
 
         try CoreData.shared.deleteAccount()
+        CoreData.shared.resetState()
+        Twilio.shared.deselectChannel()
 
         self.virgilAuthorizer.logOut(identity: Twilio.shared.identity)
     }

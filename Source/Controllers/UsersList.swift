@@ -7,13 +7,14 @@
 //
 
 import UIKit
+import VirgilSDK
 
 protocol DeleteItemDelegate: class {
-    func delete(_ user: Channel)
+    func delete(_ user: Card)
 }
 
 class UsersListViewController: UITableViewController {
-    public var users: [Channel] = []
+    public var users: [Card] = []
 
     public var cellTapDelegate: CellTapDelegate?
     public var deleteItemDelegate: DeleteItemDelegate?

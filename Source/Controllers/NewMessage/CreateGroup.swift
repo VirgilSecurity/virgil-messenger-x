@@ -70,9 +70,11 @@ class CreateGroupViewController: ViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
-        if let userList = segue.destination as? UsersListViewController {
+        // FIXME: Error handling/logging
+        if let userList = segue.destination as? UsersListViewController,
+            let cards = try? self.members.map { try $0.getCard() }  {
 
-            userList.users = self.members
+            userList.users = cards
 
             let height = userList.tableView.rowHeight
             self.usersListHeight.constant = CGFloat(self.members.count) * height

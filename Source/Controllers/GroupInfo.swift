@@ -8,6 +8,7 @@
 
 import UIKit
 import PKHUD
+import VirgilSDK
 
 class GroupInfoViewController: ViewController {
     @IBOutlet weak var avatarView: GradientView!
@@ -63,14 +64,7 @@ class GroupInfoViewController: ViewController {
         if let userList = self.usersListController {
             userList.deleteItemDelegate = self.channel.cards.count > 1 ? self : nil
 
-            var members: [Channel] = []
-            for card in self.channel.cards {
-                if let item = CoreData.shared.getSingleChannel(with: card.identity) {
-                    members.append(item)
-                }
-            }
-
-            userList.users = members
+            userList.users = self.channel.cards
             userList.tableView.reloadData()
 
             let height = userList.tableView.rowHeight
@@ -84,23 +78,23 @@ class GroupInfoViewController: ViewController {
 }
 
 extension GroupInfoViewController: DeleteItemDelegate {
-    func delete(_ user: Channel) {
+    func delete(_ user: Card) {
         guard self.checkReachability(), Configurator.isUpdated else {
             return
         }
         
         HUD.show(.progress)
 
-//        ChatsManager.removeMember(user.name, dataSource: self.dataSource).start { _, error in
-//            DispatchQueue.main.async {
-//                if let error = error {
-//                    HUD.hide()
-//                    self.alert(error)
-//                } else {
-//                    HUD.flash(.success)
-//                    self.updateUserList()
-//                }
-//            }
-//        }
+        ChatsManager.removeMember(user.identity, dataSource: self.dataSource).start { _, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    HUD.hide()
+                    self.alert(error)
+                } else {
+                    HUD.flash(.success)
+                    self.updateUserList()
+                }
+            }
+        }
     }
 }

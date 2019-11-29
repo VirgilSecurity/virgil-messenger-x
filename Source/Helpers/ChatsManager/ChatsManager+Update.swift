@@ -23,6 +23,14 @@ extension ChatsManager {
 
                     let twilioChannels = Twilio.shared.channels.subscribedChannels()
 
+                    let coreGroupChannels = CoreData.shared.getGroupChannels()
+
+                    for coreChannel in coreGroupChannels {
+                        if (try? Twilio.shared.getChannel(coreChannel)) == nil {
+                            try CoreData.shared.delete(channel: coreChannel)
+                        }
+                    }
+
                     guard twilioChannels.count > 0 else {
                         completion((), nil)
                         return
@@ -70,27 +78,24 @@ extension ChatsManager {
     public static func update(twilioChannel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                let coreChannel: Channel
-                if let channel = try? CoreData.shared.getChannel(twilioChannel) {
-                    coreChannel = channel
-
-                    if coreChannel.type == .group {
-                        let id = try twilioChannel.getSessionId()
-
-                        guard let group = try Virgil.ethree.getGroup(id: id) else {
-                            throw NSError()
-                        }
-
-                        try group.update().startSync().get()
-                        coreChannel.set(group: group)
-                    }
-                }
-                else {
+                // Join Twilio channel if needed
+                if twilioChannel.status == .invited {
                     try twilioChannel.join().startSync().get()
-
-                    coreChannel = try ChatsManager.join(twilioChannel)
                 }
 
+                let attributes = try twilioChannel.getAttributes()
+
+                // Update CoreData
+                let coreChannel = try self.updateCoreData(with: twilioChannel)
+
+                if attributes.type == .group {
+                    // Update Virgil Group
+                    let group = try self.updateVirgilGroup(with: twilioChannel,
+                                                           initiator: attributes.initiator)
+                    coreChannel.set(group: group)
+                }
+
+                // Load, decrypt and save messeges
                 let coreCount = coreChannel.allMessages.count
                 let twilioCount = try twilioChannel.getMessagesCount().startSync().get()
 
@@ -117,5 +122,58 @@ extension ChatsManager {
                 completion(nil, error)
             }
         }
+    }
+
+    private static func updateVirgilGroup(with twilioChannel: TCHChannel,
+                                          initiator: String) throws -> Group {
+        let sessionId = try twilioChannel.getSessionId()
+
+        let group: Group
+
+        if let cachedGroup = try Virgil.ethree.getGroup(id: sessionId) {
+            group = cachedGroup
+        }
+        else {
+            group = try Virgil.ethree.loadGroup(id: sessionId, initiator: initiator)
+                .startSync()
+                .get()
+        }
+
+        return group
+    }
+
+    private static func updateCoreData(with twilioChannel: TCHChannel) throws -> Channel {
+        let coreChannel: Channel
+        if let channel = try? CoreData.shared.getChannel(twilioChannel) {
+            coreChannel = channel
+        }
+        else {
+            let sid = try twilioChannel.getSid()
+            let attributes = try twilioChannel.getAttributes()
+
+            switch attributes.type {
+            case .single:
+                let name = try Twilio.shared.getCompanion(from: attributes)
+
+                let card = try Virgil.ethree.findUser(with: name).startSync().get()
+
+                coreChannel = try CoreData.shared.createSingleChannel(sid: sid, card: card)
+            case .group:
+                let sessionId = try twilioChannel.getSessionId()
+
+                let result = try Virgil.ethree.findUsers(with: attributes.members).startSync().get()
+                let cards = Array(result.values)
+
+                let name = try twilioChannel.getFriendlyName()
+
+                coreChannel = try CoreData.shared.createGroupChannel(name: name,
+                                                                     members: attributes.members,
+                                                                     sid: sid,
+                                                                     sessionId: sessionId,
+                                                                     cards: cards)
+            }
+        }
+
+        return coreChannel
     }
 }

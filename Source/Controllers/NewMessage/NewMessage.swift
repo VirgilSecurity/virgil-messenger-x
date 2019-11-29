@@ -18,9 +18,11 @@ class NewMessageViewController: ViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
-        if let userList = segue.destination as? UsersListViewController {
+        // FIXME: Error handling/logging
+        if let userList = segue.destination as? UsersListViewController,
+            let cards = try? self.users.map { try $0.getCard() } {
 
-            userList.users = self.users
+            userList.users = cards
             userList.cellTapDelegate = self
 
             let height = userList.tableView.rowHeight

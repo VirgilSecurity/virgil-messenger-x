@@ -91,6 +91,10 @@ extension CoreData {
         return self.getChannels().filter { $0.type == .single }
     }
 
+    func getGroupChannels() -> [Channel] {
+        return self.getChannels().filter { $0.type == .group }
+    }
+
     func getCurrentChannel() throws -> Channel {
         guard let channel = self.currentChannel else {
             throw Error.nilCurrentChannel

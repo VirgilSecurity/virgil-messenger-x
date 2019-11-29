@@ -150,6 +150,31 @@ extension TCHChannel {
         }
     }
 
+    func remove(member identity: String) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            do {
+                guard let members = self.members else {
+                    throw Twilio.Error.invalidChannel
+                }
+
+                guard let member = self.member(withIdentity: identity) else {
+                    throw NSError()
+                }
+
+                members.remove(member) { result in
+                    if let error = result.error {
+                        completion(nil, error)
+                    } else {
+                        completion((), nil)
+                    }
+                }
+            }
+            catch {
+                completion(nil, error)
+            }
+        }
+    }
+
     func getMessagesCount() -> CallbackOperation<Int> {
         return CallbackOperation { _, completion in
             self.getMessagesCount { result, count in
