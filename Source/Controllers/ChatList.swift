@@ -37,6 +37,8 @@ class ChatListViewController: ViewController {
             Twilio.shared.deselectChannel()
         }
 
+        CoreData.shared.deselectChannel()
+
         self.reloadTableView()
     }
 

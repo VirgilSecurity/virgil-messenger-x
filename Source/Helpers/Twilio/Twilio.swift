@@ -131,12 +131,12 @@ public class Twilio: NSObject {
 
 // Setters
 extension Twilio {
-    func getChannel(_ channel: Channel) throws -> TCHChannel {
-        let channel = try self.channels.subscribedChannels().first {
-            try $0.getSid() == channel.sid
+    func getChannel(_ coreChannel: Channel) throws -> TCHChannel {
+        let twilioChannel = try self.channels.subscribedChannels().first {
+            try $0.getSid() == coreChannel.sid
         }
 
-        guard let result = channel else {
+        guard let result = twilioChannel else {
             throw Error.channelNotFound
         }
 

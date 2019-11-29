@@ -87,4 +87,13 @@ class CoreData {
     func append(account: Account) {
         self.accounts.append(account)
     }
+
+    func deselectChannel() {
+        self.currentChannel = nil
+    }
+
+    func resetState() {
+        self.currentAccount = nil
+        self.currentChannel = nil
+    }
 }

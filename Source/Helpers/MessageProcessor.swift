@@ -105,7 +105,6 @@ class MessageProcessor {
             decrypted = try group.decrypt(text: text, from: authorCard)
         }
         catch {
-            Log.debug("AAA: \(error.localizedDescription)")
             try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
             return nil
         }

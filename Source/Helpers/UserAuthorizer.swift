@@ -63,6 +63,8 @@ public class UserAuthorizer {
                 }
 
                 Configurator.reset()
+                CoreData.shared.resetState()
+                Twilio.shared.deselectChannel()
 
                 UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
