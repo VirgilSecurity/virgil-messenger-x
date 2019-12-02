@@ -45,21 +45,15 @@ extension Twilio: TwilioChatClientDelegate {
     public func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
         self.queue.async {
             do {
-                if channel.status != .joined {
-                    try channel.join().startSync().get()
+                let attributes = try channel.getAttributes()
 
-                    let attributes = try channel.getAttributes()
-
-                    guard attributes.initiator != self.identity else {
-                        return
-                    }
-                    
-                    _ = try ChatsManager.join(channel)
-
-                    try ChatsManager.update(twilioChannel: channel).startSync().get()
-
-                    Notifications.post(.channelAdded)
+                guard attributes.initiator != self.identity else {
+                    return
                 }
+
+                try ChatsManager.update(twilioChannel: channel).startSync().get()
+
+                Notifications.post(.channelAdded)
             } catch {
                 Log.error("\(error)")
             }
@@ -67,7 +61,7 @@ extension Twilio: TwilioChatClientDelegate {
     }
 
     public func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
-        guard message.author != self.identity, channel.status == .joined else {
+        guard message.author != self.identity else {
             return
         }
 

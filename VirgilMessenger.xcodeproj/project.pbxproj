@@ -27,7 +27,6 @@
 		162E22ED225F953D00AAE7C4 /* ChooseMembersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EC225F953D00AAE7C4 /* ChooseMembersCell.swift */; };
 		162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */; };
 		16317B9922C506A200A3144A /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16317B9822C506A200A3144A /* Notifications.swift */; };
-		163952A6227C4DE600DD1FDC /* ChatsManager+Join.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163952A5227C4DE600DD1FDC /* ChatsManager+Join.swift */; };
 		163952A8227C4E5200DD1FDC /* ChatsManager+Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163952A7227C4E5200DD1FDC /* ChatsManager+Update.swift */; };
 		163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */; };
 		163E89A322BAD94000051D4B /* TCHChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163E89A222BAD94000051D4B /* TCHChannel.swift */; };
@@ -165,7 +164,6 @@
 		162E22EC225F953D00AAE7C4 /* ChooseMembersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseMembersCell.swift; sourceTree = "<group>"; };
 		162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellTapDelegate.swift; sourceTree = "<group>"; };
 		16317B9822C506A200A3144A /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
-		163952A5227C4DE600DD1FDC /* ChatsManager+Join.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatsManager+Join.swift"; sourceTree = "<group>"; };
 		163952A7227C4E5200DD1FDC /* ChatsManager+Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatsManager+Update.swift"; sourceTree = "<group>"; };
 		163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewZeroPaddings.swift; sourceTree = "<group>"; };
 		163E89A222BAD94000051D4B /* TCHChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCHChannel.swift; sourceTree = "<group>"; };
@@ -339,7 +337,6 @@
 			isa = PBXGroup;
 			children = (
 				16FE75F6224A5CC400B545AF /* ChatsManager+Start.swift */,
-				163952A5227C4DE600DD1FDC /* ChatsManager+Join.swift */,
 				163952A7227C4E5200DD1FDC /* ChatsManager+Update.swift */,
 				16D4614A22A15DE100B3C268 /* ChatsManager+Change.swift */,
 			);
@@ -894,7 +891,6 @@
 				16FB2DD3204D875400346FA0 /* UIView.swift in Sources */,
 				427D1E541F965569002F2CF3 /* DataSource.swift in Sources */,
 				16277242203C60DB0086127C /* CoreData+Channel.swift in Sources */,
-				163952A6227C4DE600DD1FDC /* ChatsManager+Join.swift in Sources */,
 				16013C7920B214460043EA29 /* AudioBubleView.swift in Sources */,
 				16F6FC721FAA235400158615 /* Registration.swift in Sources */,
 				4280C0D91F97341A00075B3A /* UITextMessageHandler.swift in Sources */,

@@ -116,31 +116,36 @@ extension TCHChannel {
         }
     }
 
-    func join() -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            guard self.status != .joined else {
-                completion((), nil)
-                return
-            }
+//    func getMembers() -> CallbackOperation<Void> {
+//        return CallbackOperation { _, completion in
+//            guard let members = self.members else {
+//                completion(nil, Twilio.Error.invalidChannel)
+//                return
+//            }
+//
+//            members.members { result, paginator in
+//                if let error = result.error {
+//                    completion(nil, error)
+//                }
+//                else {
+//                    let members = paginator?.items()
+//
+//                    Log.debug("AAA members: \(members!.count)")
+//
+//                    completion((), nil)
+//                }
+//            }
+//        }
+//    }
 
-            self.join { result in
-                if let error = result.error {
-                    completion(nil, error)
-                } else {
-                    completion((), nil)
-                }
-            }
-        }
-    }
-
-    func invite(identity: String) -> CallbackOperation<Void> {
+    func add(identity: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             guard let members = self.members else {
                 completion(nil, Twilio.Error.invalidChannel)
                 return
             }
 
-            members.invite(byIdentity: identity) { result in
+            members.add(byIdentity: identity) { result in
                 if let error = result.error {
                     completion(nil, error)
                 } else {

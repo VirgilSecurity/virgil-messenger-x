@@ -78,11 +78,6 @@ extension ChatsManager {
     public static func update(twilioChannel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                // Join Twilio channel if needed
-                if twilioChannel.status == .invited {
-                    try twilioChannel.join().startSync().get()
-                }
-
                 let attributes = try twilioChannel.getAttributes()
 
                 // Update CoreData

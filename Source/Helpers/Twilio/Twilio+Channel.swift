@@ -72,7 +72,9 @@ extension Twilio {
 
                 _ = try CoreData.shared.createSingleChannel(sid: sid, card: card)
 
-                try channel.invite(identity: card.identity).startSync().get()
+                // TODO: optimize
+                try channel.add(identity: self.identity).startSync().get()
+                try channel.add(identity: card.identity).startSync().get()
 
                 completion((), nil)
             } catch {
@@ -84,7 +86,7 @@ extension Twilio {
     func createGroupChannel(with cards: [Card], group: Group, name: String, id: Data) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                let members = cards.map { $0.identity }
+                var members = cards.map { $0.identity }
 
                 let options = try TCHChannel.Options(uniqueName: id.hexEncodedString(),
                                                      friendlyName: name,
@@ -96,17 +98,23 @@ extension Twilio {
 
                 let sid = try channel.getSid()
 
-                let coreChannel = try CoreData.shared.createGroupChannel(name: name, members: members, sid: sid, sessionId: id, cards: cards)
+                let coreChannel = try CoreData.shared.createGroupChannel(name: name,
+                                                                         members: members,
+                                                                         sid: sid,
+                                                                         sessionId: id,
+                                                                         cards: cards)
                 coreChannel.set(group: group)
 
                 let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
 
                 var operations: [CallbackOperation<Void>] = []
 
+                members.append(self.identity)
+
                 members.forEach {
-                    let inviteOperation = channel.invite(identity: $0)
-                    completionOperation.addDependency(inviteOperation)
-                    operations.append(inviteOperation)
+                    let addOperation = channel.add(identity: $0)
+                    completionOperation.addDependency(addOperation)
+                    operations.append(addOperation)
                 }
 
                 let queue = OperationQueue()
@@ -134,7 +142,7 @@ extension Twilio {
                 var operations: [CallbackOperation<Void>] = []
 
                 members.forEach {
-                    let operation = channel.invite(identity: $0)
+                    let operation = channel.add(identity: $0)
                     completionOperation.addDependency(operation)
                     operations.append(operation)
                 }
