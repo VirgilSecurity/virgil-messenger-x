@@ -36,12 +36,12 @@ extension TCHChannel {
 
 extension TCHChannel {
     class Options {
-        let uniqueName: String
+        let uniqueName: String?
         let friendlyName: String?
         let scope: Int
         let attributes: Attributes
 
-        public init(uniqueName: String,
+        public init(uniqueName: String?,
                     friendlyName: String?,
                     initiator: String,
                     members: [String],
@@ -54,7 +54,7 @@ extension TCHChannel {
         }
 
         func export() throws -> [String: Any] {
-            return [TCHChannelOptionUniqueName: self.uniqueName,
+            return [//TCHChannelOptionUniqueName: self.uniqueName,
                     TCHChannelOptionFriendlyName: self.friendlyName as Any,
                     TCHChannelOptionAttributes: try self.attributes.export(),
                     TCHChannelOptionType: self.scope]
@@ -69,17 +69,6 @@ extension TCHChannel {
         }
 
         return sid
-    }
-
-    func getSessionId() throws -> Data {
-        guard
-            let name = self.uniqueName,
-            let sessionId = Data(hexEncodedString: name)
-        else {
-            throw Twilio.Error.invalidChannel
-        }
-
-        return sessionId
     }
 
     func getFriendlyName() throws -> String {

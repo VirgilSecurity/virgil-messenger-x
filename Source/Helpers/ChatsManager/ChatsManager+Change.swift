@@ -51,7 +51,7 @@ extension ChatsManager {
                 // Send Service Message to group chat
                 try dataSource.addChangeMembers(message: message)
 
-                // Remove guy from Twilio channel (attributes for now)
+                // Remove guy from Twilio channel
                 try Twilio.shared.remove(member: member).startSync().get()
 
                 // Adding cards to Core Data

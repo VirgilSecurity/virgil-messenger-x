@@ -49,12 +49,6 @@ extension Twilio {
 }
 
 extension Twilio {
-//    func createSingleChannel(with cards: [Card]) throws {
-//        try cards.forEach {
-//            try self.createSingleChannel(with: $0).startSync().get()
-//        }
-//    }
-
     func createSingleChannel(with card: Card) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
@@ -83,12 +77,10 @@ extension Twilio {
         }
     }
 
-    func createGroupChannel(with cards: [Card], group: Group, name: String, id: Data) -> CallbackOperation<Void> {
+    func createGroupChannel(with members: [String], name: String) -> CallbackOperation<TCHChannel> {
         return CallbackOperation { _, completion in
             do {
-                var members = cards.map { $0.identity }
-
-                let options = try TCHChannel.Options(uniqueName: id.hexEncodedString(),
+                let options = try TCHChannel.Options(uniqueName: nil,
                                                      friendlyName: name,
                                                      initiator: self.identity,
                                                      members: [self.identity] + members,
@@ -96,22 +88,20 @@ extension Twilio {
 
                 let channel = try self.makeCreateChannelOperation(with: options).startSync().get()
 
-                let sid = try channel.getSid()
-
-                let coreChannel = try CoreData.shared.createGroupChannel(name: name,
-                                                                         members: members,
-                                                                         sid: sid,
-                                                                         sessionId: id,
-                                                                         cards: cards)
-                coreChannel.set(group: group)
-
-                let completionOperation = OperationUtils.makeCompletionOperation(completion: completion)
+                let completionOperation = OperationUtils.makeCompletionOperation { (result: Void?, error: Swift.Error?) in
+                    if let error = error {
+                        completion(nil, error)
+                    }
+                    else {
+                        completion(channel, nil)
+                    }
+                }
 
                 var operations: [CallbackOperation<Void>] = []
 
-                members.append(self.identity)
+                let membersToAdd = members + [self.identity]
 
-                members.forEach {
+                membersToAdd.forEach {
                     let addOperation = channel.add(identity: $0)
                     completionOperation.addDependency(addOperation)
                     operations.append(addOperation)

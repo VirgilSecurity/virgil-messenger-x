@@ -121,15 +121,15 @@ extension ChatsManager {
 
     private static func updateVirgilGroup(with twilioChannel: TCHChannel,
                                           initiator: String) throws -> Group {
-        let sessionId = try twilioChannel.getSessionId()
+        let sid = try twilioChannel.getSid()
 
         let group: Group
 
-        if let cachedGroup = try Virgil.ethree.getGroup(id: sessionId) {
+        if let cachedGroup = try Virgil.ethree.getGroup(id: sid) {
             group = cachedGroup
         }
         else {
-            group = try Virgil.ethree.loadGroup(id: sessionId, initiator: initiator)
+            group = try Virgil.ethree.loadGroup(id: sid, initiator: initiator)
                 .startSync()
                 .get()
         }
@@ -154,8 +154,6 @@ extension ChatsManager {
 
                 coreChannel = try CoreData.shared.createSingleChannel(sid: sid, card: card)
             case .group:
-                let sessionId = try twilioChannel.getSessionId()
-
                 let result = try Virgil.ethree.findUsers(with: attributes.members).startSync().get()
                 let cards = Array(result.values)
 
@@ -164,7 +162,6 @@ extension ChatsManager {
                 coreChannel = try CoreData.shared.createGroupChannel(name: name,
                                                                      members: attributes.members,
                                                                      sid: sid,
-                                                                     sessionId: sessionId,
                                                                      cards: cards)
             }
         }

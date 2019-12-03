@@ -11,7 +11,6 @@
         <attribute name="numColorPair" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="rawCards" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="rawType" attributeType="String" minValueString="1"/>
-        <attribute name="sessionId" optional="YES" attributeType="Binary"/>
         <attribute name="sid" attributeType="String"/>
         <relationship name="account" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="orderedChannels" inverseEntity="Account"/>
         <relationship name="orderedMessages" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Message" inverseName="channel" inverseEntity="Message"/>
@@ -27,7 +26,7 @@
     </entity>
     <elements>
         <element name="Account" positionX="-450" positionY="45" width="128" height="90"/>
-        <element name="Channel" positionX="-407" positionY="243" width="128" height="178"/>
+        <element name="Channel" positionX="-407" positionY="243" width="128" height="163"/>
         <element name="Message" positionX="-128" positionY="198" width="128" height="150"/>
     </elements>
 </model>

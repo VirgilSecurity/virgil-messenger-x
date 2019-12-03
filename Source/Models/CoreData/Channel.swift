@@ -17,7 +17,6 @@ public class Channel: NSManagedObject {
     @NSManaged public var sid: String
     @NSManaged public var name: String
     @NSManaged public var account: Account
-    @NSManaged public var sessionId: Data?
     @NSManaged public var createdAt: Date
 
     @NSManaged private var rawType: String
@@ -110,7 +109,6 @@ public class Channel: NSManagedObject {
                      type: ChannelType,
                      account: Account,
                      cards: [Card],
-                     sessionId: Data?,
                      managedContext: NSManagedObjectContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Channel.EntityName, in: managedContext) else {
             throw CoreData.Error.entityNotFound
@@ -122,20 +120,11 @@ public class Channel: NSManagedObject {
         self.name = name
         self.type = type
         self.cards = cards
-        self.sessionId = sessionId
         self.createdAt = Date()
         self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
 
         let accountChannels = account.mutableOrderedSetValue(forKey: Account.ChannelsKey)
         accountChannels.add(self)
-    }
-
-    public func getSessionId() throws -> Data {
-        guard let id = self.sessionId else {
-            throw CoreData.Error.invalidChannel
-        }
-
-        return id
     }
 
     public func getCard() throws -> Card {
