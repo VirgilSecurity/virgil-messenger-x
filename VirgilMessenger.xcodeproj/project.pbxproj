@@ -241,7 +241,6 @@
 		16FCF27A1FE46756000348BC /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		16FCF27C1FE46756000348BC /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		16FE75EF224A3DA000B545AF /* Configurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configurator.swift; sourceTree = "<group>"; };
-		16FE75F4224A479600B545AF /* Virgil+Encryption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Virgil+Encryption.swift"; sourceTree = "<group>"; };
 		16FE75F6224A5CC400B545AF /* ChatsManager+Start.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatsManager+Start.swift"; sourceTree = "<group>"; };
 		423BDA771F97600A00C3EE9B /* ChatListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChatListCell.xib; sourceTree = "<group>"; };
 		423BDA781F97600A00C3EE9B /* ChatList.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ChatList.storyboard; sourceTree = "<group>"; };
@@ -596,7 +595,6 @@
 				169367932249181100EF9A42 /* LocalKeyManager.swift */,
 				1693678F22490BA000EF9A42 /* VirgilAuthorizer.swift */,
 				167C68441FADDB7800E6E448 /* Virgil.swift */,
-				16FE75F4224A479600B545AF /* Virgil+Encryption.swift */,
 			);
 			path = Virgil;
 			sourceTree = "<group>";
