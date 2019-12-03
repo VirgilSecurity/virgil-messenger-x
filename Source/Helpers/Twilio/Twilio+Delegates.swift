@@ -45,6 +45,15 @@ extension Twilio: TwilioChatClientDelegate {
     public func chatClient(_ client: TwilioChatClient, channelAdded channel: TCHChannel) {
         self.queue.async {
             do {
+                // FIXME: Twilio bug
+                for _ in 0..<5 {
+                    if channel.attributes() != nil {
+                        break
+                    }
+
+                    sleep(1)
+                }
+
                 let attributes = try channel.getAttributes()
 
                 guard attributes.initiator != self.identity else {
@@ -55,6 +64,7 @@ extension Twilio: TwilioChatClientDelegate {
 
                 Notifications.post(.channelAdded)
             } catch {
+                // TODO: alert to UI?
                 Log.error("\(error)")
             }
         }

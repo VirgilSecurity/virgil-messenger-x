@@ -60,8 +60,11 @@ public enum ChatsManager {
 
                 startProgressBar()
 
-                let cards = try channels.map { try $0.getCard() }
-                let members = cards.map { $0.identity }
+                let selfIdentity = Twilio.shared.identity
+                var members = channels.map { $0.name }
+                members.append(selfIdentity)
+
+                let findUsersResult = try Virgil.ethree.findUsers(with: members).startSync().get()
 
                 let channel = try Twilio.shared.createGroupChannel(with: members, name: name)
                     .startSync()
@@ -69,14 +72,11 @@ public enum ChatsManager {
 
                 let sid = try channel.getSid()
 
-                var result: [String: Card] = [:]
-                cards.forEach {
-                    result[$0.identity] = $0
-                }
-
                 // FIXME: add already exists handler
-                let group = try Virgil.ethree.createGroup(id: sid, with: result).startSync().get()
+                let group = try Virgil.ethree.createGroup(id: sid, with: findUsersResult).startSync().get()
 
+                var cards = Array(findUsersResult.values)
+                cards = cards.filter { $0.identity != selfIdentity }
                 let coreChannel = try CoreData.shared.createGroupChannel(name: name,
                                                                          members: members,
                                                                          sid: sid,
