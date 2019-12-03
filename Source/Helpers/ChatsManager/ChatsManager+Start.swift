@@ -75,8 +75,7 @@ public enum ChatsManager {
                 // FIXME: add already exists handler
                 let group = try Virgil.ethree.createGroup(id: sid, with: findUsersResult).startSync().get()
 
-                var cards = Array(findUsersResult.values)
-                cards = cards.filter { $0.identity != selfIdentity }
+                let cards = Array(findUsersResult.values)
                 let coreChannel = try CoreData.shared.createGroupChannel(name: name,
                                                                          members: members,
                                                                          sid: sid,

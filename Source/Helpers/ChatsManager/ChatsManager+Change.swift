@@ -28,8 +28,7 @@ extension ChatsManager {
 
                 // Adding cards to Core Data
                 let participants = try Virgil.ethree.findUsers(with: Array(group.participants)).startSync().get()
-                var cards = Array(participants.values)
-                cards = cards.filter { $0.identity != Virgil.ethree.identity }
+                let cards = Array(participants.values)
                 try CoreData.shared.updateCards(with: cards, for: dataSource.channel)
 
                 completion((), nil)
@@ -57,8 +56,7 @@ extension ChatsManager {
 
                 // Adding cards to Core Data
                 let participants = try Virgil.ethree.findUsers(with: Array(group.participants)).startSync().get()
-                var cards = Array(participants.values)
-                cards = cards.filter { $0.identity != Virgil.ethree.identity }
+                let cards = Array(participants.values)
                 try CoreData.shared.updateCards(with: cards, for: dataSource.channel)
 
                 completion((), nil)
