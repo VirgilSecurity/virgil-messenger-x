@@ -28,7 +28,8 @@ extension ChatsManager {
 
                 // Adding cards to Core Data
                 let participants = try Virgil.ethree.findUsers(with: Array(group.participants)).startSync().get()
-                let cards = Array(participants.values)
+                var cards = Array(participants.values)
+                cards = cards.filter { $0.identity != Virgil.ethree.identity }
                 try CoreData.shared.updateCards(with: cards, for: dataSource.channel)
 
                 completion((), nil)
