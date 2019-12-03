@@ -39,7 +39,11 @@ public enum ChatsManager {
     public static func startSingle(with identity: String) throws {
         let card = try Virgil.ethree.findUser(with: identity).startSync().get()
 
-        try Twilio.shared.createSingleChannel(with: card).startSync().get()
+        let channel = try Twilio.shared.createSingleChannel(with: identity).startSync().get()
+
+        let sid = try channel.getSid()
+
+        _ = try CoreData.shared.createSingleChannel(sid: sid, card: card)
     }
     
     public static func startGroup(with channels: [Channel],

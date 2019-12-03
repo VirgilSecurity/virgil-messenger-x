@@ -49,28 +49,24 @@ extension Twilio {
 }
 
 extension Twilio {
-    func createSingleChannel(with card: Card) -> CallbackOperation<Void> {
+    func createSingleChannel(with identity: String) -> CallbackOperation<TCHChannel> {
         return CallbackOperation { _, completion in
             do {
-                let uniqueName = self.makeUniqueName(card.identity, self.identity)
+                let uniqueName = self.makeUniqueName(identity, self.identity)
 
                 let options = try TCHChannel.Options(uniqueName: uniqueName,
                                                      friendlyName: nil,
                                                      initiator: self.identity,
-                                                     members: [self.identity, card.identity],
+                                                     members: [self.identity, identity],
                                                      type: .single).export()
 
                 let channel = try self.makeCreateChannelOperation(with: options).startSync().get()
 
-                let sid = try channel.getSid()
-
-                _ = try CoreData.shared.createSingleChannel(sid: sid, card: card)
-
                 // TODO: optimize
                 try channel.add(identity: self.identity).startSync().get()
-                try channel.add(identity: card.identity).startSync().get()
+                try channel.add(identity: identity).startSync().get()
 
-                completion((), nil)
+                completion(channel, nil)
             } catch {
                 completion(nil, error)
             }
