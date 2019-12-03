@@ -85,7 +85,7 @@ extension ChatsManager {
 
                 if attributes.type == .group {
                     // Update Virgil Group
-                    let group = try self.updateVirgilGroup(with: twilioChannel,
+                    let group = try self.updateVirgilGroup(with: coreChannel,
                                                            initiator: attributes.initiator)
                     coreChannel.set(group: group)
                 }
@@ -119,19 +119,34 @@ extension ChatsManager {
         }
     }
 
-    private static func updateVirgilGroup(with twilioChannel: TCHChannel,
+    private static func updateVirgilGroup(with coreChannel: Channel,
                                           initiator: String) throws -> Group {
-        let sid = try twilioChannel.getSid()
-
         let group: Group
 
-        if let cachedGroup = try Virgil.ethree.getGroup(id: sid) {
+        if let cachedGroup = try Virgil.ethree.getGroup(id: coreChannel.sid) {
             group = cachedGroup
         }
         else {
-            group = try Virgil.ethree.loadGroup(id: sid, initiator: initiator)
-                .startSync()
-                .get()
+            do {
+                group = try Virgil.ethree.loadGroup(id: coreChannel.sid, initiator: initiator)
+                    .startSync()
+                    .get()
+            }
+            catch GroupError.groupWasNotFound {
+                if initiator == Virgil.ethree.identity {
+                    var result = FindUsersResult()
+                    coreChannel.cards.forEach {
+                        result[$0.identity] = $0
+                    }
+
+                    group = try Virgil.ethree.createGroup(id: coreChannel.sid, with: result)
+                        .startSync()
+                        .get()
+                }
+                else {
+                    throw GroupError.groupWasNotFound
+                }
+            }
         }
 
         return group
