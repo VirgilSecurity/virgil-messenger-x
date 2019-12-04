@@ -54,7 +54,7 @@ extension TCHChannel {
         }
 
         func export() throws -> [String: Any] {
-            return [//TCHChannelOptionUniqueName: self.uniqueName,
+            return [TCHChannelOptionUniqueName: self.uniqueName as Any,
                     TCHChannelOptionFriendlyName: self.friendlyName as Any,
                     TCHChannelOptionAttributes: try self.attributes.export(),
                     TCHChannelOptionType: self.scope]

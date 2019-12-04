@@ -80,7 +80,8 @@ public enum ChatsManager {
                 coreChannel.set(group: group)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }

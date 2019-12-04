@@ -98,9 +98,7 @@ extension Twilio {
 
                 var operations: [CallbackOperation<Void>] = []
 
-                let membersToAdd = members + [self.identity]
-
-                membersToAdd.forEach {
+                members.forEach {
                     let addOperation = channel.add(identity: $0)
                     completionOperation.addDependency(addOperation)
                     operations.append(addOperation)

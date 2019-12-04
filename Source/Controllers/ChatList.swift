@@ -63,7 +63,7 @@ class ChatListViewController: ViewController {
 
         Configurator.configure()
 
-        Notifications.observe(self, task: self.initFailed(error:))
+        Notifications.observeError(self, task: self.initFailed(error:))
         Notifications.observe(self, for: .initializingSucceed, task: self.initialized)
         Notifications.observe(self, for: .updatingSucceed, task: self.updated)
     }

@@ -14,6 +14,8 @@ class CoreData {
     private(set) var currentChannel: Channel?
     private(set) var currentAccount: Account?
 
+    private let queue = DispatchQueue(label: "CoreData")
+
     let managedContext: NSManagedObjectContext
 
     let persistentContainer: NSPersistentContainer = {
@@ -47,8 +49,10 @@ class CoreData {
     }
 
     func saveContext() throws {
-        if self.managedContext.hasChanges {
-            try self.managedContext.save()
+        try self.queue.sync {
+            if self.managedContext.hasChanges {
+                try self.managedContext.save()
+            }
         }
     }
 
