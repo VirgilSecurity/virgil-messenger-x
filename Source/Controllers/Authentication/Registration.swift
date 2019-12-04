@@ -18,34 +18,8 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+
         self.viewDidAppear(animated)
-
-        privacyLabel.delegate = self
-        privacyLabel.textContainerInset = UIEdgeInsets.zero
-        privacyLabel.linkTextAttributes = [.foregroundColor: UIColor(rgb: 0x9E3621)]
-
-        let text = (privacyLabel.text)!
-        let attriString = NSMutableAttributedString(string: text)
-
-        let range = (text as NSString).range(of: text)
-        attriString.addAttribute(.foregroundColor,
-                                 value: UIColor(rgb: 0x6B6B70),
-                                 range: range)
-        attriString.addAttribute(.font,
-                                 value: UIFont(name: privacyLabel.font!.fontName, size: 13)!,
-                                 range: range)
-
-        let range1 = (text as NSString).range(of: "Terms of Service")
-        attriString.addAttribute(.link,
-                                 value: URLConstansts.termsAndConditionsURL,
-                                 range: range1)
-
-        let range2 = (text as NSString).range(of: "Privacy Policy")
-        attriString.addAttribute(.link,
-                                 value: URLConstansts.privacyURL,
-                                 range: range2)
-
-        privacyLabel.attributedText = attriString
     }
 
     override func viewDidLoad() {
@@ -61,28 +35,81 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
                                                name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
 
+        self.setupUsernameTextField()
+        self.setupPrivacyLabel()
+    }
+
+    private func setupUsernameTextField() {
         self.usernameTextField.delegate = self
+
+        let placeholderColor = UIColor(rgb: 0x8E8F93)
+        let placeholderAttributes = [NSAttributedString.Key.foregroundColor: placeholderColor]
+        let placeholderString = NSAttributedString.init(string: "Your username",
+                                                        attributes: placeholderAttributes)
+        self.usernameTextField.attributedPlaceholder = placeholderString
+    }
+
+    private func setupPrivacyLabel() {
+        self.privacyLabel.delegate = self
+        self.privacyLabel.textContainerInset = UIEdgeInsets.zero
+        self.privacyLabel.linkTextAttributes = [.foregroundColor: UIColor(rgb: 0x9E3621)]
+
+        let text = self.privacyLabel.text!
+        let attriString = NSMutableAttributedString(string: text)
+        let nsText = text as NSString
+
+        let range = nsText.range(of: text)
+        attriString.addAttribute(.foregroundColor,
+                                 value: UIColor(rgb: 0x6B6B70),
+                                 range: range)
+
+        attriString.addAttribute(.font,
+                                 value: UIFont.systemFont(ofSize: 13, weight: .semibold),
+                                 range: range)
+
+        let range1 = nsText.range(of: "Terms of Service")
+        attriString.addAttribute(.link,
+                                 value: URLConstansts.termsAndConditionsURL,
+                                 range: range1)
+
+        let range2 = nsText.range(of: "Privacy Policy")
+        attriString.addAttribute(.link,
+                                 value: URLConstansts.privacyURL,
+                                 range: range2)
+
+        self.privacyLabel.attributedText = attriString
     }
 
     @objc func keyboardWillShow(notification: Notification) {
-        guard let rect = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
-            let time = (notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue else {
-                return
+        guard
+            let userInfo = notification.userInfo,
+            let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey],
+            let keyboardFrameValue = keyboardFrame as? NSValue,
+            let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey],
+            let animationDurationNumber = animationDuration as? NSNumber
+        else {
+            return
         }
 
-        self.bottomConstraint.constant = rect.height
-        UIView.animate(withDuration: time) {
+        self.bottomConstraint.constant = keyboardFrameValue.cgRectValue.height
+
+        UIView.animate(withDuration: animationDurationNumber.doubleValue) {
             self.view.layoutIfNeeded()
         }
     }
 
     @objc func keyboardWillHide(notification: Notification) {
-        guard let time = (notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue else {
-                return
+        guard
+            let userInfo = notification.userInfo,
+            let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey],
+            let animationDurationNumber = animationDuration as? NSNumber
+        else {
+            return
         }
 
         self.bottomConstraint.constant = 0
-        UIView.animate(withDuration: time) {
+
+        UIView.animate(withDuration: animationDurationNumber.doubleValue) {
             self.view.layoutIfNeeded()
         }
     }

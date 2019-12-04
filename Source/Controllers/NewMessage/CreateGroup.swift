@@ -20,7 +20,17 @@ class CreateGroupViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        nameTextField.delegate = self
+        self.setupNameTextField()
+    }
+
+    private func setupNameTextField() {
+        self.nameTextField.delegate = self
+
+        let placeholderColor = UIColor(rgb: 0x8E8F93)
+        let placeholderAttributes = [NSAttributedString.Key.foregroundColor: placeholderColor]
+        let placeholderString = NSAttributedString.init(string: "Group Name",
+                                                        attributes: placeholderAttributes)
+        self.nameTextField.attributedPlaceholder = placeholderString
     }
 
     @IBAction func createTapped(_ sender: Any) {
