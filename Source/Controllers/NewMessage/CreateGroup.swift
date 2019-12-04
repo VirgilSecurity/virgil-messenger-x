@@ -38,6 +38,8 @@ class CreateGroupViewController: ViewController {
             return
         }
 
+        self.view.endEditing(true)
+
         guard self.checkReachability() else {
             return
         }
@@ -89,5 +91,15 @@ class CreateGroupViewController: ViewController {
             let height = userList.tableView.rowHeight
             self.usersListHeight.constant = CGFloat(self.members.count) * height
         }
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard self.createButton.isEnabled else {
+            return false
+        }
+
+        self.createTapped(self)
+
+        return true
     }
 }
