@@ -60,9 +60,7 @@ public enum ChatsManager {
 
                 startProgressBar()
 
-                let selfIdentity = Twilio.shared.identity
-                var members = channels.map { $0.name }
-                members.append(selfIdentity)
+                let members = channels.map { $0.name }
 
                 let findUsersResult = try Virgil.ethree.findUsers(with: members).startSync().get()
 
@@ -77,7 +75,6 @@ public enum ChatsManager {
 
                 let cards = Array(findUsersResult.values)
                 let coreChannel = try CoreData.shared.createGroupChannel(name: name,
-                                                                         members: members,
                                                                          sid: sid,
                                                                          cards: cards)
                 coreChannel.set(group: group)

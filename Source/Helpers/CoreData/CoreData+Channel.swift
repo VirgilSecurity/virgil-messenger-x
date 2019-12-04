@@ -11,7 +11,7 @@ import VirgilSDK
 import TwilioChatClient
 
 extension CoreData {
-    func createGroupChannel(name: String, members: [String], sid: String, cards: [Card]) throws -> Channel {
+    func createGroupChannel(name: String, sid: String, cards: [Card]) throws -> Channel {
         return try self.createChannel(type: .group, sid: sid, name: name, cards: cards)
     }
 

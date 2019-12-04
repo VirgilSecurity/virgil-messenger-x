@@ -14,7 +14,7 @@ extension TCHChannel {
         let type: ChannelType
 
         var initiator: String
-        var members: [String]
+        var members: Set<String>
 
         static func `import`(_ json: [String: Any]) throws -> Attributes {
             let data = try JSONSerialization.data(withJSONObject: json, options: [])
@@ -44,7 +44,7 @@ extension TCHChannel {
         public init(uniqueName: String?,
                     friendlyName: String?,
                     initiator: String,
-                    members: [String],
+                    members: Set<String>,
                     scope: Int = TCHChannelType.private.rawValue,
                     type: ChannelType) {
             self.uniqueName = uniqueName

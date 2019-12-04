@@ -76,10 +76,13 @@ extension Twilio {
     func createGroupChannel(with members: [String], name: String) -> CallbackOperation<TCHChannel> {
         return CallbackOperation { _, completion in
             do {
+                var members = Set(members)
+                members.insert(self.identity)
+
                 let options = try TCHChannel.Options(uniqueName: nil,
                                                      friendlyName: name,
                                                      initiator: self.identity,
-                                                     members: [self.identity] + members,
+                                                     members: members,
                                                      type: .group).export()
 
                 let channel = try self.makeCreateChannelOperation(with: options).startSync().get()
@@ -119,7 +122,7 @@ extension Twilio {
                 var attributes = try channel.getAttributes()
 
                 attributes.initiator = self.identity
-                attributes.members += members
+                attributes.members = attributes.members.union(Set(members))
 
                 try channel.setAttributes(attributes).startSync().get()
 

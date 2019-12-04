@@ -169,13 +169,12 @@ extension ChatsManager {
 
                 coreChannel = try CoreData.shared.createSingleChannel(sid: sid, card: card)
             case .group:
-                let result = try Virgil.ethree.findUsers(with: attributes.members).startSync().get()
+                let result = try Virgil.ethree.findUsers(with: Array(attributes.members)).startSync().get()
                 let cards = Array(result.values)
 
                 let name = try twilioChannel.getFriendlyName()
 
                 coreChannel = try CoreData.shared.createGroupChannel(name: name,
-                                                                     members: attributes.members,
                                                                      sid: sid,
                                                                      cards: cards)
             }
