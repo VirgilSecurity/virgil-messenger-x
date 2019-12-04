@@ -58,18 +58,19 @@ extension CollectionViewController {
     }
 
     private func goToChatList() {
-        let vc = UIStoryboard(name: "TabBar",
-                              bundle: Bundle.main).instantiateInitialViewController() as! UINavigationController
-        
-        self.switchNavigationStack(to: vc)
+        self.switchNavigationStack(to: "TabBar")
     }
 
-    private func switchNavigationStack(to controller: UINavigationController) {
+    private func switchNavigationStack(to name: String) {
+        let storyboard = UIStoryboard(name: name, bundle: Bundle.main)
+        let controller = storyboard.instantiateInitialViewController() as! UINavigationController
+
         let window = UIApplication.shared.keyWindow!
+        window.rootViewController = controller
 
         UIView.transition(with: window,
                           duration: UIConstants.TransitionAnimationDuration,
                           options: .transitionCrossDissolve,
-                          animations: { window.rootViewController = controller })
+                          animations: nil)
     }
 }

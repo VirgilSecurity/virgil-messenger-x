@@ -27,10 +27,11 @@ class ViewController: UIViewController {
         let controller = storyboard.instantiateInitialViewController() as! UINavigationController
 
         let window = UIApplication.shared.keyWindow!
+        window.rootViewController = controller
 
         UIView.transition(with: window,
                           duration: UIConstants.TransitionAnimationDuration,
                           options: .transitionCrossDissolve,
-                          animations: { window.rootViewController = controller })
+                          animations: nil)
     }
 }
