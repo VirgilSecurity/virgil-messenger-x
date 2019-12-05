@@ -23,11 +23,11 @@ class ChatListViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.configurate()
-
+        self.setupTitleView()
         self.setupTableView()
+        self.setupObservers()
 
-        Notifications.observe(self, for: [.channelAdded, .messageAdded], task: self.reloadTableView)
+        Configurator.configure()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -42,6 +42,51 @@ class ChatListViewController: ViewController {
         self.reloadTableView()
     }
 
+    private func setupObservers() {
+        let initialized: Notifications.Block = { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.indicatorLabel.text = Configurator.state
+            }
+        }
+
+        let updated: Notifications.Block = { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.reloadTableView()
+                self?.navigationItem.titleView = nil
+                self?.title = "Chats"
+                self?.indicator.stopAnimating()
+            }
+        }
+
+        let reloadTableView: Notifications.Block = { [weak self] _ in
+            self?.reloadTableView()
+        }
+
+        let initFailed: Notifications.Block = { [weak self] notification in
+            guard let error: Error = try? Notifications.parse(notification, for: .errored) else {
+                Log.error("Invalid notification")
+                return
+            }
+
+            DispatchQueue.main.async {
+                self?.alert(error) { _ in
+                    UserAuthorizer().logOut { error in
+                        if let error = error {
+                            self?.alert(error)
+                        } else {
+                            self?.goToLogin()
+                        }
+                    }
+                }
+            }
+        }
+
+        Notifications.observe(for: .errored, block: initFailed)
+        Notifications.observe(for: .initializingSucceed, block: initialized)
+        Notifications.observe(for: .updatingSucceed, block: updated)
+        Notifications.observe(for: [.channelAdded, .messageAdded], block: reloadTableView)
+    }
+
     private func setupTableView() {
         let chatListCellNib = UINib(nibName: ChatListCell.name, bundle: Bundle.main)
         self.tableView.register(chatListCellNib, forCellReuseIdentifier: ChatListCell.name)
@@ -50,7 +95,7 @@ class ChatListViewController: ViewController {
         self.tableView.dataSource = self
     }
 
-    private func configurate() {
+    private func setupTitleView() {
         self.indicator.hidesWhenStopped = false
         self.indicator.startAnimating()
 
@@ -60,41 +105,6 @@ class ChatListViewController: ViewController {
         titleView.spacing = 5
 
         self.navigationItem.titleView = titleView
-
-        Configurator.configure()
-
-        Notifications.observeError(self, task: self.initFailed(error:))
-        Notifications.observe(self, for: .initializingSucceed, task: self.initialized)
-        Notifications.observe(self, for: .updatingSucceed, task: self.updated)
-    }
-
-    private func initFailed(error: Error) {
-        DispatchQueue.main.async {
-            self.alert(error) { _ in
-                UserAuthorizer().logOut { error in
-                    if let error = error {
-                        self.alert(error)
-                    } else {
-                        self.goToLogin()
-                    }
-                }
-            }
-        }
-    }
-
-    private func initialized() {
-        DispatchQueue.main.async {
-            self.indicatorLabel.text = Configurator.state
-        }
-    }
-
-    private func updated() {
-        DispatchQueue.main.async {
-            self.reloadTableView()
-            self.navigationItem.titleView = nil
-            self.title = "Chats"
-            self.indicator.stopAnimating()
-        }
     }
 
     @objc private func reloadTableView() {
@@ -123,10 +133,6 @@ class ChatListViewController: ViewController {
         DispatchQueue.main.async {
             self.switchNavigationStack(to: AuthenticationViewController.name)
         }
-    }
-
-    deinit {
-        Notifications.removeObservers(self)
     }
 }
 

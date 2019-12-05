@@ -118,10 +118,6 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
         self.view.endEditing(true)
     }
 
-    deinit {
-        Notifications.removeObservers(self)
-    }
-
     @IBAction func signupButtonPressed(_ sender: Any) {
         guard let username = self.usernameTextField.text?.lowercased(), !username.isEmpty else {
             self.usernameTextField.becomeFirstResponder()

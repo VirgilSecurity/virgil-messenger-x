@@ -11,6 +11,8 @@ import Foundation
 public class Notifications {
     private static let center: NotificationCenter = NotificationCenter.default
 
+    public typealias Block = (Notification) -> Void
+
     public enum EmptyNotification: String {
         case initializingSucceed = "Notifications.InitializingSucceed"
         case updatingSucceed = "Notifications.UpdatingSucceed"
@@ -27,7 +29,7 @@ public class Notifications {
         case messageAddedToCurrentChannel = "Notifications.MessageAddedToCurrentChannel"
     }
 
-    private enum NotificationKeys: String {
+    public enum NotificationKeys: String {
         case newState = "NotificationKeys.NewState"
         case message = "NotificationKeys.Message"
         case error = "NotificationKeys.Error"
@@ -41,6 +43,16 @@ public class Notifications {
         return Notification.Name(rawValue: notification.rawValue)
     }
 
+    public static func parse<T>(_ notification: Notification, for key: Notifications) throws -> T {
+        guard let userInfo = notification.userInfo,
+            let result = userInfo[key.rawValue] as? T else {
+                throw NSError()
+        }
+
+        return result
+    }
+
+    // FIXME
     public static func removeObservers(_ object: Any) {
         self.center.removeObserver(object)
     }
@@ -76,57 +88,21 @@ extension Notifications {
 }
 
 extension Notifications {
-    public static func observe(_ object: Any, for notification: EmptyNotification, task: @escaping () -> Void)  {
-        let notification = self.notification(notification)
-
-        self.center.addObserver(forName: notification, object: nil, queue: nil) { _ in
-            task()
-        }
+    public static func observe(for notification: EmptyNotification, block: @escaping Block)  {
+        self.observe(for: [notification], block: block)
     }
 
-    public static func observe(_ object: Any, for notification: Notifications, task: @escaping () -> Void)  {
+    public static func observe(for notification: Notifications, block: @escaping Block)  {
         let notification = self.notification(notification)
 
-        self.center.addObserver(forName: notification, object: nil, queue: nil) { _ in
-            task()
-        }
+        self.center.addObserver(forName: notification, object: nil, queue: nil, using: block)
     }
 
-    public static func observe(_ object: Any, for notifications: [EmptyNotification], task: @escaping () -> Void)  {
+    public static func observe(for notifications: [EmptyNotification], block: @escaping Block)  {
         notifications.forEach {
             let notification = self.notification($0)
 
-            self.center.addObserver(forName: notification, object: nil, queue: nil) { _ in
-                task()
-            }
-        }
-    }
-
-    public static func observe(_ object: Any, task: @escaping (Message) -> Void) {
-        let notification = self.notification(.messageAddedToCurrentChannel)
-
-        self.center.addObserver(forName: notification, object: nil, queue: nil) { notification in
-            guard let userInfo = notification.userInfo,
-                let message = userInfo[NotificationKeys.message.rawValue] as? Message else {
-                    Log.error("invalid notification")
-                    return
-            }
-
-            task(message)
-        }
-    }
-
-    public static func observeError(_ object: Any, task: @escaping (Error) -> Void) {
-        let notification = self.notification(.errored)
-
-        self.center.addObserver(forName: notification, object: nil, queue: nil) { notification in
-            guard let userInfo = notification.userInfo,
-                let error = userInfo[NotificationKeys.error.rawValue] as? Error else {
-                    Log.error("invalid notification")
-                    return
-            }
-
-            task(error)
+            self.center.addObserver(forName: notification, object: nil, queue: nil, using: block)
         }
     }
 }

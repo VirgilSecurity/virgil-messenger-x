@@ -84,18 +84,24 @@ class ChatViewController: BaseChatViewController {
 
         self.setupTitle()
 
-        Notifications.removeObservers(self)
-        Notifications.removeObservers(self.dataSource)
+        self.setupObservers()
 
-        Notifications.observe(self, for: .channelDeleted, task: self.popToRoot)
-        Notifications.observe(self, for: [.initializingSucceed, .updatingSucceed], task: self.updateTitle)
-
-        self.dataSource.addObserver()
+        self.dataSource.setupObservers()
     }
 
-    deinit {
-        Notifications.removeObservers(self)
-        Notifications.removeObservers(self.dataSource)
+    private func setupObservers() {
+        let popToRoot: Notifications.Block = { [weak self] _ in
+            self?.popToRoot()
+        }
+
+        let updateTitle: Notifications.Block = { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.setupTitle()
+            }
+        }
+
+        Notifications.observe(for: [.initializingSucceed, .updatingSucceed], block: updateTitle)
+        Notifications.observe(for: .channelDeleted, block: popToRoot)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -112,12 +118,6 @@ class ChatViewController: BaseChatViewController {
         }
         else {
             self.setupRegularTitle()
-        }
-    }
-
-    private func updateTitle() {
-        DispatchQueue.main.async {
-            self.setupTitle()
         }
     }
 

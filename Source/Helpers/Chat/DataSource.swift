@@ -57,17 +57,28 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
-    private func updateMessageList() {
-        self.slidingWindow.updateMessageList()
+    func setupObservers() {
+        let process: Notifications.Block = { [weak self] notification in
+            guard let message: Message = try? Notifications.parse(notification, for: .messageAddedToCurrentChannel) else {
+                Log.error("Invalid notification")
+                return
+            }
 
-        DispatchQueue.main.async {
-            self.delegate?.chatDataSourceDidUpdate(self, updateType: .messageCountReduction)
+            self?.process(message: message)
         }
-    }
 
-    func addObserver() {
-        Notifications.observe(self, task: self.process)
-        Notifications.observe(self, for: .updatingSucceed, task: self.updateMessageList)
+        let updateMessageList: Notifications.Block = { [weak self] _ in
+            guard let strongSelf = self else { return }
+
+            strongSelf.slidingWindow.updateMessageList()
+
+            DispatchQueue.main.async {
+                strongSelf.delegate?.chatDataSourceDidUpdate(strongSelf, updateType: .messageCountReduction)
+            }
+        }
+
+        Notifications.observe(for: .messageAddedToCurrentChannel, block: process)
+        Notifications.observe(for: .updatingSucceed, block: updateMessageList)
     }
 
     @objc private func process(message: Message) {
@@ -192,9 +203,5 @@ class DataSource: ChatDataSourceProtocol {
     func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> ()) {
         let didAdjust = self.slidingWindow.adjustWindow(focusPosition: focusPosition, maxWindowSize: preferredMaxCount ?? self.preferredMaxWindowSize)
         completion(didAdjust)
-    }
-
-    deinit {
-        Notifications.removeObservers(self)
     }
 }

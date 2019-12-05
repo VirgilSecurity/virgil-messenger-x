@@ -28,14 +28,20 @@ class AddMembersViewController: ViewController {
         super.viewDidLoad()
 
         self.setupTableView()
-
-        Notifications.removeObservers(self)
-        Notifications.observe(self, for: .channelDeleted, task: self.popToRoot)
-        Notifications.observe(self, for: .messageAddedToCurrentChannel, task: self.reloadTableView)
+        self.setupObservers()
     }
 
-    deinit {
-        Notifications.removeObservers(self)
+    private func setupObservers() {
+        let popToRoot: Notifications.Block = { [weak self] _ in
+            self?.popToRoot()
+        }
+
+        let reloadTableView: Notifications.Block = { [weak self] _ in
+            self?.reloadTableView()
+        }
+
+        Notifications.observe(for: .channelDeleted, block: popToRoot)
+        Notifications.observe(for: .messageAddedToCurrentChannel, block: reloadTableView)
     }
 
     private func setupTableView() {

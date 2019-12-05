@@ -29,23 +29,28 @@ class GroupInfoViewController: ViewController {
 
         self.avatarView.draw(with: self.channel.colors)
 
-        Notifications.removeObservers(self)
-        Notifications.observe(self, for: .channelDeleted, task: self.popToRoot)
-        Notifications.observe(self, for: .messageAddedToCurrentChannel, task: self.processMessage)
+        self.setupObservers()
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
         self.updateUserList()
     }
 
-    deinit {
-        Notifications.removeObservers(self)
-    }
-
-    func processMessage() {
-        DispatchQueue.main.async {
-            self.updateUserList()
+    private func setupObservers() {
+        let popToRoot: Notifications.Block = { [weak self] _ in
+            self?.popToRoot()
         }
+
+        let processMessage: Notifications.Block = { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.updateUserList()
+            }
+        }
+
+        Notifications.observe(for: .channelDeleted, block: popToRoot)
+        Notifications.observe(for: .messageAddedToCurrentChannel, block: processMessage)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

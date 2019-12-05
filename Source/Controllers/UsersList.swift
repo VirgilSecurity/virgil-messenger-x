@@ -16,8 +16,8 @@ protocol DeleteItemDelegate: class {
 class UsersListViewController: UITableViewController {
     public var users: [Card] = []
 
-    public var cellTapDelegate: CellTapDelegate?
-    public var deleteItemDelegate: DeleteItemDelegate?
+    public weak var cellTapDelegate: CellTapDelegate?
+    public weak var deleteItemDelegate: DeleteItemDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
