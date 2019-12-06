@@ -63,7 +63,7 @@ class ChatListViewController: ViewController {
         }
 
         let initFailed: Notifications.Block = { [weak self] notification in
-            guard let error: Error = try? Notifications.parse(notification, for: .errored) else {
+            guard let error: Error = try? Notifications.parse(notification, for: .error) else {
                 Log.error("Invalid notification")
                 return
             }

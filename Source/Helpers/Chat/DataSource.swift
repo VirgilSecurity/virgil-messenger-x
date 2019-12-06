@@ -59,7 +59,7 @@ class DataSource: ChatDataSourceProtocol {
 
     func setupObservers() {
         let process: Notifications.Block = { [weak self] notification in
-            guard let message: Message = try? Notifications.parse(notification, for: .messageAddedToCurrentChannel) else {
+            guard let message: Message = try? Notifications.parse(notification, for: .message) else {
                 Log.error("Invalid notification")
                 return
             }
