@@ -14,13 +14,13 @@ import VirgilCryptoRatchet
 import VirgilSDKRatchet
 
 class MessageProcessor {
-    static func process(message: TCHMessage, from twilioChannel: TCHChannel) throws -> Message? {
+    static func process(message: TCHMessage, from twilioChannel: TCHChannel, coreChannel: Channel? = nil) throws -> Message? {
         let isIncoming = message.author == Twilio.shared.identity ? false : true
 
         let date = try message.getDate()
         let index = try message.getIndex()
 
-        let channel = try CoreData.shared.getChannel(twilioChannel)
+        let channel = try coreChannel ?? CoreData.shared.getChannel(twilioChannel)
 
         guard (Int(truncating: index) >= channel.allMessages.count) else {
             return nil
@@ -78,7 +78,6 @@ class MessageProcessor {
                 decrypted = try Virgil.ethree.authDecrypt(text: text, from: channel.cards.first)
             } catch {
                 try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
-
                 return nil
             }
 
@@ -100,22 +99,32 @@ class MessageProcessor {
         let group = try channel.getGroup()
         let authorCard = try Virgil.ethree.findUser(with: author).startSync().get()
 
-        var decrypted: String
-        do {
-            decrypted = try group.decrypt(text: text, from: authorCard)
-        }
-        catch {
-            try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
-            return nil
-        }
-
         switch attributes.type {
         case .regular:
+            var decrypted: String
+            do {
+                decrypted = try group.decrypt(text: text, from: authorCard)
+            }
+            catch {
+                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+                return nil
+            }
+
             decrypted = "\(author): \(decrypted)"
 
             return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
         case .service:
+            // TODO: optimize
             try group.update().startSync().get()
+
+            var decrypted: String
+            do {
+                decrypted = try group.decrypt(text: text, from: authorCard)
+            }
+            catch {
+                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+                return nil
+            }
 
             decrypted = "\(author) \(decrypted)"
 

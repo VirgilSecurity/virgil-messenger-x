@@ -109,7 +109,7 @@ extension ChatsManager {
                         break
                     }
 
-                     _ = try MessageProcessor.process(message: message, from: twilioChannel)
+                    _ = try MessageProcessor.process(message: message, from: twilioChannel, coreChannel: coreChannel)
                 }
 
                 completion((), nil)

@@ -60,7 +60,8 @@ class GroupInfoViewController: ViewController {
             self.usersListController = userList
             self.updateUserList()
 
-        } else if let addMembers = segue.destination as? AddMembersViewController {
+        }
+        else if let addMembers = segue.destination as? AddMembersViewController {
             addMembers.dataSource = self.dataSource
         }
     }

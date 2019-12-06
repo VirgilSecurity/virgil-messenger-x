@@ -16,7 +16,7 @@ extension CoreData {
     }
 
     func createSingleChannel(sid: String, card: Card) throws -> Channel {
-        guard card.identity != Twilio.shared.identity else {
+        guard card.identity != Virgil.ethree.identity else {
             throw NSError()
         }
 
@@ -28,6 +28,7 @@ extension CoreData {
     }
 
     private func createChannel(type: ChannelType, sid: String, name: String, cards: [Card]) throws -> Channel {
+        let cards = cards.filter { $0.identity != Virgil.ethree.identity }
         let account = try self.getCurrentAccount()
 
         let channel = try Channel(sid: sid,
