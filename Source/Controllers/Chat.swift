@@ -91,7 +91,9 @@ class ChatViewController: BaseChatViewController {
 
     private func setupObservers() {
         let popToRoot: Notifications.Block = { [weak self] _ in
-            self?.popToRoot()
+            DispatchQueue.main.async {
+                self?.popToRoot()
+            }
         }
 
         let updateTitle: Notifications.Block = { [weak self] _ in
@@ -101,7 +103,7 @@ class ChatViewController: BaseChatViewController {
         }
 
         Notifications.observe(for: [.initializingSucceed, .updatingSucceed], block: updateTitle)
-        Notifications.observe(for: .channelDeleted, block: popToRoot)
+        Notifications.observe(for: .currentChannelDeleted, block: popToRoot)
     }
 
     override func viewWillAppear(_ animated: Bool) {

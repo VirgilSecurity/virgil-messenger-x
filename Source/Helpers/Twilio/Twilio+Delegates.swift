@@ -62,7 +62,33 @@ extension Twilio: TwilioChatClientDelegate {
 
                 try ChatsManager.update(twilioChannel: channel).startSync().get()
 
-                Notifications.post(.channelAdded)
+                Notifications.post(.chatListUpdated)
+            } catch {
+                // TODO: alert to UI?
+                Log.error("\(error)")
+            }
+        }
+    }
+
+    public func chatClient(_ client: TwilioChatClient, channel: TCHChannel, memberLeft member: TCHMember) {
+        // TODO: Make update userlist either
+        guard member.identity == self.identity else {
+            return
+        }
+
+        self.queue.async {
+            do {
+                let coreChannel = try CoreData.shared.getChannel(channel)
+
+                try Virgil.ethree.deleteGroup(id: coreChannel.sid).startSync().get()
+                try CoreData.shared.delete(channel: coreChannel)
+
+                if let currentChannel = self.currentChannel, try channel.getSid() == currentChannel.getSid() {
+                    Notifications.post(.currentChannelDeleted)
+                }
+                else {
+                    Notifications.post(.chatListUpdated)
+                }
             } catch {
                 // TODO: alert to UI?
                 Log.error("\(error)")
@@ -78,13 +104,15 @@ extension Twilio: TwilioChatClientDelegate {
         self.queue.async {
             do {
                 guard let message = try MessageProcessor.process(message: message, from: channel) else {
-                    return Notifications.post(.messageAdded)
+                    // TODO: Check if needed
+                    return Notifications.post(.chatListUpdated)
                 }
 
                 if let currentChannel = self.currentChannel, try channel.getSid() == currentChannel.getSid() {
                     Notifications.post(message: message)
-                } else {
-                    Notifications.post(.messageAdded)
+                }
+                else {
+                    Notifications.post(.chatListUpdated)
                 }
             } catch {
                 Log.error("\(error)")

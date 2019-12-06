@@ -17,10 +17,8 @@ public class Notifications {
         case initializingSucceed = "Notifications.InitializingSucceed"
         case updatingSucceed = "Notifications.UpdatingSucceed"
 
-        case channelAdded = "Notifications.ChannelAdded"
-        case channelDeleted = "Notifications.ChannelDeleted"
-        
-        case messageAdded = "Notifications.MessageAdded"
+        case chatListUpdated = "Notifications.ChatListUpdated"
+        case currentChannelDeleted = "Notifications.CurrentChannelDeleted"
     }
 
     public enum Notifications: String {

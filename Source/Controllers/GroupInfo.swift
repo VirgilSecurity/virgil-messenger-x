@@ -40,7 +40,9 @@ class GroupInfoViewController: ViewController {
 
     private func setupObservers() {
         let popToRoot: Notifications.Block = { [weak self] _ in
-            self?.popToRoot()
+            DispatchQueue.main.async {
+                self?.popToRoot()
+            }
         }
 
         let processMessage: Notifications.Block = { [weak self] _ in
@@ -49,7 +51,7 @@ class GroupInfoViewController: ViewController {
             }
         }
 
-        Notifications.observe(for: .channelDeleted, block: popToRoot)
+        Notifications.observe(for: .currentChannelDeleted, block: popToRoot)
         Notifications.observe(for: .messageAddedToCurrentChannel, block: processMessage)
     }
 

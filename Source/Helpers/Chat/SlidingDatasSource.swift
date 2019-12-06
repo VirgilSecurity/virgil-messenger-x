@@ -102,7 +102,7 @@ public class SlidingDataSource<Element> {
                 self.windowCount += 1
             }
         } else {
-            let shouldExpandWindow = self.itemsOffset + self.items.count == self.windowOffset + self.windowCount
+            let shouldExpandWindow = self.allItemsCount == self.windowOffset + self.windowCount
             if shouldExpandWindow {
                 self.windowCount += 1
             }
@@ -115,7 +115,7 @@ public class SlidingDataSource<Element> {
     }
 
     public func hasMore() -> Bool {
-        return self.windowOffset + self.windowCount < self.itemsOffset + self.items.count
+        return self.windowOffset + self.windowCount < self.allItemsCount
     }
 
     public func loadPrevious() {
@@ -135,7 +135,7 @@ public class SlidingDataSource<Element> {
 
     public func loadNext() {
         guard !self.items.isEmpty else { return }
-        let itemCountAfterWindow = self.itemsOffset + self.items.count - self.windowOffset - self.windowCount
+        let itemCountAfterWindow = self.allItemsCount - self.windowOffset - self.windowCount
         self.windowCount += min(self.pageSize, itemCountAfterWindow)
     }
 

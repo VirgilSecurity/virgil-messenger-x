@@ -84,7 +84,7 @@ class ChatListViewController: ViewController {
         Notifications.observe(for: .errored, block: initFailed)
         Notifications.observe(for: .initializingSucceed, block: initialized)
         Notifications.observe(for: .updatingSucceed, block: updated)
-        Notifications.observe(for: [.channelAdded, .messageAdded], block: reloadTableView)
+        Notifications.observe(for: [.chatListUpdated], block: reloadTableView)
     }
 
     private func setupTableView() {

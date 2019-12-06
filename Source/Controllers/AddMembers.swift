@@ -33,14 +33,16 @@ class AddMembersViewController: ViewController {
 
     private func setupObservers() {
         let popToRoot: Notifications.Block = { [weak self] _ in
-            self?.popToRoot()
+            DispatchQueue.main.async {
+                self?.popToRoot()
+            }
         }
 
         let reloadTableView: Notifications.Block = { [weak self] _ in
             self?.reloadTableView()
         }
 
-        Notifications.observe(for: .channelDeleted, block: popToRoot)
+        Notifications.observe(for: .currentChannelDeleted, block: popToRoot)
         Notifications.observe(for: .messageAddedToCurrentChannel, block: reloadTableView)
     }
 
@@ -59,6 +61,7 @@ class AddMembersViewController: ViewController {
         self.channels = CoreData.shared.getSingleChannels()
 
         self.channels = self.channels.filter { channel in
+            // FIXME
             !CoreData.shared.currentChannel!.cards.contains { card in
                 channel.cards.first?.identity == card.identity
             }

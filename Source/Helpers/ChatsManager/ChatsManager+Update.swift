@@ -27,6 +27,7 @@ extension ChatsManager {
 
                     for coreChannel in coreGroupChannels {
                         if (try? Twilio.shared.getChannel(coreChannel)) == nil {
+                            try Virgil.ethree.deleteGroup(id: coreChannel.sid).startSync().get()
                             try CoreData.shared.delete(channel: coreChannel)
                         }
                     }
