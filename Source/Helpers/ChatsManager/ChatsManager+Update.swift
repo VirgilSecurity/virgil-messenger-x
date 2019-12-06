@@ -113,7 +113,8 @@ extension ChatsManager {
                 }
 
                 completion((), nil)
-            } catch {
+            }
+            catch {
                 completion(nil, error)
             }
         }

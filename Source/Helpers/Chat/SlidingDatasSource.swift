@@ -37,6 +37,10 @@ public class SlidingDataSource<Element> {
     private(set) var items = [Element]()
     private var itemsOffset: Int
 
+    private var allItemsCount: Int {
+        return self.items.count + self.itemsOffset
+    }
+
     public var itemsInWindow: [Element] {
         let offset = self.windowOffset - self.itemsOffset
         let a = offset < 0 ? 0 : offset
@@ -83,10 +87,8 @@ public class SlidingDataSource<Element> {
 
         let messages = channel.visibleMessages
 
-        if self.items.count < messages.count {
-            while self.items.count < messages.count {
-                self.insertItem(itemGenerator(self.items.count, messages), position: .bottom)
-            }
+        while self.allItemsCount < messages.count {
+            self.insertItem(itemGenerator(self.allItemsCount, messages), position: .bottom)
         }
     }
 
