@@ -17,17 +17,20 @@ class UsersListCell: UITableViewCell {
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var letterLabel: UILabel!
     @IBOutlet weak var avatarView: GradientView!
+    @IBOutlet weak var adminLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.contentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTap)))
+
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.didTap))
+        self.contentView.addGestureRecognizer(tapRecognizer)
     }
 
     @objc func didTap() {
         self.delegate?.didTapOn(self)
     }
 
-    public func configure(with cards: [Card]) {
+    public func configure(with cards: [Card], admin: String?) {
         guard let card = cards[safe: self.tag] else {
             return
         }
@@ -35,6 +38,7 @@ class UsersListCell: UITableViewCell {
         let name = card.identity
 
         self.usernameLabel.text = name
+        self.adminLabel.isHidden = name != admin
 
         if let channel = CoreData.shared.getSingleChannel(with: name) {
             self.letterLabel.text = channel.letter

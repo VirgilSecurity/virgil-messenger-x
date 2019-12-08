@@ -7,6 +7,7 @@
     </entity>
     <entity name="Channel" representedClassName="Channel" syncable="YES">
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="initiator" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String" minValueString="1"/>
         <attribute name="numColorPair" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="rawCards" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
@@ -26,7 +27,7 @@
     </entity>
     <elements>
         <element name="Account" positionX="-450" positionY="45" width="128" height="90"/>
-        <element name="Channel" positionX="-407" positionY="243" width="128" height="163"/>
+        <element name="Channel" positionX="-407" positionY="243" width="128" height="178"/>
         <element name="Message" positionX="-128" positionY="198" width="128" height="150"/>
     </elements>
 </model>

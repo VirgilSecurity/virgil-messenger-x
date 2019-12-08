@@ -18,6 +18,7 @@ public class Channel: NSManagedObject {
     @NSManaged public var name: String
     @NSManaged public var account: Account
     @NSManaged public var createdAt: Date
+    @NSManaged public var initiator: String
 
     @NSManaged private var rawType: String
     @NSManaged private var numColorPair: Int32
@@ -106,6 +107,7 @@ public class Channel: NSManagedObject {
 
     convenience init(sid: String,
                      name: String,
+                     initiator: String,
                      type: ChannelType,
                      account: Account,
                      cards: [Card],
@@ -118,6 +120,7 @@ public class Channel: NSManagedObject {
 
         self.sid = sid
         self.name = name
+        self.initiator = initiator
         self.type = type
         self.cards = cards
         self.createdAt = Date()

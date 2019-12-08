@@ -169,7 +169,9 @@ extension ChatsManager {
 
                 let card = try Virgil.ethree.findUser(with: name).startSync().get()
 
-                coreChannel = try CoreData.shared.createSingleChannel(sid: sid, card: card)
+                coreChannel = try CoreData.shared.createSingleChannel(sid: sid,
+                                                                      initiator: attributes.initiator,
+                                                                      card: card)
             case .group:
                 let result = try Virgil.ethree.findUsers(with: Array(attributes.members)).startSync().get()
                 let cards = Array(result.values)
@@ -178,6 +180,7 @@ extension ChatsManager {
 
                 coreChannel = try CoreData.shared.createGroupChannel(name: name,
                                                                      sid: sid,
+                                                                     initiator: attributes.initiator,
                                                                      cards: cards)
             }
         }

@@ -43,7 +43,7 @@ public enum ChatsManager {
 
         let sid = try channel.getSid()
 
-        _ = try CoreData.shared.createSingleChannel(sid: sid, card: card)
+        _ = try CoreData.shared.createSingleChannel(sid: sid, initiator: Twilio.shared.identity, card: card)
     }
     
     public static func startGroup(with channels: [Channel],
@@ -76,6 +76,7 @@ public enum ChatsManager {
                 let cards = Array(findUsersResult.values)
                 let coreChannel = try CoreData.shared.createGroupChannel(name: name,
                                                                          sid: sid,
+                                                                         initiator: group.initiator,
                                                                          cards: cards)
                 coreChannel.set(group: group)
 

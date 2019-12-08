@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="QmN-df-OEN">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="QmN-df-OEN">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -24,7 +22,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="70"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bdq-e7-a5o" id="vUU-2k-gl1">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="69.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vgd-9N-n3a" customClass="GradientView" customModule="VirgilMessenger" customModuleProvider="target">
@@ -57,17 +55,26 @@
                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" alpha="0.59999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Admin" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yTW-T1-KQS">
+                                            <rect key="frame" x="316.5" y="27" width="38.5" height="16"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="yTW-T1-KQS" secondAttribute="trailing" constant="20" id="AIE-R4-DgM"/>
                                         <constraint firstItem="vgd-9N-n3a" firstAttribute="leading" secondItem="vUU-2k-gl1" secondAttribute="leading" constant="20" id="FMC-zB-Qx4"/>
                                         <constraint firstItem="PV8-Oy-hSI" firstAttribute="leading" secondItem="vgd-9N-n3a" secondAttribute="trailing" constant="20" id="VqB-vJ-YEk"/>
                                         <constraint firstItem="vgd-9N-n3a" firstAttribute="centerY" secondItem="vUU-2k-gl1" secondAttribute="centerY" id="ZKp-VL-5A9"/>
                                         <constraint firstAttribute="trailing" secondItem="PV8-Oy-hSI" secondAttribute="trailing" constant="20" id="nn3-cR-gPA"/>
+                                        <constraint firstItem="yTW-T1-KQS" firstAttribute="centerY" secondItem="vUU-2k-gl1" secondAttribute="centerY" id="q9l-N7-g4v"/>
                                         <constraint firstItem="PV8-Oy-hSI" firstAttribute="centerY" secondItem="vUU-2k-gl1" secondAttribute="centerY" id="utj-s7-e6A"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" red="0.1215686275" green="0.1333333333" blue="0.1647058824" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
+                                    <outlet property="adminLabel" destination="yTW-T1-KQS" id="lDk-HI-sQY"/>
                                     <outlet property="avatarView" destination="vgd-9N-n3a" id="cTc-kk-ebU"/>
                                     <outlet property="letterLabel" destination="cXa-T8-mMm" id="qbI-Bk-xOb"/>
                                     <outlet property="usernameLabel" destination="PV8-Oy-hSI" id="BHT-JE-7Bi"/>

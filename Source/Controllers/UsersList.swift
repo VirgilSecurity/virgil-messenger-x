@@ -14,6 +14,7 @@ protocol DeleteItemDelegate: class {
 }
 
 class UsersListViewController: UITableViewController {
+    public var admin: String? = nil
     public var users: [Card] = []
 
     public weak var cellTapDelegate: CellTapDelegate?
@@ -37,13 +38,13 @@ class UsersListViewController: UITableViewController {
         cell.tag = self.users.count - indexPath.row - 1
         cell.delegate = self.cellTapDelegate
 
-        cell.configure(with: self.users)
+        cell.configure(with: self.users, admin: self.admin)
 
         return cell
     }
 
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return self.deleteItemDelegate != nil
+        return self.deleteItemDelegate != nil && self.admin == Virgil.ethree.identity
     }
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

@@ -11,11 +11,11 @@ import VirgilSDK
 import TwilioChatClient
 
 extension CoreData {
-    func createGroupChannel(name: String, sid: String, cards: [Card]) throws -> Channel {
-        return try self.createChannel(type: .group, sid: sid, name: name, cards: cards)
+    func createGroupChannel(name: String, sid: String, initiator: String, cards: [Card]) throws -> Channel {
+        return try self.createChannel(type: .group, sid: sid, name: name, initiator: initiator, cards: cards)
     }
 
-    func createSingleChannel(sid: String, card: Card) throws -> Channel {
+    func createSingleChannel(sid: String, initiator: String, card: Card) throws -> Channel {
         guard card.identity != Virgil.ethree.identity else {
             throw NSError()
         }
@@ -24,15 +24,16 @@ extension CoreData {
             return channel
         }
 
-        return try self.createChannel(type: .single, sid: sid, name: card.identity, cards: [card])
+        return try self.createChannel(type: .single, sid: sid, name: card.identity, initiator: initiator, cards: [card])
     }
 
-    private func createChannel(type: ChannelType, sid: String, name: String, cards: [Card]) throws -> Channel {
+    private func createChannel(type: ChannelType, sid: String, name: String, initiator: String, cards: [Card]) throws -> Channel {
         let cards = cards.filter { $0.identity != Virgil.ethree.identity }
         let account = try self.getCurrentAccount()
 
         let channel = try Channel(sid: sid,
                                   name: name,
+                                  initiator: initiator,
                                   type: type,
                                   account: account,
                                   cards: cards,

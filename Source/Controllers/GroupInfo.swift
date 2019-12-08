@@ -15,6 +15,7 @@ class GroupInfoViewController: ViewController {
     @IBOutlet weak var letterLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var usersListHeight: NSLayoutConstraint!
+    @IBOutlet weak var addButton: UIBarButtonItem!
     
     public var channel: Channel!
     public var dataSource: DataSource!
@@ -26,8 +27,11 @@ class GroupInfoViewController: ViewController {
 
         self.letterLabel.text = String(describing: self.channel.letter)
         self.nameLabel.text = self.channel.name
-
         self.avatarView.draw(with: self.channel.colors)
+
+        let isHidden = self.channel.initiator != Twilio.shared.identity
+        self.addButton.isEnabled = isHidden
+        self.addButton.tintColor = UIColor.clear
 
         self.setupObservers()
     }
@@ -61,7 +65,6 @@ class GroupInfoViewController: ViewController {
         if let userList = segue.destination as? UsersListViewController {
             self.usersListController = userList
             self.updateUserList()
-
         }
         else if let addMembers = segue.destination as? AddMembersViewController {
             addMembers.dataSource = self.dataSource
@@ -73,6 +76,7 @@ class GroupInfoViewController: ViewController {
             userList.deleteItemDelegate = self.channel.cards.count > 1 ? self : nil
 
             userList.users = self.channel.cards
+            userList.admin = self.channel.initiator
             userList.tableView.reloadData()
 
             let height = userList.tableView.rowHeight
