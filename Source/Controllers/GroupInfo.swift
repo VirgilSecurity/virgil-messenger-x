@@ -29,9 +29,12 @@ class GroupInfoViewController: ViewController {
         self.nameLabel.text = self.channel.name
         self.avatarView.draw(with: self.channel.colors)
 
-        let isHidden = self.channel.initiator != Twilio.shared.identity
-        self.addButton.isEnabled = isHidden
-        self.addButton.tintColor = UIColor.clear
+        let isEnabled = self.channel.initiator == Twilio.shared.identity
+        self.addButton.isEnabled = isEnabled
+
+        if !isEnabled {
+            self.addButton.tintColor = UIColor.clear
+        }
 
         self.setupObservers()
     }

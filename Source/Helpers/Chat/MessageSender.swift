@@ -12,21 +12,25 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public func sendChangeMembers(message: String, coreChannel: Channel) -> CallbackOperation<Void> {
+    public func sendChangeMembers(uiModel: UITextMessageModel, coreChannel: Channel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
                 let twilioChannel = try Twilio.shared.getCurrentChannel()
 
                 let group = try coreChannel.getGroup()
 
-                let ciphertext = try group.encrypt(text: message)
+                let ciphertext = try group.encrypt(text: uiModel.body)
 
                 try twilioChannel.send(ciphertext: ciphertext, type: .service).startSync().get()
 
-                _ = try CoreData.shared.createChangeMembersMessage(message, isIncoming: false)
+                _ = try CoreData.shared.createChangeMembersMessage(uiModel.body, isIncoming: false)
+
+                self.updateMessage(uiModel, status: .success)
 
                 completion((), nil)
-            } catch {
+            }
+            catch {
+                self.updateMessage(uiModel, status: .failed)
                 completion(nil, error)
             }
         }

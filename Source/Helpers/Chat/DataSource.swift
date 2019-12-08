@@ -143,11 +143,6 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addChangeMembers(message: String) throws {
-        // FIXME
-        guard Configurator.isUpdated else {
-            return
-        }
-
         self.nextMessageId += 1
         let id = self.nextMessageId
 
@@ -157,7 +152,7 @@ class DataSource: ChatDataSourceProtocol {
                                          status: .sending,
                                          date: Date())
 
-        try self.messageSender.sendChangeMembers(message: message, coreChannel: self.channel)
+        try self.messageSender.sendChangeMembers(uiModel: uiModel, coreChannel: self.channel)
             .startSync()
             .get()
 
