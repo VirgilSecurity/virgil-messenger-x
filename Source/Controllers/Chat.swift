@@ -89,6 +89,14 @@ class ChatViewController: BaseChatViewController {
         self.dataSource.setupObservers()
     }
 
+    deinit {
+        if Configurator.isInitialized {
+            Twilio.shared.deselectChannel()
+        }
+        
+        CoreData.shared.deselectChannel()
+    }
+
     private func setupObservers() {
         let popToRoot: Notifications.Block = { [weak self] _ in
             DispatchQueue.main.async {

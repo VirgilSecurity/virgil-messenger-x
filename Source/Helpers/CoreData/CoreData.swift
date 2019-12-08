@@ -86,6 +86,7 @@ class CoreData {
 
     func setCurrent(channel: Channel) {
         self.currentChannel = channel
+        Log.debug("Core Data channel selected: \(String(describing: self.currentChannel?.name))")
     }
 
     func append(account: Account) {
@@ -93,11 +94,12 @@ class CoreData {
     }
 
     func deselectChannel() {
+        Log.debug("Core Data channel deselected: \(String(describing: self.currentChannel?.name))")
         self.currentChannel = nil
     }
 
     func resetState() {
         self.currentAccount = nil
-        self.currentChannel = nil
+        self.deselectChannel()
     }
 }

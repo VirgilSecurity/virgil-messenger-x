@@ -33,12 +33,6 @@ class ChatListViewController: ViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if Configurator.isInitialized {
-            Twilio.shared.deselectChannel()
-        }
-
-        CoreData.shared.deselectChannel()
-
         self.reloadTableView()
     }
 
