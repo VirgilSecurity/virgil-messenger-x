@@ -25,7 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.rootViewController = startController
 
         // Clear core data if it's first launch
-        // FIXME: if it's first launch on new major version.
         self.cleanLocalStorage()
 
         // Registering for remote notifications
@@ -41,10 +40,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func cleanLocalStorage() {
-        if UserDefaults.standard.string(forKey: "first_launch")?.isEmpty ?? true {
+        let key = CoreData.dbName
+
+        if UserDefaults.standard.string(forKey: key)?.isEmpty ?? true {
             try? CoreData.shared.clearStorage()
 
-            UserDefaults.standard.set("happened", forKey: "first_launch")
+            UserDefaults.standard.set("initialized", forKey: key)
             UserDefaults.standard.synchronize()
         }
     }
@@ -67,7 +68,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         }
                     }
 
-                } else if settings.authorizationStatus == .authorized {
+                }
+                else if settings.authorizationStatus == .authorized {
                     DispatchQueue.main.async {
                         app.registerForRemoteNotifications()
                     }

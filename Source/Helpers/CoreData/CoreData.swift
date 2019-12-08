@@ -18,8 +18,10 @@ class CoreData {
 
     let managedContext: NSManagedObjectContext
 
+    public static let dbName = "VirgilMessenger-2"
+
     let persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "VirgilMessenger-2")
+        let container = NSPersistentContainer(name: CoreData.dbName)
 
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
@@ -69,6 +71,8 @@ class CoreData {
     }
 
     public func clearStorage() throws {
+        Log.debug("Cleaning CoreData storage")
+
         for account in self.accounts {
             try account.channels.forEach { try self.delete(channel: $0) }
 
