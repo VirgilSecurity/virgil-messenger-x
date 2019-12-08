@@ -12,69 +12,56 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public func sendChangeMembers(message: Message) -> CallbackOperation<Void> {
+    public func sendChangeMembers(message: String, coreChannel: Channel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                let channel = try Twilio.shared.getCurrentChannel()
+                let twilioChannel = try Twilio.shared.getCurrentChannel()
 
-                let plaintext = try message.getBody()
+                let group = try coreChannel.getGroup()
 
-                let group = try message.channel.getGroup()
+                let ciphertext = try group.encrypt(text: message)
 
-                let ciphertext = try group.encrypt(text: plaintext)
+                try twilioChannel.send(ciphertext: ciphertext, type: .service).startSync().get()
 
-                channel.send(ciphertext: ciphertext, type: .service).start(completion: completion)
+                _ = try CoreData.shared.createChangeMembersMessage(message, isIncoming: false)
+
+                completion((), nil)
             } catch {
                 completion(nil, error)
             }
         }
     }
 
-    public func send(message: Message, withId id: Int) throws -> UIMessageModelProtocol {
-        let cards = message.channel.cards
-
-        let channel = try Twilio.shared.currentChannel ?? Twilio.shared.getChannel(message.channel)
-
-        let uiModel = message.exportAsUIModel(withId: id, status: .sending)
+    public func send(uiModel: UITextMessageModel, coreChannel: Channel) throws {
+        let twilioChannel = try Twilio.shared.getCurrentChannel()
 
         self.queue.async {
             do {
-                switch message.type {
-                case .text:
-                    let plaintext = try message.getBody()
+                let plaintext = uiModel.body
 
-                    let ciphertext: String
-                    switch message.channel.type {
-                    case .group:
-                        let group = try message.channel.getGroup()
+                let ciphertext: String
 
-                        ciphertext = try group.encrypt(text: plaintext)
-                    case .single:
-                        ciphertext = try Virgil.ethree.authEncrypt(text: plaintext, for: cards.first!)
-                    }
+                switch coreChannel.type {
+                case .group:
+                    let group = try coreChannel.getGroup()
 
-                    try channel.send(ciphertext: ciphertext, type: .regular).startSync().get()
-                case .photo:
-                    break
-                case .audio:
-                    break
-                case .changeMembers:
-                    let plaintext = try message.getBody()
-
-                    let group = try message.channel.getGroup()
-
-                    let ciphertext = try group.encrypt(text: plaintext)
-
-                    try channel.send(ciphertext: ciphertext, type: .service).startSync().get()
+                    ciphertext = try group.encrypt(text: plaintext)
+                case .single:
+                    ciphertext = try Virgil.ethree.authEncrypt(text: plaintext, for: coreChannel.getCard())
                 }
+
+                try twilioChannel.send(ciphertext: ciphertext, type: .regular).startSync().get()
+
+                _ = try CoreData.shared.createTextMessage(plaintext,
+                                                          in: coreChannel,
+                                                          isIncoming: uiModel.isIncoming,
+                                                          date: uiModel.date)
 
                 self.updateMessage(uiModel, status: .success)
             } catch {
                 self.updateMessage(uiModel, status: .failed)
             }
         }
-
-        return uiModel
     }
 
     private func updateMessage(_ message: UIMessageModelProtocol, status: MessageStatus) {

@@ -78,6 +78,7 @@ class MessageProcessor {
                 decrypted = try Virgil.ethree.authDecrypt(text: text, from: channel.cards.first)
             } catch {
                 try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
+                // FIXME
                 return nil
             }
 

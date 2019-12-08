@@ -16,12 +16,9 @@ extension ChatsManager {
                 let group = try dataSource.channel.getGroup()
                 try group.add(participants: newMembers).startSync().get()
 
-                // Make changeMembersMessage
-                let text = "added \(newMembers.joined(separator: ", "))"
-                let message = try CoreData.shared.createChangeMembersMessage(text, isIncoming: false)
-
                 // Send Service Message to group chat
-                try dataSource.addChangeMembers(message: message)
+                let text = "added \(newMembers.joined(separator: ", "))"
+                try dataSource.addChangeMembers(message: text)
 
                 // Invite members to Twilio Channel
                 try Twilio.shared.add(members: newMembers).startSync().get()
@@ -44,12 +41,9 @@ extension ChatsManager {
                 let group = try dataSource.channel.getGroup()
                 try group.remove(participant: member).startSync().get()
 
-                // Make changeMembersMessage
-                let text = "removed \(member)"
-                let message = try CoreData.shared.createChangeMembersMessage(text, isIncoming: false)
-
                 // Send Service Message to group chat
-                try dataSource.addChangeMembers(message: message)
+                let text = "removed \(member)"
+                try dataSource.addChangeMembers(message: text)
 
                 // Remove guy from Twilio channel
                 try Twilio.shared.remove(member: member).startSync().get()

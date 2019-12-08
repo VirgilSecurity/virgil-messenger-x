@@ -127,32 +127,39 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addTextMessage(_ text: String) throws {
-        let message = try CoreData.shared.createTextMessage(text, isIncoming: false)
-
         self.nextMessageId += 1
         let id = self.nextMessageId
 
-        let uiModel = try self.messageSender.send(message: message, withId: id)
+        let uiModel = UITextMessageModel(uid: id,
+                                         text: text,
+                                         isIncoming: false,
+                                         status: .sending,
+                                         date: Date())
+
+        try self.messageSender.send(uiModel: uiModel, coreChannel: self.channel)
 
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
-    func addChangeMembers(message: Message) throws {
+    func addChangeMembers(message: String) throws {
+        // FIXME
         guard Configurator.isUpdated else {
             return
-        }
-
-        guard message.type == .changeMembers else {
-            throw NSError()
         }
 
         self.nextMessageId += 1
         let id = self.nextMessageId
 
-        try self.messageSender.sendChangeMembers(message: message).startSync().get()
+        let uiModel = UITextMessageModel(uid: id,
+                                         text: message,
+                                         isIncoming: false,
+                                         status: .sending,
+                                         date: Date())
 
-        let uiModel = message.exportAsUIModel(withId: id)
+        try self.messageSender.sendChangeMembers(message: message, coreChannel: self.channel)
+            .startSync()
+            .get()
 
         self.slidingWindow.insertItem(uiModel, position: .bottom)
 
