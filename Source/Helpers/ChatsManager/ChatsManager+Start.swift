@@ -8,6 +8,7 @@
 
 import VirgilSDK
 import TwilioChatClient
+import VirgilE3Kit
 
 public enum ChatsManager {
     public static func startSingle(with identity: String,
@@ -37,13 +38,18 @@ public enum ChatsManager {
     }
 
     public static func startSingle(with identity: String) throws {
-        let card = try Virgil.ethree.findUser(with: identity).startSync().get()
+        do {
+            let card = try Virgil.ethree.findUser(with: identity).startSync().get()
 
-        let channel = try Twilio.shared.createSingleChannel(with: identity).startSync().get()
+            let channel = try Twilio.shared.createSingleChannel(with: identity).startSync().get()
 
-        let sid = try channel.getSid()
+            let sid = try channel.getSid()
 
-        _ = try CoreData.shared.createSingleChannel(sid: sid, initiator: Twilio.shared.identity, card: card)
+            _ = try CoreData.shared.createSingleChannel(sid: sid, initiator: Twilio.shared.identity, card: card)
+        }
+        catch FindUsersError.cardWasNotFound {
+            throw UserFriendlyError.userNotFound
+        }
     }
     
     public static func startGroup(with channels: [Channel],

@@ -11,6 +11,13 @@ import VirgilSDK
 import TwilioChatClient
 
 extension CoreData {
+    private func save(_ channel: Channel) throws {
+        let channels = channel.account.mutableOrderedSetValue(forKey: Account.ChannelsKey)
+        channels.add(channel)
+
+        try self.saveContext()
+    }
+
     func createGroupChannel(name: String, sid: String, initiator: String, cards: [Card]) throws -> Channel {
         return try self.createChannel(type: .group, sid: sid, name: name, initiator: initiator, cards: cards)
     }
@@ -39,7 +46,7 @@ extension CoreData {
                                   cards: cards,
                                   managedContext: self.managedContext)
 
-        try self.saveContext()
+        try self.save(channel)
 
         return channel
     }

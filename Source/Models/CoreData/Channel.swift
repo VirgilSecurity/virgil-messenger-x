@@ -121,13 +121,11 @@ public class Channel: NSManagedObject {
         self.sid = sid
         self.name = name
         self.initiator = initiator
+        self.account = account
         self.type = type
         self.cards = cards
         self.createdAt = Date()
         self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
-
-        let accountChannels = account.mutableOrderedSetValue(forKey: Account.ChannelsKey)
-        accountChannels.add(self)
     }
 
     public func getCard() throws -> Card {
