@@ -44,7 +44,7 @@ class CreateGroupViewController: ViewController {
         let bounds = UIScreen.main.bounds
 
         // FIXME
-        let height = max(self.usersListHeight.constant + 170, bounds.height)
+        let height = max(self.usersListHeight.constant + 170, bounds.height - self.topBarHeight)
 
         self.scrollView.contentSize = CGSize(width: bounds.width, height: height)
     }
