@@ -22,7 +22,6 @@ class CreateGroupViewController: ViewController {
         super.viewDidLoad()
 
         self.setupNameTextField()
-        self.updateScrollViewContentSize()
     }
 
     override func viewDidLayoutSubviews() {
@@ -108,8 +107,6 @@ class CreateGroupViewController: ViewController {
 
             let height = userList.tableView.rowHeight
             self.usersListHeight.constant = CGFloat(self.members.count) * height
-
-            self.updateScrollViewContentSize()
         }
     }
 
