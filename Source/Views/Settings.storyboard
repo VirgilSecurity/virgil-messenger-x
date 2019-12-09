@@ -120,7 +120,7 @@ Under Open Source Licence X.
 Feel free to reuse app or any parts of the source with no restrictions whatsoever.
 Technologies: Virgil E3KIT, Virgil’s Card Service, Twilio Programmable Chat, etc.</string>
                                         <attributes>
-                                            <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="NSColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <font key="NSFont" size="16" name="Helvetica-Bold"/>
                                             <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" lineHeightMultiple="2" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
