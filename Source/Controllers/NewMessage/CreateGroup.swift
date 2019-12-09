@@ -14,6 +14,7 @@ class CreateGroupViewController: ViewController {
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var createButton: UIBarButtonItem!
     @IBOutlet weak var usersListHeight: NSLayoutConstraint!
+    @IBOutlet weak var scrollView: UIScrollView!
 
     public var members: [Channel] = []
 
@@ -21,6 +22,13 @@ class CreateGroupViewController: ViewController {
         super.viewDidLoad()
 
         self.setupNameTextField()
+        self.updateScrollViewContentSize()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        self.updateScrollViewContentSize()
     }
 
     private func setupNameTextField() {
@@ -31,6 +39,15 @@ class CreateGroupViewController: ViewController {
         let placeholderString = NSAttributedString.init(string: "Group Name",
                                                         attributes: placeholderAttributes)
         self.nameTextField.attributedPlaceholder = placeholderString
+    }
+
+    private func updateScrollViewContentSize() {
+        let bounds = UIScreen.main.bounds
+
+        // FIXME
+        let height = max(self.usersListHeight.constant + 170, bounds.height)
+
+        self.scrollView.contentSize = CGSize(width: bounds.width, height: height)
     }
 
     @IBAction func createTapped(_ sender: Any) {
@@ -72,7 +89,7 @@ class CreateGroupViewController: ViewController {
         }
         else {
             letterLabel.text = ""
-            createButton.isEnabled = true
+            createButton.isEnabled = false
         }
     }
 
@@ -91,6 +108,8 @@ class CreateGroupViewController: ViewController {
 
             let height = userList.tableView.rowHeight
             self.usersListHeight.constant = CGFloat(self.members.count) * height
+
+            self.updateScrollViewContentSize()
         }
     }
 

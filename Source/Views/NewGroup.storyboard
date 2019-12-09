@@ -197,6 +197,7 @@ Add new one!</string>
                         <outlet property="createButton" destination="2sJ-86-nXc" id="Zw2-oT-pWA"/>
                         <outlet property="letterLabel" destination="Fdj-eZ-muc" id="ll9-eq-lgh"/>
                         <outlet property="nameTextField" destination="FXl-NM-xoy" id="Khy-hF-dQV"/>
+                        <outlet property="scrollView" destination="IXm-ML-IiX" id="o5z-8x-3Sy"/>
                         <outlet property="usersListHeight" destination="4VW-XB-VPR" id="oEl-eS-Xth"/>
                     </connections>
                 </viewController>

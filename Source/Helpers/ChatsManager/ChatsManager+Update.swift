@@ -79,6 +79,7 @@ extension ChatsManager {
     public static func update(twilioChannel: TCHChannel) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
+                Log.debug("Updating channel: \(String(describing: twilioChannel))")
                 let attributes = try twilioChannel.getAttributes()
 
                 // Update CoreData

@@ -96,6 +96,7 @@
                         <outlet property="avatarView" destination="fd5-eN-nwL" id="yfV-2O-02T"/>
                         <outlet property="letterLabel" destination="c6x-M6-9F7" id="b2R-IV-2Wi"/>
                         <outlet property="nameLabel" destination="i4n-lh-axn" id="rF2-1D-pCf"/>
+                        <outlet property="scrollView" destination="qnp-uP-EHJ" id="brg-C7-T7D"/>
                         <outlet property="usersListHeight" destination="ltC-ep-vVe" id="GaM-HU-aVI"/>
                         <segue destination="Mqi-j1-WPX" kind="show" identifier="goToAddMembers" id="X1I-10-WqX"/>
                     </connections>

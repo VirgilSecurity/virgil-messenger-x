@@ -16,6 +16,7 @@ class GroupInfoViewController: ViewController {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var usersListHeight: NSLayoutConstraint!
     @IBOutlet weak var addButton: UIBarButtonItem!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     public var channel: Channel!
     public var dataSource: DataSource!
@@ -45,6 +46,12 @@ class GroupInfoViewController: ViewController {
         self.updateUserList()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        self.updateScrollViewContentSize()
+    }
+
     private func setupObservers() {
         let popToRoot: Notifications.Block = { [weak self] _ in
             DispatchQueue.main.async {
@@ -61,6 +68,16 @@ class GroupInfoViewController: ViewController {
         Notifications.observe(for: .currentChannelDeleted, block: popToRoot)
         Notifications.observe(for: .messageAddedToCurrentChannel, block: processMessage)
     }
+
+    private func updateScrollViewContentSize() {
+        let bounds = UIScreen.main.bounds
+
+        // FIXME
+        let height = max(self.usersListHeight.constant + 170, bounds.height)
+
+        self.scrollView.contentSize = CGSize(width: bounds.width, height: height)
+    }
+
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
