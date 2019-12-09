@@ -69,7 +69,8 @@ class CreateGroupViewController: ViewController {
         if let name = nameTextField.text, let letter = name.uppercased().first {
             letterLabel.text = String(letter)
             createButton.isEnabled = true
-        } else {
+        }
+        else {
             letterLabel.text = ""
             createButton.isEnabled = true
         }

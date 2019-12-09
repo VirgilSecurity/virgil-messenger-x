@@ -53,11 +53,14 @@ class ChooseMembersCell: UITableViewCell, BEMCheckBoxDelegate {
         self.radioButton.setOn(!self.isMember, animated: true)
     }
 
-    public func configure(with users: [Channel]) {
+    public func configure(with users: [Channel], selected: [Channel]) {
         guard let user = users[safe: self.tag] else {
             return
         }
 
+        let isSelected = selected.contains(user)
+
+        self.radioButton.setOn(isSelected, animated: true)
         self.usernameLabel.text = user.name
         self.letterLabel.text = user.letter
         self.avatarView.draw(with: user.colors)

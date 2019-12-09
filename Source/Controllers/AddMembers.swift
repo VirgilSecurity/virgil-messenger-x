@@ -110,7 +110,7 @@ extension AddMembersViewController: UITableViewDataSource {
         cell.tag = indexPath.row
         cell.delegate = self
 
-        cell.configure(with: self.channels)
+        cell.configure(with: self.channels, selected: selected)
 
         return cell
     }
