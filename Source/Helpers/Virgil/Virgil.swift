@@ -41,15 +41,6 @@ public class Virgil {
         self.shared = Virgil(client: client, verifier: verifier)
     }
 
-    public func getGroup(id: Data) throws -> Group {
-        guard let group = try Virgil.ethree.getGroup(id: id) else {
-            // FIXME
-            throw NSError()
-        }
-
-        return group
-    }
-
     func importCard(fromBase64Encoded card: String) throws -> Card {
         return try CardManager.importCard(fromBase64Encoded: card,
                                           crypto: self.crypto,

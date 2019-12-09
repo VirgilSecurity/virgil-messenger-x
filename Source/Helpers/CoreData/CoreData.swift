@@ -42,6 +42,7 @@ class CoreData {
         case invalidChannel = 5
         case invalidMessage = 6
         case accountNotFound = 7
+        case missingVirgilGroup = 8
     }
 
     private init() {

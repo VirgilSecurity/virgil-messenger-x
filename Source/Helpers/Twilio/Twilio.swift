@@ -33,6 +33,7 @@ public class Twilio: NSObject {
         case invalidMessage = 5
         case nilCurrentChannel = 6
         case channelNotFound = 7
+        case noSuchMember = 8
     }
 
     private init(identity: String) {

@@ -24,7 +24,7 @@ extension CoreData {
 
     func createSingleChannel(sid: String, initiator: String, card: Card) throws -> Channel {
         guard card.identity != Virgil.ethree.identity else {
-            throw NSError()
+            throw UserFriendlyError.createSelfChatForbidded
         }
 
         if let channel = self.getChannel(withName: card.identifier) {

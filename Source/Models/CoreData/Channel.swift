@@ -138,7 +138,7 @@ public class Channel: NSManagedObject {
 
     public func getGroup() throws -> Group {
         guard self.type == .group, let group = self.group else {
-            throw NSError()
+            throw CoreData.Error.missingVirgilGroup
         }
 
         return group

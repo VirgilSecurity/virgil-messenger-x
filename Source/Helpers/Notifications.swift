@@ -41,10 +41,10 @@ public class Notifications {
         return Notification.Name(rawValue: notification.rawValue)
     }
 
-    public static func parse<T>(_ notification: Notification, for key: NotificationKeys) throws -> T {
+    public static func parse<T>(_ notification: Notification, for key: NotificationKeys) -> T? {
         guard let userInfo = notification.userInfo,
             let result = userInfo[key.rawValue] as? T else {
-                throw NSError()
+                return nil
         }
 
         return result

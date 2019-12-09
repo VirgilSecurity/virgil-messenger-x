@@ -105,28 +105,6 @@ extension TCHChannel {
         }
     }
 
-//    func getMembers() -> CallbackOperation<Void> {
-//        return CallbackOperation { _, completion in
-//            guard let members = self.members else {
-//                completion(nil, Twilio.Error.invalidChannel)
-//                return
-//            }
-//
-//            members.members { result, paginator in
-//                if let error = result.error {
-//                    completion(nil, error)
-//                }
-//                else {
-//                    let members = paginator?.items()
-//
-//                    Log.debug("AAA members: \(members!.count)")
-//
-//                    completion((), nil)
-//                }
-//            }
-//        }
-//    }
-
     func add(identity: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             guard let members = self.members else {
@@ -152,7 +130,7 @@ extension TCHChannel {
                 }
 
                 guard let member = self.member(withIdentity: identity) else {
-                    throw NSError()
+                    throw Twilio.Error.noSuchMember
                 }
 
                 members.remove(member) { result in
