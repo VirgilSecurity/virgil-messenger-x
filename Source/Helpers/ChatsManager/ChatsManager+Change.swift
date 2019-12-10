@@ -29,7 +29,8 @@ extension ChatsManager {
                 try CoreData.shared.updateCards(with: cards, for: dataSource.channel)
 
                 completion((), nil)
-            } catch {
+            }
+            catch {
                 completion(nil, error)
             }
         }
@@ -54,7 +55,8 @@ extension ChatsManager {
                 try CoreData.shared.updateCards(with: cards, for: dataSource.channel)
 
                 completion((), nil)
-            } catch {
+            }
+            catch {
                 completion(nil, error)
             }
         }

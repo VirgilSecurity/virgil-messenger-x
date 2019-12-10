@@ -56,7 +56,7 @@ class CreateGroupViewController: ViewController {
 
         self.view.endEditing(true)
 
-        guard self.checkReachability() else {
+        guard self.checkReachability(), Configurator.isUpdated else {
             return
         }
 
