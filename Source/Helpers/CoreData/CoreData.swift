@@ -18,7 +18,7 @@ class CoreData {
 
     let managedContext: NSManagedObjectContext
 
-    public static let dbName = "VirgilMessenger-2"
+    public static let dbName = "VirgilMessenger-3"
 
     let persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: CoreData.dbName)

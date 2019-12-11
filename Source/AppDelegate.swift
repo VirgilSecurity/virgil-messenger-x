@@ -10,6 +10,7 @@ import UserNotifications
 import UIKit
 import Fabric
 import Crashlytics
+import VirgilSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -40,13 +41,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func cleanLocalStorage() {
-        let key = CoreData.dbName
+        do {
+            let key = CoreData.dbName
 
-        if UserDefaults.standard.string(forKey: key)?.isEmpty ?? true {
-            try? CoreData.shared.clearStorage()
+            if UserDefaults.standard.string(forKey: key)?.isEmpty ?? true {
+                try? CoreData.shared.clearStorage()
 
-            UserDefaults.standard.set("initialized", forKey: key)
-            UserDefaults.standard.synchronize()
+                // Clean keychain
+                let params = try KeychainStorageParams.makeKeychainStorageParams()
+                let keychain = KeychainStorage(storageParams: params)
+
+                try keychain.deleteAllEntries()
+
+                UserDefaults.standard.set("initialized", forKey: key)
+                UserDefaults.standard.synchronize()
+            }
+        }
+        catch {
+            Log.error("cleanLocalStorageError: \(error.localizedDescription)")
         }
     }
 

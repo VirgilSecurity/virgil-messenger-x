@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--NewMessage-->
+        <!--New Message-->
         <scene sceneID="aW0-vC-yGt">
             <objects>
                 <viewController hidesBottomBarWhenPushed="YES" id="b9b-en-zfh" customClass="NewMessageViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
@@ -60,7 +60,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="pk7-RY-Hks"/>
                     </view>
-                    <navigationItem key="navigationItem" title="NewMessage" id="iYj-7Y-xhJ">
+                    <navigationItem key="navigationItem" title="New Message" id="iYj-7Y-xhJ">
                         <barButtonItem key="backBarButtonItem" title="Back" id="8c3-r0-P6w"/>
                     </navigationItem>
                     <connections>
