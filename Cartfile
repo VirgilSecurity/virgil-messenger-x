@@ -1,4 +1,5 @@
-github "VirgilSecurity/virgil-foundation-x" ~> 3.1.2
-github "VirgilSecurity/virgil-sdk-x" ~> 5.0
-github "badoo/Chatto" "master"
+github "VirgilSecurity/virgil-e3kit-x" "develop-strings"
+github "twilio/twilio-chat-ios" ~> 2.6
+github "Ogerets/Chatto" "messenger-stable"
 github "pkluz/PKHUD"
+github "Boris-Em/BEMCheckBox" ~> 1.4.1

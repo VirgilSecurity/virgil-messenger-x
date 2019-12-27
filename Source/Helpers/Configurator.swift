@@ -1,0 +1,85 @@
+//
+//  Configurator.swift
+//  VirgilMessenger
+//
+//  Created by Yevhen Pyvovarov on 3/26/19.
+//  Copyright © 2019 VirgilSecurity. All rights reserved.
+//
+
+import VirgilSDK
+
+public class Configurator {
+    public static var state: String? {
+        if !Configurator.isInitialized {
+            return "Connecting"
+        } else if !Configurator.isUpdated {
+            return "Updating"
+        }
+
+        return nil
+    }
+
+    private(set) static var isInitialized: Bool = false {
+        didSet {
+            if isInitialized == true {
+                Notifications.post(.initializingSucceed)
+            }
+        }
+    }
+    private(set) static var isUpdated: Bool = false {
+        didSet {
+            if isUpdated == true {
+                Notifications.post(.updatingSucceed)
+            }
+        }
+    }
+
+    private static func initialize() -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
+            do {
+                let account = try CoreData.shared.getCurrentAccount()
+                let identity = account.identity
+
+                try Twilio.makeInitTwilioOperation(identity: identity,
+                                                   client: Virgil.shared.client)
+                    .startSync()
+                    .get()
+
+                self.isInitialized = true
+
+                if let channel = CoreData.shared.currentChannel {
+                    try Twilio.shared.setChannel(channel)
+                }
+
+                completion((), nil)
+            } catch {
+                completion(nil, error)
+            }
+        }
+    }
+
+    public static func configure() {
+        let initialize = self.initialize()
+        let update = ChatsManager.updateChannels()
+
+        update.addDependency(initialize)
+
+        let completion = OperationUtils.makeCompletionOperation { (_ result: Void?, error: Error?) in
+            if let error = error {
+                Notifications.post(error: error)
+            } else {
+                self.isUpdated = true
+            }
+        }
+
+        completion.addDependency(update)
+
+        let queue = OperationQueue()
+        queue.addOperations([initialize, update, completion], waitUntilFinished: false)
+    }
+
+    public static func reset() {
+        self.isInitialized = false
+        self.isUpdated = false
+    }
+}
