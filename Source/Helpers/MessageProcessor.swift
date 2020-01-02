@@ -15,7 +15,7 @@ import VirgilSDKRatchet
 
 class MessageProcessor {
     static func process(message: TCHMessage, from twilioChannel: TCHChannel, coreChannel: Channel? = nil) throws -> Message? {
-        let isIncoming = message.author == Twilio.shared.identity ? false : true
+        let isIncoming = message.author == Virgil.ethree.identity ? false : true
 
         let date = try message.getDate()
         let index = try message.getIndex()

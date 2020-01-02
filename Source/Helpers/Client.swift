@@ -83,7 +83,7 @@ extension Client {
                                                       identity: identity)
         let exportedRawCard = try rawCard.exportAsJson()
 
-        let requestURL = URLConstansts.signUpEndpoint
+        let requestURL = URLConstants.signUpEndpoint
         let headers = ["Content-Type": "application/json"]
         let params = ["rawCard": exportedRawCard]
         let body = try JSONSerialization.data(withJSONObject: params, options: [])
@@ -122,7 +122,7 @@ extension Client {
         let authHeader = try self.makeAuthHeader(cardId: user.card.identifier,
                                                  privateKey: user.keyPair.privateKey)
 
-        let requestURL = URLConstansts.twilioJwtEndpoint
+        let requestURL = URLConstants.twilioJwtEndpoint
         let headers = ["Content-Type": "application/json",
                        "Authorization": authHeader]
         let params = ["identity": identity]
@@ -147,7 +147,7 @@ extension Client {
 
         let authHeader = try self.makeAuthHeader(cardId: user.card.identifier, privateKey: user.keyPair.privateKey)
 
-        let requestURL = URLConstansts.virgilJwtEndpoint
+        let requestURL = URLConstants.virgilJwtEndpoint
         let headers = ["Content-Type": "application/json",
                        "Authorization": authHeader]
         let params = ["identity": identity]

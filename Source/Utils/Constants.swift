@@ -8,10 +8,13 @@
 
 import UIKit
 
-enum URLConstansts {
-    static let virgilJwtEndpoint = URL(string: "https://messenger.virgilsecurity.com/get-virgil-jwt/")!
-    static let twilioJwtEndpoint = URL(string: "https://messenger.virgilsecurity.com/get-twilio-jwt/")!
-    static let signUpEndpoint = URL(string: "https://messenger.virgilsecurity.com/signup/")!
+enum URLConstants {
+    static let ejaberdHost: String = "xmpp-test-int.virgilsecurity.com"
+    static let ejaberdHostPort: UInt16 = 5222
+
+    static let virgilJwtEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/get-virgil-jwt/")!
+    static let twilioJwtEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/get-twilio-jwt/")!
+    static let signUpEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/signup/")!
 
     static let termsAndConditionsURL = "https://virgilsecurity.com/terms-of-service"
     static let privacyURL = "https://virgilsecurity.com/privacy-policy"

@@ -17,8 +17,11 @@ public class UserAuthorizer {
 
     public let virgilAuthorizer: VirgilAuthorizer
 
+    public let ejaberdAuthorizer: EjaberdAuthorizer
+
     public init() {
         self.virgilAuthorizer = try! VirgilAuthorizer()
+        self.ejaberdAuthorizer = EjaberdAuthorizer()
     }
 
     public func signIn() throws {
@@ -42,6 +45,8 @@ public class UserAuthorizer {
    public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
+                try self.ejaberdAuthorizer.register(identity: identity)
+
                 _ = try self.virgilAuthorizer.signUp(identity: identity)
 
                 try CoreData.shared.createAccount(withIdentity: identity)
@@ -49,7 +54,8 @@ public class UserAuthorizer {
                 UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
@@ -69,7 +75,8 @@ public class UserAuthorizer {
                 UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
