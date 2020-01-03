@@ -29,12 +29,9 @@
 		162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */; };
 		16317B9922C506A200A3144A /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16317B9822C506A200A3144A /* Notifications.swift */; };
 		163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */; };
-		163E89A322BAD94000051D4B /* TCHChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163E89A222BAD94000051D4B /* TCHChannel.swift */; };
-		163E89A522BADA0C00051D4B /* TCHMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163E89A422BADA0C00051D4B /* TCHMessage.swift */; };
 		1640C021227B2C5300D585E3 /* TwilioChatClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1640C020227B2C5300D585E3 /* TwilioChatClient.framework */; };
 		1644C07920B720F000073D99 /* View.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1644C07820B720F000073D99 /* View.xcassets */; };
 		1644C07B20B85AC500073D99 /* UIPhotosChatInputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1644C07A20B85AC500073D99 /* UIPhotosChatInputItem.swift */; };
-		164B3F2A238FD63F00608542 /* ChatsManager+Change.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D4614A22A15DE100B3C268 /* ChatsManager+Change.swift */; };
 		164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */; };
 		164E173020AAEECD00AB1AAD /* UIAudioMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E172F20AAEECD00AB1AAD /* UIAudioMessageModel.swift */; };
 		164E173220AAEF1900AB1AAD /* UIAudioMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E173120AAEF1900AB1AAD /* UIAudioMessageHandler.swift */; };
@@ -115,7 +112,6 @@
 		16F8F3BB22649A7F00143FB7 /* NewMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3BA22649A7F00143FB7 /* NewMessage.swift */; };
 		16FA91051FFC55A400FE98C7 /* UIViewController+Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FA91041FFC55A400FE98C7 /* UIViewController+Reachability.swift */; };
 		16FB2DCC204D806E00346FA0 /* UIPhotoMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DCB204D806E00346FA0 /* UIPhotoMessageViewModel.swift */; };
-		16FB2DCE204D832F00346FA0 /* Twilio+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DCD204D832F00346FA0 /* Twilio+Channel.swift */; };
 		16FB2DD3204D875400346FA0 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DD2204D875400346FA0 /* UIView.swift */; };
 		16FB2DD5204D87F200346FA0 /* UIColor+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DD4204D87F200346FA0 /* UIColor+RGB.swift */; };
 		16FC6798226090860044CC70 /* ChooseMembersCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 16FC6797226090860044CC70 /* ChooseMembersCell.xib */; };
@@ -151,8 +147,6 @@
 		429228B81F96261000DCECDF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228B71F96261000DCECDF /* ViewController.swift */; };
 		429228BD1F96261000DCECDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 429228BC1F96261000DCECDF /* Assets.xcassets */; };
 		429228DE1F9637A200DCECDF /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
-		429228E41F963DBE00DCECDF /* Twilio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E21F963DBE00DCECDF /* Twilio.swift */; };
-		429228E51F963DBE00DCECDF /* Twilio+Delegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228E31F963DBE00DCECDF /* Twilio+Delegates.swift */; };
 		429228EB1F96405800DCECDF /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* Chat.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -942,10 +936,8 @@
 				16FB2DCC204D806E00346FA0 /* UIPhotoMessageViewModel.swift in Sources */,
 				16B4EC2323BE4B2C00E7E4DB /* EjabberdAuthorizer.swift in Sources */,
 				16C0D45822660A5D001F23ED /* Message.swift in Sources */,
-				164B3F2A238FD63F00608542 /* ChatsManager+Change.swift in Sources */,
 				16973338229B3E15009E30D0 /* Gradient.swift in Sources */,
 				163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */,
-				163E89A322BAD94000051D4B /* TCHChannel.swift in Sources */,
 				166D3E5E1FB495F90032BAAD /* CoreData.swift in Sources */,
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
 				16013C7B20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift in Sources */,
@@ -998,7 +990,6 @@
 				16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */,
 				165900222280382E00063EC9 /* AddMembers.swift in Sources */,
 				16CA51021FC45E9A0042AF9D /* Start.swift in Sources */,
-				429228E41F963DBE00DCECDF /* Twilio.swift in Sources */,
 				162E22ED225F953D00AAE7C4 /* ChooseMembersCell.swift in Sources */,
 				1693679022490BA000EF9A42 /* VirgilAuthorizer.swift in Sources */,
 				162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */,
@@ -1010,9 +1001,6 @@
 				16FB2DD5204D87F200346FA0 /* UIColor+RGB.swift in Sources */,
 				16B4EC2623BF610500E7E4DB /* XMPPMessage.swift in Sources */,
 				16936792224916D100EF9A42 /* UserFriendlyError.swift in Sources */,
-				429228E51F963DBE00DCECDF /* Twilio+Delegates.swift in Sources */,
-				163E89A522BADA0C00051D4B /* TCHMessage.swift in Sources */,
-				16FB2DCE204D832F00346FA0 /* Twilio+Channel.swift in Sources */,
 				16132FC22254C868008FD754 /* UIViewController.swift in Sources */,
 				16FCF27E1FE46756000348BC /* Channel.swift in Sources */,
 				16013C7D20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift in Sources */,

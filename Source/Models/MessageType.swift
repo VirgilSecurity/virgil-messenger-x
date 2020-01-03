@@ -14,12 +14,12 @@ public enum MessageType: String {
     case audio
     case changeMembers
 
-    init?(_ type: Twilio.MediaType) {
-        switch type {
-        case .photo:
-            self = .photo
-        case .audio:
-            self = .audio
-        }
-    }
+//    init?(_ type: Twilio.MediaType) {
+//        switch type {
+//        case .photo:
+//            self = .photo
+//        case .audio:
+//            self = .audio
+//        }
+//    }
 }

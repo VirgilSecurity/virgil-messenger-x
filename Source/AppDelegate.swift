@@ -105,12 +105,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Log.debug("Received device token")
 
-        Twilio.updatedPushToken = deviceToken
+        // FIXME
+//        Twilio.updatedPushToken = deviceToken
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         Log.error("Failed to get token, error: \(error)")
 
-        Twilio.updatedPushToken = nil
+        // FIXME
+//        Twilio.updatedPushToken = nil
     }
 }

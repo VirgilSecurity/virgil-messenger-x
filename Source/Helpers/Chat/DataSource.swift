@@ -143,24 +143,24 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addChangeMembers(message: String) throws {
-        self.nextMessageId += 1
-        let id = self.nextMessageId
-
-        let uiModel = UITextMessageModel(uid: id,
-                                         text: message,
-                                         isIncoming: false,
-                                         status: .sending,
-                                         date: Date())
-
-        try self.messageSender.sendChangeMembers(uiModel: uiModel, coreChannel: self.channel)
-            .startSync()
-            .get()
-
-        self.slidingWindow.insertItem(uiModel, position: .bottom)
-
-        DispatchQueue.main.async {
-            self.delegate?.chatDataSourceDidUpdate(self)
-        }
+//        self.nextMessageId += 1
+//        let id = self.nextMessageId
+//
+//        let uiModel = UITextMessageModel(uid: id,
+//                                         text: message,
+//                                         isIncoming: false,
+//                                         status: .sending,
+//                                         date: Date())
+//
+//        try self.messageSender.sendChangeMembers(uiModel: uiModel, coreChannel: self.channel)
+//            .startSync()
+//            .get()
+//
+//        self.slidingWindow.insertItem(uiModel, position: .bottom)
+//
+//        DispatchQueue.main.async {
+//            self.delegate?.chatDataSourceDidUpdate(self)
+//        }
     }
 
     func addPhotoMessage(_ image: UIImage) {

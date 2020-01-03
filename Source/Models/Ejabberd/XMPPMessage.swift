@@ -11,7 +11,7 @@ import XMPPFrameworkSwift
 extension XMPPMessage {
     func getBody() throws -> String {
         guard let body = self.body else {
-            throw Twilio.Error.invalidMessage
+            throw NSError()
         }
 
         return body
@@ -19,7 +19,7 @@ extension XMPPMessage {
 
     func getAuthor() throws -> String {
         guard let author = self.from?.user else {
-            throw Twilio.Error.invalidMessage
+            throw NSError()
         }
 
         return author

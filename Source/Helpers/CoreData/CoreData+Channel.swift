@@ -78,15 +78,15 @@ extension CoreData {
         return self.getChannels().contains { $0.sid == sid }
     }
 
-    func getChannel(_ twilioChannel: TCHChannel) throws -> Channel {
-        let twilioSid = try twilioChannel.getSid()
-        
-        guard let channel = self.getChannels().first(where: { $0.sid == twilioSid }) else {
-            throw Error.channelNotFound
-        }
-
-        return channel
-    }
+//    func getChannel(_ twilioChannel: TCHChannel) throws -> Channel {
+//        let twilioSid = try twilioChannel.getSid()
+//        
+//        guard let channel = self.getChannels().first(where: { $0.sid == twilioSid }) else {
+//            throw Error.channelNotFound
+//        }
+//
+//        return channel
+//    }
 
     func getChannel(withName name: String) -> Channel? {
         return self.getChannels().first { $0.name == name }

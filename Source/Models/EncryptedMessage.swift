@@ -22,7 +22,7 @@ public class EncryptedMessage: Codable {
         let body = try message.getBody()
 
         guard let data = Data(base64Encoded: body) else {
-            throw Twilio.Error.invalidMessage
+            throw NSError()
         }
 
         return try JSONDecoder().decode(EncryptedMessage.self, from: data)

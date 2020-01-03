@@ -63,9 +63,10 @@ public class UserAuthorizer {
     public func logOut(completion: @escaping (Error?) -> Void) {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
-                if let token = Twilio.updatedPushToken {
-                    try Twilio.shared.deregister(withNotificationToken: token).startSync().get()
-                }
+                // FIXME: pushes
+//                if let token = Twilio.updatedPushToken {
+//                    try Twilio.shared.deregister(withNotificationToken: token).startSync().get()
+//                }
 
                 try Ejabberd.shared.disconect()
 
