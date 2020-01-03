@@ -18,10 +18,11 @@ public class EjabberdAuthorizer: NSObject, XMPPStreamDelegate {
     override init() {
         super.init()
 
-        try! Ejabberd.configure(stream: self.stream,
-                               with: "admin",
-                               delegate: self,
-                               queue: self.delegateQueue)
+        self.stream.hostName = URLConstants.ejabberdHost
+        self.stream.hostPort = URLConstants.ejabberdHostPort
+        self.stream.startTLSPolicy = URLConstants.ejabberdTSLPolicy
+        self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
+        stream.myJID = try! Ejabberd.setupJid(with: "admin")
 
         try! self.mutex.lock()
     }

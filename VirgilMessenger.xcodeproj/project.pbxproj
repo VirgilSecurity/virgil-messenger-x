@@ -28,7 +28,6 @@
 		162E22ED225F953D00AAE7C4 /* ChooseMembersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EC225F953D00AAE7C4 /* ChooseMembersCell.swift */; };
 		162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */; };
 		16317B9922C506A200A3144A /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16317B9822C506A200A3144A /* Notifications.swift */; };
-		163952A8227C4E5200DD1FDC /* ChatsManager+Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163952A7227C4E5200DD1FDC /* ChatsManager+Update.swift */; };
 		163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */; };
 		163E89A322BAD94000051D4B /* TCHChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163E89A222BAD94000051D4B /* TCHChannel.swift */; };
 		163E89A522BADA0C00051D4B /* TCHMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163E89A422BADA0C00051D4B /* TCHMessage.swift */; };
@@ -419,8 +418,8 @@
 				163952A4227C4D8A00DD1FDC /* ChatsManager */,
 				16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */,
 				16D8B0EE223A8FCF00D7FA67 /* Client.swift */,
-				16317B9822C506A200A3144A /* Notifications.swift */,
 				16FE75EF224A3DA000B545AF /* Configurator.swift */,
+				4280C0CB1F97340B00075B3A /* MessageSender.swift */,
 				16132FC5225514D0008FD754 /* MessageProcessor.swift */,
 			);
 			path = Helpers;
@@ -484,6 +483,7 @@
 				429228DD1F9637A200DCECDF /* Log.swift */,
 				16CA51051FC468370042AF9D /* Constants.swift */,
 				168E54CB22395DDC00B6E822 /* ColorPair.swift */,
+				16317B9822C506A200A3144A /* Notifications.swift */,
 				163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */,
 				16973337229B3E15009E30D0 /* Gradient.swift */,
 			);
@@ -626,7 +626,6 @@
 				1658BA191FD99C56005EF9C1 /* InputBar */,
 				16E22D881FA8ACAB008D32D9 /* Decorations */,
 				4280C0CA1F97340B00075B3A /* BaseMessageHandler.swift */,
-				4280C0CB1F97340B00075B3A /* MessageSender.swift */,
 				427D1E521F965568002F2CF3 /* DataSource.swift */,
 				427D1E531F965569002F2CF3 /* SlidingDatasSource.swift */,
 			);
@@ -993,7 +992,6 @@
 				16F8F3B9226487BE00143FB7 /* UsersListCell.swift in Sources */,
 				4280C0D51F97341300075B3A /* SendingStatusCollectionViewCell.swift in Sources */,
 				4280C0E31F97364F00075B3A /* Chat.swift in Sources */,
-				163952A8227C4E5200DD1FDC /* ChatsManager+Update.swift in Sources */,
 				168E54CC22395DDC00B6E822 /* ColorPair.swift in Sources */,
 				1627723F203C5FB00086127C /* CoreData+Account.swift in Sources */,
 				162E22E7225F76BF00AAE7C4 /* NewMessageTable.swift in Sources */,

@@ -40,13 +40,9 @@ public class Configurator {
                 let account = try CoreData.shared.getCurrentAccount()
                 let identity = account.identity
 
-                try Ejabberd.shared.connect(identity: identity)
+                try Ejabberd.shared.initialize(identity: identity)
 
                 self.isInitialized = true
-
-//                if let channel = CoreData.shared.currentChannel {
-//                    try Twilio.shared.setChannel(channel)
-//                }
 
                 completion((), nil)
             } catch {
@@ -57,9 +53,6 @@ public class Configurator {
 
     public static func configure() {
         let initialize = self.initialize()
-//        let update = ChatsManager.updateChannels()
-
-//        update.addDependency(initialize)
 
         let completion = OperationUtils.makeCompletionOperation { (_ result: Void?, error: Error?) in
             if let error = error {

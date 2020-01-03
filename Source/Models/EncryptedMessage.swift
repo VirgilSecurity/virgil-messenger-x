@@ -13,6 +13,11 @@ public class EncryptedMessage: Codable {
     let ciphertext: String
     let date: Date
 
+    public init(ciphertext: String, date: Date) {
+        self.ciphertext = ciphertext
+        self.date = date
+    }
+
     static func `import`(_ message: XMPPMessage) throws -> EncryptedMessage {
         let body = try message.getBody()
 

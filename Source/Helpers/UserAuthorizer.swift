@@ -67,9 +67,10 @@ public class UserAuthorizer {
                     try Twilio.shared.deregister(withNotificationToken: token).startSync().get()
                 }
 
+                try Ejabberd.shared.disconect()
+
                 Configurator.reset()
                 CoreData.shared.resetState()
-                Twilio.shared.deselectChannel()
 
                 UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
@@ -88,11 +89,9 @@ public class UserAuthorizer {
 
         try CoreData.shared.deleteAccount()
         CoreData.shared.resetState()
-        Twilio.shared.deselectChannel()
+        try Ejabberd.shared.disconect()
 
-        self.virgilAuthorizer.logOut(identity: Twilio.shared.identity)
-
-        // TODO: Ejabberd
+        self.virgilAuthorizer.logOut()
     }
 }
 

@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import XMPPFrameworkSwift
 
 enum URLConstants {
-    static let EjabberdHost: String = "xmpp-test-int.virgilsecurity.com"
-    static let EjabberdHostPort: UInt16 = 5222
+    static let ejabberdHost: String = "xmpp-test-int.virgilsecurity.com"
+    static let ejabberdHostPort: UInt16 = 5222
+    static let ejabberdTSLPolicy: XMPPStreamStartTLSPolicy = .allowed
 
     static let virgilJwtEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/get-virgil-jwt/")!
     static let twilioJwtEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/get-twilio-jwt/")!

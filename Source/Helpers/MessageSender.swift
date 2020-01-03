@@ -37,8 +37,6 @@ public class MessageSender {
     }
 
     public func send(uiModel: UITextMessageModel, coreChannel: Channel) throws {
-        let twilioChannel = try Twilio.shared.getCurrentChannel()
-
         self.queue.async {
             do {
                 let plaintext = uiModel.body
@@ -54,7 +52,9 @@ public class MessageSender {
                     ciphertext = try Virgil.ethree.authEncrypt(text: plaintext, for: coreChannel.getCard())
                 }
 
-                try twilioChannel.send(ciphertext: ciphertext, type: .regular).startSync().get()
+                let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
+
+                try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name)
 
                 _ = try CoreData.shared.createTextMessage(plaintext,
                                                           in: coreChannel,

@@ -60,7 +60,7 @@ extension Twilio: TwilioChatClientDelegate {
                     return
                 }
 
-                try ChatsManager.update(twilioChannel: channel).startSync().get()
+//                try ChatsManager.update(twilioChannel: channel).startSync().get()
 
                 Notifications.post(.chatListUpdated)
             } catch {
@@ -97,27 +97,27 @@ extension Twilio: TwilioChatClientDelegate {
     }
 
     public func chatClient(_ client: TwilioChatClient, channel: TCHChannel, messageAdded message: TCHMessage) {
-        guard message.author != self.identity else {
-            return
-        }
-
-        self.queue.async {
-            do {
-                guard let message = try MessageProcessor.process(message: message, from: channel) else {
-                    // TODO: Check if needed
-                    return Notifications.post(.chatListUpdated)
-                }
-
-                if let currentChannel = self.currentChannel, try channel.getSid() == currentChannel.getSid() {
-                    Notifications.post(message: message)
-                }
-                else {
-                    Notifications.post(.chatListUpdated)
-                }
-            } catch {
-                Log.error("\(error)")
-            }
-        }
+//        guard message.author != self.identity else {
+//            return
+//        }
+//
+//        self.queue.async {
+//            do {
+//                guard let message = try MessageProcessor.process(message: message, from: channel) else {
+//                    // TODO: Check if needed
+//                    return Notifications.post(.chatListUpdated)
+//                }
+//
+//                if let currentChannel = self.currentChannel, try channel.getSid() == currentChannel.getSid() {
+//                    Notifications.post(message: message)
+//                }
+//                else {
+//                    Notifications.post(.chatListUpdated)
+//                }
+//            } catch {
+//                Log.error("\(error)")
+//            }
+//        }
     }
 
     public func chatClientTokenWillExpire(_ client: TwilioChatClient) {

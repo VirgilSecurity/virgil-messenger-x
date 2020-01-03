@@ -18,7 +18,7 @@ public enum ChatsManager {
             do {
                 let identity = identity.lowercased()
 
-                guard identity != Twilio.shared.identity else {
+                guard identity != Virgil.ethree.identity else {
                     throw UserFriendlyError.createSelfChatForbidded
                 }
 
@@ -41,11 +41,7 @@ public enum ChatsManager {
         do {
             let card = try Virgil.ethree.findUser(with: identity).startSync().get()
 
-            let channel = try Twilio.shared.createSingleChannel(with: identity).startSync().get()
-
-            let sid = try channel.getSid()
-
-            _ = try CoreData.shared.createSingleChannel(sid: sid, initiator: Twilio.shared.identity, card: card)
+            _ = try CoreData.shared.createSingleChannel(initiator: Virgil.ethree.identity, card: card)
         }
         catch FindUsersError.cardWasNotFound {
             throw UserFriendlyError.userNotFound
