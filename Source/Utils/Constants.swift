@@ -9,8 +9,8 @@
 import UIKit
 
 enum URLConstants {
-    static let ejaberdHost: String = "xmpp-test-int.virgilsecurity.com"
-    static let ejaberdHostPort: UInt16 = 5222
+    static let EjabberdHost: String = "xmpp-test-int.virgilsecurity.com"
+    static let EjabberdHostPort: UInt16 = 5222
 
     static let virgilJwtEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/get-virgil-jwt/")!
     static let twilioJwtEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/get-twilio-jwt/")!

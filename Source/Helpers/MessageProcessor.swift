@@ -14,6 +14,31 @@ import VirgilCryptoRatchet
 import VirgilSDKRatchet
 
 class MessageProcessor {
+    static func process(_ message: EncryptedMessage, from author: String) throws -> Message? {
+        let channel: Channel
+
+        if let coreChannel = CoreData.shared.getChannel(withName: author) {
+            channel = coreChannel
+        }
+        else {
+            let card = try Virgil.ethree.findUser(with: author).startSync().get()
+
+            channel = try CoreData.shared.getChannel(withName: author)
+                ?? CoreData.shared.createSingleChannel(initiator: author, card: card)
+        }
+
+        let decrypted: String
+        do {
+            decrypted = try Virgil.ethree.authDecrypt(text: message.ciphertext, from: channel.getCard())
+        } catch {
+            try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
+            // FIXME
+            return nil
+        }
+
+        return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: true, date: message.date)
+    }
+
     static func process(message: TCHMessage, from twilioChannel: TCHChannel, coreChannel: Channel? = nil) throws -> Message? {
         let isIncoming = message.author == Virgil.ethree.identity ? false : true
 

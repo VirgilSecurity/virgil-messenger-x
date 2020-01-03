@@ -16,12 +16,11 @@ public class UserAuthorizer {
     public static let UserDefaultsIdentityKey = "last_username"
 
     public let virgilAuthorizer: VirgilAuthorizer
-
-    public let ejaberdAuthorizer: EjaberdAuthorizer
+    public let ejabberdAuthorizer: EjabberdAuthorizer
 
     public init() {
         self.virgilAuthorizer = try! VirgilAuthorizer()
-        self.ejaberdAuthorizer = EjaberdAuthorizer()
+        self.ejabberdAuthorizer = EjabberdAuthorizer()
     }
 
     public func signIn() throws {
@@ -45,7 +44,7 @@ public class UserAuthorizer {
    public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
-                try self.ejaberdAuthorizer.register(identity: identity)
+                try self.ejabberdAuthorizer.register(identity: identity)
 
                 _ = try self.virgilAuthorizer.signUp(identity: identity)
 
@@ -92,6 +91,8 @@ public class UserAuthorizer {
         Twilio.shared.deselectChannel()
 
         self.virgilAuthorizer.logOut(identity: Twilio.shared.identity)
+
+        // TODO: Ejabberd
     }
 }
 

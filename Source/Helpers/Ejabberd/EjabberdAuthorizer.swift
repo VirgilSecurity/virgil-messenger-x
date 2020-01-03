@@ -1,5 +1,5 @@
 //
-//  EjaberdAuthorizer.swift
+//  EjabberdAuthorizer.swift
 //  VirgilMessenger
 //
 //  Created by Yevhen Pyvovarov on 02.01.2020.
@@ -9,20 +9,16 @@
 import VirgilSDK
 import XMPPFrameworkSwift
 
-public class EjaberdAuthorizer: NSObject, XMPPStreamDelegate {
-    private let stream: XMPPStream
+public class EjabberdAuthorizer: NSObject, XMPPStreamDelegate {
+    private let stream: XMPPStream = XMPPStream()
     private let mutex: Mutex = Mutex()
-
+    private let delegateQueue = DispatchQueue(label: "EjabberdAuthorizer")
     private var error: Error?
 
-    private let delegateQueue = DispatchQueue(label: "Twilio")
-
     override init() {
-        self.stream = XMPPStream()
-
         super.init()
 
-        try! Ejaberd.configure(stream: self.stream,
+        try! Ejabberd.configure(stream: self.stream,
                                with: "admin",
                                delegate: self,
                                queue: self.delegateQueue)
@@ -50,20 +46,20 @@ public class EjaberdAuthorizer: NSObject, XMPPStreamDelegate {
     }
 }
 
-public extension EjaberdAuthorizer {
+public extension EjabberdAuthorizer {
     func xmppStreamWillConnect(_ sender: XMPPStream) {
-        Log.debug("EjaberdAuthenticator: Connecting...")
+        Log.debug("EjabberdAuthenticator: Connecting...")
     }
 
     func xmppStreamDidConnect(_ stream: XMPPStream) {
-        Log.debug("EjaberdAuthenticator: Connected")
+        Log.debug("EjabberdAuthenticator: Connected")
         print("supportsInBandRegistration: \(self.stream.supportsInBandRegistration)")
 
         do {
             try self.mutex.unlock()
         }
         catch {
-            Log.error("EjaberdAuthenticator: \(error)")
+            Log.error("EjabberdAuthenticator: \(error)")
         }
     }
 
@@ -76,18 +72,18 @@ public extension EjaberdAuthorizer {
     }
 
     func xmppStreamDidRegister(_ sender: XMPPStream) {
-        Log.debug("EjaberdAuthenticator: Registered")
+        Log.debug("EjabberdAuthenticator: Registered")
 
         do {
             try self.mutex.unlock()
         }
         catch {
-            Log.error("EjaberdAuthenticator: \(error)")
+            Log.error("EjabberdAuthenticator: \(error)")
         }
     }
 
     func xmppStream(_ sender: XMPPStream, didNotRegister error: DDXMLElement) {
-        Log.error("EjaberdAuthenticator: Registration failed - \(error)")
+        Log.error("EjabberdAuthenticator: Registration failed - \(error)")
 
         self.error = NSError()
 
@@ -95,7 +91,7 @@ public extension EjaberdAuthorizer {
             try self.mutex.unlock()
         }
         catch {
-            Log.error("EjaberdAuthenticator: \(error)")
+            Log.error("EjabberdAuthenticator: \(error)")
         }
     }
 }
