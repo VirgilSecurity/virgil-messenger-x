@@ -114,7 +114,7 @@ extension Client {
                                           cardVerifier: verifier)
     }
 
-    public func getTwilioToken(identity: String) throws -> String {
+    public func getEjabberdToken(identity: String) throws -> String {
         let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
 
         let user = try localKeyManager.retrieveUserData()
@@ -122,13 +122,11 @@ extension Client {
         let authHeader = try self.makeAuthHeader(cardId: user.card.identifier,
                                                  privateKey: user.keyPair.privateKey)
 
-        let requestURL = URLConstants.twilioJwtEndpoint
+        let requestURL = URLConstants.ejabberdJwtEndpoint
         let headers = ["Content-Type": "application/json",
                        "Authorization": authHeader]
-        let params = ["identity": identity]
-        let body = try JSONSerialization.data(withJSONObject: params, options: [])
 
-        let request = Request(url: requestURL, method: .post, headers: headers, body: body)
+        let request = Request(url: requestURL, method: .get, headers: headers)
         let response = try self.connection.send(request).startSync().get()
 
         guard let responseBody = response.body,
@@ -150,10 +148,8 @@ extension Client {
         let requestURL = URLConstants.virgilJwtEndpoint
         let headers = ["Content-Type": "application/json",
                        "Authorization": authHeader]
-        let params = ["identity": identity]
-        let body = try JSONSerialization.data(withJSONObject: params, options: [])
 
-        let request = Request(url: requestURL, method: .post, headers: headers, body: body)
+        let request = Request(url: requestURL, method: .get, headers: headers)
         let response = try self.connection.send(request).startSync().get()
 
         guard let responseBody = response.body,

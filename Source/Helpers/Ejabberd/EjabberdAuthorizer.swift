@@ -32,7 +32,7 @@ public class EjabberdAuthorizer: NSObject, XMPPStreamDelegate {
         let password = DDXMLElement(name: "password", stringValue: "1111")
 
         if !self.stream.isConnected {
-            try self.stream.connect(withTimeout: XMPPStreamTimeoutNone)
+            try self.stream.connect(withTimeout: 8)
             try self.mutex.lock()
         }
 

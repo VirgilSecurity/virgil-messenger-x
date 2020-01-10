@@ -23,7 +23,7 @@ extension Ejabberd: XMPPStreamDelegate {
         // TODO: implement me
         Log.debug("Ejabberd: Connect reached timeout")
 
-        self.unlockMutex(self.initializeMutex)
+        self.unlockMutex(self.initializeMutex, with: NSError())
     }
 
     func xmppStreamDidDisconnect(_ sender: XMPPStream, withError error: Error?) {

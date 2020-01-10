@@ -38,14 +38,15 @@ class Ejabberd: NSObject {
 
         if !self.stream.isConnected {
             // FIME: Timeout
-            try self.stream.connect(withTimeout: XMPPStreamTimeoutNone)
+            try self.stream.connect(withTimeout: 8)
             try self.initializeMutex.lock()
 
             try self.checkError()
         }
 
         if !self.stream.isAuthenticated {
-            try self.stream.authenticate(withPassword: "1111")
+            let token = try Virgil.shared.client.getEjabberdToken(identity: identity)
+            try self.stream.authenticate(withPassword: token)
             try self.initializeMutex.lock()
 
             try self.checkError()
@@ -93,6 +94,8 @@ class Ejabberd: NSObject {
     }
 
     public func send(_ message: EncryptedMessage, to user: String) throws {
+        Log.debug("Ejabberd: Sending message")
+
         let user = try Ejabberd.setupJid(with: user)
 
         let body = try message.export()

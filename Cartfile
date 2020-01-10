@@ -4,3 +4,4 @@ github "robbiehanson/XMPPFramework" ~> 4.0
 github "Ogerets/Chatto" "messenger-stable"
 github "pkluz/PKHUD"
 github "Boris-Em/BEMCheckBox" ~> 1.4.1
+github "VirgilSecurity/virgil-crypto-x" ~> 5.2.0

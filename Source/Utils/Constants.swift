@@ -14,9 +14,11 @@ enum URLConstants {
     static let ejabberdHostPort: UInt16 = 5222
     static let ejabberdTSLPolicy: XMPPStreamStartTLSPolicy = .allowed
 
-    static let virgilJwtEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/get-virgil-jwt/")!
-    static let twilioJwtEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/get-twilio-jwt/")!
-    static let signUpEndpoint = URL(string: "https://messenger-dev.virgilsecurity.com/signup/")!
+    static let baseURLString: String = "https://messenger-dev.virgilsecurity.com"
+
+    static let virgilJwtEndpoint = URL(string: "\(URLConstants.baseURLString)/virgil-jwt/")!
+    static let ejabberdJwtEndpoint = URL(string: "\(URLConstants.baseURLString)/ejabberd-jwt/")!
+    static let signUpEndpoint = URL(string: "\(URLConstants.baseURLString)/signup/")!
 
     static let termsAndConditionsURL = "https://virgilsecurity.com/terms-of-service"
     static let privacyURL = "https://virgilsecurity.com/privacy-policy"
