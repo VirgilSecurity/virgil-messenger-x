@@ -15,10 +15,13 @@ public class Client {
     internal let crypto: VirgilCrypto
 
     enum Error: String, Swift.Error {
-        case jsonParsingFailed
         case stringToDataFailed
         case gettingJWTFailed
+        case noBody
+        case invalidServerResponse
     }
+
+    private let serviceErrorDomain: String = "ClientErrorDomain"
 
     init(crypto: VirgilCrypto) {
         self.crypto = crypto
@@ -37,41 +40,67 @@ public class Client {
         }
     }
 
-    func makeAccessTokenProvider(identity: String) -> AccessTokenProvider {
-        return CachingJwtProvider(renewTokenCallback: { _, completion in
-            let tokenCallback = self.makeTokenCallback(identity: identity)
+    private func makeAuthHeader(for identity: String) throws -> [String: String] {
+        let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
 
-            tokenCallback(completion)
-        })
-    }
+        let user = try localKeyManager.retrieveUserData()
 
-    private func makeAuthHeader(cardId: String,
-                                privateKey: VirgilPrivateKey) throws -> String {
-        let stringToSign = "\(cardId).\(Int(Date().timeIntervalSince1970))"
+        let stringToSign = "\(user.card.identifier).\(Int(Date().timeIntervalSince1970))"
 
         guard let dataToSign = stringToSign.data(using: .utf8) else {
             throw Error.stringToDataFailed
         }
 
-        let signature = try crypto.generateSignature(of: dataToSign, using: privateKey)
+        let signature = try crypto.generateSignature(of: dataToSign, using: user.keyPair.privateKey)
 
-        return "Bearer " + stringToSign + "." + signature.base64EncodedString()
+        let authHeader = "Bearer " + stringToSign + "." + signature.base64EncodedString()
+
+        return ["Authorization": authHeader]
+    }
+
+    private func handleError(statusCode: Int, body: Data?) -> Swift.Error {
+        if let body = body, let string = String(data: body, encoding: .utf8) {
+            if string == "Card with this identity already exists" {
+                return UserFriendlyError.usernameAlreadyUsed
+            }
+
+            return NSError(domain: self.serviceErrorDomain,
+                           code: statusCode,
+                           userInfo: [NSLocalizedDescriptionKey: string])
+        }
+
+        return NSError(domain: self.serviceErrorDomain,
+                       code: statusCode,
+                       userInfo: [NSLocalizedDescriptionKey: "Unknown service error"])
+    }
+
+    private func validateResponse(_ response: Response) throws {
+        guard 200..<300 ~= response.statusCode else {
+            throw self.handleError(statusCode: response.statusCode, body: response.body)
+        }
+    }
+
+    private func parse<T>(_ response: Response, for key: String) throws -> T {
+        try self.validateResponse(response)
+
+        guard let data = response.body else {
+            throw Error.noBody
+        }
+
+        guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
+            throw NSError()
+        }
+
+        guard let result = json[key] as? T else {
+            throw Error.invalidServerResponse
+        }
+
+        return result
     }
 }
 
 // MARK: - Queries
 extension Client {
-    public func searchCards(identities: [String],
-                            selfIdentity: String,
-                            verifier: VirgilCardVerifier) throws -> [Card] {
-        let provider = self.makeAccessTokenProvider(identity: selfIdentity)
-
-        let params = CardManagerParams(crypto: self.crypto, accessTokenProvider: provider, cardVerifier: verifier)
-        let cardManager = CardManager(params: params)
-
-        return try cardManager.searchCards(identities: identities).startSync().get()
-    }
-
     public func signUp(identity: String,
                        keyPair: VirgilKeyPair,
                        verifier: VirgilCardVerifier) throws -> Card {
@@ -83,31 +112,20 @@ extension Client {
                                                       identity: identity)
         let exportedRawCard = try rawCard.exportAsJson()
 
-        let requestURL = URLConstants.signUpEndpoint
         let headers = ["Content-Type": "application/json"]
         let params = ["rawCard": exportedRawCard]
         let body = try JSONSerialization.data(withJSONObject: params, options: [])
 
-        let request = Request(url: requestURL, method: .post, headers: headers, body: body)
+        let request = Request(url: URLConstants.signUpEndpoint,
+                              method: .post,
+                              headers: headers,
+                              body: body)
 
-        let response = try self.connection.send(request).startSync().get()
+        let response = try self.connection.send(request)
+            .startSync()
+            .get()
 
-        if let body = response.body,
-            let text = String(data: body, encoding: .utf8),
-            text == "Card with this identity already exists" {
-            throw UserFriendlyError.usernameAlreadyUsed
-        }
-
-        guard let responseBody = response.body,
-            let json = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any] else {
-                Log.error("Json parsing failed")
-                throw Error.jsonParsingFailed
-        }
-
-        guard let exportedCard = json["virgil_card"] as? [String: Any] else {
-            Log.error("Error while signing up: server didn't return card")
-            throw UserFriendlyError.usernameAlreadyUsed
-        }
+        let exportedCard: Any = try self.parse(response, for: "virgil_card")
 
         return try CardManager.importCard(fromJson: exportedCard,
                                           crypto: self.crypto,
@@ -115,49 +133,30 @@ extension Client {
     }
 
     public func getEjabberdToken(identity: String) throws -> String {
-        let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
+        let header = try self.makeAuthHeader(for: identity)
 
-        let user = try localKeyManager.retrieveUserData()
+        let request = Request(url: URLConstants.ejabberdJwtEndpoint,
+                              method: .get,
+                              headers: header)
 
-        let authHeader = try self.makeAuthHeader(cardId: user.card.identifier,
-                                                 privateKey: user.keyPair.privateKey)
+        let response = try self.connection.send(request)
+            .startSync()
+            .get()
 
-        let requestURL = URLConstants.ejabberdJwtEndpoint
-        let headers = ["Content-Type": "application/json",
-                       "Authorization": authHeader]
-
-        let request = Request(url: requestURL, method: .get, headers: headers)
-        let response = try self.connection.send(request).startSync().get()
-
-        guard let responseBody = response.body,
-            let tokenJson = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
-            let token = tokenJson["token"] as? String else {
-                throw Error.jsonParsingFailed
-        }
-
-        return token
+        return try self.parse(response, for: "token")
     }
 
     public func getVirgilToken(identity: String) throws -> String {
-        let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
+        let header = try self.makeAuthHeader(for: identity)
 
-        let user = try localKeyManager.retrieveUserData()
+        let request = Request(url: URLConstants.virgilJwtEndpoint,
+                              method: .get,
+                              headers: header)
 
-        let authHeader = try self.makeAuthHeader(cardId: user.card.identifier, privateKey: user.keyPair.privateKey)
+        let response = try self.connection.send(request)
+            .startSync()
+            .get()
 
-        let requestURL = URLConstants.virgilJwtEndpoint
-        let headers = ["Content-Type": "application/json",
-                       "Authorization": authHeader]
-
-        let request = Request(url: requestURL, method: .get, headers: headers)
-        let response = try self.connection.send(request).startSync().get()
-
-        guard let responseBody = response.body,
-            let tokenJson = try JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
-            let token = tokenJson["token"] as? String else {
-                throw Error.jsonParsingFailed
-        }
-
-        return token
+        return try self.parse(response, for: "token")
     }
 }
