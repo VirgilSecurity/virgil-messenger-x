@@ -76,7 +76,8 @@ class SettingsViewController: ViewController {
                 try UserAuthorizer().deleteAccount()
 
                 self.switchNavigationStack(to: AuthenticationViewController.name)
-            } catch {
+            }
+            catch {
                 self.alert(error)
             }
         }
@@ -96,10 +97,8 @@ extension SettingsViewController: UITableViewDelegate {
 
         switch indexPath.section {
         case 0:
-            self.performSegue(withIdentifier: "About", sender: self)
-        case 1:
             self.logOut()
-        case 2:
+        case 1:
             self.deleteAccount()
         default:
             fatalError("Unknown number of table view section")
@@ -127,14 +126,11 @@ extension SettingsViewController: UITableViewDataSource {
         cell.selectedBackgroundView = colorView
 
         if indexPath.section == 0 {
-            cell.textLabel?.text = "About"
-            cell.textLabel?.textColor = UIColor(rgb: 0xC7C7CC)
-            cell.accessoryType = .disclosureIndicator
-        } else if indexPath.section == 1 {
             cell.textLabel?.text = "Logout"
             cell.textLabel?.textColor = UIColor(rgb: 0x9E3621)
             cell.accessoryType = .none
-        } else if indexPath.section == 2 {
+        }
+        else if indexPath.section == 1 {
             cell.textLabel?.text = "Delete account"
             cell.textLabel?.textColor = UIColor(rgb: 0x9E3621)
             cell.accessoryType = .none
@@ -144,6 +140,6 @@ extension SettingsViewController: UITableViewDataSource {
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 2
     }
 }

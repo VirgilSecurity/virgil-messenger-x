@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Pa0-Wk-Tob">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Pa0-Wk-Tob">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -96,53 +96,11 @@
                         <outlet property="letterLabel" destination="PrE-E8-Kez" id="YJv-xJ-iFI"/>
                         <outlet property="tableView" destination="xtZ-Li-IqN" id="weP-aU-lNK"/>
                         <outlet property="usernameLabel" destination="XxT-H0-eNl" id="RaY-qi-3NM"/>
-                        <segue destination="nZ7-hb-bMR" kind="show" identifier="About" id="fW5-UO-Bb9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IUB-sE-AxL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-34.399999999999999" y="134.48275862068968"/>
-        </scene>
-        <!--About-->
-        <scene sceneID="ALa-au-akt">
-            <objects>
-                <viewController id="nZ7-hb-bMR" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="dm4-83-emc">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qcn-Ea-Rfq">
-                                <rect key="frame" x="16" y="34" width="343" height="221"/>
-                                <attributedString key="attributedText">
-                                    <fragment>
-                                        <string key="content">Built by Virgil Security, Inc.
-Under Open Source Licence X.
-Feel free to reuse app or any parts of the source with no restrictions whatsoever.
-Technologies: Virgil E3KIT, Virgil’s Card Service, Twilio Programmable Chat, etc.</string>
-                                        <attributes>
-                                            <color key="NSColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <font key="NSFont" size="16" name="Helvetica-Bold"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" lineHeightMultiple="2" tighteningFactorForTruncation="0.0"/>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
-                                <color key="highlightedColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </label>
-                        </subviews>
-                        <color key="backgroundColor" red="0.1678793728351593" green="0.1874183714389801" blue="0.23309910297393799" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="Qcn-Ea-Rfq" firstAttribute="top" secondItem="RPc-nr-ZVe" secondAttribute="top" constant="34" id="2EU-TO-bpq"/>
-                            <constraint firstItem="Qcn-Ea-Rfq" firstAttribute="centerX" secondItem="RPc-nr-ZVe" secondAttribute="centerX" id="Fli-2E-Ens"/>
-                            <constraint firstItem="Qcn-Ea-Rfq" firstAttribute="leading" secondItem="dm4-83-emc" secondAttribute="leadingMargin" id="WQ6-Di-i9h"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="RPc-nr-ZVe"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="About" id="Wli-iI-RYy"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="zN7-93-0Wh" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="916.875" y="133.09859154929578"/>
         </scene>
     </scenes>
     <resources>
