@@ -196,8 +196,6 @@
 		16317B9822C506A200A3144A /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		163952A7227C4E5200DD1FDC /* ChatsManager+Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatsManager+Update.swift"; sourceTree = "<group>"; };
 		163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewZeroPaddings.swift; sourceTree = "<group>"; };
-		163E89A222BAD94000051D4B /* TCHChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCHChannel.swift; sourceTree = "<group>"; };
-		163E89A422BADA0C00051D4B /* TCHMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCHMessage.swift; sourceTree = "<group>"; };
 		1640C020227B2C5300D585E3 /* TwilioChatClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwilioChatClient.framework; path = Carthage/Build/iOS/TwilioChatClient.framework; sourceTree = "<group>"; };
 		1644C07820B720F000073D99 /* View.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = View.xcassets; sourceTree = "<group>"; };
 		1644C07A20B85AC500073D99 /* UIPhotosChatInputItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPhotosChatInputItem.swift; sourceTree = "<group>"; };
@@ -412,15 +410,6 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
-		163E89A122BAD91800051D4B /* Twilio */ = {
-			isa = PBXGroup;
-			children = (
-				163E89A222BAD94000051D4B /* TCHChannel.swift */,
-				163E89A422BADA0C00051D4B /* TCHMessage.swift */,
-			);
-			path = Twilio;
-			sourceTree = "<group>";
-		};
 		164E172C20AAED4C00AB1AAD /* Audio Message */ = {
 			isa = PBXGroup;
 			children = (
@@ -563,7 +552,6 @@
 			isa = PBXGroup;
 			children = (
 				16B4EC2B23BF7A8300E7E4DB /* Ejabberd */,
-				163E89A122BAD91800051D4B /* Twilio */,
 				16B6751622689FD000B6D4D0 /* CoreData */,
 				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
 				16936791224916D100EF9A42 /* UserFriendlyError.swift */,
