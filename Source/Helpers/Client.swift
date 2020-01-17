@@ -113,7 +113,7 @@ extension Client {
         let exportedRawCard = try rawCard.exportAsJson()
 
         let headers = ["Content-Type": "application/json"]
-        let params = ["rawCard": exportedRawCard]
+        let params = ["raw_card": exportedRawCard]
         let body = try JSONSerialization.data(withJSONObject: params, options: [])
 
         let request = Request(url: URLConstants.signUpEndpoint,

@@ -80,7 +80,6 @@
 		16B4EC1E23BE476900E7E4DB /* libidn.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1C23BE476900E7E4DB /* libidn.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC2023BE47B700E7E4DB /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1F23BE47B700E7E4DB /* CocoaAsyncSocket.framework */; };
 		16B4EC2123BE47B700E7E4DB /* CocoaAsyncSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1F23BE47B700E7E4DB /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		16B4EC2323BE4B2C00E7E4DB /* EjabberdAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2223BE4B2C00E7E4DB /* EjabberdAuthorizer.swift */; };
 		16B4EC2623BF610500E7E4DB /* XMPPMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2523BF610500E7E4DB /* XMPPMessage.swift */; };
 		16B4EC2823BF63BA00E7E4DB /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
 		16B4EC2A23BF79B700E7E4DB /* Ejabberd+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2923BF79B700E7E4DB /* Ejabberd+Delegate.swift */; };
@@ -238,7 +237,6 @@
 		16B4EC1923BE471F00E7E4DB /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjack.framework; path = Carthage/Build/iOS/CocoaLumberjack.framework; sourceTree = "<group>"; };
 		16B4EC1C23BE476900E7E4DB /* libidn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libidn.framework; path = Carthage/Build/iOS/libidn.framework; sourceTree = "<group>"; };
 		16B4EC1F23BE47B700E7E4DB /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaAsyncSocket.framework; path = Carthage/Build/iOS/CocoaAsyncSocket.framework; sourceTree = "<group>"; };
-		16B4EC2223BE4B2C00E7E4DB /* EjabberdAuthorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EjabberdAuthorizer.swift; sourceTree = "<group>"; };
 		16B4EC2523BF610500E7E4DB /* XMPPMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMPPMessage.swift; sourceTree = "<group>"; };
 		16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptedMessage.swift; sourceTree = "<group>"; };
 		16B4EC2923BF79B700E7E4DB /* Ejabberd+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ejabberd+Delegate.swift"; sourceTree = "<group>"; };
@@ -271,7 +269,6 @@
 		16F8F3BA22649A7F00143FB7 /* NewMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessage.swift; sourceTree = "<group>"; };
 		16FA91041FFC55A400FE98C7 /* UIViewController+Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Reachability.swift"; sourceTree = "<group>"; };
 		16FB2DCB204D806E00346FA0 /* UIPhotoMessageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIPhotoMessageViewModel.swift; sourceTree = "<group>"; };
-		16FB2DCD204D832F00346FA0 /* Twilio+Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Twilio+Channel.swift"; sourceTree = "<group>"; };
 		16FB2DD2204D875400346FA0 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		16FB2DD4204D87F200346FA0 /* UIColor+RGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+RGB.swift"; sourceTree = "<group>"; };
 		16FC6797226090860044CC70 /* ChooseMembersCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChooseMembersCell.xib; sourceTree = "<group>"; };
@@ -313,8 +310,6 @@
 		429228CA1F96287A00DCECDF /* VirgilCrypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCrypto.framework; path = Carthage/Build/iOS/VirgilCrypto.framework; sourceTree = "<group>"; };
 		429228CB1F96287A00DCECDF /* VirgilSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilSDK.framework; path = Carthage/Build/iOS/VirgilSDK.framework; sourceTree = "<group>"; };
 		429228DD1F9637A200DCECDF /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
-		429228E21F963DBE00DCECDF /* Twilio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Twilio.swift; sourceTree = "<group>"; };
-		429228E31F963DBE00DCECDF /* Twilio+Delegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Twilio+Delegates.swift"; sourceTree = "<group>"; };
 		429228EA1F96405800DCECDF /* Chat.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Chat.storyboard; sourceTree = "<group>"; };
 		42E8F8731F978A51007CB39F /* PKHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PKHUD.framework; path = Carthage/Build/iOS/PKHUD.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -384,7 +379,6 @@
 		1612BC4423B6589300107C7A /* Ejabberd */ = {
 			isa = PBXGroup;
 			children = (
-				16B4EC2223BE4B2C00E7E4DB /* EjabberdAuthorizer.swift */,
 				1612BC4523B658C000107C7A /* Ejabberd.swift */,
 				16B4EC2923BF79B700E7E4DB /* Ejabberd+Delegate.swift */,
 			);
@@ -407,7 +401,6 @@
 				16D8B0F0223AAC7200D7FA67 /* Chat */,
 				166D3E5C1FB495DA0032BAAD /* CoreData */,
 				16FE75F1224A436C00B545AF /* Virgil */,
-				16FE75F3224A43A900B545AF /* Twilio */,
 				1612BC4423B6589300107C7A /* Ejabberd */,
 				163952A4227C4D8A00DD1FDC /* ChatsManager */,
 				16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */,
@@ -669,16 +662,6 @@
 			path = Virgil;
 			sourceTree = "<group>";
 		};
-		16FE75F3224A43A900B545AF /* Twilio */ = {
-			isa = PBXGroup;
-			children = (
-				429228E21F963DBE00DCECDF /* Twilio.swift */,
-				429228E31F963DBE00DCECDF /* Twilio+Delegates.swift */,
-				16FB2DCD204D832F00346FA0 /* Twilio+Channel.swift */,
-			);
-			path = Twilio;
-			sourceTree = "<group>";
-		};
 		4280C0D01F97341300075B3A /* Sending status */ = {
 			isa = PBXGroup;
 			children = (
@@ -934,7 +917,6 @@
 				16FE75F7224A5CC400B545AF /* ChatsManager+Start.swift in Sources */,
 				164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */,
 				16FB2DCC204D806E00346FA0 /* UIPhotoMessageViewModel.swift in Sources */,
-				16B4EC2323BE4B2C00E7E4DB /* EjabberdAuthorizer.swift in Sources */,
 				16C0D45822660A5D001F23ED /* Message.swift in Sources */,
 				16973338229B3E15009E30D0 /* Gradient.swift in Sources */,
 				163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */,
