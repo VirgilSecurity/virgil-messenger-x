@@ -9,6 +9,10 @@
 import Foundation
 import XMPPFrameworkSwift
 
+public enum EncryptedMessageError: Int, Error {
+    case bodyIsNotBase64Encoded = 1
+}
+
 public class EncryptedMessage: Codable {
     let ciphertext: String
     let date: Date
@@ -22,7 +26,7 @@ public class EncryptedMessage: Codable {
         let body = try message.getBody()
 
         guard let data = Data(base64Encoded: body) else {
-            throw NSError()
+            throw EncryptedMessageError.bodyIsNotBase64Encoded
         }
 
         return try JSONDecoder().decode(EncryptedMessage.self, from: data)

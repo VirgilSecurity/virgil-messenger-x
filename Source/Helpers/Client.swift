@@ -16,7 +16,6 @@ public class Client {
 
     enum Error: String, Swift.Error {
         case stringToDataFailed
-        case gettingJWTFailed
         case noBody
         case invalidServerResponse
     }
@@ -87,12 +86,9 @@ public class Client {
             throw Error.noBody
         }
 
-        guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-            throw NSError()
-        }
-
-        guard let result = json[key] as? T else {
-            throw Error.invalidServerResponse
+        guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+            let result = json[key] as? T else {
+                throw Error.invalidServerResponse
         }
 
         return result

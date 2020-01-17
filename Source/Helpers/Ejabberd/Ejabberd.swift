@@ -9,6 +9,13 @@
 import VirgilSDK
 import XMPPFrameworkSwift
 
+public enum EjabberdError: Int, Error {
+    case connectionTimeout = 1
+    case missingBody = 2
+    case missingAuthor = 3
+    case jidFormingFailed = 4
+}
+
 class Ejabberd: NSObject {
     private(set) static var shared: Ejabberd = Ejabberd()
 
@@ -20,6 +27,8 @@ class Ejabberd: NSObject {
     internal let initializeMutex: Mutex = Mutex()
     internal let sendMutex: Mutex = Mutex()
     internal let queue = DispatchQueue(label: "Ejabberd")
+
+    internal let serviceErrorDomain: String = "EjabberdErrorDomain"
 
     override init() {
         super.init()
@@ -73,7 +82,7 @@ class Ejabberd: NSObject {
         let jidString = "\(username)@\(URLConstants.ejabberdHost)"
 
         guard let jid = XMPPJID(string: jidString) else {
-            throw NSError()
+            throw EjabberdError.jidFormingFailed
         }
 
         return jid

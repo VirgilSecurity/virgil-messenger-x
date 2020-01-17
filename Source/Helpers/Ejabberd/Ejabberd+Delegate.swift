@@ -7,6 +7,7 @@
 //
 
 import XMPPFrameworkSwift
+import VirgilSDK
 
 extension Ejabberd: XMPPStreamDelegate {
     func xmppStreamWillConnect(_ sender: XMPPStream) {
@@ -20,15 +21,15 @@ extension Ejabberd: XMPPStreamDelegate {
     }
 
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
-        // TODO: implement me
+        // TODO: add retry ?
         Log.debug("Ejabberd: Connect reached timeout")
 
-        self.unlockMutex(self.initializeMutex, with: NSError())
+        self.unlockMutex(self.initializeMutex, with: EjabberdError.connectionTimeout)
     }
 
     func xmppStreamDidDisconnect(_ sender: XMPPStream, withError error: Error?) {
         // TODO: implement me
-        Log.debug("Ejabberd: Disconected - \(String(describing: error))")
+        Log.debug("Ejabberd: Disconected - \(error?.localizedDescription ?? "unknown error")")
 
         self.unlockMutex(self.initializeMutex, with: error)
     }
@@ -42,7 +43,12 @@ extension Ejabberd: XMPPStreamDelegate {
 
     func xmppStream(_ sender: XMPPStream, didNotAuthenticate error: DDXMLElement) {
         Log.debug("Ejabberd: Authentication failed \(error)")
-        let error = NSError()
+
+        let description = error.stringValue ?? "Authentication unknown error"
+
+        let error = NSError(domain: self.serviceErrorDomain,
+                            code: -1,
+                            userInfo: [NSLocalizedDescriptionKey: description])
 
         self.unlockMutex(self.initializeMutex, with: error)
     }
@@ -56,7 +62,7 @@ extension Ejabberd {
     }
 
     func xmppStream(_ sender: XMPPStream, didFailToSend message: XMPPMessage, error: Error) {
-        Log.error("Ejabberd message failed to send: \(error)")
+        Log.error("Ejabberd: Message failed to send \(error)")
 
         self.unlockMutex(self.sendMutex, with: error)
     }
