@@ -22,9 +22,9 @@ extension CoreData {
         return try self.createChannel(type: .group, sid: sid, name: name, initiator: initiator, cards: cards)
     }
 
-    func createSingleChannel(sid: String? = nil, initiator: String, card: Card) throws -> Channel {
+    func createSingleChannel(initiator: String, card: Card) throws -> Channel {
         // FIXME
-        let sid = sid ?? UUID().uuidString
+        let sid = UUID().uuidString
 
         guard card.identity != Virgil.ethree.identity else {
             throw UserFriendlyError.createSelfChatForbidded
