@@ -22,7 +22,7 @@ extension Ejabberd: XMPPStreamDelegate {
     }
 
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
-        // TODO: add retry ?
+        // TODO: schedule retry
         Log.debug("Ejabberd: Connect reached timeout")
 
         self.state = .disconnected
@@ -32,6 +32,8 @@ extension Ejabberd: XMPPStreamDelegate {
     func xmppStreamDidDisconnect(_ sender: XMPPStream, withError error: Error?) {
         if let error = error {
             Log.debug("Ejabberd disconnected with error - \(error.localizedDescription)")
+
+            // TODO: schedule retry
             Configurator.configure()
         }
         else {
