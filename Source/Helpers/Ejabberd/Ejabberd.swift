@@ -27,8 +27,15 @@ class Ejabberd: NSObject {
     internal let initializeMutex: Mutex = Mutex()
     internal let sendMutex: Mutex = Mutex()
     internal let queue = DispatchQueue(label: "Ejabberd")
+    internal var state: State = .disconnected
 
     internal let serviceErrorDomain: String = "EjabberdErrorDomain"
+
+    internal enum State {
+        case connected
+        case connecting
+        case disconnected
+    }
 
     override init() {
         super.init()
@@ -38,15 +45,16 @@ class Ejabberd: NSObject {
         self.stream.startTLSPolicy = URLConstants.ejabberdTSLPolicy
         self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
 
-        try! self.initializeMutex.lock()
-        try! self.sendMutex.lock()
+        try? self.initializeMutex.lock()
+        try? self.sendMutex.lock()
     }
 
     public func initialize(identity: String) throws {
         self.stream.myJID = try Ejabberd.setupJid(with: identity)
 
         if !self.stream.isConnected {
-            // FIME: Timeout
+            // FIXME: Timeout
+            self.state = .connecting
             try self.stream.connect(withTimeout: 8)
             try self.initializeMutex.lock()
 

@@ -17,6 +17,7 @@ extension Ejabberd: XMPPStreamDelegate {
     func xmppStreamDidConnect(_ stream: XMPPStream) {
         Log.debug("Ejabberd: Connected")
 
+        self.state = .connected
         self.unlockMutex(self.initializeMutex)
     }
 
@@ -24,14 +25,25 @@ extension Ejabberd: XMPPStreamDelegate {
         // TODO: add retry ?
         Log.debug("Ejabberd: Connect reached timeout")
 
+        self.state = .disconnected
         self.unlockMutex(self.initializeMutex, with: EjabberdError.connectionTimeout)
     }
 
     func xmppStreamDidDisconnect(_ sender: XMPPStream, withError error: Error?) {
-        // TODO: implement me
-        Log.debug("Ejabberd: Disconected - \(error?.localizedDescription ?? "unknown error")")
+        if let error = error {
+            Log.debug("Ejabberd disconnected with error - \(error.localizedDescription)")
+            Configurator.configure()
+        }
+        else {
+            Log.debug("Ejabberd disconnected")
+        }
 
-        self.unlockMutex(self.initializeMutex, with: error)
+        let unlock = self.state == .connecting
+        self.state = .disconnected
+
+        if unlock {
+            self.unlockMutex(self.initializeMutex, with: error)
+        }
     }
 
     func xmppStreamDidAuthenticate(_ sender: XMPPStream) {
