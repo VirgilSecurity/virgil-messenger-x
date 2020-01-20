@@ -58,14 +58,17 @@ public class Client {
     }
 
     private func handleError(statusCode: Int, body: Data?) -> Swift.Error {
-        if let body = body, let string = String(data: body, encoding: .utf8) {
-            if string == "Card with this identity already exists" {
-                return UserFriendlyError.usernameAlreadyUsed
+        if let body = body {
+            if let rawServiceError = try? JSONDecoder().decode(RawServiceError.self, from: body) {
+                return ServiceError(httpStatusCode: statusCode,
+                                    rawServiceError: rawServiceError,
+                                    errorDomain: self.serviceErrorDomain)
             }
-
-            return NSError(domain: self.serviceErrorDomain,
-                           code: statusCode,
-                           userInfo: [NSLocalizedDescriptionKey: string])
+            else if let string = String(data: body, encoding: .utf8) {
+                return NSError(domain: self.serviceErrorDomain,
+                               code: statusCode,
+                               userInfo: [NSLocalizedDescriptionKey: string])
+            }
         }
 
         return NSError(domain: self.serviceErrorDomain,

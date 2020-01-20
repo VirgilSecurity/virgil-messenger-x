@@ -26,6 +26,7 @@ public class Configurator {
             }
         }
     }
+
     private(set) static var isUpdated: Bool = false {
         didSet {
             if isUpdated == true {
@@ -52,6 +53,8 @@ public class Configurator {
     }
 
     public static func configure() {
+        self.reset()
+
         let initialize = self.initialize()
 
         let completion = OperationUtils.makeCompletionOperation { (_ result: Void?, error: Error?) in
