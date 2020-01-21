@@ -55,7 +55,7 @@ class Ejabberd: NSObject {
         if !self.stream.isConnected {
             // FIXME: Timeout
             self.state = .connecting
-            try self.stream.connect(withTimeout: 8)
+            try self.stream.connect(withTimeout: 20)
             try self.initializeMutex.lock()
 
             try self.checkError()
