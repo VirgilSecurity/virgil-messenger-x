@@ -88,12 +88,7 @@ class Ejabberd: NSObject {
         self.shouldRetry = false
 
         DispatchQueue.main.async {
-            do {
-                try self.initialize()
-            }
-            catch {
-                Notifications.post(error: error)
-            }
+            Configurator.configure()
         }
     }
 
