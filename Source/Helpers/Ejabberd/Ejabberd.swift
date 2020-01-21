@@ -1,6 +1,6 @@
 //
 //  Ejabberd.swift
-//  VirgilMessenger
+//  Morse
 //
 //  Created by Yevhen Pyvovarov on 27.12.2019.
 //  Copyright © 2019 VirgilSecurity. All rights reserved.

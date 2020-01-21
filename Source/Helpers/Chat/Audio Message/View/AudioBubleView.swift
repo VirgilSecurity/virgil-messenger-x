@@ -1,6 +1,6 @@
 //
 //  AudioBubleView.swift
-//  VirgilMessenger
+//  Morse
 //
 //  Created by Eugen Pivovarov on 5/20/18.
 //  Copyright © 2018 VirgilSecurity. All rights reserved.

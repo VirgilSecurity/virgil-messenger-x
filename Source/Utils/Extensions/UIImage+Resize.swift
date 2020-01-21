@@ -1,6 +1,6 @@
 //
 //  UIImage+Resize.swift
-//  VirgilMessenger
+//  Morse
 //
 //  Created by Eugen Pivovarov on 9/11/18.
 //  Copyright © 2018 VirgilSecurity. All rights reserved.
