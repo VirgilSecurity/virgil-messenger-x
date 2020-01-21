@@ -31,23 +31,23 @@ extension Ejabberd: XMPPStreamDelegate {
     }
 
     func xmppStreamDidDisconnect(_ sender: XMPPStream, withError error: Error?) {
-        let unlock = self.state == .connecting
+        let erroredUnlock = self.state == .connecting
         self.state = .disconnected
 
         if let error = error {
             Log.debug("Ejabberd disconnected with error - \(error.localizedDescription)")
 
             // TODO: schedule retry
-            if !unlock {
+            if erroredUnlock {
+                self.unlockMutex(self.initializeMutex, with: error)
+            }
+            else {
                 Notifications.post(error: error)
             }
         }
         else {
             Log.debug("Ejabberd disconnected")
-        }
-
-        if unlock {
-            self.unlockMutex(self.initializeMutex, with: error)
+            self.unlockMutex(self.initializeMutex)
         }
     }
 
