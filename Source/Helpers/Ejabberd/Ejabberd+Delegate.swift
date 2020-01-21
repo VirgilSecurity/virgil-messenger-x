@@ -28,7 +28,7 @@ extension Ejabberd: XMPPStreamDelegate {
         // TODO: schedrule retry
 
         self.state = .disconnected
-        self.unlockMutex(self.initializeMutex, with: EjabberdError.connectionTimeout)
+        self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
     }
 
     func xmppStreamDidDisconnect(_ sender: XMPPStream, withError error: Error?) {
@@ -40,7 +40,7 @@ extension Ejabberd: XMPPStreamDelegate {
 
             // TODO: schedrule retry
             if erroredUnlock {
-                self.unlockMutex(self.initializeMutex, with: error)
+                self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
             }
             else {
                 self.retryInitialize(error: error)
