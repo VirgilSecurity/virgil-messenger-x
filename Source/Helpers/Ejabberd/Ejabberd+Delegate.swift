@@ -22,26 +22,29 @@ extension Ejabberd: XMPPStreamDelegate {
     }
 
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
-        // TODO: schedule retry
         Log.debug("Ejabberd: Connect reached timeout")
+
+        // TODO: schedule retry
 
         self.state = .disconnected
         self.unlockMutex(self.initializeMutex, with: EjabberdError.connectionTimeout)
     }
 
     func xmppStreamDidDisconnect(_ sender: XMPPStream, withError error: Error?) {
+        let unlock = self.state == .connecting
+        self.state = .disconnected
+
         if let error = error {
             Log.debug("Ejabberd disconnected with error - \(error.localizedDescription)")
 
             // TODO: schedule retry
-            Configurator.configure()
+            if !unlock {
+                Notifications.post(error: error)
+            }
         }
         else {
             Log.debug("Ejabberd disconnected")
         }
-
-        let unlock = self.state == .connecting
-        self.state = .disconnected
 
         if unlock {
             self.unlockMutex(self.initializeMutex, with: error)
