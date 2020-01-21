@@ -1,6 +1,6 @@
 //
 //  Ejabberd+delegate.swift
-//  VirgilMessenger
+//  Morse
 //
 //  Created by Yevhen Pyvovarov on 03.01.2020.
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
@@ -17,21 +17,39 @@ extension Ejabberd: XMPPStreamDelegate {
     func xmppStreamDidConnect(_ stream: XMPPStream) {
         Log.debug("Ejabberd: Connected")
 
+        self.state = .connected
+        self.shouldRetry = true
         self.unlockMutex(self.initializeMutex)
     }
 
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
-        // TODO: add retry ?
         Log.debug("Ejabberd: Connect reached timeout")
 
-        self.unlockMutex(self.initializeMutex, with: EjabberdError.connectionTimeout)
+        // TODO: schedrule retry
+
+        self.state = .disconnected
+        self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
     }
 
     func xmppStreamDidDisconnect(_ sender: XMPPStream, withError error: Error?) {
-        // TODO: implement me
-        Log.debug("Ejabberd: Disconected - \(error?.localizedDescription ?? "unknown error")")
+        let erroredUnlock = self.state == .connecting
+        self.state = .disconnected
 
-        self.unlockMutex(self.initializeMutex, with: error)
+        if let error = error {
+            Log.debug("Ejabberd disconnected with error - \(error.localizedDescription)")
+
+            // TODO: schedrule retry
+            if erroredUnlock {
+                self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
+            }
+            else {
+                self.retryInitialize(error: error)
+            }
+        }
+        else {
+            Log.debug("Ejabberd disconnected")
+            self.unlockMutex(self.initializeMutex)
+        }
     }
 
     func xmppStreamDidAuthenticate(_ sender: XMPPStream) {
@@ -70,7 +88,7 @@ extension Ejabberd {
     func xmppStream(_ sender: XMPPStream, didReceive message: XMPPMessage) {
         Log.debug("Ejabberd: Message received")
 
-        self.queue.async {
+        self.receiveQueue.async {
             do {
                 let author = try message.getAuthor()
                 let encryptedMessage = try EncryptedMessage.import(message)

@@ -1,6 +1,6 @@
 //
 //  EncryptedMessage.swift
-//  VirgilMessenger
+//  Morse
 //
 //  Created by Yevhen Pyvovarov on 03.01.2020.
 //  Copyright © 2020 VirgilSecurity. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  Client.swift
-//  VirgilMessenger
+//  Morse
 //
 //  Created by Yevhen Pyvovarov on 3/14/19.
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
@@ -60,6 +60,10 @@ public class Client {
     private func handleError(statusCode: Int, body: Data?) -> Swift.Error {
         if let body = body {
             if let rawServiceError = try? JSONDecoder().decode(RawServiceError.self, from: body) {
+                if rawServiceError.code == 40001 || rawServiceError.code == 40002 {
+                    return UserFriendlyError.usernameAlreadyUsed
+                }
+                
                 return ServiceError(httpStatusCode: statusCode,
                                     rawServiceError: rawServiceError,
                                     errorDomain: self.serviceErrorDomain)

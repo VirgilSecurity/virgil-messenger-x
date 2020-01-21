@@ -1,6 +1,6 @@
 //
 //  UITextViewZeroPaddings.swift
-//  VirgilMessenger
+//  Morse
 //
 //  Created by Eugen Pivovarov on 7/26/18.
 //  Copyright © 2018 VirgilSecurity. All rights reserved.

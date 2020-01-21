@@ -1,6 +1,6 @@
 //
 //  UIAudioMessageHandler.swift
-//  VirgilMessenger
+//  Morse
 //
 //  Created by Eugen Pivovarov on 5/15/18.
 //  Copyright © 2018 VirgilSecurity. All rights reserved.

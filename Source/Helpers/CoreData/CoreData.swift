@@ -1,6 +1,6 @@
 //
 //  CoreData.swift
-//  VirgilMessenger
+//  Morse
 //
 //  Created by Eugen Pivovarov on 11/9/17.
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
@@ -18,7 +18,7 @@ class CoreData {
 
     let managedContext: NSManagedObjectContext
 
-    public static let dbName = "VirgilMessenger-5"
+    public static let dbName = "Morse"
 
     let persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: CoreData.dbName)

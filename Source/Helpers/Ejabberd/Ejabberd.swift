@@ -1,6 +1,6 @@
 //
 //  Ejabberd.swift
-//  VirgilMessenger
+//  Morse
 //
 //  Created by Yevhen Pyvovarov on 27.12.2019.
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
@@ -14,6 +14,7 @@ public enum EjabberdError: Int, Error {
     case missingBody = 2
     case missingAuthor = 3
     case jidFormingFailed = 4
+    case missingStreamJID = 5
 }
 
 class Ejabberd: NSObject {
@@ -26,9 +27,17 @@ class Ejabberd: NSObject {
     internal var error: Error?
     internal let initializeMutex: Mutex = Mutex()
     internal let sendMutex: Mutex = Mutex()
-    internal let queue = DispatchQueue(label: "Ejabberd")
+    internal let receiveQueue = DispatchQueue(label: "Ejabberd")   // FIXME
+    internal var state: State = .disconnected
+    internal var shouldRetry: Bool = true
 
     internal let serviceErrorDomain: String = "EjabberdErrorDomain"
+
+    internal enum State {
+        case connected
+        case connecting
+        case disconnected
+    }
 
     override init() {
         super.init()
@@ -38,16 +47,24 @@ class Ejabberd: NSObject {
         self.stream.startTLSPolicy = URLConstants.ejabberdTSLPolicy
         self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
 
-        try! self.initializeMutex.lock()
-        try! self.sendMutex.lock()
+        try? self.initializeMutex.lock()
+        try? self.sendMutex.lock()
     }
 
     public func initialize(identity: String) throws {
         self.stream.myJID = try Ejabberd.setupJid(with: identity)
 
+        try self.initialize()
+    }
+
+    internal func initialize() throws {
+        guard let identity = self.stream.myJID?.user else {
+            throw EjabberdError.missingStreamJID
+        }
+
         if !self.stream.isConnected {
-            // FIME: Timeout
-            try self.stream.connect(withTimeout: 8)
+            self.state = .connecting
+            try self.stream.connect(withTimeout: 20)
             try self.initializeMutex.lock()
 
             try self.checkError()
@@ -59,6 +76,19 @@ class Ejabberd: NSObject {
             try self.initializeMutex.lock()
 
             try self.checkError()
+        }
+    }
+
+    internal func retryInitialize(error: Error) {
+        guard self.shouldRetry else {
+            Notifications.post(error: error)
+            return
+        }
+
+        self.shouldRetry = false
+
+        DispatchQueue.main.async {
+            Configurator.configure()
         }
     }
 

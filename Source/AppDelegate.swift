@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  VirgilMessenger
+//  Morse
 //
 //  Created by Oleksandr Deundiak on 10/17/17.
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
@@ -27,9 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Clear core data if it's first launch
         self.cleanLocalStorage()
-
-        // Registering for remote notifications
-        self.registerRemoteNotifications(for: application)
 
         // Clean notifications
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
@@ -62,57 +59,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    private func registerRemoteNotifications(for app: UIApplication) {
-        let center = UNUserNotificationCenter.current()
-
-        center.getNotificationSettings { settings in
-
-            if settings.authorizationStatus == .notDetermined {
-
-                center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
-                    Log.debug("User allowed notifications: \(granted)")
-
-                    if granted {
-                        DispatchQueue.main.async {
-                            app.registerForRemoteNotifications()
-                        }
-                    }
-                }
-
-            }
-            else if settings.authorizationStatus == .authorized {
-                DispatchQueue.main.async {
-                    app.registerForRemoteNotifications()
-                }
-            }
-        }
-    }
-
-    func application(_ application: UIApplication,
-                     didReceiveRemoteNotification userInfo: [AnyHashable : Any],
-                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        Log.debug("Received notification")
-    }
-
     func applicationWillTerminate(_ application: UIApplication) {
         do {
             try CoreData.shared.saveContext()
         } catch {
             Log.error("Saving Core Data context failed with error: \(error.localizedDescription)")
         }
-    }
-
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        Log.debug("Received device token")
-
-        // FIXME
-//        Twilio.updatedPushToken = deviceToken
-    }
-
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        Log.error("Failed to get token, error: \(error)")
-
-        // FIXME
-//        Twilio.updatedPushToken = nil
     }
 }
