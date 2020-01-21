@@ -18,13 +18,14 @@ extension Ejabberd: XMPPStreamDelegate {
         Log.debug("Ejabberd: Connected")
 
         self.state = .connected
+        self.shouldRetry = true
         self.unlockMutex(self.initializeMutex)
     }
 
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
         Log.debug("Ejabberd: Connect reached timeout")
 
-        // TODO: schedule retry
+        // TODO: schedrule retry
 
         self.state = .disconnected
         self.unlockMutex(self.initializeMutex, with: EjabberdError.connectionTimeout)
@@ -37,12 +38,12 @@ extension Ejabberd: XMPPStreamDelegate {
         if let error = error {
             Log.debug("Ejabberd disconnected with error - \(error.localizedDescription)")
 
-            // TODO: schedule retry
+            // TODO: schedrule retry
             if erroredUnlock {
                 self.unlockMutex(self.initializeMutex, with: error)
             }
             else {
-                Notifications.post(error: error)
+                self.retryInitialize(error: error)
             }
         }
         else {
@@ -87,7 +88,7 @@ extension Ejabberd {
     func xmppStream(_ sender: XMPPStream, didReceive message: XMPPMessage) {
         Log.debug("Ejabberd: Message received")
 
-        self.queue.async {
+        self.receiveQueue.async {
             do {
                 let author = try message.getAuthor()
                 let encryptedMessage = try EncryptedMessage.import(message)
