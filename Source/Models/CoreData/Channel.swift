@@ -1,6 +1,6 @@
 //
 //  Channel+CoreDataClass.swift
-//  Morse
+//  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 12/15/17.
 //  Copyright © 2017 VirgilSecurity. All rights reserved.

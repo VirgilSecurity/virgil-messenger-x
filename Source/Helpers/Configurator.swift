@@ -1,6 +1,6 @@
 //
 //  Configurator.swift
-//  Morse
+//  VirgilMessenger
 //
 //  Created by Yevhen Pyvovarov on 3/26/19.
 //  Copyright © 2019 VirgilSecurity. All rights reserved.

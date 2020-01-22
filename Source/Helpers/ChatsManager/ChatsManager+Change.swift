@@ -1,6 +1,6 @@
 //
 //  ChatsManager+ChangeMembers.swift
-//  Morse
+//  VirgilMessenger
 //
 //  Created by Yevhen Pyvovarov on 5/31/19.
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
