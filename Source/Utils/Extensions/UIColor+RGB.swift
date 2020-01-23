@@ -1,6 +1,6 @@
 //
 //  UIColor+RGB.swift
-//  VirgilMessenger
+//  Morse
 //
 //  Created by Eugen Pivovarov on 3/5/18.
 //  Copyright © 2018 VirgilSecurity. All rights reserved.
