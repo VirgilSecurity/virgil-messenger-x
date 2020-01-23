@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hsW-2l-ZfL">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hsW-2l-ZfL">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -48,7 +46,7 @@
                                 </connections>
                             </button>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FAx-Wy-Jxg">
-                                <rect key="frame" x="75" y="200" width="225" height="230"/>
+                                <rect key="frame" x="75" y="180" width="225" height="230"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="225" id="VqQ-hf-PPc"/>
                                     <constraint firstAttribute="height" constant="230" id="wnX-z5-bBZ"/>
@@ -58,7 +56,7 @@
                                 </connections>
                             </containerView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-app-userscreen" translatesAutoresizingMaskIntoConstraints="NO" id="eLU-VO-qVA">
-                                <rect key="frame" x="166.5" y="110" width="42" height="36"/>
+                                <rect key="frame" x="166.5" y="90" width="42" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="36" id="8hg-sz-Dps"/>
                                     <constraint firstAttribute="width" constant="42" id="u7W-c8-ghN"/>
@@ -109,7 +107,7 @@
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="collectionCell" id="biy-7s-uib" customClass="CollectionViewCell" customModule="VirgilMessenger" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="collectionCell" id="biy-7s-uib" customClass="CollectionViewCell" customModule="VirgilMessenger" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="80" height="106"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
