@@ -10,11 +10,11 @@ import UIKit
 import XMPPFrameworkSwift
 
 enum URLConstants {
-    static let ejabberdHost: String = "xmpp-test-int.virgilsecurity.com"
+    static let ejabberdHost: String = "xmpp.virgilsecurity.com"
     static let ejabberdHostPort: UInt16 = 5222
     static let ejabberdTSLPolicy: XMPPStreamStartTLSPolicy = .allowed
 
-    static let baseURLString: String = "https://messenger-dev.virgilsecurity.com"
+    static let baseURLString: String = "https://messenger.virgilsecurity.com"
 
     static let virgilJwtEndpoint = URL(string: "\(URLConstants.baseURLString)/virgil-jwt/")!
     static let ejabberdJwtEndpoint = URL(string: "\(URLConstants.baseURLString)/ejabberd-jwt/")!

@@ -1,6 +1,6 @@
 //
 //  UIViewController+Reachibility.swift
-//  Morse
+//  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 1/3/17.
 //  Copyright © 2017 VirgilSecurity. All rights reserved.

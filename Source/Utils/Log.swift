@@ -1,6 +1,6 @@
 //
 //  Log.swift
-//  Morse
+//  VirgilMessenger
 //
 //  Created by Oleksandr Deundiak on 8/23/17.
 //  Copyright © 2017 VirgilSecurity. All rights reserved.
@@ -38,7 +38,7 @@ public enum Log {
 
     private static func log(_ closure: @autoclosure () -> String, functionName: String = #function,
                             file: String = #file, line: UInt = #line) {
-        let str = "MORSE_LOG: \(functionName) : \(closure())"
+        let str = "VIRGILMESSENGER_LOG: \(functionName) : \(closure())"
         Log.writeInLog(str)
     }
 

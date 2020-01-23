@@ -1,6 +1,6 @@
 //
 //  Utils+SafeSubscript.swift
-//  Morse
+//  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 5/7/18.
 //  Copyright © 2018 VirgilSecurity. All rights reserved.

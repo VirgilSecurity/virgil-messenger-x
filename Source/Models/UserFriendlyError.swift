@@ -1,6 +1,6 @@
 //
 //  UserFriendlyError.swift
-//  Morse
+//  VirgilMessenger
 //
 //  Created by Yevhen Pyvovarov on 3/25/19.
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
@@ -19,4 +19,8 @@ enum UserFriendlyError: String, Error {
     case playingError = "Playing error"
     case memberAlreadyExists = "This user is already a member of channel"
     case connectionIssue = "Connection failed"
+
+    init(from error: Error) {
+        self = error as? UserFriendlyError ?? .unknownError
+    }
 }

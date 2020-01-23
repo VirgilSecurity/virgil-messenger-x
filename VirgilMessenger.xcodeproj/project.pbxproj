@@ -18,7 +18,7 @@
 		16132FC22254C868008FD754 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16132FC12254C868008FD754 /* UIViewController.swift */; };
 		16132FC6225514D0008FD754 /* MessageProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16132FC5225514D0008FD754 /* MessageProcessor.swift */; };
 		16177AA620C01F5C0050BB31 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16177AA520C01F5C0050BB31 /* ChannelType.swift */; };
-		1621B8491FB333B100D1ABC1 /* Morse.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* Morse.xcdatamodeld */; };
+		1621B8491FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
 		1627723F203C5FB00086127C /* CoreData+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1627723E203C5FB00086127C /* CoreData+Account.swift */; };
 		16277242203C60DB0086127C /* CoreData+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277241203C60DB0086127C /* CoreData+Channel.swift */; };
 		16277244203C62040086127C /* CoreData+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16277243203C62040086127C /* CoreData+Messages.swift */; };
@@ -29,7 +29,6 @@
 		162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */; };
 		16317B9922C506A200A3144A /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16317B9822C506A200A3144A /* Notifications.swift */; };
 		163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */; };
-		1640C021227B2C5300D585E3 /* TwilioChatClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1640C020227B2C5300D585E3 /* TwilioChatClient.framework */; };
 		1644C07920B720F000073D99 /* View.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1644C07820B720F000073D99 /* View.xcassets */; };
 		1644C07B20B85AC500073D99 /* UIPhotosChatInputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1644C07A20B85AC500073D99 /* UIPhotosChatInputItem.swift */; };
 		164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */; };
@@ -69,17 +68,11 @@
 		16AE1D7B2044315B005DF777 /* UIPhotoMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D782044315B005DF777 /* UIPhotoMessageHandler.swift */; };
 		16B4EC0923BE3BB300E7E4DB /* XMPPFrameworkSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0723BE3BB300E7E4DB /* XMPPFrameworkSwift.framework */; };
 		16B4EC1023BE466500E7E4DB /* KissXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0E23BE466500E7E4DB /* KissXML.framework */; };
-		16B4EC1123BE466500E7E4DB /* KissXML.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0E23BE466500E7E4DB /* KissXML.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC1523BE46E200E7E4DB /* XMPPFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0823BE3BB300E7E4DB /* XMPPFramework.framework */; };
-		16B4EC1623BE46E200E7E4DB /* XMPPFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0823BE3BB300E7E4DB /* XMPPFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC1723BE471F00E7E4DB /* CocoaLumberjackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0F23BE466500E7E4DB /* CocoaLumberjackSwift.framework */; };
-		16B4EC1823BE471F00E7E4DB /* CocoaLumberjackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0F23BE466500E7E4DB /* CocoaLumberjackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC1A23BE471F00E7E4DB /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1923BE471F00E7E4DB /* CocoaLumberjack.framework */; };
-		16B4EC1B23BE471F00E7E4DB /* CocoaLumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1923BE471F00E7E4DB /* CocoaLumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC1D23BE476900E7E4DB /* libidn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1C23BE476900E7E4DB /* libidn.framework */; };
-		16B4EC1E23BE476900E7E4DB /* libidn.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1C23BE476900E7E4DB /* libidn.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC2023BE47B700E7E4DB /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1F23BE47B700E7E4DB /* CocoaAsyncSocket.framework */; };
-		16B4EC2123BE47B700E7E4DB /* CocoaAsyncSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1F23BE47B700E7E4DB /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC2623BF610500E7E4DB /* XMPPMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2523BF610500E7E4DB /* XMPPMessage.swift */; };
 		16B4EC2823BF63BA00E7E4DB /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
 		16B4EC2A23BF79B700E7E4DB /* Ejabberd+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2923BF79B700E7E4DB /* Ejabberd+Delegate.swift */; };
@@ -149,27 +142,8 @@
 		429228EB1F96405800DCECDF /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* Chat.storyboard */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		16B4EC1423BE466500E7E4DB /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				16B4EC2123BE47B700E7E4DB /* CocoaAsyncSocket.framework in Embed Frameworks */,
-				16B4EC1623BE46E200E7E4DB /* XMPPFramework.framework in Embed Frameworks */,
-				16B4EC1123BE466500E7E4DB /* KissXML.framework in Embed Frameworks */,
-				16B4EC1B23BE471F00E7E4DB /* CocoaLumberjack.framework in Embed Frameworks */,
-				16B4EC1823BE471F00E7E4DB /* CocoaLumberjackSwift.framework in Embed Frameworks */,
-				16B4EC1E23BE476900E7E4DB /* libidn.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		160093CA22B9315C0045D43F /* Morse.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Morse.entitlements; sourceTree = "<group>"; };
+		160093CA22B9315C0045D43F /* VirgilMessenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VirgilMessenger.entitlements; sourceTree = "<group>"; };
 		160093CB22B93AD10045D43F /* BEMCheckBox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BEMCheckBox.framework; path = Carthage/Build/iOS/BEMCheckBox.framework; sourceTree = "<group>"; };
 		16013C7820B214460043EA29 /* AudioBubleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBubleView.swift; sourceTree = "<group>"; };
 		16013C7A20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageCollectionViewCellDefaultStyle.swift; sourceTree = "<group>"; };
@@ -298,7 +272,7 @@
 		4280C0DD1F9734DD00075B3A /* TimeSeparatorPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeSeparatorPresenter.swift; sourceTree = "<group>"; };
 		4280C0DE1F9734DD00075B3A /* TimeSeparatorCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeSeparatorCollectionViewCell.swift; sourceTree = "<group>"; };
 		4280C0E21F97364F00075B3A /* Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
-		429228B21F96261000DCECDF /* Morse.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Morse.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		429228B21F96261000DCECDF /* VirgilMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirgilMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		429228B51F96261000DCECDF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		429228B71F96261000DCECDF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		429228BC1F96261000DCECDF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -318,7 +292,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				160093CC22B93AD10045D43F /* BEMCheckBox.framework in Frameworks */,
-				1640C021227B2C5300D585E3 /* TwilioChatClient.framework in Frameworks */,
 				1693677F2248FA0800EF9A42 /* Crashlytics.framework in Frameworks */,
 				169367802248FA0800EF9A42 /* Fabric.framework in Frameworks */,
 				16FC7BE6238D691600F7ACE7 /* VSCPythia.framework in Frameworks */,
@@ -673,7 +646,7 @@
 		429228A91F96261000DCECDF = {
 			isa = PBXGroup;
 			children = (
-				429228B41F96261000DCECDF /* Morse */,
+				429228B41F96261000DCECDF /* VirgilMessenger */,
 				16D8B0E8223A6EFF00D7FA67 /* Source */,
 				429228B31F96261000DCECDF /* Products */,
 				429228C71F96287A00DCECDF /* Frameworks */,
@@ -683,20 +656,20 @@
 		429228B31F96261000DCECDF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				429228B21F96261000DCECDF /* Morse.app */,
+				429228B21F96261000DCECDF /* VirgilMessenger.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		429228B41F96261000DCECDF /* Morse */ = {
+		429228B41F96261000DCECDF /* VirgilMessenger */ = {
 			isa = PBXGroup;
 			children = (
-				160093CA22B9315C0045D43F /* Morse.entitlements */,
+				160093CA22B9315C0045D43F /* VirgilMessenger.entitlements */,
 				429228BC1F96261000DCECDF /* Assets.xcassets */,
 				429228C11F96261000DCECDF /* Info.plist */,
-				1621B8471FB333B100D1ABC1 /* Morse.xcdatamodeld */,
+				1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */,
 			);
-			path = Morse;
+			path = VirgilMessenger;
 			sourceTree = "<group>";
 		};
 		429228C71F96287A00DCECDF /* Frameworks */ = {
@@ -750,24 +723,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		429228B11F96261000DCECDF /* Morse */ = {
+		429228B11F96261000DCECDF /* VirgilMessenger */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 429228C41F96261000DCECDF /* Build configuration list for PBXNativeTarget "Morse" */;
+			buildConfigurationList = 429228C41F96261000DCECDF /* Build configuration list for PBXNativeTarget "VirgilMessenger" */;
 			buildPhases = (
 				429228AE1F96261000DCECDF /* Sources */,
 				429228AF1F96261000DCECDF /* Frameworks */,
 				429228B01F96261000DCECDF /* Resources */,
 				1693678E2248FA2F00EF9A42 /* ShellScript */,
 				16319BE72088E60200B09856 /* Remove unused architectures */,
-				16B4EC1423BE466500E7E4DB /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Morse;
+			name = VirgilMessenger;
 			productName = VirgilMessenger;
-			productReference = 429228B21F96261000DCECDF /* Morse.app */;
+			productReference = 429228B21F96261000DCECDF /* VirgilMessenger.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -792,7 +764,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 429228AD1F96261000DCECDF /* Build configuration list for PBXProject "Morse" */;
+			buildConfigurationList = 429228AD1F96261000DCECDF /* Build configuration list for PBXProject "VirgilMessenger" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -805,7 +777,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				429228B11F96261000DCECDF /* Morse */,
+				429228B11F96261000DCECDF /* VirgilMessenger */,
 			);
 		};
 /* End PBXProject section */
@@ -872,7 +844,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoFoundation.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoRatchet.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilSDKRatchet.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/TwilioChatClient.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BEMCheckBox.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilE3Kit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VSCPythia.framework",
@@ -919,7 +890,7 @@
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
 				16013C8120B2CA760043EA29 /* AudioMessagePresenterBuilder.swift in Sources */,
 				164E173220AAEF1900AB1AAD /* UIAudioMessageHandler.swift in Sources */,
-				1621B8491FB333B100D1ABC1 /* Morse.xcdatamodeld in Sources */,
+				1621B8491FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld in Sources */,
 				16177AA620C01F5C0050BB31 /* ChannelType.swift in Sources */,
 				164E173520AB0BE600AB1AAD /* AudioMessageViewModel.swift in Sources */,
 				16B4EC2A23BF79B700E7E4DB /* Ejabberd+Delegate.swift in Sources */,
@@ -1109,7 +1080,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Morse/Morse.entitlements;
+				CODE_SIGN_ENTITLEMENTS = VirgilMessenger/VirgilMessenger.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1121,11 +1092,11 @@
 					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)",
 				);
-				INFOPLIST_FILE = Morse/Info.plist;
+				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
-				PRODUCT_NAME = Morse;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -1137,7 +1108,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Morse/Morse.entitlements;
+				CODE_SIGN_ENTITLEMENTS = VirgilMessenger/VirgilMessenger.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1148,11 +1119,11 @@
 					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)",
 				);
-				INFOPLIST_FILE = Morse/Info.plist;
+				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
-				PRODUCT_NAME = Morse;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -1163,7 +1134,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		429228AD1F96261000DCECDF /* Build configuration list for PBXProject "Morse" */ = {
+		429228AD1F96261000DCECDF /* Build configuration list for PBXProject "VirgilMessenger" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				429228C21F96261000DCECDF /* Debug */,
@@ -1172,7 +1143,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		429228C41F96261000DCECDF /* Build configuration list for PBXNativeTarget "Morse" */ = {
+		429228C41F96261000DCECDF /* Build configuration list for PBXNativeTarget "VirgilMessenger" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				429228C51F96261000DCECDF /* Debug */,
@@ -1184,13 +1155,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		1621B8471FB333B100D1ABC1 /* Morse.xcdatamodeld */ = {
+		1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
 				1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */,
 			);
 			currentVersion = 1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */;
-			path = Morse.xcdatamodeld;
+			path = "VirgilMessenger-5.xcdatamodeld";
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
