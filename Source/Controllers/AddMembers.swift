@@ -83,19 +83,19 @@ class AddMembersViewController: ViewController {
             return
         }
 
-        HUD.show(.progress)
+//        HUD.show(.progress)
 
-        ChatsManager.addMembers(add, dataSource: self.dataSource).start { _, error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    HUD.hide()
-                    self.alert(error)
-                } else {
-                    HUD.flash(.success)
-                    self.navigationController?.popViewController(animated: true)
-                }
-            }
-        }
+//        ChatsManager.addMembers(add, dataSource: self.dataSource).start { _, error in
+//            DispatchQueue.main.async {
+//                if let error = error {
+//                    HUD.hide()
+//                    self.alert(error)
+//                } else {
+//                    HUD.flash(.success)
+//                    self.navigationController?.popViewController(animated: true)
+//                }
+//            }
+//        }
     }
 }
 

@@ -69,12 +69,12 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
 
         let range1 = nsText.range(of: "Terms of Service")
         attriString.addAttribute(.link,
-                                 value: URLConstansts.termsAndConditionsURL,
+                                 value: URLConstants.termsAndConditionsURL,
                                  range: range1)
 
         let range2 = nsText.range(of: "Privacy Policy")
         attriString.addAttribute(.link,
-                                 value: URLConstansts.privacyURL,
+                                 value: URLConstants.privacyURL,
                                  range: range2)
 
         self.privacyLabel.attributedText = attriString

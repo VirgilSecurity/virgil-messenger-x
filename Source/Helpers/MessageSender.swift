@@ -12,33 +12,31 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public func sendChangeMembers(uiModel: UITextMessageModel, coreChannel: Channel) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
-            do {
-                let twilioChannel = try Twilio.shared.getCurrentChannel()
-
-                let group = try coreChannel.getGroup()
-
-                let ciphertext = try group.encrypt(text: uiModel.body)
-
-                try twilioChannel.send(ciphertext: ciphertext, type: .service).startSync().get()
-
-                _ = try CoreData.shared.createChangeMembersMessage(uiModel.body, isIncoming: false)
-
-                self.updateMessage(uiModel, status: .success)
-
-                completion((), nil)
-            }
-            catch {
-                self.updateMessage(uiModel, status: .failed)
-                completion(nil, error)
-            }
-        }
-    }
+//    public func sendChangeMembers(uiModel: UITextMessageModel, coreChannel: Channel) -> CallbackOperation<Void> {
+//        return CallbackOperation { _, completion in
+//            do {
+//                let twilioChannel = try Twilio.shared.getCurrentChannel()
+//
+//                let group = try coreChannel.getGroup()
+//
+//                let ciphertext = try group.encrypt(text: uiModel.body)
+//
+//                try twilioChannel.send(ciphertext: ciphertext, type: .service).startSync().get()
+//
+//                _ = try CoreData.shared.createChangeMembersMessage(uiModel.body, isIncoming: false)
+//
+//                self.updateMessage(uiModel, status: .success)
+//
+//                completion((), nil)
+//            }
+//            catch {
+//                self.updateMessage(uiModel, status: .failed)
+//                completion(nil, error)
+//            }
+//        }
+//    }
 
     public func send(uiModel: UITextMessageModel, coreChannel: Channel) throws {
-        let twilioChannel = try Twilio.shared.getCurrentChannel()
-
         self.queue.async {
             do {
                 let plaintext = uiModel.body
@@ -54,7 +52,9 @@ public class MessageSender {
                     ciphertext = try Virgil.ethree.authEncrypt(text: plaintext, for: coreChannel.getCard())
                 }
 
-                try twilioChannel.send(ciphertext: ciphertext, type: .regular).startSync().get()
+                let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
+
+                try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name)
 
                 _ = try CoreData.shared.createTextMessage(plaintext,
                                                           in: coreChannel,

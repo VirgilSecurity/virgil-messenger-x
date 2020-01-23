@@ -18,7 +18,7 @@ public enum ChatsManager {
             do {
                 let identity = identity.lowercased()
 
-                guard identity != Twilio.shared.identity else {
+                guard identity != Virgil.ethree.identity else {
                     throw UserFriendlyError.createSelfChatForbidded
                 }
 
@@ -41,56 +41,52 @@ public enum ChatsManager {
         do {
             let card = try Virgil.ethree.findUser(with: identity).startSync().get()
 
-            let channel = try Twilio.shared.createSingleChannel(with: identity).startSync().get()
-
-            let sid = try channel.getSid()
-
-            _ = try CoreData.shared.createSingleChannel(sid: sid, initiator: Twilio.shared.identity, card: card)
+            _ = try CoreData.shared.createSingleChannel(initiator: Virgil.ethree.identity, card: card)
         }
         catch FindUsersError.cardWasNotFound {
             throw UserFriendlyError.userNotFound
         }
     }
     
-    public static func startGroup(with channels: [Channel],
-                                  name: String,
-                                  startProgressBar: @escaping () -> Void,
-                                  completion: @escaping (Error?) -> Void) {
-        DispatchQueue(label: "ChatsManager").async {
-            do {
-                let name = name.lowercased()
-
-                guard !channels.isEmpty else {
-                    throw UserFriendlyError.unknownError
-                }
-
-                startProgressBar()
-
-                let members = channels.map { $0.name }
-
-                let findUsersResult = try Virgil.ethree.findUsers(with: members).startSync().get()
-
-                let channel = try Twilio.shared.createGroupChannel(with: members, name: name)
-                    .startSync()
-                    .get()
-
-                let sid = try channel.getSid()
-
-                // FIXME: add already exists handler
-                let group = try Virgil.ethree.createGroup(id: sid, with: findUsersResult).startSync().get()
-
-                let cards = Array(findUsersResult.values)
-                let coreChannel = try CoreData.shared.createGroupChannel(name: name,
-                                                                         sid: sid,
-                                                                         initiator: group.initiator,
-                                                                         cards: cards)
-                coreChannel.set(group: group)
-
-                completion(nil)
-            }
-            catch {
-                completion(error)
-            }
-        }
-    }
+//    public static func startGroup(with channels: [Channel],
+//                                  name: String,
+//                                  startProgressBar: @escaping () -> Void,
+//                                  completion: @escaping (Error?) -> Void) {
+//        DispatchQueue(label: "ChatsManager").async {
+//            do {
+//                let name = name.lowercased()
+//
+//                guard !channels.isEmpty else {
+//                    throw UserFriendlyError.unknownError
+//                }
+//
+//                startProgressBar()
+//
+//                let members = channels.map { $0.name }
+//
+//                let findUsersResult = try Virgil.ethree.findUsers(with: members).startSync().get()
+//
+//                let channel = try Twilio.shared.createGroupChannel(with: members, name: name)
+//                    .startSync()
+//                    .get()
+//
+//                let sid = try channel.getSid()
+//
+//                // FIXME: add already exists handler
+//                let group = try Virgil.ethree.createGroup(id: sid, with: findUsersResult).startSync().get()
+//
+//                let cards = Array(findUsersResult.values)
+//                let coreChannel = try CoreData.shared.createGroupChannel(name: name,
+//                                                                         sid: sid,
+//                                                                         initiator: group.initiator,
+//                                                                         cards: cards)
+//                coreChannel.set(group: group)
+//
+//                completion(nil)
+//            }
+//            catch {
+//                completion(error)
+//            }
+//        }
+//    }
 }

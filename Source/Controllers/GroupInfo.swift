@@ -30,7 +30,7 @@ class GroupInfoViewController: ViewController {
         self.nameLabel.text = self.channel.name
         self.avatarView.draw(with: self.channel.colors)
 
-        let isEnabled = self.channel.initiator == Twilio.shared.identity
+        let isEnabled = self.channel.initiator == Virgil.ethree.identity
         self.addButton.isEnabled = isEnabled
 
         if !isEnabled {
@@ -115,18 +115,18 @@ extension GroupInfoViewController: DeleteItemDelegate {
             return
         }
         
-        HUD.show(.progress)
-
-        ChatsManager.removeMember(user.identity, dataSource: self.dataSource).start { _, error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    HUD.hide()
-                    self.alert(error)
-                } else {
-                    HUD.flash(.success)
-                    self.updateUserList()
-                }
-            }
-        }
+//        HUD.show(.progress)
+//
+//        ChatsManager.removeMember(user.identity, dataSource: self.dataSource).start { _, error in
+//            DispatchQueue.main.async {
+//                if let error = error {
+//                    HUD.hide()
+//                    self.alert(error)
+//                } else {
+//                    HUD.flash(.success)
+//                    self.updateUserList()
+//                }
+//            }
+//        }
     }
 }

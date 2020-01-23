@@ -10,14 +10,9 @@ import UIKit
 
 extension UIViewController {
     func alert(title: String? = nil, _ anyError: Error, handler: ((UIAlertAction) -> Void)? = nil) {
-        let message: String
+        let error = UserFriendlyError(from: anyError)
 
-        if let error = anyError as? UserFriendlyError {
-            message = error.rawValue
-        }
-        else {
-            message = anyError.localizedDescription
-        }
+        let message = error.rawValue
 
         let alert: UIAlertController = UIAlertController(title: title,
                                                          message: message,
@@ -25,6 +20,8 @@ extension UIViewController {
 
         let okAction = UIAlertAction(title: "OK", style: .default, handler: handler)
         alert.addAction(okAction)
+
+        self.presentedViewController?.dismiss(animated: true, completion: nil)
 
         self.present(alert, animated: true)
     }

@@ -103,16 +103,16 @@ extension ChatsManager {
                     return
                 }
 
-                let messages = try twilioChannel.getLastMessages(withCount: toLoad).startSync().get()
+//                let messages = try twilioChannel.getLastMessages(withCount: toLoad).startSync().get()
 
-                for message in messages {
-                    let sid = try twilioChannel.getSid()
-                    if !CoreData.shared.existsChannel(sid: sid) {
-                        break
-                    }
-
-                    _ = try MessageProcessor.process(message: message, from: twilioChannel, coreChannel: coreChannel)
-                }
+//                for message in messages {
+//                    let sid = try twilioChannel.getSid()
+//                    if !CoreData.shared.existsChannel(sid: sid) {
+//                        break
+//                    }
+//
+////                    _ = try MessageProcessor.process(message: message, from: twilioChannel, coreChannel: coreChannel)
+//                }
 
                 completion((), nil)
             }

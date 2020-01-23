@@ -73,15 +73,6 @@ class ChatViewController: BaseChatViewController {
         self.avatarView.gradientLayer.colors = self.channel.colors
         self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
 
-        if Configurator.isInitialized {
-            do {
-                try Twilio.shared.setChannel(self.channel)
-            }
-            catch {
-                self.popToRoot()
-            }
-        }
-
         self.setupTitle()
 
         self.setupObservers()
@@ -90,10 +81,6 @@ class ChatViewController: BaseChatViewController {
     }
 
     deinit {
-        if Configurator.isInitialized {
-            Twilio.shared.deselectChannel()
-        }
-        
         CoreData.shared.deselectChannel()
     }
 

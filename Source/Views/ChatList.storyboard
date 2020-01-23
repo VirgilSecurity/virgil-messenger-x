@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="xHd-tO-Nab">
-    <device id="retina6_1" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="xHd-tO-Nab">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -88,7 +86,6 @@ Add new one!</string>
                         <outlet property="tableView" destination="OLu-Yi-HTK" id="p1B-2j-laF"/>
                         <segue destination="tSb-ds-G5u" kind="show" identifier="goToChat" id="28z-YN-Bk9"/>
                         <segue destination="cdC-mY-49V" kind="show" identifier="goToAuth" animates="NO" id="TfX-du-Bf4"/>
-                        <segue destination="XC8-5n-eZV" kind="show" identifier="goToNewMessage" id="ptP-TJ-K4z"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DDd-4J-wX9" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -135,14 +132,6 @@ Add new one!</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="re4-ce-Aav" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1360" y="-1090"/>
-        </scene>
-        <!--NewMessage-->
-        <scene sceneID="XC8-ZM-YMD">
-            <objects>
-                <viewControllerPlaceholder storyboardName="NewMessage" id="XC8-5n-eZV" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Cbs-pU-HuM" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1407" y="-975"/>
         </scene>
         <!--Authentication-->
         <scene sceneID="dV1-zg-E74">

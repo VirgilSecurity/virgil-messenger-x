@@ -49,7 +49,8 @@ public class UserAuthorizer {
                 UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
@@ -58,18 +59,21 @@ public class UserAuthorizer {
     public func logOut(completion: @escaping (Error?) -> Void) {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
-                if let token = Twilio.updatedPushToken {
-                    try Twilio.shared.deregister(withNotificationToken: token).startSync().get()
-                }
+                // FIXME: pushes
+//                if let token = Twilio.updatedPushToken {
+//                    try Twilio.shared.deregister(withNotificationToken: token).startSync().get()
+//                }
+
+                try Ejabberd.shared.disconect()
 
                 Configurator.reset()
                 CoreData.shared.resetState()
-                Twilio.shared.deselectChannel()
 
                 UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
@@ -82,9 +86,9 @@ public class UserAuthorizer {
 
         try CoreData.shared.deleteAccount()
         CoreData.shared.resetState()
-        Twilio.shared.deselectChannel()
+        try Ejabberd.shared.disconect()
 
-        self.virgilAuthorizer.logOut(identity: Twilio.shared.identity)
+        self.virgilAuthorizer.logOut()
     }
 }
 

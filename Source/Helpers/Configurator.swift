@@ -26,6 +26,7 @@ public class Configurator {
             }
         }
     }
+
     private(set) static var isUpdated: Bool = false {
         didSet {
             if isUpdated == true {
@@ -40,16 +41,9 @@ public class Configurator {
                 let account = try CoreData.shared.getCurrentAccount()
                 let identity = account.identity
 
-                try Twilio.makeInitTwilioOperation(identity: identity,
-                                                   client: Virgil.shared.client)
-                    .startSync()
-                    .get()
+                try Ejabberd.shared.initialize(identity: identity)
 
                 self.isInitialized = true
-
-                if let channel = CoreData.shared.currentChannel {
-                    try Twilio.shared.setChannel(channel)
-                }
 
                 completion((), nil)
             } catch {
@@ -59,10 +53,9 @@ public class Configurator {
     }
 
     public static func configure() {
-        let initialize = self.initialize()
-        let update = ChatsManager.updateChannels()
+        self.reset()
 
-        update.addDependency(initialize)
+        let initialize = self.initialize()
 
         let completion = OperationUtils.makeCompletionOperation { (_ result: Void?, error: Error?) in
             if let error = error {
@@ -72,10 +65,10 @@ public class Configurator {
             }
         }
 
-        completion.addDependency(update)
+        completion.addDependency(initialize)
 
         let queue = OperationQueue()
-        queue.addOperations([initialize, update, completion], waitUntilFinished: false)
+        queue.addOperations([initialize, completion], waitUntilFinished: false)
     }
 
     public static func reset() {
