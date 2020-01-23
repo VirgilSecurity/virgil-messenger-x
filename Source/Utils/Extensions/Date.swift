@@ -1,6 +1,6 @@
 //
 //  Date.swift
-//  Morse
+//  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 12/7/17.
 //  Copyright © 2017 VirgilSecurity. All rights reserved.

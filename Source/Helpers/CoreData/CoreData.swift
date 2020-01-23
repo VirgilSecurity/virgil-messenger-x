@@ -1,6 +1,6 @@
 //
 //  CoreData.swift
-//  Morse
+//  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 11/9/17.
 //  Copyright © 2017 VirgilSecurity. All rights reserved.

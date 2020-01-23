@@ -1,6 +1,6 @@
 //
 //  Authentication.swift
-//  Morse
+//  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 12/8/17.
 //  Copyright © 2017 VirgilSecurity. All rights reserved.

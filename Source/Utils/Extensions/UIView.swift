@@ -1,6 +1,6 @@
 //
 //  UIView+Gradient.swift
-//  Morse
+//  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 3/5/18.
 //  Copyright © 2018 VirgilSecurity. All rights reserved.
