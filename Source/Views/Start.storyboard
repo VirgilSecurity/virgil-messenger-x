@@ -34,13 +34,6 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Launch" translatesAutoresizingMaskIntoConstraints="NO" id="bZg-FO-Dru">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="powered by" translatesAutoresizingMaskIntoConstraints="NO" id="lXU-ee-Sqv">
-                                <rect key="frame" x="100" y="618" width="175" height="15"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="15" id="0Sj-Dd-nsK"/>
-                                    <constraint firstAttribute="width" constant="175" id="4Rn-WB-SXq"/>
-                                </constraints>
-                            </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-app-userscreen" translatesAutoresizingMaskIntoConstraints="NO" id="g17-d3-DLz">
                                 <rect key="frame" x="145.5" y="297.5" width="84" height="72"/>
                                 <constraints>
@@ -52,13 +45,10 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="g17-d3-DLz" firstAttribute="centerY" secondItem="2Pp-ln-Npy" secondAttribute="centerY" id="5j5-5e-vfI"/>
-                            <constraint firstItem="2Pp-ln-Npy" firstAttribute="bottom" secondItem="lXU-ee-Sqv" secondAttribute="bottom" constant="34" id="99A-LH-M0b"/>
                             <constraint firstItem="bZg-FO-Dru" firstAttribute="leading" secondItem="2Pp-ln-Npy" secondAttribute="leading" id="MIT-UW-6fX"/>
                             <constraint firstAttribute="bottom" secondItem="bZg-FO-Dru" secondAttribute="bottom" id="QGl-tl-ztT"/>
                             <constraint firstItem="g17-d3-DLz" firstAttribute="centerX" secondItem="2Pp-ln-Npy" secondAttribute="centerX" id="VHd-ID-ZRl"/>
-                            <constraint firstItem="lXU-ee-Sqv" firstAttribute="centerX" secondItem="bZg-FO-Dru" secondAttribute="centerX" id="Vph-Oe-osi"/>
                             <constraint firstItem="bZg-FO-Dru" firstAttribute="top" secondItem="tsx-hB-I0D" secondAttribute="top" id="Zej-Gy-J2c"/>
-                            <constraint firstItem="g17-d3-DLz" firstAttribute="centerX" secondItem="lXU-ee-Sqv" secondAttribute="centerX" id="dgs-Vg-dBw"/>
                             <constraint firstItem="bZg-FO-Dru" firstAttribute="trailing" secondItem="2Pp-ln-Npy" secondAttribute="trailing" id="ib7-cI-5VC"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="2Pp-ln-Npy"/>
@@ -73,6 +63,5 @@
     <resources>
         <image name="Launch" width="375" height="667"/>
         <image name="icon-app-userscreen" width="44" height="38"/>
-        <image name="powered by" width="175" height="15"/>
     </resources>
 </document>
