@@ -29,7 +29,6 @@
 		162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */; };
 		16317B9922C506A200A3144A /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16317B9822C506A200A3144A /* Notifications.swift */; };
 		163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */; };
-		1640C021227B2C5300D585E3 /* TwilioChatClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1640C020227B2C5300D585E3 /* TwilioChatClient.framework */; };
 		1644C07920B720F000073D99 /* View.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1644C07820B720F000073D99 /* View.xcassets */; };
 		1644C07B20B85AC500073D99 /* UIPhotosChatInputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1644C07A20B85AC500073D99 /* UIPhotosChatInputItem.swift */; };
 		164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */; };
@@ -318,7 +317,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				160093CC22B93AD10045D43F /* BEMCheckBox.framework in Frameworks */,
-				1640C021227B2C5300D585E3 /* TwilioChatClient.framework in Frameworks */,
 				1693677F2248FA0800EF9A42 /* Crashlytics.framework in Frameworks */,
 				169367802248FA0800EF9A42 /* Fabric.framework in Frameworks */,
 				16FC7BE6238D691600F7ACE7 /* VSCPythia.framework in Frameworks */,
@@ -872,7 +870,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoFoundation.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoRatchet.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilSDKRatchet.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/TwilioChatClient.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BEMCheckBox.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilE3Kit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VSCPythia.framework",
