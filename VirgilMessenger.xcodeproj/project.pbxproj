@@ -68,17 +68,11 @@
 		16AE1D7B2044315B005DF777 /* UIPhotoMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AE1D782044315B005DF777 /* UIPhotoMessageHandler.swift */; };
 		16B4EC0923BE3BB300E7E4DB /* XMPPFrameworkSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0723BE3BB300E7E4DB /* XMPPFrameworkSwift.framework */; };
 		16B4EC1023BE466500E7E4DB /* KissXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0E23BE466500E7E4DB /* KissXML.framework */; };
-		16B4EC1123BE466500E7E4DB /* KissXML.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0E23BE466500E7E4DB /* KissXML.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC1523BE46E200E7E4DB /* XMPPFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0823BE3BB300E7E4DB /* XMPPFramework.framework */; };
-		16B4EC1623BE46E200E7E4DB /* XMPPFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0823BE3BB300E7E4DB /* XMPPFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC1723BE471F00E7E4DB /* CocoaLumberjackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0F23BE466500E7E4DB /* CocoaLumberjackSwift.framework */; };
-		16B4EC1823BE471F00E7E4DB /* CocoaLumberjackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC0F23BE466500E7E4DB /* CocoaLumberjackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC1A23BE471F00E7E4DB /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1923BE471F00E7E4DB /* CocoaLumberjack.framework */; };
-		16B4EC1B23BE471F00E7E4DB /* CocoaLumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1923BE471F00E7E4DB /* CocoaLumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC1D23BE476900E7E4DB /* libidn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1C23BE476900E7E4DB /* libidn.framework */; };
-		16B4EC1E23BE476900E7E4DB /* libidn.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1C23BE476900E7E4DB /* libidn.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC2023BE47B700E7E4DB /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1F23BE47B700E7E4DB /* CocoaAsyncSocket.framework */; };
-		16B4EC2123BE47B700E7E4DB /* CocoaAsyncSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16B4EC1F23BE47B700E7E4DB /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16B4EC2623BF610500E7E4DB /* XMPPMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2523BF610500E7E4DB /* XMPPMessage.swift */; };
 		16B4EC2823BF63BA00E7E4DB /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
 		16B4EC2A23BF79B700E7E4DB /* Ejabberd+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2923BF79B700E7E4DB /* Ejabberd+Delegate.swift */; };
@@ -147,25 +141,6 @@
 		429228DE1F9637A200DCECDF /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
 		429228EB1F96405800DCECDF /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* Chat.storyboard */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		16B4EC1423BE466500E7E4DB /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				16B4EC2123BE47B700E7E4DB /* CocoaAsyncSocket.framework in Embed Frameworks */,
-				16B4EC1623BE46E200E7E4DB /* XMPPFramework.framework in Embed Frameworks */,
-				16B4EC1123BE466500E7E4DB /* KissXML.framework in Embed Frameworks */,
-				16B4EC1B23BE471F00E7E4DB /* CocoaLumberjack.framework in Embed Frameworks */,
-				16B4EC1823BE471F00E7E4DB /* CocoaLumberjackSwift.framework in Embed Frameworks */,
-				16B4EC1E23BE476900E7E4DB /* libidn.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		160093CA22B9315C0045D43F /* VirgilMessenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VirgilMessenger.entitlements; sourceTree = "<group>"; };
@@ -757,7 +732,6 @@
 				429228B01F96261000DCECDF /* Resources */,
 				1693678E2248FA2F00EF9A42 /* ShellScript */,
 				16319BE72088E60200B09856 /* Remove unused architectures */,
-				16B4EC1423BE466500E7E4DB /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
