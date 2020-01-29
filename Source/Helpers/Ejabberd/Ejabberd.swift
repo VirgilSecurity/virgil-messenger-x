@@ -44,7 +44,7 @@ class Ejabberd: NSObject {
 
         self.stream.hostName = URLConstants.ejabberdHost
         self.stream.hostPort = URLConstants.ejabberdHostPort
-        self.stream.startTLSPolicy = URLConstants.ejabberdTSLPolicy
+        self.stream.startTLSPolicy = .allowed
         self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
 
         try? self.initializeMutex.lock()
