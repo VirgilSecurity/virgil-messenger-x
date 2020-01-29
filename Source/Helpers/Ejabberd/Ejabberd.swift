@@ -162,11 +162,11 @@ class Ejabberd: NSObject {
             throw EjabberdError.jidFormingFailed
         }
 
-        let node: String = "FIXME"
+        let secret = deviceToken.map { String(format: "%.2hhx", $0) }.joined()
 
-        let options = ["device_token": deviceToken.hexEncodedString()]
+        let options = ["secret": secret]
 
-        XMPPIQ.enableNotificationsElement(with: pushServerJID, node: node, options: options)
+        XMPPIQ.enableNotificationsElement(with: pushServerJID, node: nil, options: options)
     }
 
     public func deregisterFromNotifications() throws {
@@ -174,8 +174,6 @@ class Ejabberd: NSObject {
             throw EjabberdError.jidFormingFailed
         }
 
-        let node: String = "FIXME"
-
-        XMPPIQ.disableNotificationsElement(with: pushServerJID, node: node)
+        XMPPIQ.disableNotificationsElement(with: pushServerJID, node: nil)
     }
 }
