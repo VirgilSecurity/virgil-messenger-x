@@ -31,6 +31,8 @@ class Ejabberd: NSObject {
     internal var state: State = .disconnected
     internal var shouldRetry: Bool = true
 
+    static var updatedPushToken: Data? = nil
+
     internal let serviceErrorDomain: String = "EjabberdErrorDomain"
 
     internal enum State {
@@ -77,6 +79,8 @@ class Ejabberd: NSObject {
 
             try self.checkError()
         }
+
+        try self.registerForNotifications()
     }
 
     internal func retryInitialize(error: Error) {
@@ -147,5 +151,31 @@ class Ejabberd: NSObject {
         try self.sendMutex.lock()
 
         try self.checkError()
+    }
+
+    public func registerForNotifications() throws {
+        guard let deviceToken = Ejabberd.updatedPushToken else {
+            return
+        }
+
+        guard let pushServerJID = XMPPJID(string: URLConstants.ejabberdPushHost) else {
+            throw EjabberdError.jidFormingFailed
+        }
+
+        let node: String = "FIXME"
+
+        let options = ["device_token": deviceToken.hexEncodedString()]
+
+        XMPPIQ.enableNotificationsElement(with: pushServerJID, node: node, options: options)
+    }
+
+    public func deregisterFromNotifications() throws {
+        guard let pushServerJID = XMPPJID(string: URLConstants.ejabberdPushHost) else {
+            throw EjabberdError.jidFormingFailed
+        }
+
+        let node: String = "FIXME"
+
+        XMPPIQ.disableNotificationsElement(with: pushServerJID, node: node)
     }
 }
