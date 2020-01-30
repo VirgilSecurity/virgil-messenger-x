@@ -103,7 +103,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        Log.debug("Received device token")
+        Log.debug("Received device token: \(deviceToken.base64EncodedString())")
 
         Ejabberd.updatedPushToken = deviceToken
     }

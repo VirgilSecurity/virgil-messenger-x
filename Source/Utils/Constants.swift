@@ -18,12 +18,12 @@ enum URLConstants {
         case prod = ""
     }
 
-    static let envPrefix: EnvPrefix = .stg
+    static let envPrefix: EnvPrefix = .dev
 
     // Ejabberd
     static let ejabberdHost: String = "xmpp\(URLConstants.envPrefix.rawValue).virgilsecurity.com"
     static let ejabberdHostPort: UInt16 = 5222
-    static let ejabberdPushHost: String = "FIXME"
+    static let ejabberdPushHost: String = "xmpp-push-server"
 
     // Backend
     static let serviceBaseURL: String = "https://messenger\(URLConstants.envPrefix.rawValue).virgilsecurity.com"
