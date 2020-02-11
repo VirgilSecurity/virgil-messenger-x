@@ -166,13 +166,9 @@ class Ejabberd: NSObject {
 
         let options = ["secret": secret]
 
-        let element = XMPPIQ.enableNotificationsElement(with: pushServerJID, node: nil, options: options)
+        let element = XMPPIQ.enableNotificationsElement(with: pushServerJID, node: "nil", options: options)
 
         self.stream.send(element)
-
-        try self.sendMutex.lock()
-
-        try self.checkError()
     }
 
     public func deregisterFromNotifications() throws {
@@ -180,12 +176,8 @@ class Ejabberd: NSObject {
             throw EjabberdError.jidFormingFailed
         }
 
-        let element = XMPPIQ.disableNotificationsElement(with: pushServerJID, node: nil)
+        let element = XMPPIQ.disableNotificationsElement(with: pushServerJID, node: "nil")
 
         self.stream.send(element)
-
-        try self.sendMutex.lock()
-
-        try self.checkError()
     }
 }
