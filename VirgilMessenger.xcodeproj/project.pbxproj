@@ -301,6 +301,7 @@
 		16D4B8B023F5BCA400D17B90 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		16D4B8B223F5BCA400D17B90 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		16D4B8D723F5CE1700D17B90 /* IdentityDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityDefaults.swift; sourceTree = "<group>"; };
+		16D4B8DA23F5D3CE00D17B90 /* Notification Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Notification Extension.entitlements"; sourceTree = "<group>"; };
 		16D6CB391FDFEECC00302A05 /* Registration.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Registration.storyboard; sourceTree = "<group>"; };
 		16D70726214BF60E00452A16 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		16D7072D214C060B00452A16 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -620,6 +621,7 @@
 		16D4B8AF23F5BCA400D17B90 /* Notification Extension */ = {
 			isa = PBXGroup;
 			children = (
+				16D4B8DA23F5D3CE00D17B90 /* Notification Extension.entitlements */,
 				16D4B8B023F5BCA400D17B90 /* NotificationService.swift */,
 				16D4B8B223F5BCA400D17B90 /* Info.plist */,
 			);
@@ -1132,6 +1134,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = "Notification Extension/Notification Extension.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1157,6 +1160,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = "Notification Extension/Notification Extension.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
