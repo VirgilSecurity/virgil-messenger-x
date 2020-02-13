@@ -13,8 +13,6 @@ enum UserAuthorizerError: String, Error {
 }
 
 public class UserAuthorizer {
-    public static let UserDefaultsIdentityKey = "last_username"
-
     public let virgilAuthorizer: VirgilAuthorizer
 
     public init() {
@@ -22,7 +20,7 @@ public class UserAuthorizer {
     }
 
     public func signIn() throws {
-        guard let identity = UserDefaults.standard.string(forKey: UserAuthorizer.UserDefaultsIdentityKey), !identity.isEmpty else {
+        guard let identity = IdentityDefaults.shared.get() else {
             throw UserAuthorizerError.noIdentityAtDefaults
         }
 
@@ -36,7 +34,7 @@ public class UserAuthorizer {
 
         try self.virgilAuthorizer.signIn(identity: identity)
 
-        UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+        IdentityDefaults.shared.set(identity: identity)
     }
 
    public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
@@ -46,7 +44,7 @@ public class UserAuthorizer {
 
                 try CoreData.shared.createAccount(withIdentity: identity)
 
-                UserDefaults.standard.set(identity, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+                IdentityDefaults.shared.set(identity: identity)
 
                 completion(nil)
             }
@@ -69,7 +67,7 @@ public class UserAuthorizer {
                 Configurator.reset()
                 CoreData.shared.resetState()
 
-                UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+                IdentityDefaults.shared.reset()
 
                 completion(nil)
             }
@@ -80,7 +78,7 @@ public class UserAuthorizer {
     }
 
     public func deleteAccount() throws {
-        UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+        IdentityDefaults.shared.reset()
 
         Configurator.reset()
 
