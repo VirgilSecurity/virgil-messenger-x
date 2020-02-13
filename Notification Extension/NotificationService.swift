@@ -70,6 +70,10 @@ class NotificationService: UNNotificationServiceExtension {
             // Note: We got body from userInfo, not from bestAttemptContent.body directly in a reason of 1000 symbol restriction
         }
         catch {
+            bestAttemptContent.body = "New Message"
+
+            contentHandler(bestAttemptContent)
+            
             print("Notification decryption failed: \(error.localizedDescription)")
         }
     }

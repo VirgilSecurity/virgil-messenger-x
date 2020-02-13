@@ -21,10 +21,21 @@ public class IdentityDefaults {
 
     public func get() -> String? {
         guard let identity = self.defaults.string(forKey: IdentityDefaults.IdentityKey), !identity.isEmpty else {
-            return nil
+            return self.deprecatedGet()
         }
 
         return identity
+    }
+
+    private func deprecatedGet() -> String? {
+        guard let identity = UserDefaults.standard.string(forKey: IdentityDefaults.IdentityKey), !identity.isEmpty else {
+            return nil
+        }
+
+        self.set(identity: identity)
+
+        return identity
+
     }
 
     public func reset() {
