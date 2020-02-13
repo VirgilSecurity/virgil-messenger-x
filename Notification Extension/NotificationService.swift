@@ -18,7 +18,6 @@ class NotificationService: UNNotificationServiceExtension {
     let appName = "com.virgil.VirgilMessenger-stg"
 
     enum NotificationKeys: String {
-        case identity = "identity"
         case aps = "aps"
         case alert = "alert"
         case body = "body"
