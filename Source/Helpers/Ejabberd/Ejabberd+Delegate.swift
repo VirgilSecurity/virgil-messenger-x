@@ -54,7 +54,7 @@ extension Ejabberd: XMPPStreamDelegate {
 
     func xmppStreamDidAuthenticate(_ sender: XMPPStream) {
         Log.debug("Ejabberd: Authenticated")
-        self.stream.send(XMPPPresence())
+        self.set(status: .online)
 
         self.unlockMutex(self.initializeMutex)
     }

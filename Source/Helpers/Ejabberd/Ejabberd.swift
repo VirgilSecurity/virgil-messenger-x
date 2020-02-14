@@ -41,6 +41,11 @@ class Ejabberd: NSObject {
         case disconnected
     }
 
+    enum Status {
+        case online
+        case unavailable
+    }
+
     override init() {
         super.init()
 
@@ -179,5 +184,22 @@ class Ejabberd: NSObject {
         let element = XMPPIQ.disableNotificationsElement(with: pushServerJID, node: "nil")
 
         self.stream.send(element)
+    }
+
+    public func set(status: Status) {
+        let presence: XMPPPresence
+
+        switch status {
+        case .online:
+            presence = XMPPPresence()
+        case .unavailable:
+            presence = XMPPPresence(type: .unavailable,
+                                    show: nil,
+                                    status: nil,
+                                    idle: nil,
+                                    to: nil)
+        }
+
+        self.stream.send(presence)
     }
 }

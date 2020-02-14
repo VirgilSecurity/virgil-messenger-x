@@ -117,4 +117,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Ejabberd.updatedPushToken = nil
     }
+
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        Ejabberd.shared.set(status: .online)
+    }
+
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        Ejabberd.shared.set(status: .unavailable)
+    }
 }
