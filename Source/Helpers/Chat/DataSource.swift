@@ -24,7 +24,6 @@
 
 import Chatto
 import ChattoAdditions
-import TwilioChatClient
 import AVFoundation
 import VirgilSDK
 

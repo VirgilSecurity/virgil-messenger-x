@@ -1,6 +1,5 @@
 import Chatto
 import ChattoAdditions
-import TwilioChatClient
 import VirgilSDK
 
 public protocol UIMessageModelProtocol: MessageModelProtocol {

@@ -36,7 +36,7 @@ class NotificationService: UNNotificationServiceExtension {
 
         do {
             guard let identity = IdentityDefaults.shared.get() else {
-                return
+                throw NSError()
             }
 
             // Parsing userInfo of content for retreiving body and identity of recipient
@@ -72,8 +72,6 @@ class NotificationService: UNNotificationServiceExtension {
             bestAttemptContent.body = "New Message"
 
             contentHandler(bestAttemptContent)
-            
-            print("Notification decryption failed: \(error.localizedDescription)")
         }
     }
     

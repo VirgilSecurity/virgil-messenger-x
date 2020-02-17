@@ -7,7 +7,6 @@
 //
 
 import VirgilSDK
-import TwilioChatClient
 import VirgilE3Kit
 
 public enum ChatsManager {
