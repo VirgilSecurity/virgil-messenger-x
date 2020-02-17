@@ -11,7 +11,7 @@ import Foundation
 public class IdentityDefaults {
     public static let shared: IdentityDefaults = IdentityDefaults()
 
-    private let defaults: UserDefaults = UserDefaults(suiteName: "group.virgil.notifications")!
+    private let defaults: UserDefaults = UserDefaults(suiteName: Constants.appGroup)!
 
     private static let IdentityKey = "last_username"
 

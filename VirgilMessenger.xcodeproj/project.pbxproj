@@ -89,25 +89,25 @@
 		16D4B8B123F5BCA400D17B90 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D4B8B023F5BCA400D17B90 /* NotificationService.swift */; };
 		16D4B8B523F5BCA400D17B90 /* Notification Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 16D4B8AE23F5BCA400D17B90 /* Notification Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16D4B8BA23F5BFC400D17B90 /* VirgilCryptoPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE3238D691600F7ACE7 /* VirgilCryptoPythia.framework */; };
-		16D4B8BB23F5BFC400D17B90 /* VirgilCryptoPythia.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE3238D691600F7ACE7 /* VirgilCryptoPythia.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16D4B8BB23F5BFC400D17B90 /* VirgilCryptoPythia.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE3238D691600F7ACE7 /* VirgilCryptoPythia.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16D4B8BC23F5BFC400D17B90 /* VirgilSDKPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; };
-		16D4B8BD23F5BFC400D17B90 /* VirgilSDKPythia.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16D4B8BD23F5BFC400D17B90 /* VirgilSDKPythia.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16D4B8BE23F5BFC400D17B90 /* VSCPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */; };
-		16D4B8BF23F5BFC400D17B90 /* VSCPythia.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16D4B8BF23F5BFC400D17B90 /* VSCPythia.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16D4B8C023F5BFC400D17B90 /* VirgilE3Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */; };
-		16D4B8C123F5BFC400D17B90 /* VirgilE3Kit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16D4B8C123F5BFC400D17B90 /* VirgilE3Kit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16D4B8C223F5BFC400D17B90 /* VirgilCryptoFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */; };
-		16D4B8C323F5BFC400D17B90 /* VirgilCryptoFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16D4B8C323F5BFC400D17B90 /* VirgilCryptoFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16D4B8C423F5BFC400D17B90 /* VirgilCryptoRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */; };
-		16D4B8C523F5BFC400D17B90 /* VirgilCryptoRatchet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16D4B8C523F5BFC400D17B90 /* VirgilCryptoRatchet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16D4B8C623F5BFC400D17B90 /* VirgilSDKRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */; };
-		16D4B8C723F5BFC400D17B90 /* VirgilSDKRatchet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16D4B8C723F5BFC400D17B90 /* VirgilSDKRatchet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16D4B8C823F5BFC400D17B90 /* VSCCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29522392339003B8CBA /* VSCCommon.framework */; };
-		16D4B8C923F5BFC400D17B90 /* VSCCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29522392339003B8CBA /* VSCCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16D4B8C923F5BFC400D17B90 /* VSCCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29522392339003B8CBA /* VSCCommon.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16D4B8CA23F5BFC400D17B90 /* VSCFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29422392339003B8CBA /* VSCFoundation.framework */; };
-		16D4B8CB23F5BFC400D17B90 /* VSCFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29422392339003B8CBA /* VSCFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16D4B8CB23F5BFC400D17B90 /* VSCFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29422392339003B8CBA /* VSCFoundation.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16D4B8CC23F5BFC400D17B90 /* VSCRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29B22392339003B8CBA /* VSCRatchet.framework */; };
-		16D4B8CD23F5BFC400D17B90 /* VSCRatchet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29B22392339003B8CBA /* VSCRatchet.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		16D4B8CD23F5BFC400D17B90 /* VSCRatchet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29B22392339003B8CBA /* VSCRatchet.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16D4B8D123F5C2EB00D17B90 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D8B0EE223A8FCF00D7FA67 /* Client.swift */; };
 		16D4B8D223F5C2F500D17B90 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51051FC468370042AF9D /* Constants.swift */; };
 		16D4B8D323F5C32D00D17B90 /* ColorPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168E54CB22395DDC00B6E822 /* ColorPair.swift */; };
@@ -1140,21 +1140,21 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = MS3LY2W55D;
+				DEVELOPMENT_TEAM = JWNLQ3HC5A;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "Notification Extension/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger-stg.Notification-Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger.Notification-Extension-Prod";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1166,20 +1166,20 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = MS3LY2W55D;
+				DEVELOPMENT_TEAM = JWNLQ3HC5A;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "Notification Extension/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger-stg.Notification-Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger.Notification-Extension-Prod";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -1304,7 +1304,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = MS3LY2W55D;
+				DEVELOPMENT_TEAM = JWNLQ3HC5A;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -1314,7 +1314,8 @@
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger-stg";
+				MARKETING_VERSION = 3.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1332,7 +1333,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = MS3LY2W55D;
+				DEVELOPMENT_TEAM = JWNLQ3HC5A;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -1342,7 +1343,8 @@
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger-stg";
+				MARKETING_VERSION = 3.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
