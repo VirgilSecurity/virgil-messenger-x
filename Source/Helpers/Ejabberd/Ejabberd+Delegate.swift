@@ -91,7 +91,8 @@ extension Ejabberd {
         self.receiveQueue.async {
             do {
                 let author = try message.getAuthor()
-                let encryptedMessage = try EncryptedMessage.import(message)
+                let body = try message.getBody()
+                let encryptedMessage = try EncryptedMessage.import(body)
 
                 guard let message = try MessageProcessor.process(encryptedMessage, from: author),
                     let currentChannel = CoreData.shared.currentChannel,

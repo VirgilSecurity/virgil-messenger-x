@@ -15,12 +15,11 @@ class NotificationService: UNNotificationServiceExtension {
     var contentHandler: ((UNNotificationContent) -> Void)?
     var bestAttemptContent: UNMutableNotificationContent?
 
-    let appName = "com.virgil.VirgilMessenger-stg"
-
     enum NotificationKeys: String {
         case aps = "aps"
         case alert = "alert"
         case body = "body"
+        case title = "title"
     }
 
     override func didReceive(_ request: UNNotificationRequest,
@@ -42,12 +41,15 @@ class NotificationService: UNNotificationServiceExtension {
             // Parsing userInfo of content for retreiving body and identity of recipient
             guard let aps = bestAttemptContent.userInfo[NotificationKeys.aps.rawValue] as? [String: Any],
                 let alert = aps[NotificationKeys.alert.rawValue] as? [String: String],
-                let body = alert[NotificationKeys.body.rawValue] else {
+                let body = alert[NotificationKeys.body.rawValue],
+                let title = alert[NotificationKeys.title.rawValue] else {
                     throw NSError()
             }
+            
+            let encryptedMessage = try EncryptedMessage.import(body)
 
             // Initializing KeyStorage with root application name. We need it to fetch shared key from root app
-            let storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: self.appName)
+            let storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.keychainAppName)
 
             let crypto = try VirgilCrypto()
             let client = Client(crypto: crypto)
@@ -57,9 +59,11 @@ class NotificationService: UNNotificationServiceExtension {
             let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
             params.storageParams = storageParams
             let ethree = try EThree(params: params)
+            
+            let card = try ethree.findUser(with: title).startSync().get()
 
             // Decrypting notification body
-            let decrypted = try ethree.authDecrypt(text: body)
+            let decrypted = try ethree.authDecrypt(text: encryptedMessage.ciphertext, from: card)
 
             // Changing body of notification from ciphertext to decrypted message
             bestAttemptContent.body = decrypted

@@ -9,6 +9,10 @@
 import UIKit
 import XMPPFrameworkSwift
 
+enum Constants {
+    static let keychainAppName: String = "com.virgil.VirgilMessenger-stg"
+}
+
 enum URLConstants {
     enum EnvPrefix: String {
     #if DEBUG
