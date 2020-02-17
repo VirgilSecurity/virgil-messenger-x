@@ -33,6 +33,8 @@ public class IdentityDefaults {
         }
 
         self.set(identity: identity)
+        
+        UserDefaults.standard.set(nil, forKey: IdentityDefaults.IdentityKey)
 
         return identity
 
