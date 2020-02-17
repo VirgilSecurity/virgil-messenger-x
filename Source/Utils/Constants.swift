@@ -11,6 +11,7 @@ import XMPPFrameworkSwift
 
 enum Constants {
     static let keychainAppName: String = "com.virgil.VirgilMessenger-stg"
+    static let pushesNode: String = "node"
 }
 
 enum URLConstants {
@@ -22,7 +23,7 @@ enum URLConstants {
         case prod = ""
     }
 
-    static let envPrefix: EnvPrefix = .dev
+    static let envPrefix: EnvPrefix = .stg
 
     // Ejabberd
     static let ejabberdHost: String = "xmpp\(URLConstants.envPrefix.rawValue).virgilsecurity.com"

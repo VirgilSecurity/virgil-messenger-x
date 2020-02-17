@@ -36,8 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.registerRemoteNotifications(for: application)
 
         // Clean notifications
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        self.cleanNotifications()
 
         Fabric.with([Crashlytics.self])
 
@@ -91,6 +90,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
+    
+    private func cleanNotifications() {
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+    }
 
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable : Any],
@@ -120,6 +124,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         Ejabberd.shared.set(status: .online)
+        
+        self.cleanNotifications()
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {

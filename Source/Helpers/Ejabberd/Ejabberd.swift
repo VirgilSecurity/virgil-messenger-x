@@ -173,7 +173,9 @@ class Ejabberd: NSObject {
                        "service": "apns",
                        "mutable_content": "true"]
 
-        let element = XMPPIQ.enableNotificationsElement(with: pushServerJID, node: "nil", options: options)
+        let element = XMPPIQ.enableNotificationsElement(with: pushServerJID,
+                                                        node: Constants.pushesNode,
+                                                        options: options)
 
         self.stream.send(element)
     }
@@ -183,7 +185,7 @@ class Ejabberd: NSObject {
             throw EjabberdError.jidFormingFailed
         }
 
-        let element = XMPPIQ.disableNotificationsElement(with: pushServerJID, node: "nil")
+        let element = XMPPIQ.disableNotificationsElement(with: pushServerJID, node: Constants.pushesNode)
 
         self.stream.send(element)
     }

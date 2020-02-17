@@ -14,6 +14,8 @@ import VirgilCrypto
 class NotificationService: UNNotificationServiceExtension {
     var contentHandler: ((UNNotificationContent) -> Void)?
     var bestAttemptContent: UNMutableNotificationContent?
+    
+    let crypto = try! VirgilCrypto()
 
     enum NotificationKeys: String {
         case aps = "aps"
@@ -51,8 +53,7 @@ class NotificationService: UNNotificationServiceExtension {
             // Initializing KeyStorage with root application name. We need it to fetch shared key from root app
             let storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.keychainAppName)
 
-            let crypto = try VirgilCrypto()
-            let client = Client(crypto: crypto)
+            let client = Client(crypto: self.crypto)
 
             let tokenCallback = client.makeTokenCallback(identity: identity)
 
