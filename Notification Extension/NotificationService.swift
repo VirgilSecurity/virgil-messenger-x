@@ -11,6 +11,11 @@ import VirgilSDK
 import VirgilE3Kit
 import VirgilCrypto
 
+enum NotificationServiceError: Int, LocalizedError {
+    case missingIdentityInDefaults = 1
+    case parsingNotificationFailed = 2
+}
+
 class NotificationService: UNNotificationServiceExtension {
     var contentHandler: ((UNNotificationContent) -> Void)?
     var bestAttemptContent: UNMutableNotificationContent?
@@ -37,7 +42,7 @@ class NotificationService: UNNotificationServiceExtension {
 
         do {
             guard let identity = IdentityDefaults.shared.get() else {
-                throw NSError()
+                throw NotificationServiceError.missingIdentityInDefaults
             }
 
             // Parsing userInfo of content for retreiving body and identity of recipient
@@ -45,7 +50,7 @@ class NotificationService: UNNotificationServiceExtension {
                 let alert = aps[NotificationKeys.alert.rawValue] as? [String: String],
                 let body = alert[NotificationKeys.body.rawValue],
                 let title = alert[NotificationKeys.title.rawValue] else {
-                    throw NSError()
+                    throw NotificationServiceError.parsingNotificationFailed
             }
             
             let encryptedMessage = try EncryptedMessage.import(body)
@@ -77,6 +82,8 @@ class NotificationService: UNNotificationServiceExtension {
             bestAttemptContent.body = "New Message"
 
             contentHandler(bestAttemptContent)
+            
+            print("Notification was not decrypted with error: \(error.localizedDescription)")
         }
     }
     
