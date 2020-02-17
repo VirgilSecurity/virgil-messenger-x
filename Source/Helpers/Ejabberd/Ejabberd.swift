@@ -171,7 +171,8 @@ class Ejabberd: NSObject {
 
         let options = ["device_id": deviceId,
                        "service": "apns",
-                       "mutable_content": "true"]
+                       "mutable_content": "true",
+                       "topic": Constants.keychainAppName]
 
         let element = XMPPIQ.enableNotificationsElement(with: pushServerJID,
                                                         node: Constants.pushesNode,
