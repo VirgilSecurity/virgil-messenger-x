@@ -57,8 +57,12 @@
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
       launchAutomaticallySubstyle = "2">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <RemoteRunnable
+         runnableDebuggingMode = "0"
+         BundleIdentifier = "com.virgil.VirgilMessenger"
+         RemotePath = "/var/containers/Bundle/Application/26CD93A1-9748-4A23-BB15-5F012F835667/VirgilMessenger.app">
+      </RemoteRunnable>
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "429228B11F96261000DCECDF"
@@ -66,7 +70,7 @@
             BlueprintName = "VirgilMessenger"
             ReferencedContainer = "container:VirgilMessenger.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
