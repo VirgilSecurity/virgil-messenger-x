@@ -37,7 +37,6 @@ public class IdentityDefaults {
         UserDefaults.standard.set(nil, forKey: IdentityDefaults.IdentityKey)
 
         return identity
-
     }
 
     public func reset() {
