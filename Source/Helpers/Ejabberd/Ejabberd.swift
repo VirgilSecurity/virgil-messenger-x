@@ -167,9 +167,11 @@ class Ejabberd: NSObject {
             throw EjabberdError.jidFormingFailed
         }
 
-        let secret = deviceToken.hexEncodedString()
+        let deviceId = deviceToken.hexEncodedString()
 
-        let options = ["secret": secret]
+        let options = ["device_id": deviceId,
+                       "service": "apns",
+                       "mutable_content": "true"]
 
         let element = XMPPIQ.enableNotificationsElement(with: pushServerJID, node: "nil", options: options)
 
