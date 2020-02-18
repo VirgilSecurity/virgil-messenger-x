@@ -18,7 +18,7 @@ class StartViewController: ViewController {
         super.viewDidAppear(animated)
 
         guard self.checkReachability() else {
-            UserDefaults.standard.set(nil, forKey: UserAuthorizer.UserDefaultsIdentityKey)
+            IdentityDefaults.shared.reset()
             self.goToLogin()
             return
         }

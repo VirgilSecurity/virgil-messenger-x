@@ -46,7 +46,8 @@ public class Configurator {
                 self.isInitialized = true
 
                 completion((), nil)
-            } catch {
+            }
+            catch {
                 completion(nil, error)
             }
         }
@@ -60,7 +61,8 @@ public class Configurator {
         let completion = OperationUtils.makeCompletionOperation { (_ result: Void?, error: Error?) in
             if let error = error {
                 Notifications.post(error: error)
-            } else {
+            }
+            else {
                 self.isUpdated = true
             }
         }

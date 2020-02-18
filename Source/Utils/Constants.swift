@@ -9,17 +9,36 @@
 import UIKit
 import XMPPFrameworkSwift
 
+enum Constants {
+    static let keychainAppName: String = "com.virgil.VirgilMessenger\(URLConstants.envPrefix.rawValue)"
+    static let pushesNode: String = "node"
+    static let appGroup: String = "group.virgil.notification"
+}
+
 enum URLConstants {
-    static let ejabberdHost: String = "xmpp.virgilsecurity.com"
+    enum EnvPrefix: String {
+    #if DEBUG
+        case dev = "-dev"
+        case stg = "-stg"
+    #endif
+        case prod = ""
+    }
+
+    static let envPrefix: EnvPrefix = .prod
+
+    // Ejabberd
+    static let ejabberdHost: String = "xmpp\(URLConstants.envPrefix.rawValue).virgilsecurity.com"
     static let ejabberdHostPort: UInt16 = 5222
-    static let ejabberdTSLPolicy: XMPPStreamStartTLSPolicy = .allowed
+    static let ejabberdPushHost: String = "push-notifications-proxy"
 
-    static let baseURLString: String = "https://messenger.virgilsecurity.com"
+    // Backend
+    static let serviceBaseURL: String = "https://messenger\(URLConstants.envPrefix.rawValue).virgilsecurity.com"
 
-    static let virgilJwtEndpoint = URL(string: "\(URLConstants.baseURLString)/virgil-jwt/")!
-    static let ejabberdJwtEndpoint = URL(string: "\(URLConstants.baseURLString)/ejabberd-jwt/")!
-    static let signUpEndpoint = URL(string: "\(URLConstants.baseURLString)/signup/")!
+    static let virgilJwtEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/virgil-jwt/")!
+    static let ejabberdJwtEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/ejabberd-jwt/")!
+    static let signUpEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/signup/")!
 
+    // Other links
     static let termsAndConditionsURL = "https://virgilsecurity.com/terms-of-service"
     static let privacyURL = "https://virgilsecurity.com/privacy-policy"
 }

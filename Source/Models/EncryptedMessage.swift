@@ -21,11 +21,9 @@ public class EncryptedMessage: Codable {
         self.ciphertext = ciphertext
         self.date = date
     }
-
-    static func `import`(_ message: XMPPMessage) throws -> EncryptedMessage {
-        let body = try message.getBody()
-
-        guard let data = Data(base64Encoded: body) else {
+    
+    static func `import`(_ string: String) throws -> EncryptedMessage {
+        guard let data = Data(base64Encoded: string) else {
             throw EncryptedMessageError.bodyIsNotBase64Encoded
         }
 

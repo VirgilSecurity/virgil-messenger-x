@@ -6,7 +6,6 @@
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
 //
 
-import TwilioChatClient
 import Chatto
 import ChattoAdditions
 import AVFoundation

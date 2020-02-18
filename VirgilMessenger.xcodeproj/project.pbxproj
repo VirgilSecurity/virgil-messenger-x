@@ -86,6 +86,26 @@
 		16CA51101FC5D9960042AF9D /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA510F1FC5D9960042AF9D /* Settings.storyboard */; };
 		16CA51131FC5DA3B0042AF9D /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51121FC5DA3B0042AF9D /* Settings.swift */; };
 		16CC9B7B21552D5800935AEC /* TabBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CC9B7A21552D5800935AEC /* TabBar.storyboard */; };
+		16D4B8B123F5BCA400D17B90 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D4B8B023F5BCA400D17B90 /* NotificationService.swift */; };
+		16D4B8B523F5BCA400D17B90 /* Notification Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 16D4B8AE23F5BCA400D17B90 /* Notification Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		16D4B8BA23F5BFC400D17B90 /* VirgilCryptoPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE3238D691600F7ACE7 /* VirgilCryptoPythia.framework */; };
+		16D4B8BC23F5BFC400D17B90 /* VirgilSDKPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; };
+		16D4B8BE23F5BFC400D17B90 /* VSCPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */; };
+		16D4B8C023F5BFC400D17B90 /* VirgilE3Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */; };
+		16D4B8C223F5BFC400D17B90 /* VirgilCryptoFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */; };
+		16D4B8C423F5BFC400D17B90 /* VirgilCryptoRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */; };
+		16D4B8C623F5BFC400D17B90 /* VirgilSDKRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */; };
+		16D4B8C823F5BFC400D17B90 /* VSCCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29522392339003B8CBA /* VSCCommon.framework */; };
+		16D4B8CA23F5BFC400D17B90 /* VSCFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29422392339003B8CBA /* VSCFoundation.framework */; };
+		16D4B8CC23F5BFC400D17B90 /* VSCRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29B22392339003B8CBA /* VSCRatchet.framework */; };
+		16D4B8D123F5C2EB00D17B90 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D8B0EE223A8FCF00D7FA67 /* Client.swift */; };
+		16D4B8D223F5C2F500D17B90 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51051FC468370042AF9D /* Constants.swift */; };
+		16D4B8D323F5C32D00D17B90 /* ColorPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168E54CB22395DDC00B6E822 /* ColorPair.swift */; };
+		16D4B8D423F5C33D00D17B90 /* UIColor+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DD4204D87F200346FA0 /* UIColor+RGB.swift */; };
+		16D4B8D523F5C35300D17B90 /* UserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16936791224916D100EF9A42 /* UserFriendlyError.swift */; };
+		16D4B8D623F5C35B00D17B90 /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169367932249181100EF9A42 /* LocalKeyManager.swift */; };
+		16D4B8D823F5CE1700D17B90 /* IdentityDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D4B8D723F5CE1700D17B90 /* IdentityDefaults.swift */; };
+		16D4B8D923F5CE1700D17B90 /* IdentityDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D4B8D723F5CE1700D17B90 /* IdentityDefaults.swift */; };
 		16D6CB3A1FDFEECC00302A05 /* Registration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16D6CB391FDFEECC00302A05 /* Registration.storyboard */; };
 		16D7072C214C060000452A16 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D70726214BF60E00452A16 /* Security.framework */; };
 		16D7072E214C060B00452A16 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 16D7072D214C060B00452A16 /* libz.tbd */; };
@@ -140,7 +160,32 @@
 		429228BD1F96261000DCECDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 429228BC1F96261000DCECDF /* Assets.xcassets */; };
 		429228DE1F9637A200DCECDF /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
 		429228EB1F96405800DCECDF /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* Chat.storyboard */; };
+		9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		16D4B8B323F5BCA400D17B90 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 429228AA1F96261000DCECDF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 16D4B8AD23F5BCA400D17B90;
+			remoteInfo = "Notification Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		16D4B8B623F5BCA400D17B90 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				16D4B8B523F5BCA400D17B90 /* Notification Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		160093CA22B9315C0045D43F /* VirgilMessenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VirgilMessenger.entitlements; sourceTree = "<group>"; };
@@ -223,6 +268,11 @@
 		16CA51121FC5DA3B0042AF9D /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		16CC9B7A21552D5800935AEC /* TabBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBar.storyboard; sourceTree = "<group>"; };
 		16D4614A22A15DE100B3C268 /* ChatsManager+Change.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatsManager+Change.swift"; sourceTree = "<group>"; };
+		16D4B8AE23F5BCA400D17B90 /* Notification Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Notification Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		16D4B8B023F5BCA400D17B90 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		16D4B8B223F5BCA400D17B90 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		16D4B8D723F5CE1700D17B90 /* IdentityDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityDefaults.swift; sourceTree = "<group>"; };
+		16D4B8DA23F5D3CE00D17B90 /* Notification Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Notification Extension.entitlements"; sourceTree = "<group>"; };
 		16D6CB391FDFEECC00302A05 /* Registration.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Registration.storyboard; sourceTree = "<group>"; };
 		16D70726214BF60E00452A16 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		16D7072D214C060B00452A16 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -287,6 +337,23 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		16D4B8AB23F5BCA400D17B90 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16D4B8BA23F5BFC400D17B90 /* VirgilCryptoPythia.framework in Frameworks */,
+				16D4B8CC23F5BFC400D17B90 /* VSCRatchet.framework in Frameworks */,
+				16D4B8BE23F5BFC400D17B90 /* VSCPythia.framework in Frameworks */,
+				16D4B8C623F5BFC400D17B90 /* VirgilSDKRatchet.framework in Frameworks */,
+				16D4B8C223F5BFC400D17B90 /* VirgilCryptoFoundation.framework in Frameworks */,
+				16D4B8CA23F5BFC400D17B90 /* VSCFoundation.framework in Frameworks */,
+				16D4B8C823F5BFC400D17B90 /* VSCCommon.framework in Frameworks */,
+				16D4B8C023F5BFC400D17B90 /* VirgilE3Kit.framework in Frameworks */,
+				16D4B8C423F5BFC400D17B90 /* VirgilCryptoRatchet.framework in Frameworks */,
+				16D4B8BC23F5BFC400D17B90 /* VirgilSDKPythia.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		429228AF1F96261000DCECDF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -379,6 +446,7 @@
 				16FE75EF224A3DA000B545AF /* Configurator.swift */,
 				4280C0CB1F97340B00075B3A /* MessageSender.swift */,
 				16132FC5225514D0008FD754 /* MessageProcessor.swift */,
+				16D4B8D723F5CE1700D17B90 /* IdentityDefaults.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -521,6 +589,16 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		16D4B8AF23F5BCA400D17B90 /* Notification Extension */ = {
+			isa = PBXGroup;
+			children = (
+				16D4B8DA23F5D3CE00D17B90 /* Notification Extension.entitlements */,
+				16D4B8B023F5BCA400D17B90 /* NotificationService.swift */,
+				16D4B8B223F5BCA400D17B90 /* Info.plist */,
+			);
+			path = "Notification Extension";
+			sourceTree = "<group>";
+		};
 		16D8B0E5223A6DA700D7FA67 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -648,6 +726,7 @@
 			children = (
 				429228B41F96261000DCECDF /* VirgilMessenger */,
 				16D8B0E8223A6EFF00D7FA67 /* Source */,
+				16D4B8AF23F5BCA400D17B90 /* Notification Extension */,
 				429228B31F96261000DCECDF /* Products */,
 				429228C71F96287A00DCECDF /* Frameworks */,
 			);
@@ -657,6 +736,7 @@
 			isa = PBXGroup;
 			children = (
 				429228B21F96261000DCECDF /* VirgilMessenger.app */,
+				16D4B8AE23F5BCA400D17B90 /* Notification Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -723,6 +803,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		16D4B8AD23F5BCA400D17B90 /* Notification Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 16D4B8B923F5BCA400D17B90 /* Build configuration list for PBXNativeTarget "Notification Extension" */;
+			buildPhases = (
+				16D4B8AA23F5BCA400D17B90 /* Sources */,
+				16D4B8AB23F5BCA400D17B90 /* Frameworks */,
+				16D4B8AC23F5BCA400D17B90 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Notification Extension";
+			productName = "Notification Extension";
+			productReference = 16D4B8AE23F5BCA400D17B90 /* Notification Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		429228B11F96261000DCECDF /* VirgilMessenger */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 429228C41F96261000DCECDF /* Build configuration list for PBXNativeTarget "VirgilMessenger" */;
@@ -732,10 +829,12 @@
 				429228B01F96261000DCECDF /* Resources */,
 				1693678E2248FA2F00EF9A42 /* ShellScript */,
 				16319BE72088E60200B09856 /* Remove unused architectures */,
+				16D4B8B623F5BCA400D17B90 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				16D4B8B423F5BCA400D17B90 /* PBXTargetDependency */,
 			);
 			name = VirgilMessenger;
 			productName = VirgilMessenger;
@@ -748,10 +847,14 @@
 		429228AA1F96261000DCECDF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0900;
+				LastSwiftUpdateCheck = 1130;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = VirgilSecurity;
 				TargetAttributes = {
+					16D4B8AD23F5BCA400D17B90 = {
+						CreatedOnToolsVersion = 11.3.1;
+						ProvisioningStyle = Automatic;
+					};
 					429228B11F96261000DCECDF = {
 						CreatedOnToolsVersion = 9.0;
 						LastSwiftMigration = 1020;
@@ -778,11 +881,19 @@
 			projectRoot = "";
 			targets = (
 				429228B11F96261000DCECDF /* VirgilMessenger */,
+				16D4B8AD23F5BCA400D17B90 /* Notification Extension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		16D4B8AC23F5BCA400D17B90 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		429228B01F96261000DCECDF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -868,6 +979,22 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		16D4B8AA23F5BCA400D17B90 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16D4B8D523F5C35300D17B90 /* UserFriendlyError.swift in Sources */,
+				16D4B8D123F5C2EB00D17B90 /* Client.swift in Sources */,
+				16D4B8D423F5C33D00D17B90 /* UIColor+RGB.swift in Sources */,
+				9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */,
+				16D4B8D923F5CE1700D17B90 /* IdentityDefaults.swift in Sources */,
+				16D4B8D323F5C32D00D17B90 /* ColorPair.swift in Sources */,
+				16D4B8B123F5BCA400D17B90 /* NotificationService.swift in Sources */,
+				16D4B8D623F5C35B00D17B90 /* LocalKeyManager.swift in Sources */,
+				16D4B8D223F5C2F500D17B90 /* Constants.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		429228AE1F96261000DCECDF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -955,6 +1082,7 @@
 				1612BC4623B658C000107C7A /* Ejabberd.swift in Sources */,
 				16277244203C62040086127C /* CoreData+Messages.swift in Sources */,
 				16013C7F20B2C99C0043EA29 /* AudioMessagePresenter.swift in Sources */,
+				16D4B8D823F5CE1700D17B90 /* IdentityDefaults.swift in Sources */,
 				16AE1D7B2044315B005DF777 /* UIPhotoMessageHandler.swift in Sources */,
 				16317B9922C506A200A3144A /* Notifications.swift in Sources */,
 				4280C0D41F97341300075B3A /* SendingStatusPresenter.swift in Sources */,
@@ -964,7 +1092,70 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		16D4B8B423F5BCA400D17B90 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 16D4B8AD23F5BCA400D17B90 /* Notification Extension */;
+			targetProxy = 16D4B8B323F5BCA400D17B90 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		16D4B8B723F5BCA400D17B90 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = "Notification Extension/Notification Extension.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = JWNLQ3HC5A;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = "Notification Extension/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger.Notification-Extension-Prod";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		16D4B8B823F5BCA400D17B90 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = "Notification Extension/Notification Extension.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = JWNLQ3HC5A;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = "Notification Extension/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger.Notification-Extension-Prod";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 		429228C21F96261000DCECDF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1079,11 +1270,13 @@
 		429228C51F96261000DCECDF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = VirgilMessenger/VirgilMessenger.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = JWNLQ3HC5A;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1095,6 +1288,7 @@
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 3.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1107,11 +1301,13 @@
 		429228C61F96261000DCECDF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = VirgilMessenger/VirgilMessenger.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = JWNLQ3HC5A;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1122,6 +1318,7 @@
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 3.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1134,6 +1331,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		16D4B8B923F5BCA400D17B90 /* Build configuration list for PBXNativeTarget "Notification Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				16D4B8B723F5BCA400D17B90 /* Debug */,
+				16D4B8B823F5BCA400D17B90 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		429228AD1F96261000DCECDF /* Build configuration list for PBXProject "VirgilMessenger" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -22,11 +22,11 @@ public class Client {
 
     private let serviceErrorDomain: String = "ClientErrorDomain"
 
-    init(crypto: VirgilCrypto) {
+    public init(crypto: VirgilCrypto) {
         self.crypto = crypto
     }
 
-    func makeTokenCallback(identity: String) -> EThree.RenewJwtCallback {
+    public func makeTokenCallback(identity: String) -> EThree.RenewJwtCallback {
         return { completion in
             do {
                 let token = try self.getVirgilToken(identity: identity)

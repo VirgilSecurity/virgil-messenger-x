@@ -11,6 +11,7 @@ import UIKit
 import Fabric
 import Crashlytics
 import VirgilSDK
+import CocoaLumberjack
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -23,14 +24,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let startStoryboard = UIStoryboard(name: StartViewController.name, bundle: Bundle.main)
         let startController = startStoryboard.instantiateInitialViewController()!
 
+        let logger = DDTTYLogger.sharedInstance!
+        DDLog.add(logger, with: .all)
+
         self.window?.rootViewController = startController
 
         // Clear core data if it's first launch
         self.cleanLocalStorage()
 
+        // Registering for remote notifications
+        self.registerRemoteNotifications(for: application)
+
         // Clean notifications
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        self.cleanNotifications()
 
         Fabric.with([Crashlytics.self])
 
@@ -59,11 +65,70 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    private func registerRemoteNotifications(for app: UIApplication) {
+        let center = UNUserNotificationCenter.current()
+
+        center.getNotificationSettings { settings in
+
+            if settings.authorizationStatus == .notDetermined {
+
+                center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+                    Log.debug("User allowed notifications: \(granted)")
+
+                    if granted {
+                        DispatchQueue.main.async {
+                            app.registerForRemoteNotifications()
+                        }
+                    }
+                }
+
+            }
+            else if settings.authorizationStatus == .authorized {
+                DispatchQueue.main.async {
+                    app.registerForRemoteNotifications()
+                }
+            }
+        }
+    }
+    
+    private func cleanNotifications() {
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+    }
+
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        Log.debug("Received notification")
+    }
+
     func applicationWillTerminate(_ application: UIApplication) {
         do {
             try CoreData.shared.saveContext()
         } catch {
             Log.error("Saving Core Data context failed with error: \(error.localizedDescription)")
         }
+    }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Log.debug("Received device token: \(deviceToken.hexEncodedString())")
+
+        Ejabberd.updatedPushToken = deviceToken
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        Log.error("Failed to get token, error: \(error)")
+
+        Ejabberd.updatedPushToken = nil
+    }
+
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        Ejabberd.shared.set(status: .online)
+        
+        self.cleanNotifications()
+    }
+
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        Ejabberd.shared.set(status: .unavailable)
     }
 }

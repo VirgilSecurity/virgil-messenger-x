@@ -8,7 +8,6 @@
 
 import CoreData
 import VirgilSDK
-import TwilioChatClient
 
 extension CoreData {
     private func save(_ channel: Channel) throws {

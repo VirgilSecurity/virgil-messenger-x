@@ -31,6 +31,8 @@ class Ejabberd: NSObject {
     internal var state: State = .disconnected
     internal var shouldRetry: Bool = true
 
+    static var updatedPushToken: Data? = nil
+
     internal let serviceErrorDomain: String = "EjabberdErrorDomain"
 
     internal enum State {
@@ -39,12 +41,17 @@ class Ejabberd: NSObject {
         case disconnected
     }
 
+    enum Status {
+        case online
+        case unavailable
+    }
+
     override init() {
         super.init()
 
         self.stream.hostName = URLConstants.ejabberdHost
         self.stream.hostPort = URLConstants.ejabberdHostPort
-        self.stream.startTLSPolicy = URLConstants.ejabberdTSLPolicy
+        self.stream.startTLSPolicy = .allowed
         self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
 
         try? self.initializeMutex.lock()
@@ -77,6 +84,8 @@ class Ejabberd: NSObject {
 
             try self.checkError()
         }
+
+        try self.registerForNotifications()
     }
 
     internal func retryInitialize(error: Error) {
@@ -147,5 +156,55 @@ class Ejabberd: NSObject {
         try self.sendMutex.lock()
 
         try self.checkError()
+    }
+
+    public func registerForNotifications() throws {
+        guard let deviceToken = Ejabberd.updatedPushToken else {
+            return
+        }
+
+        guard let pushServerJID = XMPPJID(string: URLConstants.ejabberdPushHost) else {
+            throw EjabberdError.jidFormingFailed
+        }
+
+        let deviceId = deviceToken.hexEncodedString()
+
+        let options = ["device_id": deviceId,
+                       "service": "apns",
+                       "mutable_content": "true",
+                       "topic": Constants.keychainAppName]
+
+        let element = XMPPIQ.enableNotificationsElement(with: pushServerJID,
+                                                        node: Constants.pushesNode,
+                                                        options: options)
+
+        self.stream.send(element)
+    }
+
+    public func deregisterFromNotifications() throws {
+        guard let pushServerJID = XMPPJID(string: URLConstants.ejabberdPushHost) else {
+            throw EjabberdError.jidFormingFailed
+        }
+
+        let element = XMPPIQ.disableNotificationsElement(with: pushServerJID, node: Constants.pushesNode)
+
+        self.stream.send(element)
+    }
+
+    public func set(status: Status) {
+        let presence: XMPPPresence
+
+        switch status {
+        case .online:
+            presence = XMPPPresence()
+        case .unavailable:
+            presence = XMPPPresence(type: .unavailable,
+                                    show: nil,
+                                    status: nil,
+                                    idle: nil,
+                                    to: nil)
+        }
+
+        self.stream.send(presence)
     }
 }
