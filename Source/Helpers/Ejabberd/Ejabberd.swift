@@ -158,8 +158,27 @@ class Ejabberd: NSObject {
         try self.checkError()
     }
 
-    public func registerForNotifications() throws {
-        guard let deviceToken = Ejabberd.updatedPushToken else {
+    public func set(status: Status) {
+        let presence: XMPPPresence
+
+        switch status {
+        case .online:
+            presence = XMPPPresence()
+        case .unavailable:
+            presence = XMPPPresence(type: .unavailable,
+                                    show: nil,
+                                    status: nil,
+                                    idle: nil,
+                                    to: nil)
+        }
+
+        self.stream.send(presence)
+    }
+}
+
+extension Ejabberd {
+    func registerForNotifications(deviceToken: Data? = nil) throws {
+        guard let deviceToken = deviceToken ?? Ejabberd.updatedPushToken else {
             return
         }
 
@@ -181,7 +200,7 @@ class Ejabberd: NSObject {
         self.stream.send(element)
     }
 
-    public func deregisterFromNotifications() throws {
+    func deregisterFromNotifications() throws {
         guard let pushServerJID = XMPPJID(string: URLConstants.ejabberdPushHost) else {
             throw EjabberdError.jidFormingFailed
         }
@@ -189,22 +208,5 @@ class Ejabberd: NSObject {
         let element = XMPPIQ.disableNotificationsElement(with: pushServerJID, node: Constants.pushesNode)
 
         self.stream.send(element)
-    }
-
-    public func set(status: Status) {
-        let presence: XMPPPresence
-
-        switch status {
-        case .online:
-            presence = XMPPPresence()
-        case .unavailable:
-            presence = XMPPPresence(type: .unavailable,
-                                    show: nil,
-                                    status: nil,
-                                    idle: nil,
-                                    to: nil)
-        }
-
-        self.stream.send(presence)
     }
 }

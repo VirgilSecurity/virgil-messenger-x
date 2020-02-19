@@ -105,15 +105,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         do {
             try CoreData.shared.saveContext()
-        } catch {
+        }
+        catch {
             Log.error("Saving Core Data context failed with error: \(error.localizedDescription)")
         }
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Log.debug("Received device token: \(deviceToken.hexEncodedString())")
-
-        Ejabberd.updatedPushToken = deviceToken
+        
+        do {
+            if Ejabberd.shared.state == .connected {
+                try Ejabberd.shared.registerForNotifications(deviceToken: deviceToken)
+            }
+            
+            Ejabberd.updatedPushToken = deviceToken
+        }
+        catch {
+            Log.error("Registering for notification failed with error: \(error.localizedDescription)")
+        }
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
