@@ -56,7 +56,7 @@ class NotificationService: UNNotificationServiceExtension {
             let encryptedMessage = try EncryptedMessage.import(body)
 
             // Initializing KeyStorage with root application name. We need it to fetch shared key from root app
-            let storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.keychainAppName)
+            let storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.appId)
 
             let client = Client(crypto: self.crypto)
 
