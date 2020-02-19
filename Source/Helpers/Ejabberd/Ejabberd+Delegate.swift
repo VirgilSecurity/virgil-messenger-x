@@ -88,24 +88,22 @@ extension Ejabberd {
     func xmppStream(_ sender: XMPPStream, didReceive message: XMPPMessage) {
         Log.debug("Ejabberd: Message received")
 
-        self.receiveQueue.async {
-            do {
-                let author = try message.getAuthor()
-                let body = try message.getBody()
-                let encryptedMessage = try EncryptedMessage.import(body)
+        do {
+            let author = try message.getAuthor()
+            let body = try message.getBody()
+            let encryptedMessage = try EncryptedMessage.import(body)
 
-                guard let message = try MessageProcessor.process(encryptedMessage, from: author),
-                    let currentChannel = CoreData.shared.currentChannel,
-                    currentChannel.name == author else {
-                        // TODO: Check if needed
-                        return Notifications.post(.chatListUpdated)
-                }
+            guard let message = try MessageProcessor.process(encryptedMessage, from: author),
+                let currentChannel = CoreData.shared.currentChannel,
+                currentChannel.name == author else {
+                    // TODO: Check if needed
+                    return Notifications.post(.chatListUpdated)
+            }
 
-                Notifications.post(message: message)
-            }
-            catch {
-                Log.error("\(error)")
-            }
+            Notifications.post(message: message)
+        }
+        catch {
+            Log.error("\(error)")
         }
     }
 }
