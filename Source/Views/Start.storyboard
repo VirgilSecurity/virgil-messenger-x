@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="89X-0N-mFL">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="qXJ-6W-XcO">
+            <objects>
+                <navigationController navigationBarHidden="YES" id="89X-0N-mFL" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="9eD-FG-qe5">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="nsB-Mm-3kG" kind="relationship" relationship="rootViewController" id="3ju-gs-H5o"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="L5t-Os-eNc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1959" y="1324"/>
+        </scene>
+        <!--Start View Controller-->
+        <scene sceneID="5FH-QT-Rjj">
+            <objects>
+                <viewController id="nsB-Mm-3kG" customClass="StartViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="tsx-hB-I0D">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Launch" translatesAutoresizingMaskIntoConstraints="NO" id="bZg-FO-Dru">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-app-userscreen" translatesAutoresizingMaskIntoConstraints="NO" id="g17-d3-DLz">
+                                <rect key="frame" x="145.5" y="297.5" width="84" height="72"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="84" id="5My-fL-6pp"/>
+                                    <constraint firstAttribute="height" constant="72" id="IUl-NH-tdG"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="g17-d3-DLz" firstAttribute="centerY" secondItem="2Pp-ln-Npy" secondAttribute="centerY" id="5j5-5e-vfI"/>
+                            <constraint firstItem="bZg-FO-Dru" firstAttribute="leading" secondItem="2Pp-ln-Npy" secondAttribute="leading" id="MIT-UW-6fX"/>
+                            <constraint firstAttribute="bottom" secondItem="bZg-FO-Dru" secondAttribute="bottom" id="QGl-tl-ztT"/>
+                            <constraint firstItem="g17-d3-DLz" firstAttribute="centerX" secondItem="2Pp-ln-Npy" secondAttribute="centerX" id="VHd-ID-ZRl"/>
+                            <constraint firstItem="bZg-FO-Dru" firstAttribute="top" secondItem="tsx-hB-I0D" secondAttribute="top" id="Zej-Gy-J2c"/>
+                            <constraint firstItem="bZg-FO-Dru" firstAttribute="trailing" secondItem="2Pp-ln-Npy" secondAttribute="trailing" id="ib7-cI-5VC"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="2Pp-ln-Npy"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="bGD-EV-S4d"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dBJ-UZ-1eP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-911.20000000000005" y="1323.6881559220392"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Launch" width="375" height="667"/>
+        <image name="icon-app-userscreen" width="44" height="38"/>
+    </resources>
+</document>
