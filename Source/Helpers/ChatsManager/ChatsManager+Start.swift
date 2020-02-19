@@ -26,24 +26,19 @@ public enum ChatsManager {
                 }
 
                 startProgressBar()
+                
+                let card = try Virgil.ethree.findUser(with: identity).startSync().get()
 
-                try ChatsManager.startSingle(with: identity)
+                _ = try CoreData.shared.createSingleChannel(initiator: Virgil.ethree.identity, card: card)
 
                 completion(nil)
-            } catch {
+            }
+            catch FindUsersError.cardWasNotFound {
+                completion(UserFriendlyError.userNotFound)
+            }
+            catch {
                 completion(error)
             }
-        }
-    }
-
-    public static func startSingle(with identity: String) throws {
-        do {
-            let card = try Virgil.ethree.findUser(with: identity).startSync().get()
-
-            _ = try CoreData.shared.createSingleChannel(initiator: Virgil.ethree.identity, card: card)
-        }
-        catch FindUsersError.cardWasNotFound {
-            throw UserFriendlyError.userNotFound
         }
     }
     
