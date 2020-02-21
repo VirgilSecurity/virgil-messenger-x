@@ -14,10 +14,97 @@ class SettingsViewController: ViewController {
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
 
+    private lazy var cells = [
+        [
+            Cell(
+                identifier: .regular,
+                action: logOut,
+                configure: {
+                    $0.textLabel?.text = "Logout"
+                    $0.textLabel?.textColor = .dangerTextColor
+                }
+            ),
+            Cell(
+                identifier: .regular,
+                action: deleteAccount,
+                configure: {
+                    $0.textLabel?.text = "Delete account"
+                    $0.textLabel?.textColor = .dangerTextColor
+                }
+            )
+        ],
+        [
+            Cell(
+                identifier: .detail,
+                action: nil,
+                configure: {
+                    $0.textLabel?.text = "Version"
+                    $0.textLabel?.textColor = .textColor
+                    $0.isUserInteractionEnabled = false
+
+                    let info = Bundle.main.infoDictionary
+                    let appVersion = info?["CFBundleShortVersionString"] as? String ?? "Unknown"
+                    let buildNumber = info?["CFBundleVersion"] as? String ?? "Unknown"
+                    $0.detailTextLabel?.text = "\(appVersion) (\(buildNumber))"
+                }
+            )
+        ]
+    ]
+
+    struct Cell {
+        enum Identifier: String, CaseIterable {
+            case regular
+            case detail
+
+            func register(in tableView: UITableView) {
+                let type: UITableViewCell.Type
+                switch self {
+                case .regular:
+                    type = UITableViewCell.self
+                case .detail:
+                    type = DetailTableViewCell.self
+                }
+
+                tableView.register(
+                    type,
+                    forCellReuseIdentifier: self.rawValue
+                )
+            }
+        }
+
+        let identifier: Identifier
+        let action: (() -> Void)?
+        let configure: ((UITableViewCell) -> Void)
+
+        func dequeue(from tableView: UITableView, for indexPath: IndexPath) -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: identifier.rawValue,
+                for: indexPath
+            )
+
+            cell.accessoryType = .none
+            cell.backgroundColor = .backgroundColor
+
+            let colorView = UIView()
+            colorView.backgroundColor = .selectedBackgroundColor
+            cell.selectedBackgroundView = colorView
+
+            configure(cell)
+
+            return cell
+        }
+
+        static func registerCells(in tableView: UITableView) {
+            Identifier.allCases.forEach {
+                $0.register(in: tableView)
+            }
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        Cell.registerCells(in: self.tableView)
 
         self.tableView.tableFooterView = UIView(frame: .zero)
         self.tableView.delegate = self
@@ -29,10 +116,6 @@ class SettingsViewController: ViewController {
         self.letterLabel.text = String(describing: account.letter)
 
         self.avatarView.draw(with: account.colors)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
     }
 
     private func logOut() {
@@ -94,19 +177,7 @@ class SettingsViewController: ViewController {
 extension SettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
-        switch indexPath.section {
-        case 0:
-            self.logOut()
-        case 1:
-            self.deleteAccount()
-        default:
-            fatalError("Unknown number of table view section")
-        }
-    }
-
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.backgroundColor = UIColor(rgb: 0x20232B)
+        cells[indexPath].action?()
     }
 
     func tableView(_ : UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -115,31 +186,15 @@ extension SettingsViewController: UITableViewDelegate {
 }
 
 extension SettingsViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return cells.count
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return cells[section].count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let colorView = UIView()
-        colorView.backgroundColor = UIColor(rgb: 0x2B303B)
-        cell.selectedBackgroundView = colorView
-
-        if indexPath.section == 0 {
-            cell.textLabel?.text = "Logout"
-            cell.textLabel?.textColor = UIColor(rgb: 0x9E3621)
-            cell.accessoryType = .none
-        }
-        else if indexPath.section == 1 {
-            cell.textLabel?.text = "Delete account"
-            cell.textLabel?.textColor = UIColor(rgb: 0x9E3621)
-            cell.accessoryType = .none
-        }
-
-        return cell
-    }
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return cells[indexPath].dequeue(from: tableView, for: indexPath)
     }
 }
