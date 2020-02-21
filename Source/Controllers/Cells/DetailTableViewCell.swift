@@ -1,5 +1,5 @@
 //
-//  AppVersionCell.swift
+//  DetailTableViewCell.swift
 //  VirgilMessenger
 //
 //  Created by Matheus Cardoso on 2/21/20.
