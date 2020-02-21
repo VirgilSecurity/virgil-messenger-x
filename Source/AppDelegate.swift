@@ -11,7 +11,7 @@ import UIKit
 import Fabric
 import Crashlytics
 import VirgilSDK
-import CocoaLumberjack
+import CocoaLumberjackSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let startStoryboard = UIStoryboard(name: StartViewController.name, bundle: Bundle.main)
         let startController = startStoryboard.instantiateInitialViewController()!
 
-        let logger = DDTTYLogger.sharedInstance!
+        let logger = DDOSLogger.sharedInstance
         DDLog.add(logger, with: .all)
 
         self.window?.rootViewController = startController
