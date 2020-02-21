@@ -31,7 +31,7 @@ public class LocalKeyManager {
         self.identity = identity
         self.crypto = crypto
 
-        let storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.keychainAppName)
+        let storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.appId)
         self.keychainStorage = KeychainStorage(storageParams: storageParams)
     }
 

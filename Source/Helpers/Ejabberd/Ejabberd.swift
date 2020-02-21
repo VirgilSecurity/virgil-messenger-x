@@ -20,14 +20,12 @@ public enum EjabberdError: Int, Error {
 class Ejabberd: NSObject {
     private(set) static var shared: Ejabberd = Ejabberd()
 
-    // FIXME
     private let delegateQueue = DispatchQueue(label: "EjabberdDelegate")
 
     internal let stream: XMPPStream = XMPPStream()
     internal var error: Error?
     internal let initializeMutex: Mutex = Mutex()
     internal let sendMutex: Mutex = Mutex()
-    internal let receiveQueue = DispatchQueue(label: "Ejabberd")   // FIXME
     internal var state: State = .disconnected
     internal var shouldRetry: Bool = true
 
@@ -191,7 +189,7 @@ extension Ejabberd {
         let options = ["device_id": deviceId,
                        "service": "apns",
                        "mutable_content": "true",
-                       "topic": Constants.keychainAppName]
+                       "topic": Constants.appId]
 
         let element = XMPPIQ.enableNotificationsElement(with: pushServerJID,
                                                         node: Constants.pushesNode,
