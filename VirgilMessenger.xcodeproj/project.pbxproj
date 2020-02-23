@@ -202,9 +202,6 @@
 		1627723E203C5FB00086127C /* CoreData+Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreData+Account.swift"; sourceTree = "<group>"; };
 		16277241203C60DB0086127C /* CoreData+Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreData+Channel.swift"; sourceTree = "<group>"; };
 		16277243203C62040086127C /* CoreData+Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreData+Messages.swift"; sourceTree = "<group>"; };
-		1627E4CF20BD522400D0AF36 /* VirgilCryptoAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCryptoAPI.framework; path = Carthage/Build/iOS/VirgilCryptoAPI.framework; sourceTree = "<group>"; };
-		162D2B462240F94300CE7FC2 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Frameworks/Crashlytics.framework; sourceTree = "<group>"; };
-		162D2B472240F94300CE7FC2 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Frameworks/Fabric.framework; sourceTree = "<group>"; };
 		162E22E6225F76BF00AAE7C4 /* NewMessageTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageTable.swift; sourceTree = "<group>"; };
 		162E22E8225F7E4E00AAE7C4 /* NewGroup.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NewGroup.storyboard; sourceTree = "<group>"; };
 		162E22EA225F8F6000AAE7C4 /* ChooseGroupMembers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseGroupMembers.swift; sourceTree = "<group>"; };
@@ -213,7 +210,6 @@
 		16317B9822C506A200A3144A /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		163952A7227C4E5200DD1FDC /* ChatsManager+Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatsManager+Update.swift"; sourceTree = "<group>"; };
 		163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewZeroPaddings.swift; sourceTree = "<group>"; };
-		1640C020227B2C5300D585E3 /* TwilioChatClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwilioChatClient.framework; path = Carthage/Build/iOS/TwilioChatClient.framework; sourceTree = "<group>"; };
 		1644C07820B720F000073D99 /* View.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = View.xcassets; sourceTree = "<group>"; };
 		1644C07A20B85AC500073D99 /* UIPhotosChatInputItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPhotosChatInputItem.swift; sourceTree = "<group>"; };
 		164E172D20AAEE3700AB1AAD /* AudioMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageModel.swift; sourceTree = "<group>"; };
@@ -763,9 +759,6 @@
 				16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */,
 				16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */,
 				160093CB22B93AD10045D43F /* BEMCheckBox.framework */,
-				1640C020227B2C5300D585E3 /* TwilioChatClient.framework */,
-				162D2B462240F94300CE7FC2 /* Crashlytics.framework */,
-				162D2B472240F94300CE7FC2 /* Fabric.framework */,
 				1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */,
 				1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */,
 				1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */,
@@ -776,7 +769,6 @@
 				16D7072F214C061400452A16 /* libc++.tbd */,
 				16D7072D214C060B00452A16 /* libz.tbd */,
 				16D70726214BF60E00452A16 /* Security.framework */,
-				1627E4CF20BD522400D0AF36 /* VirgilCryptoAPI.framework */,
 				42E8F8731F978A51007CB39F /* PKHUD.framework */,
 				429228C91F96287A00DCECDF /* Chatto.framework */,
 				429228C81F96287A00DCECDF /* ChattoAdditions.framework */,
