@@ -47,8 +47,6 @@
 		166D3E5E1FB495F90032BAAD /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166D3E5D1FB495F90032BAAD /* CoreData.swift */; };
 		167C68451FADDB7800E6E448 /* Virgil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167C68441FADDB7800E6E448 /* Virgil.swift */; };
 		168E54CC22395DDC00B6E822 /* ColorPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168E54CB22395DDC00B6E822 /* ColorPair.swift */; };
-		1693677F2248FA0800EF9A42 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 162D2B462240F94300CE7FC2 /* Crashlytics.framework */; };
-		169367802248FA0800EF9A42 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 162D2B472240F94300CE7FC2 /* Fabric.framework */; };
 		169367812248FA0800EF9A42 /* VirgilCryptoFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */; };
 		169367832248FA0800EF9A42 /* VirgilCryptoRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */; };
 		169367842248FA0800EF9A42 /* VirgilSDKRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */; };
@@ -359,8 +357,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				160093CC22B93AD10045D43F /* BEMCheckBox.framework in Frameworks */,
-				1693677F2248FA0800EF9A42 /* Crashlytics.framework in Frameworks */,
-				169367802248FA0800EF9A42 /* Fabric.framework in Frameworks */,
 				16FC7BE6238D691600F7ACE7 /* VSCPythia.framework in Frameworks */,
 				169367812248FA0800EF9A42 /* VirgilCryptoFoundation.framework in Frameworks */,
 				16B4EC1D23BE476900E7E4DB /* libidn.framework in Frameworks */,

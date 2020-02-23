@@ -8,8 +8,6 @@
 
 import UserNotifications
 import UIKit
-import Fabric
-import Crashlytics
 import VirgilSDK
 import CocoaLumberjackSwift
 
@@ -37,8 +35,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Clean notifications
         self.cleanNotifications()
-
-        Fabric.with([Crashlytics.self])
 
         return true
     }
