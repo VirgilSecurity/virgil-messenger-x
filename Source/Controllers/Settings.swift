@@ -17,24 +17,6 @@ class SettingsViewController: ViewController {
     private lazy var cells = [
         [
             Cell(
-                identifier: .regular,
-                action: logOut,
-                configure: {
-                    $0.textLabel?.text = "Logout"
-                    $0.textLabel?.textColor = .dangerTextColor
-                }
-            ),
-            Cell(
-                identifier: .regular,
-                action: deleteAccount,
-                configure: {
-                    $0.textLabel?.text = "Delete account"
-                    $0.textLabel?.textColor = .dangerTextColor
-                }
-            )
-        ],
-        [
-            Cell(
                 identifier: .detail,
                 action: nil,
                 configure: {
@@ -46,6 +28,26 @@ class SettingsViewController: ViewController {
                     let appVersion = info?["CFBundleShortVersionString"] as? String ?? "Unknown"
                     let buildNumber = info?["CFBundleVersion"] as? String ?? "Unknown"
                     $0.detailTextLabel?.text = "\(appVersion) (\(buildNumber))"
+                }
+            )
+        ],
+        [
+            Cell(
+                identifier: .regular,
+                action: logOut,
+                configure: {
+                    $0.textLabel?.text = "Logout"
+                    $0.textLabel?.textColor = .dangerTextColor
+                }
+            ),
+        ],
+        [
+            Cell(
+                identifier: .regular,
+                action: deleteAccount,
+                configure: {
+                    $0.textLabel?.text = "Delete account"
+                    $0.textLabel?.textColor = .dangerTextColor
                 }
             )
         ]
