@@ -51,56 +51,6 @@ class SettingsViewController: ViewController {
         ]
     ]
 
-    struct Cell {
-        enum Identifier: String, CaseIterable {
-            case regular
-            case detail
-
-            func register(in tableView: UITableView) {
-                let type: UITableViewCell.Type
-                switch self {
-                case .regular:
-                    type = UITableViewCell.self
-                case .detail:
-                    type = DetailTableViewCell.self
-                }
-
-                tableView.register(
-                    type,
-                    forCellReuseIdentifier: self.rawValue
-                )
-            }
-        }
-
-        let identifier: Identifier
-        let action: (() -> Void)?
-        let configure: ((UITableViewCell) -> Void)
-
-        func dequeue(from tableView: UITableView, for indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(
-                withIdentifier: identifier.rawValue,
-                for: indexPath
-            )
-
-            cell.accessoryType = .none
-            cell.backgroundColor = .backgroundColor
-
-            let colorView = UIView()
-            colorView.backgroundColor = .selectedBackgroundColor
-            cell.selectedBackgroundView = colorView
-
-            configure(cell)
-
-            return cell
-        }
-
-        static func registerCells(in tableView: UITableView) {
-            Identifier.allCases.forEach {
-                $0.register(in: tableView)
-            }
-        }
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -196,5 +146,57 @@ extension SettingsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return cells[indexPath].dequeue(from: tableView, for: indexPath)
+    }
+}
+
+extension SettingsViewController {
+    struct Cell {
+        enum Identifier: String, CaseIterable {
+            case regular
+            case detail
+
+            func register(in tableView: UITableView) {
+                let type: UITableViewCell.Type
+                switch self {
+                case .regular:
+                    type = UITableViewCell.self
+                case .detail:
+                    type = DetailTableViewCell.self
+                }
+
+                tableView.register(
+                    type,
+                    forCellReuseIdentifier: self.rawValue
+                )
+            }
+        }
+
+        let identifier: Identifier
+        let action: (() -> Void)?
+        let configure: ((UITableViewCell) -> Void)
+
+        func dequeue(from tableView: UITableView, for indexPath: IndexPath) -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: identifier.rawValue,
+                for: indexPath
+            )
+
+            cell.accessoryType = .none
+            cell.backgroundColor = .backgroundColor
+
+            let colorView = UIView()
+            colorView.backgroundColor = .selectedBackgroundColor
+            cell.selectedBackgroundView = colorView
+
+            configure(cell)
+
+            return cell
+        }
+
+        static func registerCells(in tableView: UITableView) {
+            Identifier.allCases.forEach {
+                $0.register(in: tableView)
+            }
+        }
     }
 }
