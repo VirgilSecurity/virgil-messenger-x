@@ -7,11 +7,16 @@
 //
 
 import UIKit
+import Crashlytics
 
 extension UIViewController {
     func alert(title: String? = nil, _ anyError: Error, handler: ((UIAlertAction) -> Void)? = nil) {
         let error = UserFriendlyError(from: anyError)
-
+        
+        if error == .unknownError {
+            Crashlytics.sharedInstance().recordError(anyError)
+        }
+        
         let message = error.rawValue
 
         let alert: UIAlertController = UIAlertController(title: title,

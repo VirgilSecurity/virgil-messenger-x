@@ -8,6 +8,7 @@
 
 import XMPPFrameworkSwift
 import VirgilSDK
+import Crashlytics
 
 extension Ejabberd: XMPPStreamDelegate {
     func xmppStreamWillConnect(_ sender: XMPPStream) {
@@ -25,9 +26,10 @@ extension Ejabberd: XMPPStreamDelegate {
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
         Log.debug("Ejabberd: Connect reached timeout")
 
-        // TODO: schedrule retry
-
         self.state = .disconnected
+        
+        Crashlytics.sharedInstance().recordError(EjabberdError.connectionTimeout)
+        
         self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
     }
 
@@ -38,8 +40,9 @@ extension Ejabberd: XMPPStreamDelegate {
         if let error = error {
             Log.debug("Ejabberd disconnected with error - \(error.localizedDescription)")
 
-            // TODO: schedrule retry
             if erroredUnlock {
+                Crashlytics.sharedInstance().recordError(error)
+
                 self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
             }
             else {
