@@ -8,10 +8,9 @@
 
 import UserNotifications
 import UIKit
-import Fabric
-import Crashlytics
 import VirgilSDK
-import CocoaLumberjack
+import Firebase
+import CocoaLumberjackSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -19,12 +18,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        FirebaseApp.configure()
 
         // Defining start controller
         let startStoryboard = UIStoryboard(name: StartViewController.name, bundle: Bundle.main)
         let startController = startStoryboard.instantiateInitialViewController()!
 
-        let logger = DDTTYLogger.sharedInstance!
+        let logger = DDOSLogger.sharedInstance
         DDLog.add(logger, with: .all)
 
         self.window?.rootViewController = startController
@@ -37,8 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Clean notifications
         self.cleanNotifications()
-
-        Fabric.with([Crashlytics.self])
 
         return true
     }
