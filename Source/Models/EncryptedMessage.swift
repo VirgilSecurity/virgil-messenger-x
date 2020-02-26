@@ -8,6 +8,7 @@
 
 import Foundation
 import XMPPFrameworkSwift
+import VirgilSDK
 
 public enum EncryptedMessageError: Int, Error {
     case bodyIsNotBase64Encoded = 1
@@ -28,14 +29,22 @@ public class EncryptedMessage: Codable {
         }
 
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
+        decoder.dateDecodingStrategy = .custom(DateUtils.timestampDateDecodingStrategy)
+
+
+        // If message appears to be too old, it was probably created using
+        // .deferredToDate format
+        /*guard Calendar.current.component(.year, from: message.date) > 2000 else {
+            decoder.dateDecodingStrategy = .deferredToDate
+            return try decoder.decode(EncryptedMessage.self, from: data)
+        }*/
 
         return try decoder.decode(EncryptedMessage.self, from: data)
     }
 
     func export() throws -> String {
         let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .secondsSince1970
+        encoder.dateEncodingStrategy = .custom(DateUtils.timestampDateEncodingStrategy)
 
         return try encoder.encode(self).base64EncodedString()
     }
