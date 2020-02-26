@@ -28,14 +28,14 @@ public class EncryptedMessage: Codable {
         }
 
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .millisecondsSince1970
+        decoder.dateDecodingStrategy = .secondsSince1970
 
         return try decoder.decode(EncryptedMessage.self, from: data)
     }
 
     func export() throws -> String {
         let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .millisecondsSince1970
+        encoder.dateEncodingStrategy = .secondsSince1970
 
         return try encoder.encode(self).base64EncodedString()
     }
