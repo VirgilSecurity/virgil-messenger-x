@@ -27,12 +27,16 @@ public class EncryptedMessage: Codable {
             throw EncryptedMessageError.bodyIsNotBase64Encoded
         }
 
-        return try JSONDecoder().decode(EncryptedMessage.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .millisecondsSince1970
+
+        return try decoder.decode(EncryptedMessage.self, from: data)
     }
 
     func export() throws -> String {
-        let data = try JSONEncoder().encode(self)
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .millisecondsSince1970
 
-        return data.base64EncodedString()
+        return try encoder.encode(self).base64EncodedString()
     }
 }
