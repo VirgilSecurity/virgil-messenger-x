@@ -17,11 +17,20 @@ class SettingsViewController: ViewController {
     private lazy var cells = [
         [
             Cell(
+                identifier: .regular,
+                action: openNotificationSettings,
+                configure: {
+                    $0.textLabel?.text = "Notifications"
+                    $0.textLabel?.textColor = .textColor
+                }
+            ),
+            Cell(
                 identifier: .detail,
                 action: nil,
                 configure: {
                     $0.textLabel?.text = "Version"
-                    $0.textLabel?.textColor = .textColor
+                    $0.textLabel?.textColor = .mutedTextColor
+                    $0.detailTextLabel?.textColor = .mutedTextColor
                     $0.isUserInteractionEnabled = false
 
                     let info = Bundle.main.infoDictionary
@@ -68,6 +77,10 @@ class SettingsViewController: ViewController {
         self.letterLabel.text = String(describing: account.letter)
 
         self.avatarView.draw(with: account.colors)
+    }
+
+    private func openNotificationSettings() {
+        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
     }
 
     private func logOut() {
