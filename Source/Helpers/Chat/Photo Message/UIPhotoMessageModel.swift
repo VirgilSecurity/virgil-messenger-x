@@ -29,7 +29,6 @@ public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageMode
     
     public required init(uid: Int,
                          image: UIImage,
-                         size: CGSize,
                          isIncoming: Bool,
                          status: MessageStatus,
                          date: Date) {
@@ -42,7 +41,7 @@ public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageMode
                                         date: date,
                                         status: status)
 
-        super.init(messageModel: messageModel, imageSize: size, image: image)
+        super.init(messageModel: messageModel, imageSize: image.size, image: image)
     }
 
     public var status: MessageStatus {

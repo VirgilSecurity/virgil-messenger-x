@@ -93,7 +93,6 @@ extension Message {
 
             resultMessage = UIPhotoMessageModel(uid: id,
                                                 image: image,
-                                                size: image.size,
                                                 isIncoming: self.isIncoming,
                                                 status: status,
                                                 date: date)

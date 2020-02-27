@@ -61,7 +61,8 @@ public class MessageSender {
                                                           date: uiModel.date)
 
                 self.updateMessage(uiModel, status: .success)
-            } catch {
+            }
+            catch {
                 self.updateMessage(uiModel, status: .failed)
             }
         }

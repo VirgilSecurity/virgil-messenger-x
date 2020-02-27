@@ -141,39 +141,26 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
-    func addChangeMembers(message: String) throws {
-//        self.nextMessageId += 1
-//        let id = self.nextMessageId
-//
-//        let uiModel = UITextMessageModel(uid: id,
-//                                         text: message,
-//                                         isIncoming: false,
-//                                         status: .sending,
-//                                         date: Date())
-//
-//        try self.messageSender.sendChangeMembers(uiModel: uiModel, coreChannel: self.channel)
-//            .startSync()
-//            .get()
-//
-//        self.slidingWindow.insertItem(uiModel, position: .bottom)
-//
-//        DispatchQueue.main.async {
-//            self.delegate?.chatDataSourceDidUpdate(self)
-//        }
-    }
-
     func addPhotoMessage(_ image: UIImage) {
-        // TODO
-//        self.nextMessageId += 1
-//        let id = self.nextMessageId
-//        let message = MessageFactory.createPhotoMessageModel(uid: id,
-//                                                             image: image,
-//                                                             size: image.size,
-//                                                             isIncoming: false,
-//                                                             status: .sending)
-//        self.messageSender.sendMessage(message, type: .regular)
-//        self.slidingWindow.insertItem(message, position: .bottom)
-//        self.delegate?.chatDataSourceDidUpdate(self)
+//        guard let photoData = image.jpegData(compressionQuality: 0.0) else {
+//            Log.error("Converting image to JPEG failed")
+//            return
+//        }
+//        
+//        let hash = Virgil.shared.crypto.computeHash(for: photoData)
+        
+        self.nextMessageId += 1
+        let id = self.nextMessageId
+        
+        let uiModel = UIPhotoMessageModel(uid: id,
+                                          image: image,
+                                          isIncoming: false,
+                                          status: .sending,
+                                          date: Date())
+        
+//        self.messageSender.sendMessage(uiModel, type: .regular)
+        self.slidingWindow.insertItem(uiModel, position: .bottom)
+        self.delegate?.chatDataSourceDidUpdate(self)
     }
 
     func addAudioMessage(_ audio: Data) {
@@ -200,9 +187,31 @@ class DataSource: ChatDataSourceProtocol {
 //        self.slidingWindow.insertItem(message, position: .bottom)
 //        self.delegate?.chatDataSourceDidUpdate(self)
     }
+    
+    func addChangeMembers(message: String) throws {
+//        self.nextMessageId += 1
+//        let id = self.nextMessageId
+//
+//        let uiModel = UITextMessageModel(uid: id,
+//                                         text: message,
+//                                         isIncoming: false,
+//                                         status: .sending,
+//                                         date: Date())
+//
+//        try self.messageSender.sendChangeMembers(uiModel: uiModel, coreChannel: self.channel)
+//            .startSync()
+//            .get()
+//
+//        self.slidingWindow.insertItem(uiModel, position: .bottom)
+//
+//        DispatchQueue.main.async {
+//            self.delegate?.chatDataSourceDidUpdate(self)
+//        }
+    }
 
     func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> ()) {
-        let didAdjust = self.slidingWindow.adjustWindow(focusPosition: focusPosition, maxWindowSize: preferredMaxCount ?? self.preferredMaxWindowSize)
+        let didAdjust = self.slidingWindow.adjustWindow(focusPosition: focusPosition,
+                                                        maxWindowSize: preferredMaxCount ?? self.preferredMaxWindowSize)
         completion(didAdjust)
     }
 }
