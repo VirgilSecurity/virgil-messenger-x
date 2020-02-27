@@ -31,14 +31,6 @@ public class EncryptedMessage: Codable {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .custom(DateUtils.timestampDateDecodingStrategy)
 
-
-        // If message appears to be too old, it was probably created using
-        // .deferredToDate format
-        /*guard Calendar.current.component(.year, from: message.date) > 2000 else {
-            decoder.dateDecodingStrategy = .deferredToDate
-            return try decoder.decode(EncryptedMessage.self, from: data)
-        }*/
-
         return try decoder.decode(EncryptedMessage.self, from: data)
     }
 
