@@ -162,4 +162,16 @@ extension Client {
 
         return try self.parse(response, for: "token")
     }
+    
+    public func upload(data: Data, with request: URLRequest) throws {
+        let request = try Request(urlRequest: request)
+        
+        _ = try self.connection.upload(data: data, with: request)
+    }
+    
+    public func downloadFile(from url: URL, saveFileCallback: @escaping (URL) throws -> Void) throws {
+        let request = Request(url: url, method: .get)
+        
+        _ = try self.connection.downloadFile(with: request, saveFileCallback: saveFileCallback)
+    }
 }

@@ -18,24 +18,6 @@ extension CoreData {
         try self.saveContext()
     }
 
-    func createChangeMembersMessage(_ text: String,
-                                    in channel: Channel? = nil,
-                                    isIncoming: Bool,
-                                    date: Date = Date()) throws -> Message {
-        let channel = try channel ?? self.getCurrentChannel()
-
-        let message = try Message(body: text,
-                                  type: .changeMembers,
-                                  isIncoming: isIncoming,
-                                  date: date,
-                                  channel: channel,
-                                  managedContext: self.managedContext)
-
-        try self.save(message)
-
-        return message
-    }
-
     func createEncryptedMessage(in channel: Channel, isIncoming: Bool, date: Date) throws {
         let message = try Message(body: "Message encrypted",
                                   type: .text,
@@ -83,5 +65,13 @@ extension CoreData {
         try self.save(message)
 
         return message
+    }
+    
+    func storeMediaContent(_ data: Data, name: String) throws {
+        try self.getMediaStorage().store(data, name: name)
+    }
+    
+    func storeMediaContent(fromFile url: URL, name: String) throws {
+        try self.getMediaStorage().copy(from: url, name: name)
     }
 }

@@ -177,6 +177,8 @@
 		97E7C55E2403E6FF00D9CAAA /* GoogleDataTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C55D2403E6FF00D9CAAA /* GoogleDataTransport.framework */; };
 		97E7C5622403E73200D9CAAA /* FirebaseInstallations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5612403E73200D9CAAA /* FirebaseInstallations.framework */; };
 		97E7C5652403E77C00D9CAAA /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5592403E57100D9CAAA /* PromisesObjC.framework */; };
+		97F83C8A240D130A003F7451 /* FileMediaStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F83C89240D130A003F7451 /* FileMediaStorage.swift */; };
+		97F83C8C240D3B47003F7451 /* MessageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F83C8B240D3B47003F7451 /* MessageContent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -367,6 +369,8 @@
 		97E7C5592403E57100D9CAAA /* PromisesObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromisesObjC.framework; path = Carthage/Build/iOS/PromisesObjC.framework; sourceTree = "<group>"; };
 		97E7C55D2403E6FF00D9CAAA /* GoogleDataTransport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleDataTransport.framework; path = Carthage/Build/iOS/GoogleDataTransport.framework; sourceTree = "<group>"; };
 		97E7C5612403E73200D9CAAA /* FirebaseInstallations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstallations.framework; path = Carthage/Build/iOS/FirebaseInstallations.framework; sourceTree = "<group>"; };
+		97F83C89240D130A003F7451 /* FileMediaStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileMediaStorage.swift; sourceTree = "<group>"; };
+		97F83C8B240D3B47003F7451 /* MessageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -492,6 +496,7 @@
 				4280C0CB1F97340B00075B3A /* MessageSender.swift */,
 				16132FC5225514D0008FD754 /* MessageProcessor.swift */,
 				16D4B8D723F5CE1700D17B90 /* IdentityDefaults.swift */,
+				97F83C89240D130A003F7451 /* FileMediaStorage.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -654,6 +659,7 @@
 				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
 				16936791224916D100EF9A42 /* UserFriendlyError.swift */,
 				16C0D4502265FF75001F23ED /* MessageType.swift */,
+				97F83C8B240D3B47003F7451 /* MessageContent.swift */,
 				16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */,
 			);
 			path = Models;
@@ -1135,6 +1141,7 @@
 				423BDA7E1F97602F00C3EE9B /* ChatListCell.swift in Sources */,
 				16F8F3B9226487BE00143FB7 /* UsersListCell.swift in Sources */,
 				4280C0D51F97341300075B3A /* SendingStatusCollectionViewCell.swift in Sources */,
+				97F83C8A240D130A003F7451 /* FileMediaStorage.swift in Sources */,
 				4280C0E31F97364F00075B3A /* Chat.swift in Sources */,
 				168E54CC22395DDC00B6E822 /* ColorPair.swift in Sources */,
 				1627723F203C5FB00086127C /* CoreData+Account.swift in Sources */,
@@ -1145,6 +1152,7 @@
 				162E22ED225F953D00AAE7C4 /* ChooseMembersCell.swift in Sources */,
 				1693679022490BA000EF9A42 /* VirgilAuthorizer.swift in Sources */,
 				162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */,
+				97F83C8C240D3B47003F7451 /* MessageContent.swift in Sources */,
 				164E173820AB1BED00AB1AAD /* AudioChatInputItem.swift in Sources */,
 				1644C07B20B85AC500073D99 /* UIPhotosChatInputItem.swift in Sources */,
 				16B4EC2823BF63BA00E7E4DB /* EncryptedMessage.swift in Sources */,

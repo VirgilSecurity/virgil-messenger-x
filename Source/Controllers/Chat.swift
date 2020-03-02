@@ -295,7 +295,7 @@ extension ChatViewController {
 
         item.photoInputHandler = { [weak self] image in
             if self?.checkReachability() ?? false, Configurator.isUpdated {
-                self?.dataSource.addPhotoMessage(image)
+                try? self?.dataSource.addPhotoMessage(image)
             }
         }
         return item

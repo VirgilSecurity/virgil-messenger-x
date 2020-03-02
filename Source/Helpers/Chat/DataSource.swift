@@ -141,14 +141,7 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
-    func addPhotoMessage(_ image: UIImage) {
-//        guard let photoData = image.jpegData(compressionQuality: 0.0) else {
-//            Log.error("Converting image to JPEG failed")
-//            return
-//        }
-//        
-//        let hash = Virgil.shared.crypto.computeHash(for: photoData)
-        
+    func addPhotoMessage(_ image: UIImage) throws {
         self.nextMessageId += 1
         let id = self.nextMessageId
         
@@ -158,7 +151,8 @@ class DataSource: ChatDataSourceProtocol {
                                           status: .sending,
                                           date: Date())
         
-//        self.messageSender.sendMessage(uiModel, type: .regular)
+        try self.messageSender.send(uiModel: uiModel, coreChannel: self.channel)
+        
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
     }

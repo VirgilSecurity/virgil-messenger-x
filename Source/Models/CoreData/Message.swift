@@ -76,7 +76,7 @@ extension Message {
         let resultMessage: UIMessageModelProtocol
 
         switch self.type {
-        case .text, .changeMembers:
+        case .text:
             guard let body = self.body else {
                 return corruptedMessage()
             }

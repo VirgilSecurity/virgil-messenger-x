@@ -14,6 +14,7 @@ public enum EncryptedMessageError: Int, Error {
 }
 
 public class EncryptedMessage: Codable {
+    // TODO: change to data
     let ciphertext: String
     let date: Date
 

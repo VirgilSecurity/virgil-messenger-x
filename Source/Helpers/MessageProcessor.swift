@@ -34,7 +34,31 @@ class MessageProcessor {
             // FIXME
             return nil
         }
-
-        return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: true, date: message.date)
+        
+        let messageContent = try MessageContent.import(decrypted)
+        
+        switch messageContent.type {
+        case .text:
+            guard let body = messageContent.body else {
+                throw NSError()
+            }
+            
+            return try CoreData.shared.createTextMessage(body, in: channel, isIncoming: true, date: message.date)
+        case .photo, .audio:
+            guard let mediaHash = messageContent.mediaHash,
+                let mediaURL = messageContent.mediaUrl else {
+                    throw NSError()
+            }
+            
+            // Check hash in local storage
+            
+            // Download and decrypt photo from server
+            try Virgil.shared.client.downloadFile(from: mediaURL) { tempFileUrl in
+                try CoreData.shared.storeMediaContent(fromFile: tempFileUrl, name: mediaHash)
+            }
+            
+            // FIXME
+            return nil
+        }
     }
 }

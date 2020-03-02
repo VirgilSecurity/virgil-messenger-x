@@ -33,6 +33,7 @@ public enum Log {
     ///   - line: line
     public static func error(_ closure: @autoclosure () -> String, functionName: String = #function,
                              file: String = #file, line: UInt = #line) {
+        // TODO: record errors from here Crashlytics
         self.log("<ERROR>: \(closure())", functionName: functionName, file: file, line: line)
     }
 
