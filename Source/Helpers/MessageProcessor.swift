@@ -57,8 +57,11 @@ class MessageProcessor {
                 try CoreData.shared.storeMediaContent(fromFile: tempFileUrl, name: mediaHash)
             }
             
-            // FIXME
-            return nil
+            return try CoreData.shared.createMediaMessage(type: messageContent.type,
+                                                          in: channel,
+                                                          mediaHash: mediaHash,
+                                                          mediaUrl: mediaURL,
+                                                          isIncoming: true)
         }
     }
 }

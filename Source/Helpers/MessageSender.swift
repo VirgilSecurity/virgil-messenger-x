@@ -40,11 +40,18 @@ public class MessageSender {
                 // encrypt message to ejabberd user
                 let messageContent = MessageContent(type: .photo, mediaHash: hashString, mediaUrl: slot.getURL)
                 let exported = try messageContent.export()
-                let ciphertext = try Virgil.ethree.authEncrypt(text: exported)
+                let ciphertext = try Virgil.ethree.authEncrypt(text: exported, for: coreChannel.getCard())
                 let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
                 
                 // send it
                 try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name)
+                
+                // Save local Core Data entity
+                _ = try CoreData.shared.createMediaMessage(type: .photo,
+                                                           in: coreChannel,
+                                                           mediaHash: hashString,
+                                                           mediaUrl: slot.getURL,
+                                                           isIncoming: false)
                 
                 self.updateMessage(uiModel, status: .success)
             }

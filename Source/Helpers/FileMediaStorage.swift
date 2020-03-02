@@ -27,26 +27,27 @@ public class FileMediaStorage {
         try self.fileSystem.write(data: media, name: name)
     }
     
-    public func reset() throws {
-        try self.fileSystem.delete()
+    public func getPath(name: String) throws -> String {
+        try self.fileSystem.getFullUrl(name: name, subdir: nil).path
     }
+    
+//    public func retrieve(name: String) throws -> Data {
+//        let data = try self.fileSystem.read(name: name)
+//
+//        guard !data.isEmpty else {
+//            throw NSError()
+//        }
+//
+//        return data
+//    }
     
     public func copy(from url: URL, name: String) throws {
         let newUrl = try self.fileSystem.getFullUrl(name: name, subdir: nil)
         
         try self.fileSystem.fileManager.copyItem(at: url, to: newUrl)
     }
-
-//    public func retrieve(hash: Data) throws -> Data {
-//        let subdir = "\(sessionId.hexEncodedString())/\(self.ticketsSubdir)"
-//        let name = String(epoch)
-//
-//        let data = try self.fileSystem.read(name: name, subdir: subdir)
-//
-//        guard !data.isEmpty else {
-//            throw FileGroupStorageError.emptyFile
-//        }
-//
-//        return try Ticket.deserialize(data)
-//    }
+    
+    public func reset() throws {
+        try self.fileSystem.delete()
+    }
 }

@@ -12,13 +12,4 @@ public enum MessageType: String, Codable {
     case text
     case photo
     case audio
-
-//    init?(_ type: Twilio.MediaType) {
-//        switch type {
-//        case .photo:
-//            self = .photo
-//        case .audio:
-//            self = .audio
-//        }
-//    }
 }

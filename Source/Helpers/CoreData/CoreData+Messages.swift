@@ -31,11 +31,9 @@ extension CoreData {
     }
 
     func createTextMessage(_ body: String,
-                           in channel: Channel? = nil,
+                           in channel: Channel,
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Message {
-        let channel = try channel ?? self.getCurrentChannel()
-
         let message = try Message(body: body,
                                   type: .text,
                                   isIncoming: isIncoming,
@@ -47,19 +45,24 @@ extension CoreData {
 
         return message
     }
-
-    func createMediaMessage(_ data: Data,
-                            in channel: Channel? = nil,
+    
+    func createMediaMessage(type: MessageType,
+                            in channel: Channel,
+                            mediaHash: String,
+                            mediaUrl: URL,
                             isIncoming: Bool,
-                            date: Date = Date(),
-                            type: MessageType) throws -> Message {
-        let channel = try channel ?? self.getCurrentChannel()
+                            date: Date = Date()) throws -> Message {
+        guard type != .text else {
+            throw NSError()
+        }
 
-        let message = try Message(media: data,
-                                  type: type,
+        let message = try Message(body: nil,
+                                  type: .photo,
                                   isIncoming: isIncoming,
                                   date: date,
                                   channel: channel,
+                                  mediaHash: mediaHash,
+                                  mediaUrl: mediaUrl,
                                   managedContext: self.managedContext)
 
         try self.save(message)
@@ -74,4 +77,8 @@ extension CoreData {
     func storeMediaContent(fromFile url: URL, name: String) throws {
         try self.getMediaStorage().copy(from: url, name: name)
     }
+    
+//    func retrieveMediaContent(name: String) throws -> Data {
+//        return try self.getMediaStorage().retrieve(name: name)
+//    }
 }
