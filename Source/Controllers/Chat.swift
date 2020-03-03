@@ -144,9 +144,7 @@ class ChatViewController: BaseChatViewController {
     }
 
     @IBAction @objc func showChatDetails(_ sender: Any) {
-        if self.channel.type == .group {
-            self.performSegue(withIdentifier: "goToGroupInfo", sender: self)
-        }
+        self.performSegue(withIdentifier: "goToVoiceCall", sender: self)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
