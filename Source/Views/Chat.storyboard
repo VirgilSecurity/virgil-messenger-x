@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="XsE-hb-Si4">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="XsE-hb-Si4">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -61,6 +59,7 @@
                         <outlet property="avatarView" destination="0iQ-mF-2M9" id="D6N-2i-TTB"/>
                         <outlet property="letterLabel" destination="ilc-h9-8kd" id="964-aO-fAv"/>
                         <segue destination="ZQo-cO-mEW" kind="show" identifier="goToGroupInfo" id="ENG-Sa-gZu"/>
+                        <segue destination="RlX-Q0-WKN" kind="show" identifier="goToVoiceCall" id="Wfq-FI-qxe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7G7-HX-4MO" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -71,6 +70,16 @@
                 </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="398" y="-170"/>
+        </scene>
+        <!--VoiceCall-->
+        <scene sceneID="fOg-BR-Hpa">
+            <objects>
+                <viewControllerPlaceholder storyboardName="VoiceCall" id="RlX-Q0-WKN" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="yui-u7-BFv"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SaS-0u-FvE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1046" y="-279"/>
         </scene>
         <!--GroupInfo-->
         <scene sceneID="Zut-pC-nz1">
