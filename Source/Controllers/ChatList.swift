@@ -148,7 +148,8 @@ class ChatListViewController: ViewController {
                     if let error = error {
                         HUD.hide()
                         self.alert(error)
-                    } else {
+                    }
+                    else {
                         HUD.flash(.success)
                         self.reloadTableView()
                     }
