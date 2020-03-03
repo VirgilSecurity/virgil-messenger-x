@@ -178,6 +178,10 @@
 		97E7C5622403E73200D9CAAA /* FirebaseInstallations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5612403E73200D9CAAA /* FirebaseInstallations.framework */; };
 		97E7C5652403E77C00D9CAAA /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5592403E57100D9CAAA /* PromisesObjC.framework */; };
 		97FCD36F240E8ED0002FB905 /* VoiceCall.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97FCD36E240E8ED0002FB905 /* VoiceCall.storyboard */; };
+		F47DD29D240E9985006A0341 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47DD295240E9546006A0341 /* WebRTC.framework */; };
+		F47DD29E240E9985006A0341 /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F47DD295240E9546006A0341 /* WebRTC.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F47DD2A0240E99A9006A0341 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47DD299240E987F006A0341 /* Starscream.framework */; };
+		F47DD2A1240E99A9006A0341 /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F47DD299240E987F006A0341 /* Starscream.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -200,6 +204,18 @@
 				16D4B8B523F5BCA400D17B90 /* Notification Extension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F47DD29F240E9985006A0341 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F47DD29E240E9985006A0341 /* WebRTC.framework in Embed Frameworks */,
+				F47DD2A1240E99A9006A0341 /* Starscream.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -370,6 +386,8 @@
 		97E7C55D2403E6FF00D9CAAA /* GoogleDataTransport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleDataTransport.framework; path = Carthage/Build/iOS/GoogleDataTransport.framework; sourceTree = "<group>"; };
 		97E7C5612403E73200D9CAAA /* FirebaseInstallations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstallations.framework; path = Carthage/Build/iOS/FirebaseInstallations.framework; sourceTree = "<group>"; };
 		97FCD36E240E8ED0002FB905 /* VoiceCall.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = VoiceCall.storyboard; sourceTree = "<group>"; };
+		F47DD295240E9546006A0341 /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = Carthage/Build/iOS/WebRTC.framework; sourceTree = "<group>"; };
+		F47DD299240E987F006A0341 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -405,6 +423,7 @@
 				97E7C47E2403085B00D9CAAA /* GoogleUtilities.framework in Frameworks */,
 				97E7C4882403085B00D9CAAA /* FirebaseAnalytics.framework in Frameworks */,
 				97E7C5652403E77C00D9CAAA /* PromisesObjC.framework in Frameworks */,
+				F47DD2A0240E99A9006A0341 /* Starscream.framework in Frameworks */,
 				97E7C48A2403085B00D9CAAA /* FirebaseCoreDiagnostics.framework in Frameworks */,
 				97E7C4912403092F00D9CAAA /* Crashlytics.framework in Frameworks */,
 				16B4EC1723BE471F00E7E4DB /* CocoaLumberjackSwift.framework in Frameworks */,
@@ -423,6 +442,7 @@
 				1693678D2248FA0800EF9A42 /* VirgilSDK.framework in Frameworks */,
 				16B4EC1023BE466500E7E4DB /* KissXML.framework in Frameworks */,
 				16B4EC1A23BE471F00E7E4DB /* CocoaLumberjack.framework in Frameworks */,
+				F47DD29D240E9985006A0341 /* WebRTC.framework in Frameworks */,
 				16D70732214C061C00452A16 /* SystemConfiguration.framework in Frameworks */,
 				16B4EC2023BE47B700E7E4DB /* CocoaAsyncSocket.framework in Frameworks */,
 				16B4EC0923BE3BB300E7E4DB /* XMPPFrameworkSwift.framework in Frameworks */,
@@ -808,6 +828,8 @@
 		429228C71F96287A00DCECDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F47DD299240E987F006A0341 /* Starscream.framework */,
+				F47DD295240E9546006A0341 /* WebRTC.framework */,
 				97E7C5612403E73200D9CAAA /* FirebaseInstallations.framework */,
 				97E7C55D2403E6FF00D9CAAA /* GoogleDataTransport.framework */,
 				97E7C5592403E57100D9CAAA /* PromisesObjC.framework */,
@@ -897,6 +919,7 @@
 				16319BE72088E60200B09856 /* Remove unused architectures */,
 				16D4B8B623F5BCA400D17B90 /* Embed App Extensions */,
 				97E7C4952403093D00D9CAAA /* ShellScript */,
+				F47DD29F240E9985006A0341 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1212,7 +1235,7 @@
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger.Notification-Extension-Prod";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessengerVoice.Notification-Extension-Prod";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -1239,7 +1262,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger.Notification-Extension-Prod";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessengerVoice.Notification-Extension-Prod";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -1383,7 +1406,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessengerVoice;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1416,7 +1439,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessengerVoice;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

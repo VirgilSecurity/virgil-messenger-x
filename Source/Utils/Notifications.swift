@@ -64,13 +64,6 @@ extension Notifications {
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }
 
-//    public static func post(connectionState: Twilio.ConnectionState) {
-//        let notification = self.notification(.connectionStateUpdated)
-//        let userInfo = [NotificationKeys.newState.rawValue: connectionState]
-//
-//        self.center.post(name: notification, object: self, userInfo: userInfo)
-//    }
-
     public static func post(message: Message) {
         let notification = self.notification(.messageAddedToCurrentChannel)
         let userInfo = [NotificationKeys.message.rawValue: message]
