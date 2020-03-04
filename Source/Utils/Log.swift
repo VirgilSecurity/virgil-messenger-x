@@ -36,6 +36,18 @@ public enum Log {
         self.log("<ERROR>: \(closure())", functionName: functionName, file: file, line: line)
     }
 
+    /// Log with WARNING level
+    ///
+    /// - Parameters:
+    ///   - closure: fake closure to caprute loging details
+    ///   - functionName: functionName
+    ///   - file: file
+    ///   - line: line
+    public static func warning(_ closure: @autoclosure () -> String, functionName: String = #function,
+                             file: String = #file, line: UInt = #line) {
+        self.log("<WARNING>: \(closure())", functionName: functionName, file: file, line: line)
+    }
+    
     private static func log(_ closure: @autoclosure () -> String, functionName: String = #function,
                             file: String = #file, line: UInt = #line) {
         let str = "VIRGILMESSENGER_LOG: \(functionName) : \(closure())"

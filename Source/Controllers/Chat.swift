@@ -97,6 +97,16 @@ class ChatViewController: BaseChatViewController {
             }
         }
 
+        let acceptServiceMessage: Notifications.Block = { [weak self] notification in
+            guard let message: Message = Notifications.parse(notification, for: .message) else {
+                Log.error("Invalid notification")
+                return
+            }
+
+            self?.acceptServiceMessage(message: message)
+        }
+
+        Notifications.observe(for: .messageAddedToCurrentChannel, block: acceptServiceMessage)
         Notifications.observe(for: [.initializingSucceed, .updatingSucceed], block: updateTitle)
         Notifications.observe(for: .currentChannelDeleted, block: popToRoot)
     }
@@ -115,6 +125,14 @@ class ChatViewController: BaseChatViewController {
         }
         else {
             self.setupRegularTitle()
+        }
+    }
+
+    private func acceptServiceMessage(message: Message) {
+        if message.body == "Call" {
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "goToVoiceCall", sender: self)
+            }
         }
     }
 
@@ -151,6 +169,10 @@ class ChatViewController: BaseChatViewController {
         if let groupInfo = segue.destination as? GroupInfoViewController {
             groupInfo.channel = channel
             groupInfo.dataSource = self.dataSource
+        }
+
+        if let voiceCall = segue.destination as? VoiceCallViewController {
+            voiceCall.callChannel = CallChannel(dataSource: self.dataSource)
         }
 
         super.prepare(for: segue, sender: sender)

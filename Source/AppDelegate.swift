@@ -11,6 +11,7 @@ import UIKit
 import VirgilSDK
 import Firebase
 import CocoaLumberjackSwift
+import WebRTC
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         FirebaseApp.configure()
+        RTCInitializeSSL()
 
         // Defining start controller
         let startStoryboard = UIStoryboard(name: StartViewController.name, bundle: Bundle.main)
@@ -102,6 +104,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
+        RTCCleanupSSL()
         do {
             try CoreData.shared.saveContext()
         }
