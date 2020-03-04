@@ -15,7 +15,8 @@ class VoiceCallViewController: ViewController {
     @IBOutlet weak var remoteSDPLabel: UILabel!
     @IBOutlet weak var remoteCandidatesLabel: UILabel!
     @IBOutlet weak var webRtcStatusLabel: UILabel!
-
+    @IBOutlet weak var lastSdpDescriptionLabel: UILabel!
+    
     public var callChannel: CallChannel!
 
     @IBAction func sendOfferTapped(_ sender: Any) {
