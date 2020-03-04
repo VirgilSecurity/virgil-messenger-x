@@ -6,7 +6,6 @@
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import WebRTC
 
 public class CallChannel: NSObject {
@@ -85,8 +84,8 @@ public class CallChannel: NSObject {
     
     private func sendSignalingMessage(message: CallSignalingMessage, completion: @escaping (_ error: Error?) -> Void) {
         do {
-            let jsonData = try self.encoder.encode(message)
-            let jsonString = String(data: jsonData, encoding: .utf8)!
+            let jsonString = try message.exportAsJsonString()
+
             try self.dataSource.addTextMessage(jsonString)
             
             completion(nil)

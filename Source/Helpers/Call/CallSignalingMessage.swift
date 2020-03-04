@@ -6,7 +6,6 @@
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import WebRTC
 
 enum CallSignalingMessage {
@@ -15,14 +14,28 @@ enum CallSignalingMessage {
 }
 
 extension CallSignalingMessage: Codable {
+    enum CodingKeys: String, CodingKey {
+        case type
+        case payload
+    }
+    
+    enum DecodeError: Error {
+         case unknownType
+     }
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let type = try container.decode(String.self, forKey: .type)
+
         switch type {
         case String(describing: CallSessionDescription.self):
-            self = .sdp(try container.decode(CallSessionDescription.self, forKey: .payload))
+            let description = try container.decode(CallSessionDescription.self, forKey: .payload)
+
+            self = .sdp(description)
         case String(describing: CallIceCandidate.self):
-            self = .iceCandidate(try container.decode(CallIceCandidate.self, forKey: .payload))
+            let candidate = try container.decode(CallIceCandidate.self, forKey: .payload)
+            
+            self = .iceCandidate(candidate)
         default:
             throw DecodeError.unknownType
         }
@@ -30,21 +43,31 @@ extension CallSignalingMessage: Codable {
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+
         switch self {
         case .sdp(let sessionDescription):
             try container.encode(sessionDescription, forKey: .payload)
-            try container.encode(String(describing: CallSessionDescription.self), forKey: .type)
+            
+            let sessionDescriptionString = String(describing: CallSessionDescription.self)
+            try container.encode(sessionDescriptionString, forKey: .type)
         case .iceCandidate(let iceCandidate):
             try container.encode(iceCandidate, forKey: .payload)
-            try container.encode(String(describing: CallIceCandidate.self), forKey: .type)
+            
+            let candidateString = String(describing: CallIceCandidate.self)
+            try container.encode(candidateString, forKey: .type)
         }
     }
     
-    enum DecodeError: Error {
-        case unknownType
+    static func `import`(from jsonString: String) throws -> CallSignalingMessage {
+        let data = jsonString.data(using: .utf8)!
+        
+        return try JSONDecoder().decode(CallSignalingMessage.self, from: data)
     }
     
-    enum CodingKeys: String, CodingKey {
-        case type, payload
+    func exportAsJsonString() throws -> String {
+        let data = try JSONEncoder().encode(self)
+        
+        // FIXME: Change to other format
+        return String(data: data, encoding: .utf8)!
     }
 }
