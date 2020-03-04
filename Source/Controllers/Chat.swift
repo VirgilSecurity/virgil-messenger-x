@@ -298,7 +298,7 @@ extension ChatViewController {
             if self?.checkReachability() ?? false,
                 Configurator.isUpdated,
                 !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    try? self?.dataSource.addTextMessage(text)
+                    try? self?.dataSource.addTextMessage(text, type: .chat)
             }
         }
 

@@ -11,6 +11,7 @@ import ChattoAdditions
 import AVFoundation
 import VirgilCryptoRatchet
 import VirgilSDKRatchet
+import XMPPFrameworkSwift
 
 class MessageProcessor {
     static func process(_ message: EncryptedMessage, from author: String) throws -> Message? {

@@ -26,6 +26,7 @@ import Chatto
 import ChattoAdditions
 import AVFoundation
 import VirgilSDK
+import XMPPFrameworkSwift
 
 class DataSource: ChatDataSourceProtocol {
     public let channel: Channel
@@ -125,7 +126,7 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self, updateType: .pagination)
     }
 
-    func addTextMessage(_ text: String) throws {
+    func addTextMessage(_ text: String, type: XMPPMessage.MessageType) throws {
         self.nextMessageId += 1
         let id = self.nextMessageId
 
@@ -135,7 +136,7 @@ class DataSource: ChatDataSourceProtocol {
                                          status: .sending,
                                          date: Date())
 
-        try self.messageSender.send(uiModel: uiModel, coreChannel: self.channel)
+        try self.messageSender.send(uiModel: uiModel, coreChannel: self.channel, type: type)
 
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)

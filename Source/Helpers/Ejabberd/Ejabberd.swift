@@ -139,14 +139,14 @@ class Ejabberd: NSObject {
         try self.checkError()
     }
 
-    public func send(_ message: EncryptedMessage, to user: String) throws {
+    public func send(_ message: EncryptedMessage, to user: String, type: XMPPMessage.MessageType) throws {
         Log.debug("Ejabberd: Sending message")
 
         let user = try Ejabberd.setupJid(with: user)
 
         let body = try message.export()
 
-        let message = XMPPMessage(messageType: .chat, to: user)
+        let message = XMPPMessage(messageType: type, to: user)
         message.addBody(body)
 
         self.stream.send(message)

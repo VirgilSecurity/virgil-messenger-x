@@ -24,4 +24,12 @@ extension XMPPMessage {
 
         return author
     }
+    
+    func getType() throws -> String {
+        guard let type = self.type else {
+            throw NSError()
+        }
+
+        return type
+    }
 }

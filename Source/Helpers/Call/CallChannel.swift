@@ -7,6 +7,7 @@
 //
 
 import WebRTC
+import XMPPFrameworkSwift
 
 public class CallChannel: NSObject {
 
@@ -84,8 +85,17 @@ public class CallChannel: NSObject {
     private func sendSignalingMessage(message: CallSignalingMessage, completion: @escaping (_ error: Error?) -> Void) {
         do {
             let jsonString = try message.exportAsJsonString()
+            
+            let type: XMPPMessage.MessageType
+            
+            switch message {
+            case .sdp:
+                type = .voiceSdp
+            case .iceCandidate:
+                type = .voiceIce
+            }
 
-            try self.dataSource.addTextMessage(jsonString)
+            try self.dataSource.addTextMessage(jsonString, type: type)
             
             completion(nil)
         }
