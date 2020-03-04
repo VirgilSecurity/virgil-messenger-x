@@ -22,10 +22,11 @@ class VoiceCallViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.setupLastSdpDescriptionLabel()
+        self.updateLastSdpDescriptionLabel()
+        self.setupObservers()
     }
     
-    private func setupLastSdpDescriptionLabel() {
+    private func updateLastSdpDescriptionLabel() {
         let channel = self.callChannel.dataSource.channel
         
         if let lastVoiceSDP = channel.lastVoiceSDP {
@@ -34,6 +35,16 @@ class VoiceCallViewController: ViewController {
             
             self.lastSdpDescriptionLabel.text = jsonString
         }
+    }
+    
+    private func setupObservers() {
+        let processMessage: Notifications.Block = { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.updateLastSdpDescriptionLabel()
+            }
+        }
+
+        Notifications.observe(for: .messageAddedToCurrentChannel, block: processMessage)
     }
 
     @IBAction func sendOfferTapped(_ sender: Any) {
