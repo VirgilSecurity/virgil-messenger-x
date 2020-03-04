@@ -9,11 +9,10 @@
 import WebRTC
 
 public class CallChannel: NSObject {
+
     private static let factory: RTCPeerConnectionFactory = RTCPeerConnectionFactory()
 
     private let audioSession =  RTCAudioSession.sharedInstance()
-    private let encoder = JSONEncoder()
-    private let decoder = JSONDecoder()
     
     private let peerConnection: RTCPeerConnection
     private let dataSource: DataSource
