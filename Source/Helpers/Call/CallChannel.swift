@@ -15,7 +15,8 @@ public class CallChannel: NSObject {
     private let audioSession =  RTCAudioSession.sharedInstance()
     
     private let peerConnection: RTCPeerConnection
-    private let dataSource: DataSource
+    
+    let dataSource: DataSource
     
     required init(dataSource: DataSource) {
         self.dataSource = dataSource
@@ -71,6 +72,7 @@ public class CallChannel: NSObject {
         do {
             let sessionDescription = CallSessionDescription(from: sdp)
             
+            // FIXME: Should be called from main thread
             try self.dataSource.addVoiceCallMessage(sessionDescription)
             
             completion(nil)

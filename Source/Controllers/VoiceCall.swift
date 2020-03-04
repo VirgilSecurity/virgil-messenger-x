@@ -18,6 +18,23 @@ class VoiceCallViewController: ViewController {
     @IBOutlet weak var lastSdpDescriptionLabel: UILabel!
     
     public var callChannel: CallChannel!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        self.setupLastSdpDescriptionLabel()
+    }
+    
+    private func setupLastSdpDescriptionLabel() {
+        let channel = self.callChannel.dataSource.channel
+        
+        if let lastVoiceSDP = channel.lastVoiceSDP {
+            let jsonData = try! JSONEncoder().encode(lastVoiceSDP)
+            let jsonString = String(data: jsonData, encoding: .utf8)!
+            
+            self.lastSdpDescriptionLabel.text = jsonString
+        }
+    }
 
     @IBAction func sendOfferTapped(_ sender: Any) {
         Log.debug("Send Offer tapped")
