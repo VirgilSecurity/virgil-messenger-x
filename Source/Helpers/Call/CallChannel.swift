@@ -72,7 +72,6 @@ public class CallChannel: NSObject {
         do {
             let sessionDescription = CallSessionDescription(from: sdp)
             
-            // FIXME: Should be called from main thread
             try self.dataSource.addVoiceCallMessage(sessionDescription)
             
             completion(nil)
