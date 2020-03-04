@@ -20,29 +20,29 @@ class MessageProcessor {
         do {
             decrypted = try Virgil.ethree.authDecrypt(text: message.ciphertext, from: channel.getCard())
         } catch {
-            try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
             // FIXME
+            try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
             return nil
         }
         
         let content = try MessageContent.import(from: decrypted)
         
-        let textMessage: String
+        let coreMessage: Message?
         
         switch content {
         case .text(let textContent):
-            textMessage = textContent.body
+            coreMessage = try CoreData.shared.createTextMessage(textContent.body, in: channel, isIncoming: true, date: message.date)
         case .sdp(let sessionDescription):
             channel.set(lastVoiceSDP: sessionDescription)
             
-            textMessage = decrypted
+            coreMessage = try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: true, date: message.date)
         case .iceCandidate(let iceCandidate):
             channel.add(lastIceCandidate: iceCandidate)
             
-            textMessage = decrypted
+            coreMessage = nil
         }
-
-        return try CoreData.shared.createTextMessage(textMessage, in: channel, isIncoming: true, date: message.date)
+        
+        return coreMessage
     }
     
     private static func setupChannel(name: String) throws -> Channel {
