@@ -142,7 +142,10 @@ class DataSource: ChatDataSourceProtocol {
         try self.messageSender.sendVoiceCallSDPMessage(uiModel: uiModel, channel: self.channel)
 
         self.slidingWindow.insertItem(uiModel, position: .bottom)
-        self.delegate?.chatDataSourceDidUpdate(self)
+        
+        DispatchQueue.main.async {
+            self.delegate?.chatDataSourceDidUpdate(self)
+        }
     }
 
     func addTextMessage(_ text: String) throws {
