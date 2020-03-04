@@ -26,6 +26,7 @@ import Chatto
 import ChattoAdditions
 import AVFoundation
 import VirgilSDK
+import WebRTC
 
 class DataSource: ChatDataSourceProtocol {
     public let channel: Channel
@@ -123,6 +124,26 @@ class DataSource: ChatDataSourceProtocol {
         self.slidingWindow.loadPrevious()
         self.slidingWindow.adjustWindow(focusPosition: 0, maxWindowSize: self.preferredMaxWindowSize)
         self.delegate?.chatDataSourceDidUpdate(self, updateType: .pagination)
+    }
+    
+    func addVoiceCallMessage(_ sdpDescription: CallSessionDescription) throws {
+        self.nextMessageId += 1
+        let id = self.nextMessageId
+        
+        let messageContent = MessageContent.sdp(sdpDescription)
+        let plaintext = try messageContent.exportAsJsonString()
+
+        // FIXME: Add separate UI model
+        let uiModel = UITextMessageModel(uid: id,
+                                         text: plaintext,
+                                         isIncoming: false,
+                                         status: .sending,
+                                         date: Date())
+
+        try self.messageSender.send(uiModel: uiModel, coreChannel: self.channel)
+
+        self.slidingWindow.insertItem(uiModel, position: .bottom)
+        self.delegate?.chatDataSourceDidUpdate(self)
     }
 
     func addTextMessage(_ text: String) throws {

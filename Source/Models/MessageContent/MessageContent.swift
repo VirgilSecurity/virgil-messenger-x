@@ -1,19 +1,20 @@
 //
-//  SignalingMessage.swift
+//  MessageContent.swift
 //  VirgilMessenger
 //
-//  Created by Sergey Seroshtan on 04.03.2020.
+//  Created by Yevhen Pyvovarov on 3/4/20.
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
-import WebRTC
+import Foundation
 
-enum CallSignalingMessage {
+enum MessageContent {
+    case text(TextContent)
     case sdp(CallSessionDescription)
     case iceCandidate(CallIceCandidate)
 }
 
-extension CallSignalingMessage: Codable {
+extension MessageContent: Codable {
     enum CodingKeys: String, CodingKey {
         case type
         case payload
@@ -36,6 +37,10 @@ extension CallSignalingMessage: Codable {
             let candidate = try container.decode(CallIceCandidate.self, forKey: .payload)
             
             self = .iceCandidate(candidate)
+        case String(describing: TextContent.self):
+            let textContent = try container.decode(TextContent.self, forKey: .payload)
+            
+            self = .text(textContent)
         default:
             throw DecodeError.unknownType
         }
@@ -46,22 +51,27 @@ extension CallSignalingMessage: Codable {
 
         switch self {
         case .sdp(let sessionDescription):
-            try container.encode(sessionDescription, forKey: .payload)
-            
             let sessionDescriptionString = String(describing: CallSessionDescription.self)
+
             try container.encode(sessionDescriptionString, forKey: .type)
+            try container.encode(sessionDescription, forKey: .payload)
         case .iceCandidate(let iceCandidate):
-            try container.encode(iceCandidate, forKey: .payload)
-            
             let candidateString = String(describing: CallIceCandidate.self)
+            
             try container.encode(candidateString, forKey: .type)
+            try container.encode(iceCandidate, forKey: .payload)
+        case .text(let textContent):
+            let candidateString = String(describing: TextContent.self)
+            
+            try container.encode(candidateString, forKey: .type)
+            try container.encode(textContent, forKey: .payload)
         }
     }
     
-    static func `import`(from jsonString: String) throws -> CallSignalingMessage {
+    static func `import`(from jsonString: String) throws -> MessageContent {
         let data = jsonString.data(using: .utf8)!
         
-        return try JSONDecoder().decode(CallSignalingMessage.self, from: data)
+        return try JSONDecoder().decode(MessageContent.self, from: data)
     }
     
     func exportAsJsonString() throws -> String {

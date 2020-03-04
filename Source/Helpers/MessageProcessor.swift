@@ -34,7 +34,20 @@ class MessageProcessor {
             // FIXME
             return nil
         }
+        
+        let content = try MessageContent.import(from: decrypted)
+        
+        let textMessage: String
+        
+        switch content {
+        case .text(let textContent):
+            textMessage = textContent.body
+        case .sdp:
+            textMessage = decrypted
+        case .iceCandidate:
+            textMessage = decrypted
+        }
 
-        return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: true, date: message.date)
+        return try CoreData.shared.createTextMessage(textMessage, in: channel, isIncoming: true, date: message.date)
     }
 }
