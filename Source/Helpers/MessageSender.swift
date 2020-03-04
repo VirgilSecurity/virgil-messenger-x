@@ -1,7 +1,6 @@
 import Chatto
 import ChattoAdditions
 import VirgilSDK
-import XMPPFrameworkSwift
 
 public protocol UIMessageModelProtocol: MessageModelProtocol {
     var status: MessageStatus { get set }
@@ -12,7 +11,7 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public func send(uiModel: UITextMessageModel, coreChannel: Channel, type: XMPPMessage.MessageType) throws {
+    public func send(uiModel: UITextMessageModel, coreChannel: Channel) throws {
         self.queue.async {
             do {
                 let plaintext = uiModel.body
@@ -30,7 +29,7 @@ public class MessageSender {
 
                 let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
 
-                try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name, type: type)
+                try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name)
 
                 _ = try CoreData.shared.createTextMessage(plaintext,
                                                           in: coreChannel,

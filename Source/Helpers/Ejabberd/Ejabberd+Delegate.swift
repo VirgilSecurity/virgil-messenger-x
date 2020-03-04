@@ -94,7 +94,6 @@ extension Ejabberd {
         do {
             let author = try message.getAuthor()
             let body = try message.getBody()
-            let type = try message.getType()
             let encryptedMessage = try EncryptedMessage.import(body)
 
             guard let message = try MessageProcessor.process(encryptedMessage, from: author),
