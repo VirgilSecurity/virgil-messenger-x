@@ -14,17 +14,7 @@ import VirgilSDKRatchet
 
 class MessageProcessor {
     static func process(_ message: EncryptedMessage, from author: String) throws -> Message? {
-        let channel: Channel
-
-        if let coreChannel = CoreData.shared.getChannel(withName: author) {
-            channel = coreChannel
-        }
-        else {
-            let card = try Virgil.ethree.findUser(with: author).startSync().get()
-
-            channel = try CoreData.shared.getChannel(withName: author)
-                ?? CoreData.shared.createSingleChannel(initiator: author, card: card)
-        }
+        let channel = try self.setupChannel(name: author)
 
         let decrypted: String
         do {
@@ -42,12 +32,32 @@ class MessageProcessor {
         switch content {
         case .text(let textContent):
             textMessage = textContent.body
-        case .sdp:
+        case .sdp(let sessionDescription):
+            channel.set(lastVoiceSDP: sessionDescription)
+            
             textMessage = decrypted
-        case .iceCandidate:
+        case .iceCandidate(let iceCandidate):
+            channel.add(lastIceCandidate: iceCandidate)
+            
             textMessage = decrypted
         }
 
         return try CoreData.shared.createTextMessage(textMessage, in: channel, isIncoming: true, date: message.date)
+    }
+    
+    private static func setupChannel(name: String) throws -> Channel {
+        let channel: Channel
+
+        if let coreChannel = CoreData.shared.getChannel(withName: name) {
+            channel = coreChannel
+        }
+        else {
+            let card = try Virgil.ethree.findUser(with: name).startSync().get()
+
+            channel = try CoreData.shared.getChannel(withName: name)
+                ?? CoreData.shared.createSingleChannel(initiator: name, card: card)
+        }
+        
+        return channel
     }
 }
