@@ -6,51 +6,48 @@
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import WebRTC
 
 public class CallChannel: NSObject {
 
     private static let factory: RTCPeerConnectionFactory = RTCPeerConnectionFactory()
 
-    private let peerConnection: RTCPeerConnection
     private let audioSession =  RTCAudioSession.sharedInstance()
-    private let dataSource: DataSource
-    private let encoder = JSONEncoder()
-    private let decoder = JSONDecoder()
     
-    @available(*, unavailable)
-    override init() {
-        fatalError("CallChannel:init is unavailable")
-    }
+    private let peerConnection: RTCPeerConnection
+    private let dataSource: DataSource
     
     required init(dataSource: DataSource) {
         self.dataSource = dataSource
         self.peerConnection = Self.createPeerConnection()
+        
         super.init()
+        
         self.peerConnection.delegate = self
     }
 
     public func offer(completion: @escaping (_ error: Error?) -> Void) {
         let constrains = RTCMediaConstraints(mandatoryConstraints:[kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue],
                                              optionalConstraints: nil)
-        self.peerConnection.offer(for: constrains) { (sdp, error) in
+        
+        self.peerConnection.offer(for: constrains) { sdp, error in
             guard let sdp = sdp else {
                 completion(error)
                 return
             }
             
-            self.peerConnection.setLocalDescription(sdp, completionHandler: { (error) in
+            self.peerConnection.setLocalDescription(sdp) { error in
                 if error == nil {
                     self.sendSignalingMessage(sdp, completion: completion)
                 }
                 
                 completion(error)
-            })
+            }
         }
     }
 
     private static func createPeerConnection() -> RTCPeerConnection {
+        // TODO: Move to Constants
         let iceServers = ["stun:stun.l.google.com:19302",
                           "stun:stun1.l.google.com:19302",
                           "stun:stun2.l.google.com:19302",
@@ -58,31 +55,38 @@ public class CallChannel: NSObject {
                           "stun:stun4.l.google.com:19302"]
         
         let config = RTCConfiguration()
-        config.iceServers = [RTCIceServer(urlStrings: iceServers)]
+        
+        let rtcIceServer = RTCIceServer(urlStrings: iceServers)
+        config.iceServers = [rtcIceServer]
         config.sdpSemantics = .unifiedPlan
         config.continualGatheringPolicy = .gatherContinually
         
         let constraints = RTCMediaConstraints(mandatoryConstraints: nil,
-                                              optionalConstraints: ["DtlsSrtpKeyAgreement":kRTCMediaConstraintsValueTrue])
+                                              optionalConstraints: ["DtlsSrtpKeyAgreement": kRTCMediaConstraintsValueTrue])
         
-        return Self.factory.peerConnection(with: config, constraints: constraints, delegate: nil)
+        return self.factory.peerConnection(with: config, constraints: constraints, delegate: nil)
     }
     
     private func sendSignalingMessage(_ sdp: RTCSessionDescription, completion: @escaping (_ error: Error?) -> Void) {
-        let message = CallSignalingMessage.sdp(CallSessionDescription(from: sdp))
+        let sessionDescription = CallSessionDescription(from: sdp)
+        let message = CallSignalingMessage.sdp(sessionDescription)
+
         self.sendSignalingMessage(message: message, completion: completion)
     }
     
     private func sendSignalingMessage(candidate rtcIceCandidate: RTCIceCandidate, completion: @escaping (_ error: Error?) -> Void) {
-        let message = CallSignalingMessage.iceCandidate(CallIceCandidate(from: rtcIceCandidate))
+        let callIceCandidate = CallIceCandidate(from: rtcIceCandidate)
+        let message = CallSignalingMessage.iceCandidate(callIceCandidate)
+        
         self.sendSignalingMessage(message: message, completion: completion)
     }
     
     private func sendSignalingMessage(message: CallSignalingMessage, completion: @escaping (_ error: Error?) -> Void) {
         do {
-            let jsonData = try self.encoder.encode(message)
-            let jsonString = String(data: jsonData, encoding: .utf8)!
+            let jsonString = try message.exportAsJsonString()
+
             try self.dataSource.addTextMessage(jsonString)
+            
             completion(nil)
         }
         catch {
@@ -91,14 +95,12 @@ public class CallChannel: NSObject {
         }
     }
 
-    private func configureAudioSession() {
+    private func configureAudioSession() throws {
         self.audioSession.lockForConfiguration()
-        do {
-            try self.audioSession.setCategory(AVAudioSession.Category.playAndRecord.rawValue)
-            try self.audioSession.setMode(AVAudioSession.Mode.voiceChat.rawValue)
-        } catch let error {
-            Log.error("Error changeing AVAudioSession category: \(error)")
-        }
+        
+        try self.audioSession.setCategory(AVAudioSession.Category.playAndRecord.rawValue)
+        try self.audioSession.setMode(AVAudioSession.Mode.voiceChat.rawValue)
+        
         self.audioSession.unlockForConfiguration()
     }
 }
@@ -131,7 +133,8 @@ extension CallChannel: RTCPeerConnectionDelegate {
     
     public func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
         Log.debug("peerConnection new local candidate: \(candidate)")
-        self.sendSignalingMessage(candidate: candidate) { (error) in
+
+        self.sendSignalingMessage(candidate: candidate) { error in
             if let error = error {
                 Log.error("\(error)")
             }

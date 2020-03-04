@@ -6,7 +6,6 @@
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import WebRTC
 
 /// This struct is a swift wrapper over `RTCIceCandidate` for easy encode and decode
