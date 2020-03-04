@@ -26,7 +26,6 @@ import Chatto
 import ChattoAdditions
 import AVFoundation
 import VirgilSDK
-import WebRTC
 
 class DataSource: ChatDataSourceProtocol {
     public let channel: Channel

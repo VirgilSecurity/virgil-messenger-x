@@ -1,7 +1,6 @@
 import Chatto
 import ChattoAdditions
 import VirgilSDK
-import WebRTC
 
 public protocol UIMessageModelProtocol: MessageModelProtocol {
     var status: MessageStatus { get set }
