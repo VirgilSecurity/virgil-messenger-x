@@ -74,10 +74,6 @@ extension CoreData {
         try self.getMediaStorage().store(data, name: name)
     }
     
-    func storeMediaContent(fromFile url: URL, name: String) throws {
-        try self.getMediaStorage().copy(from: url, name: name)
-    }
-    
 //    func retrieveMediaContent(name: String) throws -> Data {
 //        return try self.getMediaStorage().retrieve(name: name)
 //    }

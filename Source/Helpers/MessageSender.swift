@@ -27,7 +27,7 @@ public class MessageSender {
                 try CoreData.shared.storeMediaContent(data, name: hashString)
                 
                 // encrypt image
-                let encryptedData = try Virgil.ethree.authEncrypt(data: data)
+                let encryptedData = try Virgil.ethree.authEncrypt(data: data, for: coreChannel.getCard())
                 
                 // request ejabberd slot
                 let slot = try Ejabberd.shared.requestMediaSlot(name: hashString, size: encryptedData.count)

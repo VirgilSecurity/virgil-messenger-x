@@ -45,7 +45,19 @@ class MessageProcessor {
             
             // Download and decrypt photo from server
             try Virgil.shared.client.downloadFile(from: mediaURL) { tempFileUrl in
-                try CoreData.shared.storeMediaContent(fromFile: tempFileUrl, name: mediaHash)
+                let path = try CoreData.shared.getMediaStorage().getPath(name: mediaHash)
+                
+                guard let inputStream = InputStream(url: tempFileUrl) else {
+                    throw NSError()
+                }
+
+                guard let outputStream = OutputStream(toFileAtPath: path, append: false) else {
+                    throw NSError()
+                }
+                
+                let data = try Data(contentsOf: tempFileUrl)
+                
+                try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: channel.getCard())
             }
             
             return try CoreData.shared.createMediaMessage(type: messageContent.type,

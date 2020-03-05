@@ -111,7 +111,7 @@ extension Ejabberd {
             Notifications.post(message: message)
         }
         catch {
-            Log.error("\(error)")
+            Log.error("\(error.localizedDescription)")
         }
     }
 }
