@@ -93,6 +93,11 @@ extension Ejabberd {
 
         do {
             let author = try message.getAuthor()
+            
+            guard author != Virgil.ethree.identity else {
+                return
+            }
+            
             let body = try message.getBody()
             let encryptedMessage = try EncryptedMessage.import(body)
 
