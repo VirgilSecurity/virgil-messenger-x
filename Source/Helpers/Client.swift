@@ -166,12 +166,18 @@ extension Client {
     public func upload(data: Data, with request: URLRequest) throws {
         let request = try Request(urlRequest: request)
         
-        _ = try self.connection.upload(data: data, with: request)
+        let response = try self.connection.upload(data: data, with: request).startSync().get()
+        
+        try self.validateResponse(response)
     }
     
     public func downloadFile(from url: URL, saveFileCallback: @escaping (URL) throws -> Void) throws {
         let request = Request(url: url, method: .get)
         
-        _ = try self.connection.downloadFile(with: request, saveFileCallback: saveFileCallback)
+        let response = try self.connection.downloadFile(with: request, saveFileCallback: saveFileCallback)
+            .startSync()
+            .get()
+        
+        try self.validateResponse(response)
     }
 }

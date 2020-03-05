@@ -106,9 +106,7 @@ extension Message {
                                                status: status,
                                                date: self.date)
         case .photo:
-            // FIXME: Add error loging
-            let path1 = try! CoreData.shared.getMediaStorage().getPath(name: self.getMediaHash())
-            Log.debug("AAA: \(path1))")
+            // FIXME: Add error logging
             guard let path = try? CoreData.shared.getMediaStorage().getPath(name: self.getMediaHash()),
                 let image = UIImage(contentsOfFile: path) else {
                     return corruptedMessage()
