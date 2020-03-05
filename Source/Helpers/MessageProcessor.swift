@@ -14,22 +14,13 @@ import VirgilSDKRatchet
 
 class MessageProcessor {
     static func process(_ message: EncryptedMessage, from author: String) throws -> Message? {
-        let channel: Channel
-
-        if let coreChannel = CoreData.shared.getChannel(withName: author) {
-            channel = coreChannel
-        }
-        else {
-            let card = try Virgil.ethree.findUser(with: author).startSync().get()
-
-            channel = try CoreData.shared.getChannel(withName: author)
-                ?? CoreData.shared.createSingleChannel(initiator: author, card: card)
-        }
+        let channel = try self.setupChannel(name: author)
 
         let decrypted: String
         do {
             decrypted = try Virgil.ethree.authDecrypt(text: message.ciphertext, from: channel.getCard())
-        } catch {
+        }
+        catch {
             try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
             // FIXME
             return nil
@@ -63,5 +54,23 @@ class MessageProcessor {
                                                           mediaUrl: mediaURL,
                                                           isIncoming: true)
         }
+    }
+    
+    private static func setupChannel(name: String) throws -> Channel {
+        let channel: Channel
+
+        if let coreChannel = CoreData.shared.getChannel(withName: name) {
+            channel = coreChannel
+        }
+        else {
+            let card = try Virgil.ethree.findUser(with: name)
+                .startSync()
+                .get()
+
+            channel = try CoreData.shared.getChannel(withName: name)
+                ?? CoreData.shared.createSingleChannel(initiator: name, card: card)
+        }
+        
+        return channel
     }
 }
