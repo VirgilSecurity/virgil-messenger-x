@@ -15,7 +15,8 @@ public class CallChannel: NSObject {
     private let audioSession =  RTCAudioSession.sharedInstance()
     
     private let peerConnection: RTCPeerConnection
-    private let dataSource: DataSource
+    
+    let dataSource: DataSource
     
     required init(dataSource: DataSource) {
         self.dataSource = dataSource
@@ -68,20 +69,32 @@ public class CallChannel: NSObject {
     }
     
     private func sendSignalingMessage(_ sdp: RTCSessionDescription, completion: @escaping (_ error: Error?) -> Void) {
-        let sessionDescription = CallSessionDescription(from: sdp)
-        let message = CallSignalingMessage.sdp(sessionDescription)
-
-        self.sendSignalingMessage(message: message, completion: completion)
+        do {
+            let sessionDescription = CallSessionDescription(from: sdp)
+            
+            try self.dataSource.addVoiceCallMessage(sessionDescription)
+            
+            completion(nil)
+        }
+        catch {
+            Log.error("\(error)")
+            completion(error)
+        }
     }
     
     private func sendSignalingMessage(candidate rtcIceCandidate: RTCIceCandidate, completion: @escaping (_ error: Error?) -> Void) {
-        let callIceCandidate = CallIceCandidate(from: rtcIceCandidate)
-        let message = CallSignalingMessage.iceCandidate(callIceCandidate)
-        
-        self.sendSignalingMessage(message: message, completion: completion)
+        do {
+            let callIceCandidate = CallIceCandidate(from: rtcIceCandidate)
+
+            try self.dataSource.messageSender.sendVoiceCallIceMessage(callIceCandidate, channel: self.dataSource.channel)
+        }
+        catch {
+            Log.error("\(error)")
+            completion(error)
+        }
     }
     
-    private func sendSignalingMessage(message: CallSignalingMessage, completion: @escaping (_ error: Error?) -> Void) {
+    private func sendSignalingMessage(message: MessageContent, completion: @escaping (_ error: Error?) -> Void) {
         do {
             let jsonString = try message.exportAsJsonString()
 

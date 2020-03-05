@@ -124,6 +124,29 @@ class DataSource: ChatDataSourceProtocol {
         self.slidingWindow.adjustWindow(focusPosition: 0, maxWindowSize: self.preferredMaxWindowSize)
         self.delegate?.chatDataSourceDidUpdate(self, updateType: .pagination)
     }
+    
+    func addVoiceCallMessage(_ sdpDescription: CallSessionDescription) throws {
+        self.nextMessageId += 1
+        let id = self.nextMessageId
+        
+        let messageContent = MessageContent.sdp(sdpDescription)
+        let plaintext = try messageContent.exportAsJsonString()
+
+        // FIXME: Add separate UI model
+        let uiModel = UITextMessageModel(uid: id,
+                                         text: plaintext,
+                                         isIncoming: false,
+                                         status: .sending,
+                                         date: Date())
+
+        try self.messageSender.sendVoiceCallSDPMessage(uiModel: uiModel, channel: self.channel)
+
+        self.slidingWindow.insertItem(uiModel, position: .bottom)
+        
+        DispatchQueue.main.async {
+            self.delegate?.chatDataSourceDidUpdate(self)
+        }
+    }
 
     func addTextMessage(_ text: String) throws {
         self.nextMessageId += 1

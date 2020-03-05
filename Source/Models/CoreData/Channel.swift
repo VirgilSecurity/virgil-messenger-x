@@ -27,6 +27,9 @@ public class Channel: NSManagedObject {
     @NSManaged private var rawCards: [String]
 
     private(set) var group: Group?
+    
+    private(set) var lastVoiceSDP: CallSessionDescription? = nil
+    private(set) var lastIceCandidates: [CallIceCandidate] = []
 
     public static let MessagesKey = "orderedMessages"
     public static let MembersKey = "orderedMembers"
@@ -146,5 +149,15 @@ public class Channel: NSManagedObject {
 
     public func set(group: Group) {
         self.group = group
+    }
+    
+    func set(lastVoiceSDP: CallSessionDescription) {
+        self.lastVoiceSDP = lastVoiceSDP
+        
+        self.lastIceCandidates = []
+    }
+    
+    func add(lastIceCandidate: CallIceCandidate) {
+        self.lastIceCandidates.append(lastIceCandidate)
     }
 }

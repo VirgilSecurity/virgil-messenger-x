@@ -15,8 +15,37 @@ class VoiceCallViewController: ViewController {
     @IBOutlet weak var remoteSDPLabel: UILabel!
     @IBOutlet weak var remoteCandidatesLabel: UILabel!
     @IBOutlet weak var webRtcStatusLabel: UILabel!
-
+    @IBOutlet weak var lastSdpDescriptionLabel: UILabel!
+    
     public var callChannel: CallChannel!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        self.updateLastSdpDescriptionLabel()
+        self.setupObservers()
+    }
+    
+    private func updateLastSdpDescriptionLabel() {
+        let channel = self.callChannel.dataSource.channel
+        
+        if let lastVoiceSDP = channel.lastVoiceSDP {
+            let jsonData = try! JSONEncoder().encode(lastVoiceSDP)
+            let jsonString = String(data: jsonData, encoding: .utf8)!
+            
+            self.lastSdpDescriptionLabel.text = jsonString
+        }
+    }
+    
+    private func setupObservers() {
+        let processMessage: Notifications.Block = { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.updateLastSdpDescriptionLabel()
+            }
+        }
+
+        Notifications.observe(for: .messageAddedToCurrentChannel, block: processMessage)
+    }
 
     @IBAction func sendOfferTapped(_ sender: Any) {
         Log.debug("Send Offer tapped")

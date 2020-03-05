@@ -20,7 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        // Firebase configuration for Crashlytics
         FirebaseApp.configure()
+        
+        // WebRTC
         RTCInitializeSSL()
 
         // Defining start controller
