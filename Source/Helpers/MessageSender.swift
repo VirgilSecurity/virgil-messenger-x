@@ -26,13 +26,13 @@ public class MessageSender {
                 // TODO: Check if exists
                 try CoreData.shared.storeMediaContent(data, name: hashString)
                 
-                // request ejabberd slot
-                let slot = try Ejabberd.shared.requestMediaSlot(name: hashString, size: data.count)
-                    .startSync()
-                    .get()
-                
                 // encrypt image
                 let encryptedData = try Virgil.ethree.authEncrypt(data: data)
+                
+                // request ejabberd slot
+                let slot = try Ejabberd.shared.requestMediaSlot(name: hashString, size: encryptedData.count)
+                    .startSync()
+                    .get()
                 
                 // upload image
                 try Virgil.shared.client.upload(data: encryptedData, with: slot.putRequest)
