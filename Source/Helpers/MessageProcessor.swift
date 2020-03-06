@@ -55,8 +55,6 @@ class MessageProcessor {
                     throw NSError()
                 }
                 
-                let data = try Data(contentsOf: tempFileUrl)
-                
                 try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: channel.getCard())
             }
             
