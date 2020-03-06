@@ -14,24 +14,17 @@ public class MessageSender {
     public func send(uiModel: UITextMessageModel, coreChannel: Channel) throws {
         self.queue.async {
             do {
-                let plaintext = uiModel.body
+                let textContent = TextContent(body: uiModel.body)
+                let messageContent = MessageContent.text(textContent)
+                let exported = try messageContent.exportAsJsonString()
 
-                let ciphertext: String
-
-                switch coreChannel.type {
-                case .group:
-                    let group = try coreChannel.getGroup()
-
-                    ciphertext = try group.encrypt(text: plaintext)
-                case .single:
-                    ciphertext = try Virgil.ethree.authEncrypt(text: plaintext, for: coreChannel.getCard())
-                }
+                let ciphertext = try Virgil.ethree.authEncrypt(text: exported, for: coreChannel.getCard())
 
                 let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
 
                 try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name)
 
-                _ = try CoreData.shared.createTextMessage(plaintext,
+                _ = try CoreData.shared.createTextMessage(uiModel.body,
                                                           in: coreChannel,
                                                           isIncoming: uiModel.isIncoming,
                                                           date: uiModel.date)

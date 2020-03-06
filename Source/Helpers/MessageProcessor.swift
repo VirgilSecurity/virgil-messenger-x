@@ -29,12 +29,18 @@ class MessageProcessor {
         let decrypted: String
         do {
             decrypted = try Virgil.ethree.authDecrypt(text: message.ciphertext, from: channel.getCard())
-        } catch {
+        }
+        catch {
             try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
             // FIXME
             return nil
         }
-
-        return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: true, date: message.date)
+        
+        let messageContent = try MessageContent.import(from: decrypted)
+        
+        switch messageContent {
+        case .text(let content):
+            return try CoreData.shared.createTextMessage(content.body, in: channel, isIncoming: true, date: message.date)
+        }
     }
 }

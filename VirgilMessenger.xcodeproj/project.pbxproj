@@ -162,6 +162,8 @@
 		80AC600E240023EA00F6A73C /* UIColor+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AC600D240023EA00F6A73C /* UIColor+Constants.swift */; };
 		80AC601024008EAB00F6A73C /* Array+IndexPathSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AC600F24008EA900F6A73C /* Array+IndexPathSubscript.swift */; };
 		9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
+		975F486D2412A68B00232361 /* MessageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975F486C2412A68B00232361 /* MessageContent.swift */; };
+		975F48702412A7DD00232361 /* TextContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975F486F2412A7DD00232361 /* TextContent.swift */; };
 		97E7C47E2403085B00D9CAAA /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4742403085A00D9CAAA /* GoogleUtilities.framework */; };
 		97E7C4802403085B00D9CAAA /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4752403085B00D9CAAA /* nanopb.framework */; };
 		97E7C4842403085B00D9CAAA /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4772403085B00D9CAAA /* FirebaseCore.framework */; };
@@ -348,6 +350,8 @@
 		80AC600B2400225100F6A73C /* DetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailTableViewCell.swift; sourceTree = "<group>"; };
 		80AC600D240023EA00F6A73C /* UIColor+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Constants.swift"; sourceTree = "<group>"; };
 		80AC600F24008EA900F6A73C /* Array+IndexPathSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+IndexPathSubscript.swift"; sourceTree = "<group>"; };
+		975F486C2412A68B00232361 /* MessageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContent.swift; sourceTree = "<group>"; };
+		975F486F2412A7DD00232361 /* TextContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextContent.swift; sourceTree = "<group>"; };
 		97E7C4732403085A00D9CAAA /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstanceID.framework; path = Carthage/Build/iOS/FirebaseInstanceID.framework; sourceTree = "<group>"; };
 		97E7C4742403085A00D9CAAA /* GoogleUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleUtilities.framework; path = Carthage/Build/iOS/GoogleUtilities.framework; sourceTree = "<group>"; };
 		97E7C4752403085B00D9CAAA /* nanopb.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = nanopb.framework; path = Carthage/Build/iOS/nanopb.framework; sourceTree = "<group>"; };
@@ -647,6 +651,7 @@
 		16D8B0E5223A6DA700D7FA67 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				975F486E2412A7B600232361 /* MessageContent */,
 				16B4EC2B23BF7A8300E7E4DB /* Ejabberd */,
 				16B6751622689FD000B6D4D0 /* CoreData */,
 				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
@@ -858,6 +863,15 @@
 				4280C0D71F97341A00075B3A /* UITextMessageHandler.swift */,
 			);
 			path = "Text Message";
+			sourceTree = "<group>";
+		};
+		975F486E2412A7B600232361 /* MessageContent */ = {
+			isa = PBXGroup;
+			children = (
+				975F486C2412A68B00232361 /* MessageContent.swift */,
+				975F486F2412A7DD00232361 /* TextContent.swift */,
+			);
+			path = MessageContent;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1090,9 +1104,11 @@
 				166D3E5E1FB495F90032BAAD /* CoreData.swift in Sources */,
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
 				16013C7B20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift in Sources */,
+				975F486D2412A68B00232361 /* MessageContent.swift in Sources */,
 				164E173020AAEECD00AB1AAD /* UIAudioMessageModel.swift in Sources */,
 				16FA91051FFC55A400FE98C7 /* UIViewController+Reachability.swift in Sources */,
 				169367942249181100EF9A42 /* LocalKeyManager.swift in Sources */,
+				975F48702412A7DD00232361 /* TextContent.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				16FC679B2260D7860044CC70 /* CreateGroup.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,

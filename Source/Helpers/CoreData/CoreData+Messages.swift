@@ -18,23 +18,23 @@ extension CoreData {
         try self.saveContext()
     }
 
-    func createChangeMembersMessage(_ text: String,
-                                    in channel: Channel? = nil,
-                                    isIncoming: Bool,
-                                    date: Date = Date()) throws -> Message {
-        let channel = try channel ?? self.getCurrentChannel()
-
-        let message = try Message(body: text,
-                                  type: .changeMembers,
-                                  isIncoming: isIncoming,
-                                  date: date,
-                                  channel: channel,
-                                  managedContext: self.managedContext)
-
-        try self.save(message)
-
-        return message
-    }
+//    func createChangeMembersMessage(_ text: String,
+//                                    in channel: Channel? = nil,
+//                                    isIncoming: Bool,
+//                                    date: Date = Date()) throws -> Message {
+//        let channel = try channel ?? self.getCurrentChannel()
+//
+//        let message = try Message(body: text,
+//                                  type: .changeMembers,
+//                                  isIncoming: isIncoming,
+//                                  date: date,
+//                                  channel: channel,
+//                                  managedContext: self.managedContext)
+//
+//        try self.save(message)
+//
+//        return message
+//    }
 
     func createEncryptedMessage(in channel: Channel, isIncoming: Bool, date: Date) throws {
         let message = try Message(body: "Message encrypted",
@@ -66,22 +66,22 @@ extension CoreData {
         return message
     }
 
-    func createMediaMessage(_ data: Data,
-                            in channel: Channel? = nil,
-                            isIncoming: Bool,
-                            date: Date = Date(),
-                            type: MessageType) throws -> Message {
-        let channel = try channel ?? self.getCurrentChannel()
-
-        let message = try Message(media: data,
-                                  type: type,
-                                  isIncoming: isIncoming,
-                                  date: date,
-                                  channel: channel,
-                                  managedContext: self.managedContext)
-
-        try self.save(message)
-
-        return message
-    }
+//    func createMediaMessage(_ data: Data,
+//                            in channel: Channel? = nil,
+//                            isIncoming: Bool,
+//                            date: Date = Date(),
+//                            type: MessageType) throws -> Message {
+//        let channel = try channel ?? self.getCurrentChannel()
+//
+//        let message = try Message(media: data,
+//                                  type: type,
+//                                  isIncoming: isIncoming,
+//                                  date: date,
+//                                  channel: channel,
+//                                  managedContext: self.managedContext)
+//
+//        try self.save(message)
+//
+//        return message
+//    }
 }

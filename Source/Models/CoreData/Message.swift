@@ -76,7 +76,7 @@ extension Message {
         let resultMessage: UIMessageModelProtocol
 
         switch self.type {
-        case .text, .changeMembers:
+        case .text:
             guard let body = self.body else {
                 return corruptedMessage()
             }
@@ -86,28 +86,6 @@ extension Message {
                                                isIncoming: self.isIncoming,
                                                status: status,
                                                date: date)
-        case .photo:
-            guard let media = self.media, let image = UIImage(data: media) else {
-                return corruptedMessage()
-            }
-
-            resultMessage = UIPhotoMessageModel(uid: id,
-                                                image: image,
-                                                size: image.size,
-                                                isIncoming: self.isIncoming,
-                                                status: status,
-                                                date: date)
-        case .audio:
-            guard let media = self.media, let duration = try? AVAudioPlayer(data: media).duration else {
-                return corruptedMessage()
-            }
-
-            resultMessage = UIAudioMessageModel(uid: id,
-                                                audio: media,
-                                                duration: duration,
-                                                isIncoming: self.isIncoming,
-                                                status: status,
-                                                date: date)
         }
 
         return resultMessage
