@@ -25,6 +25,7 @@ public class Notifications {
         case connectionStateUpdated = "Notifications.ConnectionStateUpdated"
         case errored = "Notifications.Errored"
         case messageAddedToCurrentChannel = "Notifications.MessageAddedToCurrentChannel"
+        case callReceived = "Notifications.CallReceived"
     }
 
     public enum NotificationKeys: String {
@@ -67,6 +68,13 @@ extension Notifications {
     public static func post(message: Message) {
         let notification = self.notification(.messageAddedToCurrentChannel)
         let userInfo = [NotificationKeys.message.rawValue: message]
+
+        self.center.post(name: notification, object: self, userInfo: userInfo)
+    }
+
+    public static func post(call: Call) {
+        let notification = self.notification(.callReceived)
+        let userInfo = [NotificationKeys.message.rawValue: call]
 
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }

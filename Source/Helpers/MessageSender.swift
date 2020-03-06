@@ -18,22 +18,11 @@ public class MessageSender {
         try self.encryptThenSend(plaintext: plaintext, to: channel, with: Date())
     }
     
-    func sendVoiceCallSDPMessage(uiModel: UITextMessageModel, channel: Channel) throws {
-        self.queue.async {
-            do {
-                try self.encryptThenSend(plaintext: uiModel.body, to: channel, with: uiModel.date)
-
-                _ = try CoreData.shared.createTextMessage(uiModel.body,
-                                                          in: channel,
-                                                          isIncoming: uiModel.isIncoming,
-                                                          date: uiModel.date)
-
-                self.updateMessage(uiModel, status: .success)
-            }
-            catch {
-                self.updateMessage(uiModel, status: .failed)
-            }
-        }
+    func sendVoiceCallSessionDescription(_ sessionDescription: CallSessionDescription, channel: Channel) throws {
+        let messageContent = MessageContent.sdp(sessionDescription)
+        let plaintext = try messageContent.exportAsJsonString()
+        
+        try self.encryptThenSend(plaintext: plaintext, to: channel, with: Date())
     }
 
     public func send(uiModel: UITextMessageModel, coreChannel: Channel) throws {

@@ -9,7 +9,7 @@
 import WebRTC
 
 /// This struct is a swift wrapper over `RTCIceCandidate` for easy encode and decode
-struct CallIceCandidate: Codable {
+public struct CallIceCandidate: Codable {
     let sdp: String
     let sdpMLineIndex: Int32
     let sdpMid: String?

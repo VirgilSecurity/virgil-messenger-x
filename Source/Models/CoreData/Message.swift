@@ -20,7 +20,7 @@ public class Message: NSManagedObject {
     @NSManaged public var media: Data?
     @NSManaged public var channel: Channel
     @NSManaged public var isHidden: Bool
-
+    
     @NSManaged private var rawType: String
 
     private static let EntityName = "Message"
@@ -86,6 +86,19 @@ extension Message {
                                                isIncoming: self.isIncoming,
                                                status: status,
                                                date: date)
+        case .sdp:
+            resultMessage = UITextMessageModel(uid: id,
+                                               text: "Call...",
+                                               isIncoming: self.isIncoming,
+                                               status: status,
+                                               date: date)
+        case .iceCandidate:
+            resultMessage = UITextMessageModel(uid: id,
+                                               text: "Ice Candaidate ...",
+                                               isIncoming: self.isIncoming,
+                                               status: status,
+                                               date: date)
+            
         case .photo:
             guard let media = self.media, let image = UIImage(data: media) else {
                 return corruptedMessage()

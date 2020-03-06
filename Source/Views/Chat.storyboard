@@ -59,7 +59,7 @@
                         <outlet property="avatarView" destination="0iQ-mF-2M9" id="D6N-2i-TTB"/>
                         <outlet property="letterLabel" destination="ilc-h9-8kd" id="964-aO-fAv"/>
                         <segue destination="ZQo-cO-mEW" kind="show" identifier="goToGroupInfo" id="ENG-Sa-gZu"/>
-                        <segue destination="RlX-Q0-WKN" kind="show" identifier="goToVoiceCall" id="Wfq-FI-qxe"/>
+                        <segue destination="RlX-Q0-WKN" kind="presentation" identifier="goToVoiceCall" modalPresentationStyle="fullScreen" id="Wfq-FI-qxe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7G7-HX-4MO" userLabel="First Responder" sceneMemberID="firstResponder"/>

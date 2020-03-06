@@ -13,4 +13,6 @@ public enum MessageType: String {
     case photo
     case audio
     case changeMembers
+    case sdp
+    case iceCandidate
 }

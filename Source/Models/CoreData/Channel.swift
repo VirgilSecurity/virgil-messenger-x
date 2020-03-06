@@ -29,7 +29,6 @@ public class Channel: NSManagedObject {
     private(set) var group: Group?
     
     private(set) var lastVoiceSDP: CallSessionDescription? = nil
-    private(set) var lastIceCandidates: [CallIceCandidate] = []
 
     public static let MessagesKey = "orderedMessages"
     public static let MembersKey = "orderedMembers"
@@ -87,6 +86,10 @@ public class Channel: NSManagedObject {
         switch message.type {
         case .text, .changeMembers:
             return message.body ?? ""
+        case .sdp:
+            return "Call..."
+        case .iceCandidate:
+            return "Ice Ccandidate..."
         case .photo:
             return "Photo"
         case .audio:
@@ -153,11 +156,5 @@ public class Channel: NSManagedObject {
     
     func set(lastVoiceSDP: CallSessionDescription) {
         self.lastVoiceSDP = lastVoiceSDP
-        
-        self.lastIceCandidates = []
-    }
-    
-    func add(lastIceCandidate: CallIceCandidate) {
-        self.lastIceCandidates.append(lastIceCandidate)
     }
 }

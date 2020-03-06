@@ -9,7 +9,7 @@
 import WebRTC
 
 /// This enum is a swift wrapper over `RTCSdpType` for easy encode and decode
-enum SdpType: String, Codable {
+public enum SdpType: String, Codable {
     case offer
     case prAnswer
     case answer
@@ -24,7 +24,7 @@ enum SdpType: String, Codable {
 }
 
 /// This struct is a swift wrapper over `RTCSessionDescription` for easy encode and decode
-struct CallSessionDescription: Codable {
+public struct CallSessionDescription: Codable {
     let sdp: String
     let type: SdpType
     

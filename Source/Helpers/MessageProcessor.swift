@@ -12,8 +12,18 @@ import AVFoundation
 import VirgilCryptoRatchet
 import VirgilSDKRatchet
 
+public enum AnyMessage {
+    case message(Message)
+    case call(Call)
+}
+
+public enum Call {
+    case sessionDescription(CallSessionDescription)
+    case iceCandiadte(CallIceCandidate)
+}
+
 class MessageProcessor {
-    static func process(_ message: EncryptedMessage, from author: String) throws -> Message? {
+    static func process(_ message: EncryptedMessage, from author: String) throws -> AnyMessage? {
         let channel = try self.setupChannel(name: author)
 
         let decrypted: String
@@ -27,22 +37,22 @@ class MessageProcessor {
         
         let content = try MessageContent.import(from: decrypted)
         
-        let coreMessage: Message?
+        var resultMessage: AnyMessage?
         
         switch content {
         case .text(let textContent):
-            coreMessage = try CoreData.shared.createTextMessage(textContent.body, in: channel, isIncoming: true, date: message.date)
-        case .sdp(let sessionDescription):
-            channel.set(lastVoiceSDP: sessionDescription)
+            if let coreMessage = try? CoreData.shared.createTextMessage(textContent.body, in: channel, isIncoming: true, date: message.date) {
+                resultMessage = AnyMessage.message(coreMessage)
+            }
             
-            coreMessage = try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: true, date: message.date)
-        case .iceCandidate(let iceCandidate):
-            channel.add(lastIceCandidate: iceCandidate)
+        case .sdp(let callSessionDescription):
+            resultMessage = AnyMessage.call(Call.sessionDescription(callSessionDescription))
             
-            coreMessage = nil
+        case .iceCandidate(let callIceCandidate):
+            resultMessage = AnyMessage.call(Call.iceCandiadte(callIceCandidate))
         }
         
-        return coreMessage
+        return resultMessage
     }
     
     private static func setupChannel(name: String) throws -> Channel {

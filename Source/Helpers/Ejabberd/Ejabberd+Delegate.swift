@@ -96,14 +96,19 @@ extension Ejabberd {
             let body = try message.getBody()
             let encryptedMessage = try EncryptedMessage.import(body)
 
-            guard let message = try MessageProcessor.process(encryptedMessage, from: author),
+            guard let anyMessage = try MessageProcessor.process(encryptedMessage, from: author),
                 let currentChannel = CoreData.shared.currentChannel,
                 currentChannel.name == author else {
                     // TODO: Check if needed
                     return Notifications.post(.chatListUpdated)
             }
 
-            Notifications.post(message: message)
+            switch anyMessage {
+            case .message(let message):
+                Notifications.post(message: message)
+            case .call(let call):
+                Notifications.post(call: call)
+            }
         }
         catch {
             Log.error("\(error)")
