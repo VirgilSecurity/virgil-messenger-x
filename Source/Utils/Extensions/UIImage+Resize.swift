@@ -33,8 +33,18 @@ extension UIImage {
         }
     }
     
-    func resized(toWidth width: CGFloat, isOpaque: Bool = true) -> UIImage? {
-        let height = CGFloat(ceil(width / self.size.width * self.size.height))
+    func resized(to maxDimention: CGFloat, isOpaque: Bool = true) -> UIImage? {
+        let width: CGFloat
+        let height: CGFloat
+        
+        if self.size.height < self.size.width {
+            width = maxDimention
+            height = CGFloat(ceil((width * self.size.height) / self.size.width))
+        }
+        else {
+            height = maxDimention
+            width = CGFloat(ceil((height * self.size.width) / self.size.height))
+        }
         
         let canvas = CGSize(width: width, height: height)
         
