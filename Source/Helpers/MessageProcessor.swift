@@ -17,8 +17,8 @@ class MessageProcessor {
         let channel = try self.setupCoreChannel(name: author)
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
-                
-        let messageContent = try MessageContent.import(from: decrypted)
+        
+        let messageContent = try self.migrationSafeContentImport(from: decrypted)
         
         switch messageContent {
         case .text(let content):
@@ -29,6 +29,20 @@ class MessageProcessor {
             
             self.postNotification(about: message)
         }
+    }
+    
+    private static func migrationSafeContentImport(from string: String) throws -> MessageContent {
+        let messageContent: MessageContent
+        
+        do {
+            messageContent = try MessageContent.import(from: string)
+        }
+        catch {
+            let textContent = TextContent(body: string)
+            messageContent = MessageContent.text(textContent)
+        }
+        
+        return messageContent
     }
     
     private static func setupCoreChannel(name: String) throws -> Channel {
