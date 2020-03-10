@@ -81,9 +81,11 @@ public class Channel: NSManagedObject {
             return ""
         }
 
-        switch message.type {
-        case .text:
-            return message.body ?? ""
+        if let textMessage = message as? TextMessage {
+            return textMessage.body
+        }
+        else {
+            return ""
         }
     }
 
