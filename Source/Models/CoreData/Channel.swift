@@ -23,14 +23,11 @@ public class Channel: NSManagedObject {
     @NSManaged private var rawType: String
     @NSManaged private var numColorPair: Int32
     @NSManaged private var orderedMessages: NSOrderedSet?
-    @NSManaged private var orderedServiceMessages: NSOrderedSet?
     @NSManaged private var rawCards: [String]
 
     private(set) var group: Group?
 
     public static let MessagesKey = "orderedMessages"
-    public static let MembersKey = "orderedMembers"
-    public static let ServiceMessagesKey = "orderedServiceMessages"
 
     private static let EntityName = "Channel"
 
