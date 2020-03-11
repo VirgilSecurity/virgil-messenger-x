@@ -93,22 +93,15 @@ extension Ejabberd {
 
         do {
             let author = try message.getAuthor()
+            
+            guard author != Virgil.ethree.identity else {
+                return
+            }
+            
             let body = try message.getBody()
             let encryptedMessage = try EncryptedMessage.import(body)
 
-            guard let anyMessage = try MessageProcessor.process(encryptedMessage, from: author),
-                let currentChannel = CoreData.shared.currentChannel,
-                currentChannel.name == author else {
-                    // TODO: Check if needed
-                    return Notifications.post(.chatListUpdated)
-            }
-
-            switch anyMessage {
-            case .message(let message):
-                Notifications.post(message: message)
-            case .call(let call):
-                Notifications.post(call: call)
-            }
+            try MessageProcessor.process(encryptedMessage, from: author)
         }
         catch {
             Log.error("\(error)")

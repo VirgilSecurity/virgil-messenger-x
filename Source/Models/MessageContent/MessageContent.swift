@@ -2,7 +2,7 @@
 //  MessageContent.swift
 //  VirgilMessenger
 //
-//  Created by Yevhen Pyvovarov on 3/4/20.
+//  Created by Yevhen Pyvovarov on 3/6/20.
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
@@ -19,30 +19,23 @@ extension MessageContent: Codable {
         case type
         case payload
     }
-    
-    enum DecodeError: Error {
-         case unknownType
-     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let type = try container.decode(String.self, forKey: .type)
+        let type = try container.decode(MessageType.self, forKey: .type)
 
         switch type {
-        case String(describing: CallSessionDescription.self):
-            let description = try container.decode(CallSessionDescription.self, forKey: .payload)
-
-            self = .sdp(description)
-        case String(describing: CallIceCandidate.self):
-            let candidate = try container.decode(CallIceCandidate.self, forKey: .payload)
-            
-            self = .iceCandidate(candidate)
-        case String(describing: TextContent.self):
+        case .text:
             let textContent = try container.decode(TextContent.self, forKey: .payload)
-            
             self = .text(textContent)
-        default:
-            throw DecodeError.unknownType
+            
+        case .sdp:
+            let sdpContent = try container.decode(CallSessionDescription.self, forKey: .payload)
+            self = .sdp(sdpContent)
+
+        case .iceCandidate:
+            let iceCandidateContent = try container.decode(CallIceCandidate.self, forKey: .payload)
+            self = .iceCandidate(iceCandidateContent)
         }
     }
     
@@ -50,21 +43,20 @@ extension MessageContent: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
-        case .sdp(let sessionDescription):
-            let sessionDescriptionString = String(describing: CallSessionDescription.self)
-
-            try container.encode(sessionDescriptionString, forKey: .type)
-            try container.encode(sessionDescription, forKey: .payload)
-        case .iceCandidate(let iceCandidate):
-            let candidateString = String(describing: CallIceCandidate.self)
-            
-            try container.encode(candidateString, forKey: .type)
-            try container.encode(iceCandidate, forKey: .payload)
         case .text(let textContent):
-            let candidateString = String(describing: TextContent.self)
-            
-            try container.encode(candidateString, forKey: .type)
+            let type = MessageType.text
+            try container.encode(type, forKey: .type)
             try container.encode(textContent, forKey: .payload)
+
+        case .sdp(let sdpContent):
+            let type = MessageType.sdp
+            try container.encode(type, forKey: .type)
+            try container.encode(sdpContent, forKey: .payload)
+
+        case .iceCandiadte(let iceCandidateContent):
+            let type = MessageType.iceCandidate
+            try container.encode(type, forKey: .type)
+            try container.encode(iceCandidateContent, forKey: .payload)
         }
     }
     

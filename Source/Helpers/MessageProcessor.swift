@@ -6,56 +6,48 @@
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
 //
 
-import Chatto
-import ChattoAdditions
-import AVFoundation
-import VirgilCryptoRatchet
-import VirgilSDKRatchet
-
-public enum AnyMessage {
-    case message(Message)
-    case call(Call)
-}
-
-public enum Call {
-    case sessionDescription(CallSessionDescription)
-    case iceCandiadte(CallIceCandidate)
-}
+import Foundation
 
 class MessageProcessor {
-    static func process(_ message: EncryptedMessage, from author: String) throws -> AnyMessage? {
-        let channel = try self.setupChannel(name: author)
+    static func process(_ encryptedMessage: EncryptedMessage, from author: String) throws {
+        let channel = try self.setupCoreChannel(name: author)
 
-        let decrypted: String
-        do {
-            decrypted = try Virgil.ethree.authDecrypt(text: message.ciphertext, from: channel.getCard())
-        } catch {
-            // FIXME
-            try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
-            return nil
-        }
+        let decrypted = try self.decrypt(encryptedMessage, from: channel)
         
-        let content = try MessageContent.import(from: decrypted)
+        let messageContent = try self.migrationSafeContentImport(from: decrypted,
+                                                                 version: encryptedMessage.version)
         
-        var resultMessage: AnyMessage?
-        
-        switch content {
-        case .text(let textContent):
-            if let coreMessage = try? CoreData.shared.createTextMessage(textContent.body, in: channel, isIncoming: true, date: message.date) {
-                resultMessage = AnyMessage.message(coreMessage)
-            }
-            
-        case .sdp(let callSessionDescription):
-            resultMessage = AnyMessage.call(Call.sessionDescription(callSessionDescription))
-            
-        case .iceCandidate(let callIceCandidate):
-            resultMessage = AnyMessage.call(Call.iceCandiadte(callIceCandidate))
-        }
-        
-        return resultMessage
+        try self.process(messageContent, channel: channel, date: encryptedMessage.date)
     }
     
-    private static func setupChannel(name: String) throws -> Channel {
+    private static func process(_ messageContent: MessageContent, channel: Channel, date: Date) throws {
+        switch messageContent {
+        case .text(let content):
+            let message = try CoreData.shared.createTextMessage(content.body,
+                                                                in: channel,
+                                                                isIncoming: true,
+                                                                date: date)
+            
+            self.postNotification(about: message)
+        }
+    }
+    
+    private static func migrationSafeContentImport(from string: String,
+                                                   version: EncryptedMessageVersion) throws -> MessageContent {
+        let messageContent: MessageContent
+        
+        switch version {
+        case .v1:
+            let textContent = TextContent(body: string)
+            messageContent = MessageContent.text(textContent)
+        case .v2:
+            messageContent = try MessageContent.import(from: string)
+        }
+        
+        return messageContent
+    }
+    
+    private static func setupCoreChannel(name: String) throws -> Channel {
         let channel: Channel
 
         if let coreChannel = CoreData.shared.getChannel(withName: name) {
@@ -69,5 +61,29 @@ class MessageProcessor {
         }
         
         return channel
+    }
+    
+    private static func decrypt(_ message: EncryptedMessage, from channel: Channel) throws -> String {
+        let decrypted: String
+        
+        do {
+            decrypted = try Virgil.ethree.authDecrypt(text: message.ciphertext, from: channel.getCard())
+        }
+        catch {
+            // TODO: check if needed
+            try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
+            
+            throw error
+        }
+        
+        return decrypted
+    }
+    
+    private static func postNotification(about message: Message) {
+        guard CoreData.shared.currentChannel != nil else {
+            return Notifications.post(.chatListUpdated)
+        }
+
+        Notifications.post(message: message)
     }
 }

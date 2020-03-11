@@ -2,7 +2,7 @@
 //  TextContent.swift
 //  VirgilMessenger
 //
-//  Created by Yevhen Pyvovarov on 3/4/20.
+//  Created by Yevhen Pyvovarov on 3/6/20.
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
