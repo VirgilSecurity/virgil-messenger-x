@@ -2,6 +2,11 @@ import Chatto
 import ChattoAdditions
 import VirgilSDK
 
+// FIXME: Move to proper file
+public protocol UIMessageModelExportable {
+    func exportAsUIModel(withId id: Int, status: MessageStatus) -> UIMessageModelProtocol
+}
+
 public protocol UIMessageModelProtocol: MessageModelProtocol {
     var status: MessageStatus { get set }
 }
@@ -15,19 +20,20 @@ public class MessageSender {
         self.queue.async {
             do {
                 // FIXME: Compression quality
-                guard let data = uiModel.image.jpegData(compressionQuality: 0.0) else {
-                    throw NSError()
+                guard let imageData = uiModel.image.jpegData(compressionQuality: 0.0),
+                    let thumbnail = uiModel.image.resized(to: 10)?.jpegData(compressionQuality: 1.0) else {
+                        throw NSError()
                 }
         
-                let hash = Virgil.shared.crypto.computeHash(for: data)
-                let hashString = hash.hexEncodedString()
+                let hash = Virgil.shared.crypto.computeHash(for: imageData)
+                let hashString = hash.subdata(in: 0..<32).hexEncodedString()
             
                 // Save it to File Storage
                 // TODO: Check if exists
-                try CoreData.shared.storeMediaContent(data, name: hashString)
+                try CoreData.shared.storeMediaContent(imageData, name: hashString)
                 
                 // encrypt image
-                let encryptedData = try Virgil.ethree.authEncrypt(data: data, for: coreChannel.getCard())
+                let encryptedData = try Virgil.ethree.authEncrypt(data: imageData, for: coreChannel.getCard())
                 
                 // request ejabberd slot
                 let slot = try Ejabberd.shared.requestMediaSlot(name: hashString, size: encryptedData.count)
@@ -38,19 +44,19 @@ public class MessageSender {
                 try Virgil.shared.client.upload(data: encryptedData, with: slot.putRequest)
                 
                 // encrypt message to ejabberd user
-                let messageContent = MessageContent(type: .photo, mediaHash: hashString, mediaUrl: slot.getURL)
-                let exported = try messageContent.export()
-                let ciphertext = try Virgil.ethree.authEncrypt(text: exported, for: coreChannel.getCard())
+                let photoContent = PhotoContent(identifier: hashString, thumbnail: thumbnail, url: slot.getURL)
+                let content = MessageContent.photo(photoContent)
+                let exportedContent = try content.exportAsJsonString()
+                
+                let ciphertext = try Virgil.ethree.authEncrypt(text: exportedContent, for: coreChannel.getCard())
                 let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
                 
                 // send it
                 try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name)
                 
                 // Save local Core Data entity
-                _ = try CoreData.shared.createMediaMessage(type: .photo,
+                _ = try CoreData.shared.createMediaMessage(with: photoContent,
                                                            in: coreChannel,
-                                                           mediaHash: hashString,
-                                                           mediaUrl: slot.getURL,
                                                            isIncoming: false)
                 
                 self.updateMessage(uiModel, status: .success)
@@ -65,25 +71,17 @@ public class MessageSender {
     public func send(uiModel: UITextMessageModel, coreChannel: Channel) throws {
         self.queue.async {
             do {
-                let messageContent = MessageContent(body: uiModel.body)
-                let exportedContent = try messageContent.export()
+                let textContent = TextContent(body: uiModel.body)
+                let messageContent = MessageContent.text(textContent)
+                let exported = try messageContent.exportAsJsonString()
 
-                let ciphertext: String
+                let ciphertext = try Virgil.ethree.authEncrypt(text: exported, for: coreChannel.getCard())
 
-                switch coreChannel.type {
-                case .group:
-                    let group = try coreChannel.getGroup()
-
-                    ciphertext = try group.encrypt(text: exportedContent)
-                case .single:
-                    ciphertext = try Virgil.ethree.authEncrypt(text: exportedContent, for: coreChannel.getCard())
-                }
-                
                 let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
 
                 try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name)
 
-                _ = try CoreData.shared.createTextMessage(uiModel.body,
+                _ = try CoreData.shared.createTextMessage(with: textContent,
                                                           in: coreChannel,
                                                           isIncoming: uiModel.isIncoming,
                                                           date: uiModel.date)

@@ -19,51 +19,43 @@ extension CoreData {
     }
 
     func createEncryptedMessage(in channel: Channel, isIncoming: Bool, date: Date) throws {
-        let message = try Message(body: "Message encrypted",
-                                  type: .text,
-                                  isIncoming: isIncoming,
-                                  date: date,
-                                  channel: channel,
-                                  isHidden: true,
-                                  managedContext: self.managedContext)
+        let message = try TextMessage(body: "Message encrypted",
+                                      isIncoming: isIncoming,
+                                      date: date,
+                                      channel: channel,
+                                      isHidden: true,
+                                      managedContext: self.managedContext)
 
         try self.save(message)
     }
 
-    func createTextMessage(_ body: String,
+    func createTextMessage(with content: TextContent,
                            in channel: Channel,
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Message {
-        let message = try Message(body: body,
-                                  type: .text,
-                                  isIncoming: isIncoming,
-                                  date: date,
-                                  channel: channel,
-                                  managedContext: self.managedContext)
+
+        let message = try TextMessage(body: content.body,
+                                      isIncoming: isIncoming,
+                                      date: date,
+                                      channel: channel,
+                                      managedContext: self.managedContext)
 
         try self.save(message)
 
         return message
     }
     
-    func createMediaMessage(type: MessageType,
+    func createMediaMessage(with content: PhotoContent,
                             in channel: Channel,
-                            mediaHash: String,
-                            mediaUrl: URL,
                             isIncoming: Bool,
                             date: Date = Date()) throws -> Message {
-        guard type != .text else {
-            throw NSError()
-        }
-
-        let message = try Message(body: nil,
-                                  type: .photo,
-                                  isIncoming: isIncoming,
-                                  date: date,
-                                  channel: channel,
-                                  mediaHash: mediaHash,
-                                  mediaUrl: mediaUrl,
-                                  managedContext: self.managedContext)
+        let message = try PhotoMessage(identifier: content.identifier,
+                                       thumbnail: content.thumbnail,
+                                       url: content.url,
+                                       isIncoming: isIncoming,
+                                       date: date,
+                                       channel: channel,
+                                       managedContext: self.managedContext)
 
         try self.save(message)
 
@@ -73,8 +65,4 @@ extension CoreData {
     func storeMediaContent(_ data: Data, name: String) throws {
         try self.getMediaStorage().store(data, name: name)
     }
-    
-//    func retrieveMediaContent(name: String) throws -> Data {
-//        return try self.getMediaStorage().retrieve(name: name)
-//    }
 }

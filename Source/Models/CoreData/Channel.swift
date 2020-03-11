@@ -23,14 +23,11 @@ public class Channel: NSManagedObject {
     @NSManaged private var rawType: String
     @NSManaged private var numColorPair: Int32
     @NSManaged private var orderedMessages: NSOrderedSet?
-    @NSManaged private var orderedServiceMessages: NSOrderedSet?
     @NSManaged private var rawCards: [String]
 
     private(set) var group: Group?
 
     public static let MessagesKey = "orderedMessages"
-    public static let MembersKey = "orderedMembers"
-    public static let ServiceMessagesKey = "orderedServiceMessages"
 
     private static let EntityName = "Channel"
 
@@ -81,13 +78,14 @@ public class Channel: NSManagedObject {
             return ""
         }
 
-        switch message.type {
-        case .text:
-            return message.body ?? ""
-        case .photo:
+        if let textMessage = message as? TextMessage {
+            return textMessage.body
+        }
+        else if message is PhotoMessage {
             return "Photo"
-        case .audio:
-            return "Voice Message"
+        }
+        else {
+            return ""
         }
     }
 

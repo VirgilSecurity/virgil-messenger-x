@@ -101,14 +101,7 @@ extension Ejabberd {
             let body = try message.getBody()
             let encryptedMessage = try EncryptedMessage.import(body)
 
-            guard let message = try MessageProcessor.process(encryptedMessage, from: author),
-                let currentChannel = CoreData.shared.currentChannel,
-                currentChannel.name == author else {
-                    // TODO: Check if needed
-                    return Notifications.post(.chatListUpdated)
-            }
-
-            Notifications.post(message: message)
+            try MessageProcessor.process(encryptedMessage, from: author)
         }
         catch {
             Log.error("\(error.localizedDescription)")
