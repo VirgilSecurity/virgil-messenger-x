@@ -6,11 +6,7 @@
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
 //
 
-import Chatto
-import ChattoAdditions
-import AVFoundation
-import VirgilCryptoRatchet
-import VirgilSDKRatchet
+import Foundation
 
 class MessageProcessor {
     static func process(_ encryptedMessage: EncryptedMessage, from author: String) throws {
