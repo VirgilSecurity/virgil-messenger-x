@@ -162,6 +162,10 @@
 		80AC600E240023EA00F6A73C /* UIColor+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AC600D240023EA00F6A73C /* UIColor+Constants.swift */; };
 		80AC601024008EAB00F6A73C /* Array+IndexPathSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AC600F24008EA900F6A73C /* Array+IndexPathSubscript.swift */; };
 		9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
+		974CC5492417DDD800FC7554 /* TextMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974CC5472417DDD800FC7554 /* TextMessage.swift */; };
+		975F486D2412A68B00232361 /* MessageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975F486C2412A68B00232361 /* MessageContent.swift */; };
+		975F48702412A7DD00232361 /* TextContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975F486F2412A7DD00232361 /* TextContent.swift */; };
+		97CE26F52418231300903116 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
 		97E7C47E2403085B00D9CAAA /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4742403085A00D9CAAA /* GoogleUtilities.framework */; };
 		97E7C4802403085B00D9CAAA /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4752403085B00D9CAAA /* nanopb.framework */; };
 		97E7C4842403085B00D9CAAA /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4772403085B00D9CAAA /* FirebaseCore.framework */; };
@@ -348,6 +352,11 @@
 		80AC600B2400225100F6A73C /* DetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailTableViewCell.swift; sourceTree = "<group>"; };
 		80AC600D240023EA00F6A73C /* UIColor+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Constants.swift"; sourceTree = "<group>"; };
 		80AC600F24008EA900F6A73C /* Array+IndexPathSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+IndexPathSubscript.swift"; sourceTree = "<group>"; };
+		974CC5462417DD1400FC7554 /* VirgilMessenger-v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VirgilMessenger-v2.xcdatamodel"; sourceTree = "<group>"; };
+		974CC5472417DDD800FC7554 /* TextMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextMessage.swift; sourceTree = "<group>"; };
+		975F486C2412A68B00232361 /* MessageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContent.swift; sourceTree = "<group>"; };
+		975F486F2412A7DD00232361 /* TextContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextContent.swift; sourceTree = "<group>"; };
+		97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = "Mapping-v1-to-v2.xcmappingmodel"; sourceTree = "<group>"; };
 		97E7C4732403085A00D9CAAA /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstanceID.framework; path = Carthage/Build/iOS/FirebaseInstanceID.framework; sourceTree = "<group>"; };
 		97E7C4742403085A00D9CAAA /* GoogleUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleUtilities.framework; path = Carthage/Build/iOS/GoogleUtilities.framework; sourceTree = "<group>"; };
 		97E7C4752403085B00D9CAAA /* nanopb.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = nanopb.framework; path = Carthage/Build/iOS/nanopb.framework; sourceTree = "<group>"; };
@@ -575,6 +584,7 @@
 				16FCF27C1FE46756000348BC /* Account.swift */,
 				16FCF27A1FE46756000348BC /* Channel.swift */,
 				16C0D45622660A5D001F23ED /* Message.swift */,
+				974CC5472417DDD800FC7554 /* TextMessage.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -647,6 +657,7 @@
 		16D8B0E5223A6DA700D7FA67 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				975F486E2412A7B600232361 /* MessageContent */,
 				16B4EC2B23BF7A8300E7E4DB /* Ejabberd */,
 				16B6751622689FD000B6D4D0 /* CoreData */,
 				16177AA520C01F5C0050BB31 /* ChannelType.swift */,
@@ -795,6 +806,7 @@
 				429228C11F96261000DCECDF /* Info.plist */,
 				97E7C49624030C0B00D9CAAA /* GoogleService-Info.plist */,
 				1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */,
+				97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */,
 			);
 			path = VirgilMessenger;
 			sourceTree = "<group>";
@@ -858,6 +870,15 @@
 				4280C0D71F97341A00075B3A /* UITextMessageHandler.swift */,
 			);
 			path = "Text Message";
+			sourceTree = "<group>";
+		};
+		975F486E2412A7B600232361 /* MessageContent */ = {
+			isa = PBXGroup;
+			children = (
+				975F486C2412A68B00232361 /* MessageContent.swift */,
+				975F486F2412A7DD00232361 /* TextContent.swift */,
+			);
+			path = MessageContent;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1090,9 +1111,12 @@
 				166D3E5E1FB495F90032BAAD /* CoreData.swift in Sources */,
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
 				16013C7B20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift in Sources */,
+				975F486D2412A68B00232361 /* MessageContent.swift in Sources */,
 				164E173020AAEECD00AB1AAD /* UIAudioMessageModel.swift in Sources */,
 				16FA91051FFC55A400FE98C7 /* UIViewController+Reachability.swift in Sources */,
 				169367942249181100EF9A42 /* LocalKeyManager.swift in Sources */,
+				97CE26F52418231300903116 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
+				975F48702412A7DD00232361 /* TextContent.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				16FC679B2260D7860044CC70 /* CreateGroup.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
@@ -1149,6 +1173,7 @@
 				166BFAA422687D4F00EF72AD /* GroupInfo.swift in Sources */,
 				4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */,
 				16FB2DD5204D87F200346FA0 /* UIColor+RGB.swift in Sources */,
+				974CC5492417DDD800FC7554 /* TextMessage.swift in Sources */,
 				16B4EC2623BF610500E7E4DB /* XMPPMessage.swift in Sources */,
 				16936792224916D100EF9A42 /* UserFriendlyError.swift in Sources */,
 				16132FC22254C868008FD754 /* UIViewController.swift in Sources */,
@@ -1453,9 +1478,10 @@
 		1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				974CC5462417DD1400FC7554 /* VirgilMessenger-v2.xcdatamodel */,
 				1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */,
 			);
-			currentVersion = 1621B8481FB333B100D1ABC1 /* VirgilMessenger.xcdatamodel */;
+			currentVersion = 974CC5462417DD1400FC7554 /* VirgilMessenger-v2.xcdatamodel */;
 			path = "VirgilMessenger-5.xcdatamodeld";
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

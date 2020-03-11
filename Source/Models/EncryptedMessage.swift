@@ -7,7 +7,11 @@
 //
 
 import Foundation
-import XMPPFrameworkSwift
+
+public enum EncryptedMessageVersion: String, Codable, CaseIterable {
+    case v1
+    case v2
+}
 
 public enum EncryptedMessageError: Int, Error {
     case bodyIsNotBase64Encoded = 1
@@ -16,10 +20,17 @@ public enum EncryptedMessageError: Int, Error {
 public class EncryptedMessage: Codable {
     let ciphertext: String
     let date: Date
+    
+    var version: EncryptedMessageVersion {
+        return self.codableVersion ?? .v1
+    }
+    
+    private var codableVersion: EncryptedMessageVersion?
 
     public init(ciphertext: String, date: Date) {
         self.ciphertext = ciphertext
         self.date = date
+        self.codableVersion = EncryptedMessageVersion.allCases.last
     }
     
     static func `import`(_ string: String) throws -> EncryptedMessage {

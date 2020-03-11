@@ -8,9 +8,6 @@
 
 import Foundation
 
-public enum MessageType: String {
+public enum MessageType: String, Codable {
     case text
-    case photo
-    case audio
-    case changeMembers
 }

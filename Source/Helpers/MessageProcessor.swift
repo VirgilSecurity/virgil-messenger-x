@@ -6,35 +6,84 @@
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
 //
 
-import Chatto
-import ChattoAdditions
-import AVFoundation
-import VirgilCryptoRatchet
-import VirgilSDKRatchet
+import Foundation
 
 class MessageProcessor {
-    static func process(_ message: EncryptedMessage, from author: String) throws -> Message? {
+    static func process(_ encryptedMessage: EncryptedMessage, from author: String) throws {
+        let channel = try self.setupCoreChannel(name: author)
+
+        let decrypted = try self.decrypt(encryptedMessage, from: channel)
+        
+        let messageContent = try self.migrationSafeContentImport(from: decrypted,
+                                                                 version: encryptedMessage.version)
+        
+        try self.process(messageContent, channel: channel, date: encryptedMessage.date)
+    }
+    
+    private static func process(_ messageContent: MessageContent, channel: Channel, date: Date) throws {
+        switch messageContent {
+        case .text(let content):
+            let message = try CoreData.shared.createTextMessage(content.body,
+                                                                in: channel,
+                                                                isIncoming: true,
+                                                                date: date)
+            
+            self.postNotification(about: message)
+        }
+    }
+    
+    private static func migrationSafeContentImport(from string: String,
+                                                   version: EncryptedMessageVersion) throws -> MessageContent {
+        let messageContent: MessageContent
+        
+        switch version {
+        case .v1:
+            let textContent = TextContent(body: string)
+            messageContent = MessageContent.text(textContent)
+        case .v2:
+            messageContent = try MessageContent.import(from: string)
+        }
+        
+        return messageContent
+    }
+    
+    private static func setupCoreChannel(name: String) throws -> Channel {
         let channel: Channel
 
-        if let coreChannel = CoreData.shared.getChannel(withName: author) {
+        if let coreChannel = CoreData.shared.getChannel(withName: name) {
             channel = coreChannel
         }
         else {
-            let card = try Virgil.ethree.findUser(with: author).startSync().get()
+            let card = try Virgil.ethree.findUser(with: name).startSync().get()
 
-            channel = try CoreData.shared.getChannel(withName: author)
-                ?? CoreData.shared.createSingleChannel(initiator: author, card: card)
+            channel = try CoreData.shared.getChannel(withName: name)
+                ?? CoreData.shared.createSingleChannel(initiator: name, card: card)
         }
-
+        
+        return channel
+    }
+    
+    private static func decrypt(_ message: EncryptedMessage, from channel: Channel) throws -> String {
         let decrypted: String
+        
         do {
             decrypted = try Virgil.ethree.authDecrypt(text: message.ciphertext, from: channel.getCard())
-        } catch {
+        }
+        catch {
+            // TODO: check if needed
             try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
-            // FIXME
-            return nil
+            
+            throw error
+        }
+        
+        return decrypted
+    }
+    
+    private static func postNotification(about message: Message) {
+        guard CoreData.shared.currentChannel != nil else {
+            return Notifications.post(.chatListUpdated)
         }
 
-        return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: true, date: message.date)
+        Notifications.post(message: message)
     }
 }
