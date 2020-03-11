@@ -91,12 +91,12 @@ class VoiceCallViewController: ViewController {
                 return
             }
             
-            let acceptCallOffer: (CallSessionDescription)->Void = { [weak self] sessionDescription in
+            let acceptCallOffer: (CallSessionDescription) -> Void = { [weak self] sessionDescription in
                 self?.callState = .responderWaitingForAnswer
                 self?.lastCallOfferSessionDescription = sessionDescription
             }
 
-            let acceptCallAnswer: (CallSessionDescription)->Void = { [weak self] sessionDescription in
+            let acceptCallAnswer: (CallSessionDescription) -> Void = { [weak self] sessionDescription in
                 self?.callChannel.acceptAnswer(sessionDescription) { error in
                     guard let error = error else {
                         self?.callState = .waitingIceNegotiating
