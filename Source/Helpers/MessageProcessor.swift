@@ -18,28 +18,34 @@ class MessageProcessor {
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
         
-        let messageContent = try self.migrationSafeContentImport(from: decrypted)
+        let messageContent = try self.migrationSafeContentImport(from: decrypted,
+                                                                 version: encryptedMessage.version)
         
+        try self.process(messageContent, channel: channel, date: encryptedMessage.date)
+    }
+    
+    private static func process(_ messageContent: MessageContent, channel: Channel, date: Date) throws {
         switch messageContent {
         case .text(let content):
             let message = try CoreData.shared.createTextMessage(content.body,
                                                                 in: channel,
                                                                 isIncoming: true,
-                                                                date: encryptedMessage.date)
+                                                                date: date)
             
             self.postNotification(about: message)
         }
     }
     
-    private static func migrationSafeContentImport(from string: String) throws -> MessageContent {
+    private static func migrationSafeContentImport(from string: String,
+                                                   version: EncryptedMessageVersion) throws -> MessageContent {
         let messageContent: MessageContent
         
-        do {
-            messageContent = try MessageContent.import(from: string)
-        }
-        catch {
+        switch version {
+        case .v1:
             let textContent = TextContent(body: string)
             messageContent = MessageContent.text(textContent)
+        case .v2:
+            messageContent = try MessageContent.import(from: string)
         }
         
         return messageContent
