@@ -45,4 +45,21 @@ extension CoreData {
 
         return message
     }
+
+    func createCallMessage(_ from: String,
+                           in channel: Channel? = nil,
+                           isIncoming: Bool,
+                           date: Date = Date()) throws -> Message {
+        let channel = try channel ?? self.getCurrentChannel()
+
+        let message = try CallMessage(from: from,
+                                      isIncoming: isIncoming,
+                                      date: date,
+                                      channel: channel,
+                                      managedContext: self.managedContext)
+
+        try self.save(message)
+
+        return message
+    }
 }

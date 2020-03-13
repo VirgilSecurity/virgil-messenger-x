@@ -25,7 +25,9 @@ public class Notifications {
         case connectionStateUpdated = "Notifications.ConnectionStateUpdated"
         case errored = "Notifications.Errored"
         case messageAddedToCurrentChannel = "Notifications.MessageAddedToCurrentChannel"
-        case callReceived = "Notifications.CallReceived"
+        case callOfferReceived = "Notifications.CallOfferReceived"
+        case callAnswerReceived = "Notifications.CallAnswerReceived"
+        case iceCandidateReceived = "Notifications.IceCandidateReceived"
     }
 
     public enum NotificationKeys: String {
@@ -72,11 +74,27 @@ extension Notifications {
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }
 
-    public static func post(call: Call) {
-        let notification = self.notification(.callReceived)
-        let userInfo = [NotificationKeys.message.rawValue: call]
+    public static func post(messageContent: MessageContent) {
+        switch(messageContent) {
+        case .text(_):
+            // Is handled via post(message)
+            break
 
-        self.center.post(name: notification, object: self, userInfo: userInfo)
+        case .callOffer(let callOffer):
+            let notification = self.notification(Notifications.callOfferReceived)
+            let userInfo = [NotificationKeys.message.rawValue: callOffer]
+            self.center.post(name: notification, object: self, userInfo: userInfo)
+
+        case .callAnswer(let callAnswer):
+            let notification = self.notification(Notifications.callAnswerReceived)
+            let userInfo = [NotificationKeys.message.rawValue: callAnswer]
+            self.center.post(name: notification, object: self, userInfo: userInfo)
+
+        case .iceCandidate(let iceCandidate):
+            let notification = self.notification(Notifications.iceCandidateReceived)
+            let userInfo = [NotificationKeys.message.rawValue: iceCandidate]
+            self.center.post(name: notification, object: self, userInfo: userInfo)
+        }
     }
 
     public static func post(_ notification: EmptyNotification) {

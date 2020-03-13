@@ -40,13 +40,6 @@ extension Message {
                                                status: status,
                                                date: date)
         }
-        if let callMessage = self as? CallMessage {
-            resultMessage = UITextMessageModel(uid: id,
-                                               text: "Call...",
-                                               isIncoming: self.isIncoming,
-                                               status: status,
-                                               date: date)
-        }
         else {
             Log.error("Exporting core data model to ui model failed")
             

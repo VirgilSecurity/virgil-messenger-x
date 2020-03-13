@@ -60,7 +60,7 @@ public class CallChannel: NSObject {
             
             self.peerConnection!.setLocalDescription(sdp) { error in
                 if error == nil {
-                    self.sendSignalingMessage(sdp, completion: completion)
+                    self.sendSignalingMessage(offer: sdp, completion: completion)
                 }
                 
                 completion(error)
@@ -98,7 +98,7 @@ public class CallChannel: NSObject {
                 
                 self.peerConnection!.setLocalDescription(answerSdp) { error in
                     if error == nil {
-                        self.sendSignalingMessage(answerSdp, completion: completion)
+                        self.sendSignalingMessage(answer: answerSdp, completion: completion)
                     }
 
                     completion(error)
@@ -159,30 +159,28 @@ public class CallChannel: NSObject {
         peerConnection.delegate = self
     }
     
-    private func sendSignalingMessage(_ sdp: RTCSessionDescription, completion: @escaping (_ error: Error?) -> Void) {
-        do {
-            let sessionDescription = CallSessionDescription(from: sdp)
-            
-            try self.dataSource.messageSender.sendVoiceCallSessionDescription(sessionDescription, channel: self.dataSource.channel)
-
-            completion(nil)
-        }
-        catch {
-            Log.error("\(error)")
-            completion(error)
-        }
+    private func sendSignalingMessage(offer sdp: RTCSessionDescription, completion: @escaping (_ error: Error?) -> Void) {
+        let sessionDescription = CallSessionDescription(from: sdp)
+        let callOffer = MessageContent.CallOffer(sdp: sessionDescription)
+        let messageContent = MessageContent.callOffer(callOffer)
+        
+        self.dataSource.messageSender.send(messageContent: messageContent, date: Date(), channel: self.dataSource.channel, completion: completion)
     }
-    
-    private func sendSignalingMessage(candidate rtcIceCandidate: RTCIceCandidate, completion: @escaping (_ error: Error?) -> Void) {
-        do {
-            let callIceCandidate = CallIceCandidate(from: rtcIceCandidate)
 
-            try self.dataSource.messageSender.sendVoiceCallIceMessage(callIceCandidate, channel: self.dataSource.channel)
-        }
-        catch {
-            Log.error("\(error)")
-            completion(error)
-        }
+    private func sendSignalingMessage(answer sdp: RTCSessionDescription, completion: @escaping (_ error: Error?) -> Void) {
+        let sessionDescription = CallSessionDescription(from: sdp)
+        let callAnswer = MessageContent.CallAnswer(sdp: sessionDescription)
+        let messageContent = MessageContent.callAnswer(callAnswer)
+
+        self.dataSource.messageSender.send(messageContent: messageContent, date: Date(), channel: self.dataSource.channel, completion: completion)
+    }
+
+    private func sendSignalingMessage(candidate rtcIceCandidate: RTCIceCandidate, completion: @escaping (_ error: Error?) -> Void) {
+        let callIceCandidate = CallIceCandidate(from: rtcIceCandidate)
+        let iceCandiadte = MessageContent.IceCandidate(iceCandidate: callIceCandidate)
+        let messageContent = MessageContent.iceCandidate(iceCandiadte)
+
+        self.dataSource.messageSender.send(messageContent: messageContent, date: Date(), channel: self.dataSource.channel, completion: completion)
     }
     
     private func sendSignalingMessage(message: MessageContent, completion: @escaping (_ error: Error?) -> Void) {

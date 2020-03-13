@@ -10,6 +10,5 @@ import Foundation
 
 public enum MessageType: String, Codable {
     case text
-    case sdp
-    case iceCandidate
+    case call
 }

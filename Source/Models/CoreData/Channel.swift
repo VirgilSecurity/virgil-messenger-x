@@ -143,8 +143,4 @@ public class Channel: NSManagedObject {
     public func set(group: Group) {
         self.group = group
     }
-    
-    func set(lastVoiceSDP: CallSessionDescription) {
-        self.lastVoiceSDP = lastVoiceSDP
-    }
 }

@@ -29,6 +29,10 @@ class MessageProcessor {
                                                                 date: date)
             
             self.postNotification(about: message)
+            
+        case .callOffer(_), .callAnswer(_), .iceCandidate(_):
+            //  FIXME: Unify the handling approach for '.text' as well.
+            Notifications.post(messageContent: messageContent)
         }
     }
     
@@ -38,7 +42,7 @@ class MessageProcessor {
         
         switch version {
         case .v1:
-            let textContent = TextContent(body: string)
+            let textContent = MessageContent.Text(body: string)
             messageContent = MessageContent.text(textContent)
         case .v2:
             messageContent = try MessageContent.import(from: string)

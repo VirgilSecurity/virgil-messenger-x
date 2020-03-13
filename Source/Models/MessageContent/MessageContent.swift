@@ -8,55 +8,89 @@
 
 import Foundation
 
-enum MessageContent {
-    case text(TextContent)
-    case sdp(CallSessionDescription)
-    case iceCandidate(CallIceCandidate)
+public enum MessageContent {
+    
+    public struct Text: Codable {
+        let body: String
+    }
+
+    public struct CallOffer: Codable {
+        let sdp: CallSessionDescription
+    }
+
+    public struct CallAnswer: Codable {
+        let sdp: CallSessionDescription
+    }
+
+    public struct IceCandidate: Codable {
+        let iceCandidate: CallIceCandidate
+    }
+    
+    case text(Text)
+    case callOffer(CallOffer)
+    case callAnswer(CallAnswer)
+    case iceCandidate(IceCandidate)
 }
 
 extension MessageContent: Codable {
+    enum TypeCodingKeys: String, Codable {
+        case text
+        case callOffer
+        case callAnswer
+        case iceCandidate
+    }
+
     enum CodingKeys: String, CodingKey {
         case type
         case payload
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let type = try container.decode(MessageType.self, forKey: .type)
+        let type = try container.decode(TypeCodingKeys.self, forKey: .type)
 
         switch type {
         case .text:
-            let textContent = try container.decode(TextContent.self, forKey: .payload)
+            let textContent = try container.decode(Text.self, forKey: .payload)
             self = .text(textContent)
             
-        case .sdp:
-            let sdpContent = try container.decode(CallSessionDescription.self, forKey: .payload)
-            self = .sdp(sdpContent)
+        case .callOffer:
+            let callOffer = try container.decode(CallOffer.self, forKey: .payload)
+            self = .callOffer(callOffer)
+
+        case .callAnswer:
+            let callAnswer = try container.decode(CallAnswer.self, forKey: .payload)
+            self = .callAnswer(callAnswer)
 
         case .iceCandidate:
-            let iceCandidateContent = try container.decode(CallIceCandidate.self, forKey: .payload)
-            self = .iceCandidate(iceCandidateContent)
+            let iceCandidate = try container.decode(IceCandidate.self, forKey: .payload)
+            self = .iceCandidate(iceCandidate)
         }
     }
     
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
         case .text(let textContent):
-            let type = MessageType.text
+            let type = TypeCodingKeys.text
             try container.encode(type, forKey: .type)
             try container.encode(textContent, forKey: .payload)
 
-        case .sdp(let sdpContent):
-            let type = MessageType.sdp
+        case .callOffer(let callOffer):
+            let type = TypeCodingKeys.callOffer
             try container.encode(type, forKey: .type)
-            try container.encode(sdpContent, forKey: .payload)
+            try container.encode(callOffer, forKey: .payload)
 
-        case .iceCandiadte(let iceCandidateContent):
-            let type = MessageType.iceCandidate
+        case .callAnswer(let callAnswer):
+            let type = TypeCodingKeys.callAnswer
             try container.encode(type, forKey: .type)
-            try container.encode(iceCandidateContent, forKey: .payload)
+            try container.encode(callAnswer, forKey: .payload)
+
+        case .iceCandidate(let iceCandidate):
+            let type = TypeCodingKeys.iceCandidate
+            try container.encode(type, forKey: .type)
+            try container.encode(iceCandidate, forKey: .payload)
         }
     }
     

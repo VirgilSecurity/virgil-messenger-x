@@ -85,45 +85,45 @@ class VoiceCallViewController: ViewController {
     }
         
     private func setupObservers() {
-        let processCall: Notifications.Block = { [weak self] notification in
-            guard let call: Call = Notifications.parse(notification, for: .message) else {
-                Log.error("Invalid call notification")
+        let processCallOffer: Notifications.Block = { [weak self] notification in
+            guard let callOffer: MessageContent.CallOffer = Notifications.parse(notification, for: .message) else {
+                Log.error("Invalid call offer notification")
                 return
             }
-            
-            let acceptCallOffer: (CallSessionDescription) -> Void = { [weak self] sessionDescription in
-                self?.callState = .responderWaitingForAnswer
-                self?.lastCallOfferSessionDescription = sessionDescription
+
+            self?.callState = .responderWaitingForAnswer
+            self?.lastCallOfferSessionDescription = callOffer.sdp
+        }
+        Notifications.observe(for: .callOfferReceived, block: processCallOffer)
+
+        let processCallAnswer: Notifications.Block = { [weak self] notification in
+            guard let callAnswer: MessageContent.CallAnswer = Notifications.parse(notification, for: .message) else {
+                Log.error("Invalid call answer notification")
+                return
             }
 
-            let acceptCallAnswer: (CallSessionDescription) -> Void = { [weak self] sessionDescription in
-                self?.callChannel.acceptAnswer(sessionDescription) { error in
-                    guard let error = error else {
-                        self?.callState = .waitingIceNegotiating
-                        return
-                    }
-                    
-                    Log.error("\(error)")
-                    self?.callState = .abort(error)
-                    self?.callChannel.endCall()
+            self?.callChannel.acceptAnswer(callAnswer.sdp) { error in
+                guard let error = error else {
+                    self?.callState = .waitingIceNegotiating
+                    return
                 }
-            }
-
-            switch call {
-            case .sessionDescription(let sessionDescription):
-                switch sessionDescription.type {
-                case .offer:
-                    acceptCallOffer(sessionDescription)
-                case .answer, .prAnswer:
-                    acceptCallAnswer(sessionDescription)
-                }
-
-            case .iceCandiadte(let iceCandidate):
-                self?.callChannel.addIceCandidate(iceCandidate)
+                
+                Log.error("\(error)")
+                self?.callState = .abort(error)
+                self?.callChannel.endCall()
             }
         }
+        Notifications.observe(for: .callAnswerReceived, block: processCallAnswer)
 
-        Notifications.observe(for: .callReceived, block: processCall)
+        let processIceCandidate: Notifications.Block = { [weak self] notification in
+            guard let iceCandidate: MessageContent.IceCandidate = Notifications.parse(notification, for: .message) else {
+                Log.error("Invalid ice cadidate notification")
+                return
+            }
+
+            self?.callChannel.addIceCandidate(iceCandidate.iceCandidate)
+        }
+        Notifications.observe(for: .iceCandidateReceived, block: processIceCandidate)
     }
 
     @IBAction func sendOfferTapped(_ sender: Any) {
