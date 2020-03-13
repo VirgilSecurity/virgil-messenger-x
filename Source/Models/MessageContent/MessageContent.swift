@@ -37,9 +37,9 @@ public enum MessageContent {
 extension MessageContent: Codable {
     enum TypeCodingKeys: String, Codable {
         case text
-        case callOffer
-        case callAnswer
-        case iceCandidate
+        case callOffer = "call_offer"
+        case callAnswer = "call_answer"
+        case iceCandidate = "ice_candidate"
     }
 
     enum CodingKeys: String, CodingKey {
