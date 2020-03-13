@@ -176,20 +176,6 @@ public class CallChannel: NSObject {
 
         self.dataSource.messageSender.send(messageContent: messageContent, date: Date(), channel: self.dataSource.channel, completion: completion)
     }
-    
-    private func sendSignalingMessage(message: MessageContent, completion: @escaping (_ error: Error?) -> Void) {
-        do {
-            let jsonString = try message.exportAsJsonString()
-
-            try self.dataSource.addTextMessage(jsonString)
-            
-            completion(nil)
-        }
-        catch {
-            Log.error("\(error)")
-            completion(error)
-        }
-    }
 }
 
 extension CallChannel: RTCPeerConnectionDelegate {
