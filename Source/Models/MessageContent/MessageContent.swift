@@ -15,15 +15,17 @@ public enum MessageContent {
     }
 
     public struct CallOffer: Codable {
-        let sdp: CallSessionDescription
+        let sdp: String
     }
 
     public struct CallAnswer: Codable {
-        let sdp: CallSessionDescription
+        let sdp: String
     }
 
     public struct IceCandidate: Codable {
-        let iceCandidate: CallIceCandidate
+        let sdp: String
+        let sdpMLineIndex: Int32
+        let sdpMid: String?
     }
     
     case text(Text)

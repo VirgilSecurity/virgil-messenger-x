@@ -69,7 +69,7 @@ class VoiceCallViewController: ViewController {
         }
     }
     
-    private var lastCallOfferSessionDescription: CallSessionDescription?
+    private var lastCallOffer: MessageContent.CallOffer?
     
     public var callChannel: CallChannel! {
         didSet {
@@ -92,7 +92,7 @@ class VoiceCallViewController: ViewController {
             }
 
             self?.callState = .responderWaitingForAnswer
-            self?.lastCallOfferSessionDescription = callOffer.sdp
+            self?.lastCallOffer = callOffer
         }
         Notifications.observe(for: .callOfferReceived, block: processCallOffer)
 
@@ -102,7 +102,7 @@ class VoiceCallViewController: ViewController {
                 return
             }
 
-            self?.callChannel.acceptAnswer(callAnswer.sdp) { error in
+            self?.callChannel.acceptAnswer(callAnswer) { error in
                 guard let error = error else {
                     self?.callState = .waitingIceNegotiating
                     return
@@ -121,7 +121,7 @@ class VoiceCallViewController: ViewController {
                 return
             }
 
-            self?.callChannel.addIceCandidate(iceCandidate.iceCandidate)
+            self?.callChannel.addIceCandidate(iceCandidate)
         }
         Notifications.observe(for: .iceCandidateReceived, block: processIceCandidate)
     }
@@ -144,7 +144,7 @@ class VoiceCallViewController: ViewController {
     
     @IBAction func sendAnswerTapped(_ sender: Any) {
         
-        if let sessionDescription = self.lastCallOfferSessionDescription {
+        if let sessionDescription = self.lastCallOffer {
             self.callChannel.sendAnswer(offer: sessionDescription) { error in
                 guard let error = error else {
                     Log.debug("Voice offer was created")

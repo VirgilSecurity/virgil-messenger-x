@@ -15,7 +15,7 @@ public class MessageSender {
         self.queue.async {
             do {
                 let exported = try messageContent.exportAsJsonString()
-
+                
                 let ciphertext = try Virgil.ethree.authEncrypt(text: exported, for: channel.getCard())
 
                 let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date)
