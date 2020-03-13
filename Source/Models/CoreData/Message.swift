@@ -18,15 +18,6 @@ public class Message: NSManagedObject {
     @NSManaged public var isIncoming: Bool
     @NSManaged public var channel: Channel
     @NSManaged public var isHidden: Bool
-    
-    public var type: MessageType {
-        if self is TextMessage {
-            return .text
-        }
-        else {
-            fatalError("Unknown subclass of Message")
-        }
-    }
 }
 
 extension Message {
