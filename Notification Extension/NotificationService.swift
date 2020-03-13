@@ -69,10 +69,10 @@ class NotificationService: UNNotificationServiceExtension {
             let card = try ethree.findUser(with: title).startSync().get()
 
             // Decrypting notification body
-            let decrypted = try ethree.authDecrypt(text: encryptedMessage.ciphertext, from: card)
+            let decrypted = try ethree.authDecrypt(data: encryptedMessage.ciphertext, from: card)
 
             // Changing body of notification from ciphertext to decrypted message
-            bestAttemptContent.body = decrypted
+            bestAttemptContent.body = ""
 
             contentHandler(bestAttemptContent)
 

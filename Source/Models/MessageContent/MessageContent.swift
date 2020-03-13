@@ -96,16 +96,12 @@ extension MessageContent: Codable {
         }
     }
     
-    static func `import`(from jsonString: String) throws -> MessageContent {
-        let data = jsonString.data(using: .utf8)!
-        
-        return try JSONDecoder().decode(MessageContent.self, from: data)
+    static func `import`(from jsonData: Data) throws -> MessageContent {
+        return try JSONDecoder().decode(MessageContent.self, from: jsonData)
     }
     
-    func exportAsJsonString() throws -> String {
+    func exportAsJsonData() throws -> Data {
         let data = try JSONEncoder().encode(self)
-        
-        // FIXME: Change to other format
-        return String(data: data, encoding: .utf8)!
+        return data
     }
 }

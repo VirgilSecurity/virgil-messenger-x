@@ -135,7 +135,7 @@ class DataSource: ChatDataSourceProtocol {
                                          status: .sending,
                                          date: Date())
 
-        try self.messageSender.send(uiModel: uiModel, coreChannel: self.channel)
+        self.messageSender.send(uiModel: uiModel, coreChannel: self.channel)
 
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)

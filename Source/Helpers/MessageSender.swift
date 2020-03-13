@@ -14,9 +14,9 @@ public class MessageSender {
     public func send(messageContent: MessageContent, date: Date, channel: Channel, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                let exported = try messageContent.exportAsJsonString()
+                let exported = try messageContent.exportAsJsonData()
                 
-                let ciphertext = try Virgil.ethree.authEncrypt(text: exported, for: channel.getCard())
+                let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: channel.getCard())
 
                 let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date)
 
@@ -35,14 +35,14 @@ public class MessageSender {
         }
     }
 
-    public func send(uiModel: UITextMessageModel, coreChannel: Channel) throws {
+    public func send(uiModel: UITextMessageModel, coreChannel: Channel) {
         self.queue.async {
             do {
                 let textContent = MessageContent.Text(body: uiModel.body)
                 let messageContent = MessageContent.text(textContent)
-                let exported = try messageContent.exportAsJsonString()
+                let exported = try messageContent.exportAsJsonData()
 
-                let ciphertext = try Virgil.ethree.authEncrypt(text: exported, for: coreChannel.getCard())
+                let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: coreChannel.getCard())
 
                 let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
 

@@ -36,16 +36,17 @@ class MessageProcessor {
         }
     }
     
-    private static func migrationSafeContentImport(from string: String,
+    private static func migrationSafeContentImport(from data: Data,
                                                    version: EncryptedMessageVersion) throws -> MessageContent {
         let messageContent: MessageContent
         
         switch version {
         case .v1:
+            let string = String(data: data, encoding: .utf8)!
             let textContent = MessageContent.Text(body: string)
             messageContent = MessageContent.text(textContent)
         case .v2:
-            messageContent = try MessageContent.import(from: string)
+            messageContent = try MessageContent.import(from: data)
         }
         
         return messageContent
@@ -67,11 +68,11 @@ class MessageProcessor {
         return channel
     }
     
-    private static func decrypt(_ message: EncryptedMessage, from channel: Channel) throws -> String {
-        let decrypted: String
+    private static func decrypt(_ message: EncryptedMessage, from channel: Channel) throws -> Data {
+        let decrypted: Data
         
         do {
-            decrypted = try Virgil.ethree.authDecrypt(text: message.ciphertext, from: channel.getCard())
+            decrypted = try Virgil.ethree.authDecrypt(data: message.ciphertext, from: channel.getCard())
         }
         catch {
             // TODO: check if needed
