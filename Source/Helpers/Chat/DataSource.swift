@@ -81,10 +81,10 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     @objc private func process(message: Message) {
+        self.nextMessageId += 1
+        let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
+        
         DispatchQueue.main.async {
-            self.nextMessageId += 1
-            let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
-
             self.slidingWindow.insertItem(uiModel, position: .bottom)
             self.delegate?.chatDataSourceDidUpdate(self)
         }
@@ -149,12 +149,13 @@ class DataSource: ChatDataSourceProtocol {
                                           image: image,
                                           isIncoming: false,
                                           status: .sending,
+                                          state: .uploading,
                                           date: Date())
-        
-        try self.messageSender.send(uiModel: uiModel, coreChannel: self.channel)
         
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
+        
+        try self.messageSender.send(uiModel: uiModel, coreChannel: self.channel)
     }
 
     func addAudioMessage(_ audio: Data) {

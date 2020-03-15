@@ -45,7 +45,7 @@ extension CoreData {
         return message
     }
     
-    func createMediaMessage(with content: PhotoContent,
+    func createPhotoMessage(with content: PhotoContent,
                             in channel: Channel,
                             isIncoming: Bool,
                             date: Date = Date()) throws -> Message {

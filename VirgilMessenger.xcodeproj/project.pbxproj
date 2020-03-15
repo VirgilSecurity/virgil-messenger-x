@@ -167,6 +167,9 @@
 		974CC5492417DDD800FC7554 /* TextMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974CC5472417DDD800FC7554 /* TextMessage.swift */; };
 		975F486D2412A68B00232361 /* MessageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975F486C2412A68B00232361 /* MessageContent.swift */; };
 		975F48702412A7DD00232361 /* TextContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975F486F2412A7DD00232361 /* TextContent.swift */; };
+		97AF4D83241AEE2000ED9BD7 /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
+		97AF4D85241AEE8800ED9BD7 /* Client+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D84241AEE8800ED9BD7 /* Client+Files.swift */; };
+		97AF4D86241AEED000ED9BD7 /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
 		97CE26F52418231300903116 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
 		97E7C47E2403085B00D9CAAA /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4742403085A00D9CAAA /* GoogleUtilities.framework */; };
 		97E7C4802403085B00D9CAAA /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4752403085B00D9CAAA /* nanopb.framework */; };
@@ -361,6 +364,8 @@
 		974CC5472417DDD800FC7554 /* TextMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextMessage.swift; sourceTree = "<group>"; };
 		975F486C2412A68B00232361 /* MessageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContent.swift; sourceTree = "<group>"; };
 		975F486F2412A7DD00232361 /* TextContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextContent.swift; sourceTree = "<group>"; };
+		97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Client+Backend.swift"; sourceTree = "<group>"; };
+		97AF4D84241AEE8800ED9BD7 /* Client+Files.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Client+Files.swift"; sourceTree = "<group>"; };
 		97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = "Mapping-v1-to-v2.xcmappingmodel"; sourceTree = "<group>"; };
 		97E7C4732403085A00D9CAAA /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstanceID.framework; path = Carthage/Build/iOS/FirebaseInstanceID.framework; sourceTree = "<group>"; };
 		97E7C4742403085A00D9CAAA /* GoogleUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleUtilities.framework; path = Carthage/Build/iOS/GoogleUtilities.framework; sourceTree = "<group>"; };
@@ -494,13 +499,13 @@
 		163952A9227C4EE000DD1FDC /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				97AF4D81241AEE0C00ED9BD7 /* Client */,
 				16D8B0F0223AAC7200D7FA67 /* Chat */,
 				166D3E5C1FB495DA0032BAAD /* CoreData */,
 				16FE75F1224A436C00B545AF /* Virgil */,
 				1612BC4423B6589300107C7A /* Ejabberd */,
 				163952A4227C4D8A00DD1FDC /* ChatsManager */,
 				16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */,
-				16D8B0EE223A8FCF00D7FA67 /* Client.swift */,
 				16FE75EF224A3DA000B545AF /* Configurator.swift */,
 				4280C0CB1F97340B00075B3A /* MessageSender.swift */,
 				16132FC5225514D0008FD754 /* MessageProcessor.swift */,
@@ -890,6 +895,16 @@
 			path = MessageContent;
 			sourceTree = "<group>";
 		};
+		97AF4D81241AEE0C00ED9BD7 /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				16D8B0EE223A8FCF00D7FA67 /* Client.swift */,
+				97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */,
+				97AF4D84241AEE8800ED9BD7 /* Client+Files.swift */,
+			);
+			path = Client;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1097,6 +1112,7 @@
 				16D4B8D123F5C2EB00D17B90 /* Client.swift in Sources */,
 				16D4B8D423F5C33D00D17B90 /* UIColor+RGB.swift in Sources */,
 				9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */,
+				97AF4D86241AEED000ED9BD7 /* Client+Backend.swift in Sources */,
 				16D4B8D923F5CE1700D17B90 /* IdentityDefaults.swift in Sources */,
 				16D4B8D323F5C32D00D17B90 /* ColorPair.swift in Sources */,
 				16D4B8B123F5BCA400D17B90 /* NotificationService.swift in Sources */,
@@ -1165,11 +1181,13 @@
 				16FCF2801FE46756000348BC /* Account.swift in Sources */,
 				16C0D4512265FF75001F23ED /* MessageType.swift in Sources */,
 				423BDA7E1F97602F00C3EE9B /* ChatListCell.swift in Sources */,
+				97AF4D83241AEE2000ED9BD7 /* Client+Backend.swift in Sources */,
 				16F8F3B9226487BE00143FB7 /* UsersListCell.swift in Sources */,
 				4280C0D51F97341300075B3A /* SendingStatusCollectionViewCell.swift in Sources */,
 				97F83C8A240D130A003F7451 /* FileMediaStorage.swift in Sources */,
 				4280C0E31F97364F00075B3A /* Chat.swift in Sources */,
 				168E54CC22395DDC00B6E822 /* ColorPair.swift in Sources */,
+				97AF4D85241AEE8800ED9BD7 /* Client+Files.swift in Sources */,
 				1627723F203C5FB00086127C /* CoreData+Account.swift in Sources */,
 				162E22E7225F76BF00AAE7C4 /* NewMessageTable.swift in Sources */,
 				16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */,
@@ -1236,7 +1254,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "Notification Extension/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -1264,7 +1282,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "Notification Extension/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;

@@ -16,6 +16,7 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
     
+    // TODO: Get rid of ui models from this class
     public func send(uiModel: UIPhotoMessageModel, coreChannel: Channel) throws {
         self.queue.async {
             do {
@@ -26,6 +27,7 @@ public class MessageSender {
                 }
         
                 let hash = Virgil.shared.crypto.computeHash(for: imageData)
+                // FIXME: check why string
                 let hashString = hash.subdata(in: 0..<32).hexEncodedString()
             
                 // Save it to File Storage
@@ -41,7 +43,12 @@ public class MessageSender {
                     .get()
                 
                 // upload image
-                try Virgil.shared.client.upload(data: encryptedData, with: slot.putRequest)
+                try Virgil.shared.client.upload(data: encryptedData,
+                                                with: slot.putRequest,
+                                                loadDelegate: uiModel,
+                                                dataHash: hashString)
+                    .startSync()
+                    .get()
                 
                 // encrypt message to ejabberd user
                 let photoContent = PhotoContent(identifier: hashString, thumbnail: thumbnail, url: slot.getURL)
@@ -55,7 +62,7 @@ public class MessageSender {
                 try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name)
                 
                 // Save local Core Data entity
-                _ = try CoreData.shared.createMediaMessage(with: photoContent,
+                _ = try CoreData.shared.createPhotoMessage(with: photoContent,
                                                            in: coreChannel,
                                                            isIncoming: false)
                 

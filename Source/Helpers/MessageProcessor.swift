@@ -31,26 +31,10 @@ class MessageProcessor {
                                                             date: date)
             
         case .photo(let photoContent):
-            message = try CoreData.shared.createMediaMessage(with: photoContent,
+            message = try CoreData.shared.createPhotoMessage(with: photoContent,
                                                              in: channel,
                                                              isIncoming: true,
                                                              date: date)
-            // TODO: Check hash in local storage
-
-            // Download and decrypt photo from server
-            try Virgil.shared.client.downloadFile(from: photoContent.url) { tempFileUrl in
-                let path = try CoreData.shared.getMediaStorage().getPath(name: photoContent.identifier)
-
-                guard let inputStream = InputStream(url: tempFileUrl) else {
-                    throw NSError()
-                }
-
-                guard let outputStream = OutputStream(toFileAtPath: path, append: false) else {
-                    throw NSError()
-                }
-
-                try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: channel.getCard())
-            }
         }
         
         self.postNotification(about: message)
