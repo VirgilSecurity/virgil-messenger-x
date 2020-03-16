@@ -55,7 +55,7 @@ public class MessageSender {
                 let content = MessageContent.photo(photoContent)
                 let exportedContent = try content.exportAsJsonString()
                 
-                let ciphertext = try Virgil.ethree.authEncrypt(text: exportedContent, for: coreChannel.getCard())
+                let ciphertext = try Virgil.ethree.authEncrypt(data: exportedContent, for: coreChannel.getCard())
                 let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
                 
                 // send it
