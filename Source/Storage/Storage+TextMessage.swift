@@ -5,14 +5,13 @@
 //  Created by Yevhen Pyvovarov on 3/10/20.
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
-//
 
 import Foundation
 import CoreData
 
 extension Storage {
     @objc(TextMessage)
-    public class TextMessage: Storage.Message {
+    public class TextMessage: Message {
         @NSManaged public var body: String
 
         private static let EntityName = "TextMessage"
