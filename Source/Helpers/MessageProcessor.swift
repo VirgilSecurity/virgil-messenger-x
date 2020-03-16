@@ -35,6 +35,11 @@ class MessageProcessor {
                                                              in: channel,
                                                              isIncoming: true,
                                                              date: date)
+        case .voice(let voiceContent):
+            message = try CoreData.shared.createVoiceMessage(with: voiceContent,
+                                                             in: channel,
+                                                             isIncoming: true,
+                                                             date: date)
         }
         
         self.postNotification(about: message)

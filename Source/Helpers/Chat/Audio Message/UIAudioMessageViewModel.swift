@@ -9,8 +9,30 @@
 import ChattoAdditions
 
 class UIAudioMessageViewModel: AudioMessageViewModel<UIAudioMessageModel>, UIMessageViewModelProtocol {
+    private var loadState: MediaMessageState
+    
     var messageModel: UIMessageModelProtocol {
         return self.audioMessage
+    }
+    
+    override init(audioMessage: UIAudioMessageModel, messageViewModel: MessageViewModelProtocol) {
+        self.loadState = audioMessage.state
+        
+        super.init(audioMessage: audioMessage, messageViewModel: messageViewModel)
+    }
+}
+
+extension UIAudioMessageViewModel: LoadDelegate {
+    func progressChanged(to percent: Double) {
+        // FIXME: implement
+    }
+    
+    func failed(with error: Error) {
+        // FIXME: implement
+    }
+    
+    func completed(dataHash: String) {
+        // FIXME: implement
     }
 }
 

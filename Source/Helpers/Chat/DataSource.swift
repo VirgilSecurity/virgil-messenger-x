@@ -135,7 +135,7 @@ class DataSource: ChatDataSourceProtocol {
                                          status: .sending,
                                          date: Date())
 
-        try self.messageSender.send(uiModel: uiModel, coreChannel: self.channel)
+        try self.messageSender.send(uiModel: uiModel, channel: self.channel)
 
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
@@ -155,32 +155,27 @@ class DataSource: ChatDataSourceProtocol {
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
         
-        try self.messageSender.send(uiModel: uiModel, coreChannel: self.channel)
+        try self.messageSender.send(uiModel: uiModel, channel: self.channel)
     }
 
-    func addAudioMessage(_ audio: Data) {
-        // TODO
-//        self.nextMessageId += 1
-//        let id = self.nextMessageId
-//
-//        let message: UIMessageModelProtocol
-//
-//        // FIXME
-//        if let duration = try? AVAudioPlayer(data: audio).duration {
-//            message = MessageFactory.createAudioMessageModel(uid: id,
-//                                                             audio: audio,
-//                                                             duration: duration,
-//                                                             isIncoming: false,
-//                                                             status: .sending)
-//        } else {
-//            Log.error("Getting audio duration failed")
-//            message = MessageFactory.createCorruptedMessageModel(uid: id)
-//            return
-//        }
-//
-//        self.messageSender.sendMessage(message, type: .regular)
-//        self.slidingWindow.insertItem(message, position: .bottom)
-//        self.delegate?.chatDataSourceDidUpdate(self)
+    func addAudioMessage(_ audio: Data) throws {
+        self.nextMessageId += 1
+        let id = self.nextMessageId
+        
+        let duration = try AVAudioPlayer(data: audio).duration
+
+        let uiModel = UIAudioMessageModel(uid: id,
+                                          audio: audio,
+                                          duration: duration,
+                                          isIncoming: false,
+                                          status: .sending,
+                                          state: .uploading,
+                                          date: Date())
+        
+        self.slidingWindow.insertItem(uiModel, position: .bottom)
+        self.delegate?.chatDataSourceDidUpdate(self)
+        
+        try self.messageSender.send(uiModel: uiModel, channel: self.channel)
     }
     
     func addChangeMembers(message: String) throws {

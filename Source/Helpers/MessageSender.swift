@@ -11,13 +11,80 @@ public protocol UIMessageModelProtocol: MessageModelProtocol {
     var status: MessageStatus { get set }
 }
 
+// TODO: Get rid of ui models from this class
 public class MessageSender {
     public var onMessageChanged: ((_ message: UIMessageModelProtocol) -> Void)?
 
     private let queue = DispatchQueue(label: "MessageSender")
     
-    // TODO: Get rid of ui models from this class
-    public func send(uiModel: UIPhotoMessageModel, coreChannel: Channel) throws {
+    private func send(content: MessageContent, to channel: Channel, date: Date) throws {
+        let exported = try content.exportAsJsonString()
+
+        let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: channel.getCard())
+
+        let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date)
+
+        try Ejabberd.shared.send(encryptedMessage, to: channel.name)
+    }
+    
+    private func upload(data: Data, identifier: String, channel: Channel, loadDelegate: LoadDelegate) throws -> URL {
+        // encrypt data
+        let encryptedData = try Virgil.ethree.authEncrypt(data: data, for: channel.getCard())
+        
+        // request ejabberd slot
+        let slot = try Ejabberd.shared.requestMediaSlot(name: identifier, size: encryptedData.count)
+            .startSync()
+            .get()
+        
+        // upload data
+        try Virgil.shared.client.upload(data: encryptedData,
+                                        with: slot.putRequest,
+                                        loadDelegate: loadDelegate,
+                                        dataHash: identifier)
+            .startSync()
+            .get()
+        
+        return slot.getURL
+    }
+    
+    public func send(uiModel: UIAudioMessageModel, channel: Channel) throws {
+        self.queue.async {
+            do {
+                let audioData = uiModel.audio
+                
+                // TODO: Avoid copypaste
+                let hashString = Virgil.shared.crypto.computeHash(for: audioData)
+                    .subdata(in: 0..<32)
+                    .hexEncodedString()
+                
+                // FIXME: Check if exists
+                try CoreData.shared.storeMediaContent(audioData, name: hashString)
+                
+                let getUrl = try self.upload(data: audioData,
+                                             identifier: hashString,
+                                             channel: channel,
+                                             loadDelegate: uiModel)
+                
+                // FIXME duration type
+                let voiceContent = VoiceContent(identifier: hashString, duration: Int(uiModel.duration), url: getUrl)
+                let content = MessageContent.voice(voiceContent)
+                
+                try self.send(content: content, to: channel, date: uiModel.date)
+                
+                _ = try CoreData.shared.createVoiceMessage(with: voiceContent,
+                                                           in: channel,
+                                                           isIncoming: false)
+                
+                self.updateMessage(uiModel, status: .success)
+            }
+            catch {
+                self.updateMessage(uiModel, status: .failed)
+                Log.error("Sending message failed with error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    public func send(uiModel: UIPhotoMessageModel, channel: Channel) throws {
         self.queue.async {
             do {
                 // FIXME: Compression quality
@@ -26,44 +93,29 @@ public class MessageSender {
                         throw NSError()
                 }
         
-                let hash = Virgil.shared.crypto.computeHash(for: imageData)
                 // FIXME: check why string
-                let hashString = hash.subdata(in: 0..<32).hexEncodedString()
+                let hashString = Virgil.shared.crypto.computeHash(for: imageData)
+                    .subdata(in: 0..<32)
+                    .hexEncodedString()
             
                 // Save it to File Storage
-                // TODO: Check if exists
+                // FIXME: Check if exists
                 try CoreData.shared.storeMediaContent(imageData, name: hashString)
                 
-                // encrypt image
-                let encryptedData = try Virgil.ethree.authEncrypt(data: imageData, for: coreChannel.getCard())
-                
-                // request ejabberd slot
-                let slot = try Ejabberd.shared.requestMediaSlot(name: hashString, size: encryptedData.count)
-                    .startSync()
-                    .get()
-                
-                // upload image
-                try Virgil.shared.client.upload(data: encryptedData,
-                                                with: slot.putRequest,
-                                                loadDelegate: uiModel,
-                                                dataHash: hashString)
-                    .startSync()
-                    .get()
+                let getUrl = try self.upload(data: imageData,
+                                             identifier: hashString,
+                                             channel: channel,
+                                             loadDelegate: uiModel)
                 
                 // encrypt message to ejabberd user
-                let photoContent = PhotoContent(identifier: hashString, thumbnail: thumbnail, url: slot.getURL)
+                let photoContent = PhotoContent(identifier: hashString, thumbnail: thumbnail, url: getUrl)
                 let content = MessageContent.photo(photoContent)
-                let exportedContent = try content.exportAsJsonString()
                 
-                let ciphertext = try Virgil.ethree.authEncrypt(data: exportedContent, for: coreChannel.getCard())
-                let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
-                
-                // send it
-                try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name)
+                try self.send(content: content, to: channel, date: uiModel.date)
                 
                 // Save local Core Data entity
                 _ = try CoreData.shared.createPhotoMessage(with: photoContent,
-                                                           in: coreChannel,
+                                                           in: channel,
                                                            isIncoming: false)
                 
                 self.updateMessage(uiModel, status: .success)
@@ -75,21 +127,16 @@ public class MessageSender {
         }
     }
 
-    public func send(uiModel: UITextMessageModel, coreChannel: Channel) throws {
+    public func send(uiModel: UITextMessageModel, channel: Channel) throws {
         self.queue.async {
             do {
                 let textContent = TextContent(body: uiModel.body)
                 let messageContent = MessageContent.text(textContent)
-                let exported = try messageContent.exportAsJsonString()
-
-                let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: coreChannel.getCard())
-
-                let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
-
-                try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name)
+                
+                try self.send(content: messageContent, to: channel, date: uiModel.date)
 
                 _ = try CoreData.shared.createTextMessage(with: textContent,
-                                                          in: coreChannel,
+                                                          in: channel,
                                                           isIncoming: uiModel.isIncoming,
                                                           date: uiModel.date)
 

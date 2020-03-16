@@ -133,6 +133,8 @@ class NotificationService: UNNotificationServiceExtension {
                 message = textContent.body
             case .photo:
                 message = "📷 Photo"
+            case .voice:
+                message = "🎤 Voice Message"
             }
         }
         

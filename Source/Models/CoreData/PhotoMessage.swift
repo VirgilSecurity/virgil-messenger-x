@@ -1,5 +1,5 @@
 //
-//  PhotoMessage+CoreDataClass.swift
+//  PhotoMessage.swift
 //  VirgilMessenger
 //
 //  Created by Yevhen Pyvovarov on 3/11/20.

@@ -23,6 +23,7 @@ public class FileMediaStorage {
 
     }
     
+    // TODO: Differentiate photo & voice data
     public func store(_ media: Data, name: String) throws {
         try self.fileSystem.write(data: media, name: name)
     }

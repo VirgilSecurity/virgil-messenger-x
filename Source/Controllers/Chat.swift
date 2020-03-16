@@ -295,6 +295,7 @@ extension ChatViewController {
 
         item.photoInputHandler = { [weak self] image in
             if self?.checkReachability() ?? false, Configurator.isUpdated {
+                // FIXME: process errors
                 try? self?.dataSource.addPhotoMessage(image)
             }
         }
@@ -305,7 +306,7 @@ extension ChatViewController {
         let item = AudioChatInputItem(presentingController: self)
         item.audioInputHandler = { [weak self] audioData in
             if self?.checkReachability() ?? false, Configurator.isUpdated {
-                self?.dataSource.addAudioMessage(audioData)
+                try? self?.dataSource.addAudioMessage(audioData)
             }
         }
         return item

@@ -62,6 +62,23 @@ extension CoreData {
         return message
     }
     
+    func createVoiceMessage(with content: VoiceContent,
+                            in channel: Channel,
+                            isIncoming: Bool,
+                            date: Date = Date()) throws -> Message {
+        let message = try VoiceMessage(identifier: content.identifier,
+                                       duration: content.duration,
+                                       url: content.url,
+                                       isIncoming: isIncoming,
+                                       date: date,
+                                       channel: channel,
+                                       managedContext: self.managedContext)
+
+        try self.save(message)
+
+        return message
+    }
+    
     func storeMediaContent(_ data: Data, name: String) throws {
         try self.getMediaStorage().store(data, name: name)
     }

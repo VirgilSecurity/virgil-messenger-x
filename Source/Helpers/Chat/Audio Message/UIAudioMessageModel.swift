@@ -10,12 +10,15 @@ import Chatto
 import ChattoAdditions
 
 public class UIAudioMessageModel: AudioMessageModel<MessageModel>, UIMessageModelProtocol {
-
+    public private(set) var state: MediaMessageState
+    public private(set) weak var loadDelegate: LoadDelegate?
+    
     public required init(uid: Int,
                          audio: Data,
                          duration: TimeInterval,
                          isIncoming: Bool,
                          status: MessageStatus,
+                         state: MediaMessageState,
                          date: Date) {
         let senderId = isIncoming ? "1" : "2"
 
@@ -25,6 +28,8 @@ public class UIAudioMessageModel: AudioMessageModel<MessageModel>, UIMessageMode
                                         isIncoming: isIncoming,
                                         date: date,
                                         status: status)
+        
+        self.state = state
 
         super.init(messageModel: messageModel, audio: audio, duration: duration)
     }
@@ -36,6 +41,20 @@ public class UIAudioMessageModel: AudioMessageModel<MessageModel>, UIMessageMode
         set {
             self._messageModel.status = newValue
         }
+    }
+}
+
+extension UIAudioMessageModel: LoadDelegate {
+    public func progressChanged(to percent: Double) {
+        self.loadDelegate?.progressChanged(to: percent)
+    }
+    
+    public func failed(with error: Error) {
+        self.loadDelegate?.failed(with: error)
+    }
+    
+    public func completed(dataHash: String) {
+        self.loadDelegate?.completed(dataHash: dataHash)
     }
 }
 

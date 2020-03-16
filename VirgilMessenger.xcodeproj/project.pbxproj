@@ -165,6 +165,9 @@
 		97067135241F9D7A000E29F8 /* TextContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975F486F2412A7DD00232361 /* TextContent.swift */; };
 		97067136241F9D7D000E29F8 /* PhotoContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974215372419170100E2DF42 /* PhotoContent.swift */; };
 		97067137241F9D85000E29F8 /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C0D4502265FF75001F23ED /* MessageType.swift */; };
+		9706713A241FB39B000E29F8 /* VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97067138241FB39B000E29F8 /* VoiceMessage.swift */; };
+		9706713D241FB572000E29F8 /* VoiceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9706713C241FB572000E29F8 /* VoiceContent.swift */; };
+		9706713E241FB642000E29F8 /* VoiceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9706713C241FB572000E29F8 /* VoiceContent.swift */; };
 		9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
 		97421535241914E600E2DF42 /* PhotoMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97421533241914E600E2DF42 /* PhotoMessage.swift */; };
 		974215382419170100E2DF42 /* PhotoContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974215372419170100E2DF42 /* PhotoContent.swift */; };
@@ -362,6 +365,8 @@
 		80AC600B2400225100F6A73C /* DetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailTableViewCell.swift; sourceTree = "<group>"; };
 		80AC600D240023EA00F6A73C /* UIColor+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Constants.swift"; sourceTree = "<group>"; };
 		80AC600F24008EA900F6A73C /* Array+IndexPathSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+IndexPathSubscript.swift"; sourceTree = "<group>"; };
+		97067138241FB39B000E29F8 /* VoiceMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMessage.swift; sourceTree = "<group>"; };
+		9706713C241FB572000E29F8 /* VoiceContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceContent.swift; sourceTree = "<group>"; };
 		97421533241914E600E2DF42 /* PhotoMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMessage.swift; sourceTree = "<group>"; };
 		974215372419170100E2DF42 /* PhotoContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoContent.swift; sourceTree = "<group>"; };
 		974CC5462417DD1400FC7554 /* VirgilMessenger-v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VirgilMessenger-v2.xcdatamodel"; sourceTree = "<group>"; };
@@ -602,6 +607,7 @@
 				16C0D45622660A5D001F23ED /* Message.swift */,
 				974CC5472417DDD800FC7554 /* TextMessage.swift */,
 				97421533241914E600E2DF42 /* PhotoMessage.swift */,
+				97067138241FB39B000E29F8 /* VoiceMessage.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -895,6 +901,7 @@
 				975F486C2412A68B00232361 /* MessageContent.swift */,
 				975F486F2412A7DD00232361 /* TextContent.swift */,
 				974215372419170100E2DF42 /* PhotoContent.swift */,
+				9706713C241FB572000E29F8 /* VoiceContent.swift */,
 			);
 			path = MessageContent;
 			sourceTree = "<group>";
@@ -1116,6 +1123,7 @@
 				97067135241F9D7A000E29F8 /* TextContent.swift in Sources */,
 				16D4B8D523F5C35300D17B90 /* UserFriendlyError.swift in Sources */,
 				16D4B8D123F5C2EB00D17B90 /* Client.swift in Sources */,
+				9706713E241FB642000E29F8 /* VoiceContent.swift in Sources */,
 				16D4B8D423F5C33D00D17B90 /* UIColor+RGB.swift in Sources */,
 				9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */,
 				97AF4D86241AEED000ED9BD7 /* Client+Backend.swift in Sources */,
@@ -1149,6 +1157,7 @@
 				16FA91051FFC55A400FE98C7 /* UIViewController+Reachability.swift in Sources */,
 				169367942249181100EF9A42 /* LocalKeyManager.swift in Sources */,
 				97CE26F52418231300903116 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
+				9706713A241FB39B000E29F8 /* VoiceMessage.swift in Sources */,
 				975F48702412A7DD00232361 /* TextContent.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				16FC679B2260D7860044CC70 /* CreateGroup.swift in Sources */,
@@ -1190,6 +1199,7 @@
 				16C0D4512265FF75001F23ED /* MessageType.swift in Sources */,
 				423BDA7E1F97602F00C3EE9B /* ChatListCell.swift in Sources */,
 				97AF4D83241AEE2000ED9BD7 /* Client+Backend.swift in Sources */,
+				9706713D241FB572000E29F8 /* VoiceContent.swift in Sources */,
 				16F8F3B9226487BE00143FB7 /* UsersListCell.swift in Sources */,
 				4280C0D51F97341300075B3A /* SendingStatusCollectionViewCell.swift in Sources */,
 				97F83C8A240D130A003F7451 /* FileMediaStorage.swift in Sources */,
