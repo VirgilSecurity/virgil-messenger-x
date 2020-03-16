@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum MessageContent {
+public enum Message {
     
     public struct Text: Codable {
         let body: String
@@ -34,7 +34,7 @@ public enum MessageContent {
     case iceCandidate(IceCandidate)
 }
 
-extension MessageContent: Codable {
+extension Message: Codable {
     enum TypeCodingKeys: String, Codable {
         case text
         case callOffer = "call_offer"
@@ -96,8 +96,8 @@ extension MessageContent: Codable {
         }
     }
     
-    static func `import`(from jsonData: Data) throws -> MessageContent {
-        return try JSONDecoder().decode(MessageContent.self, from: jsonData)
+    static func `import`(from jsonData: Data) throws -> Message {
+        return try JSONDecoder().decode(Message.self, from: jsonData)
     }
     
     func exportAsJsonData() throws -> Data {

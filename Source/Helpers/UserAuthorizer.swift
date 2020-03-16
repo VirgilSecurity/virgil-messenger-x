@@ -24,13 +24,13 @@ public class UserAuthorizer {
             throw UserAuthorizerError.noIdentityAtDefaults
         }
 
-        try CoreData.shared.loadAccount(withIdentity: identity)
+        try Storage.shared.loadAccount(withIdentity: identity)
 
         try self.virgilAuthorizer.signIn(identity: identity)
     }
 
     public func signIn(identity: String) throws {
-        try CoreData.shared.loadAccount(withIdentity: identity)
+        try Storage.shared.loadAccount(withIdentity: identity)
 
         try self.virgilAuthorizer.signIn(identity: identity)
 
@@ -42,7 +42,7 @@ public class UserAuthorizer {
             do {
                 _ = try self.virgilAuthorizer.signUp(identity: identity)
 
-                try CoreData.shared.createAccount(withIdentity: identity)
+                try Storage.shared.createAccount(withIdentity: identity)
 
                 IdentityDefaults.shared.set(identity: identity)
 
@@ -58,11 +58,11 @@ public class UserAuthorizer {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
                 try Ejabberd.shared.deregisterFromNotifications()
-                
+
                 try Ejabberd.shared.disconect()
 
                 Configurator.reset()
-                CoreData.shared.resetState()
+                Storage.shared.resetState()
 
                 IdentityDefaults.shared.reset()
 
@@ -79,8 +79,8 @@ public class UserAuthorizer {
 
         Configurator.reset()
 
-        try CoreData.shared.deleteAccount()
-        CoreData.shared.resetState()
+        try Storage.shared.deleteAccount()
+        Storage.shared.resetState()
         try Ejabberd.shared.disconect()
 
         self.virgilAuthorizer.logOut()

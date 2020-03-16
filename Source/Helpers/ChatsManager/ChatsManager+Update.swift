@@ -22,12 +22,12 @@ extension ChatsManager {
 
                     let twilioChannels = Twilio.shared.channels.subscribedChannels()
 
-                    let coreGroupChannels = CoreData.shared.getGroupChannels()
+                    let coreGroupChannels = Storage.shared.getGroupChannels()
 
                     for coreChannel in coreGroupChannels {
                         if (try? Twilio.shared.getChannel(coreChannel)) == nil {
                             try Virgil.ethree.deleteGroup(id: coreChannel.sid).startSync().get()
-                            try CoreData.shared.delete(channel: coreChannel)
+                            try Storage.shared.delete(channel: coreChannel)
                         }
                     }
 
@@ -81,8 +81,8 @@ extension ChatsManager {
                 Log.debug("Updating channel: \(String(describing: twilioChannel))")
                 let attributes = try twilioChannel.getAttributes()
 
-                // Update CoreData
-                let coreChannel = try self.updateCoreData(with: twilioChannel)
+                // Update Storage
+                let coreChannel = try self.updatePersistentStorage(with: twilioChannel)
 
                 if attributes.type == .group {
                     // Update Virgil Group
@@ -106,7 +106,7 @@ extension ChatsManager {
 
 //                for message in messages {
 //                    let sid = try twilioChannel.getSid()
-//                    if !CoreData.shared.existsChannel(sid: sid) {
+//                    if !Storage.shared.existsChannel(sid: sid) {
 //                        break
 //                    }
 //
@@ -121,7 +121,7 @@ extension ChatsManager {
         }
     }
 
-    private static func updateVirgilGroup(with coreChannel: Channel,
+    private static func updateVirgilGroup(with coreChannel: Storage.Channel,
                                           initiator: String) throws -> Group {
         let group: Group
 
@@ -154,9 +154,9 @@ extension ChatsManager {
         return group
     }
 
-    private static func updateCoreData(with twilioChannel: TCHChannel) throws -> Channel {
-        let coreChannel: Channel
-        if let channel = try? CoreData.shared.getChannel(twilioChannel) {
+    private static func updatePersistentStorage(with twilioChannel: TCHChannel) throws -> Storage.Channel {
+        let coreChannel: Storage.Channel
+        if let channel = try? Storage.shared.getChannel(twilioChannel) {
             coreChannel = channel
         }
         else {
@@ -169,7 +169,7 @@ extension ChatsManager {
 
                 let card = try Virgil.ethree.findUser(with: name).startSync().get()
 
-                coreChannel = try CoreData.shared.createSingleChannel(sid: sid,
+                coreChannel = try Storage.shared.createSingleChannel(sid: sid,
                                                                       initiator: attributes.initiator,
                                                                       card: card)
             case .group:
@@ -178,7 +178,7 @@ extension ChatsManager {
 
                 let name = try twilioChannel.getFriendlyName()
 
-                coreChannel = try CoreData.shared.createGroupChannel(name: name,
+                coreChannel = try Storage.shared.createGroupChannel(name: name,
                                                                      sid: sid,
                                                                      initiator: attributes.initiator,
                                                                      cards: cards)

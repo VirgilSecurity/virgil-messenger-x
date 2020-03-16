@@ -28,7 +28,7 @@ import AVFoundation
 import VirgilSDK
 
 class DataSource: ChatDataSourceProtocol {
-    public let channel: Channel
+    public let channel: Storage.Channel
     public var nextMessageId: Int = 0
 
     private let preferredMaxWindowSize = 500
@@ -38,7 +38,7 @@ class DataSource: ChatDataSourceProtocol {
         return self.channel.visibleMessages.count
     }
 
-    init(channel: Channel) {
+    init(channel: Storage.Channel) {
         self.channel = channel
 
         self.slidingWindow = SlidingDataSource(count: count) { [weak self] (messageNumber, messages) -> ChatItemProtocol in
@@ -58,7 +58,7 @@ class DataSource: ChatDataSourceProtocol {
 
     func setupObservers() {
         let process: Notifications.Block = { [weak self] notification in
-            guard let message: Message = Notifications.parse(notification, for: .message) else {
+            guard let message: Storage.Message = Notifications.parse(notification, for: .message) else {
                 Log.error("Invalid notification")
                 return
             }
@@ -80,7 +80,7 @@ class DataSource: ChatDataSourceProtocol {
         Notifications.observe(for: .updatingSucceed, block: updateMessageList)
     }
 
-    @objc private func process(message: Message) {
+    @objc private func process(message: Storage.Message) {
         DispatchQueue.main.async {
             self.nextMessageId += 1
             let uiModel = message.exportAsUIModel(withId: self.nextMessageId)

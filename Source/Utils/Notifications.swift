@@ -67,14 +67,14 @@ extension Notifications {
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }
 
-    public static func post(message: Message) {
+    public static func post(message: Storage.Message) {
         let notification = self.notification(.messageAddedToCurrentChannel)
         let userInfo = [NotificationKeys.message.rawValue: message]
 
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }
 
-    public static func post(messageContent: MessageContent) {
+    public static func post(messageContent: Message) {
         switch(messageContent) {
         case .text(_):
             // Is handled via post(message)

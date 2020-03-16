@@ -19,10 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+
         // Firebase configuration for Crashlytics
         FirebaseApp.configure()
-        
+
         // WebRTC
         RTCInitializeSSL()
 
@@ -49,10 +49,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func cleanLocalStorage() {
         do {
-            let key = CoreData.dbName
+            let key = Storage.dbName
 
             if UserDefaults.standard.string(forKey: key)?.isEmpty ?? true {
-                try? CoreData.shared.clearStorage()
+                try? Storage.shared.clearStorage()
 
                 // Clean keychain
                 let params = try KeychainStorageParams.makeKeychainStorageParams()
@@ -94,7 +94,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-    
+
     private func cleanNotifications() {
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
@@ -109,7 +109,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         RTCCleanupSSL()
         do {
-            try CoreData.shared.saveContext()
+            try Storage.shared.saveContext()
         }
         catch {
             Log.error("Saving Core Data context failed with error: \(error.localizedDescription)")
@@ -118,12 +118,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Log.debug("Received device token: \(deviceToken.hexEncodedString())")
-        
+
         do {
             if Ejabberd.shared.state == .connected {
                 try Ejabberd.shared.registerForNotifications(deviceToken: deviceToken)
             }
-            
+
             Ejabberd.updatedPushToken = deviceToken
         }
         catch {
@@ -139,7 +139,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         Ejabberd.shared.set(status: .online)
-        
+
         self.cleanNotifications()
     }
 

@@ -69,7 +69,7 @@ class VoiceCallViewController: ViewController {
         }
     }
     
-    private var lastCallOffer: MessageContent.CallOffer?
+    private var lastCallOffer: Message.CallOffer?
     
     public var callChannel: CallChannel! {
         didSet {
@@ -86,7 +86,7 @@ class VoiceCallViewController: ViewController {
         
     private func setupObservers() {
         let processCallOffer: Notifications.Block = { [weak self] notification in
-            guard let callOffer: MessageContent.CallOffer = Notifications.parse(notification, for: .message) else {
+            guard let callOffer: Message.CallOffer = Notifications.parse(notification, for: .message) else {
                 Log.error("Invalid call offer notification")
                 return
             }
@@ -97,7 +97,7 @@ class VoiceCallViewController: ViewController {
         Notifications.observe(for: .callOfferReceived, block: processCallOffer)
 
         let processCallAnswer: Notifications.Block = { [weak self] notification in
-            guard let callAnswer: MessageContent.CallAnswer = Notifications.parse(notification, for: .message) else {
+            guard let callAnswer: Message.CallAnswer = Notifications.parse(notification, for: .message) else {
                 Log.error("Invalid call answer notification")
                 return
             }
@@ -116,7 +116,7 @@ class VoiceCallViewController: ViewController {
         Notifications.observe(for: .callAnswerReceived, block: processCallAnswer)
 
         let processIceCandidate: Notifications.Block = { [weak self] notification in
-            guard let iceCandidate: MessageContent.IceCandidate = Notifications.parse(notification, for: .message) else {
+            guard let iceCandidate: Message.IceCandidate = Notifications.parse(notification, for: .message) else {
                 Log.error("Invalid ice cadidate notification")
                 return
             }

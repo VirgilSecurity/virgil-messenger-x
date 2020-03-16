@@ -26,7 +26,7 @@ import Chatto
 import ChattoAdditions
 
 public class UITextMessageModel: TextMessageModel<MessageModel>, UIMessageModelProtocol {
-    
+
     public required init(uid: Int,
                          text: String,
                          isIncoming: Bool,

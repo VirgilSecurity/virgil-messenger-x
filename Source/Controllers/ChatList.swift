@@ -18,7 +18,7 @@ class ChatListViewController: ViewController {
 
     static let name = "ChatList"
 
-    private var channels: [Channel] = []
+    private var channels: [Storage.Channel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -102,7 +102,7 @@ class ChatListViewController: ViewController {
     }
 
     @objc private func reloadTableView() {
-        self.channels = CoreData.shared.getChannels()
+        self.channels = Storage.shared.getChannels()
 
         self.channels.sort { first, second in
             let firstDate = first.lastMessagesDate ?? first.createdAt
@@ -196,11 +196,11 @@ extension ChatListViewController: UITableViewDataSource {
 extension ChatListViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         guard let selectedChannel = self.channels[safe: cell.tag] else {
-            Log.error("Channel is out of range")
+            Log.error("Storage.Channel is out of range")
             return
         }
 
-        CoreData.shared.setCurrent(channel: selectedChannel)
+        Storage.shared.setCurrent(channel: selectedChannel)
 
         self.performSegue(withIdentifier: "goToChat", sender: self)
     }
@@ -208,7 +208,7 @@ extension ChatListViewController: CellTapDelegate {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let chatController = segue.destination as? ChatViewController,
-            let channel = CoreData.shared.currentChannel {
+            let channel = Storage.shared.currentChannel {
                 chatController.channel = channel
         }
 

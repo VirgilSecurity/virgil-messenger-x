@@ -16,7 +16,7 @@ class CreateGroupViewController: ViewController {
     @IBOutlet weak var usersListHeight: NSLayoutConstraint!
     @IBOutlet weak var scrollView: UIScrollView!
 
-    public var members: [Channel] = []
+    public var members: [Storage.Channel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()

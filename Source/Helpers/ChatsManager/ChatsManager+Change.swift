@@ -20,13 +20,13 @@ extension ChatsManager {
                 let text = "added \(newMembers.joined(separator: ", "))"
                 try dataSource.addChangeMembers(message: text)
 
-                // Invite members to Twilio Channel
+                // Invite members to Twilio Storage.Channel
                 try Twilio.shared.add(members: newMembers).startSync().get()
 
                 // Adding cards to Core Data
                 let participants = try Virgil.ethree.findUsers(with: Array(group.participants)).startSync().get()
                 let cards = Array(participants.values)
-                try CoreData.shared.updateCards(with: cards, for: dataSource.channel)
+                try Storage.shared.updateCards(with: cards, for: dataSource.channel)
 
                 completion((), nil)
             }
@@ -52,7 +52,7 @@ extension ChatsManager {
                 // Adding cards to Core Data
                 let participants = try Virgil.ethree.findUsers(with: Array(group.participants)).startSync().get()
                 let cards = Array(participants.values)
-                try CoreData.shared.updateCards(with: cards, for: dataSource.channel)
+                try Storage.shared.updateCards(with: cards, for: dataSource.channel)
 
                 completion((), nil)
             }

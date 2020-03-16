@@ -27,9 +27,9 @@ extension Ejabberd: XMPPStreamDelegate {
         Log.debug("Ejabberd: Connect reached timeout")
 
         self.state = .disconnected
-        
+
         Crashlytics.sharedInstance().recordError(EjabberdError.connectionTimeout)
-        
+
         self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
     }
 
@@ -93,11 +93,11 @@ extension Ejabberd {
 
         do {
             let author = try message.getAuthor()
-            
+
             guard author != Virgil.ethree.identity else {
                 return
             }
-            
+
             let body = try message.getBody()
             let encryptedMessage = try EncryptedMessage.import(body)
 

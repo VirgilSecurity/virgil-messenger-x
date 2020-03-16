@@ -11,18 +11,18 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public func send(messageContent: MessageContent, date: Date, channel: Channel, completion: @escaping (Error?) -> Void) {
+    public func send(messageContent: Message, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
                 let exported = try messageContent.exportAsJsonData()
-                
+
                 let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: channel.getCard())
 
                 let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date)
 
                 try Ejabberd.shared.send(encryptedMessage, to: channel.name)
 
-//                _ = try CoreData.shared.createTextMessage(<#T##body: String##String#>, isIncoming: <#T##Bool#>)(uiModel.body,
+//                _ = try Storage.shared.createTextMessage(<#T##body: String##String#>, isIncoming: <#T##Bool#>)(uiModel.body,
 //                                                          in: coreChannel,
 //                                                          isIncoming: uiModel.isIncoming,
 //                                                          date: uiModel.date)
@@ -35,11 +35,11 @@ public class MessageSender {
         }
     }
 
-    public func send(uiModel: UITextMessageModel, coreChannel: Channel) {
+    public func send(uiModel: UITextMessageModel, coreChannel: Storage.Channel) {
         self.queue.async {
             do {
-                let textContent = MessageContent.Text(body: uiModel.body)
-                let messageContent = MessageContent.text(textContent)
+                let textContent = Message.Text(body: uiModel.body)
+                let messageContent = Message.text(textContent)
                 let exported = try messageContent.exportAsJsonData()
 
                 let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: coreChannel.getCard())
@@ -48,7 +48,7 @@ public class MessageSender {
 
                 try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name)
 
-                _ = try CoreData.shared.createTextMessage(uiModel.body,
+                _ = try Storage.shared.createTextMessage(uiModel.body,
                                                           in: coreChannel,
                                                           isIncoming: uiModel.isIncoming,
                                                           date: uiModel.date)

@@ -53,7 +53,7 @@ class ChooseMembersCell: UITableViewCell, BEMCheckBoxDelegate {
         self.radioButton.setOn(!self.isMember, animated: true)
     }
 
-    public func configure(with users: [Channel], selected: [Channel]) {
+    public func configure(with users: [Storage.Channel], selected: [Storage.Channel]) {
         guard let user = users[safe: self.tag] else {
             return
         }

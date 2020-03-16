@@ -33,7 +33,7 @@ public class SlidingDataSource<Element> {
     private var pageSize: Int = ChatConstants.chatPageSize
     private var windowOffset: Int
     private var windowCount: Int
-    private(set) var itemGenerator: ((Int, [Message]) -> Element)
+    private(set) var itemGenerator: ((Int, [Storage.Message]) -> Element)
     private(set) var items = [Element]()
     private var itemsOffset: Int
 
@@ -50,7 +50,7 @@ public class SlidingDataSource<Element> {
         return Array(items[a..<b])
     }
 
-    init(count: Int, itemGenerator: @escaping ((Int, [Message]) -> Element)) {
+    init(count: Int, itemGenerator: @escaping ((Int, [Storage.Message]) -> Element)) {
         self.windowOffset = count
         self.itemsOffset = count
         self.windowCount = 0
@@ -64,7 +64,7 @@ public class SlidingDataSource<Element> {
             return
         }
 
-        guard let channel = CoreData.shared.currentChannel else {
+        guard let channel = Storage.shared.currentChannel else {
             Log.error("Missing Core Data current channel")
             return
         }
@@ -80,7 +80,7 @@ public class SlidingDataSource<Element> {
     }
 
     public func updateMessageList() {
-        guard let channel = CoreData.shared.currentChannel else {
+        guard let channel = Storage.shared.currentChannel else {
             Log.error("Missing Core Data current channel")
             return
         }

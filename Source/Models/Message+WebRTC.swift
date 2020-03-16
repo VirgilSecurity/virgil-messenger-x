@@ -9,7 +9,7 @@
 import Foundation
 import WebRTC
 
-extension MessageContent.CallOffer {
+extension Message.CallOffer {
     init(from rtcSessionDescription: RTCSessionDescription) {
         assert(rtcSessionDescription.type == RTCSdpType.offer)
         self.sdp = rtcSessionDescription.sdp
@@ -20,7 +20,7 @@ extension MessageContent.CallOffer {
     }
 }
 
-extension MessageContent.CallAnswer {
+extension Message.CallAnswer {
     init(from rtcSessionDescription: RTCSessionDescription) {
         assert(rtcSessionDescription.type == RTCSdpType.answer)
         self.sdp = rtcSessionDescription.sdp
@@ -31,7 +31,7 @@ extension MessageContent.CallAnswer {
     }
 }
 
-extension MessageContent.IceCandidate {
+extension Message.IceCandidate {
     init(from iceCandidate: RTCIceCandidate) {
         self.sdpMLineIndex = iceCandidate.sdpMLineIndex
         self.sdpMid = iceCandidate.sdpMid

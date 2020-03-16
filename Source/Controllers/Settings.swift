@@ -71,7 +71,7 @@ class SettingsViewController: ViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
 
-        let account = try! CoreData.shared.getCurrentAccount()
+        let account = try! Storage.shared.getCurrentAccount()
         self.usernameLabel.text = account.identity
 
         self.letterLabel.text = String(describing: account.letter)
@@ -114,7 +114,7 @@ class SettingsViewController: ViewController {
         guard Configurator.isUpdated else {
             return
         }
-        
+
         let alertController = UIAlertController(title: "Delete account",
                                                 message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.",
                                                 preferredStyle: .alert)

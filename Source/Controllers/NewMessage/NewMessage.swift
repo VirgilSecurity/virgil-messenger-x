@@ -11,9 +11,9 @@ import UIKit
 class NewMessageViewController: ViewController {
     @IBOutlet weak var usersListHeight: NSLayoutConstraint!
 
-    private let users: [Channel] = CoreData.shared.getSingleChannels()
+    private let users: [Storage.Channel] = Storage.shared.getSingleChannels()
 
-    private var selectedUser: Channel?
+    private var selectedUser: Storage.Channel?
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)

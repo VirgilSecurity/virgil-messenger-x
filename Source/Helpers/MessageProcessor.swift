@@ -13,79 +13,79 @@ class MessageProcessor {
         let channel = try self.setupCoreChannel(name: author)
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
-        
+
         let messageContent = try self.migrationSafeContentImport(from: decrypted,
                                                                  version: encryptedMessage.version)
-        
+
         try self.process(messageContent, channel: channel, date: encryptedMessage.date)
     }
-    
-    private static func process(_ messageContent: MessageContent, channel: Channel, date: Date) throws {
+
+    private static func process(_ messageContent: Message, channel: Storage.Channel, date: Date) throws {
         switch messageContent {
         case .text(let content):
-            let message = try CoreData.shared.createTextMessage(content.body,
+            let message = try Storage.shared.createTextMessage(content.body,
                                                                 in: channel,
                                                                 isIncoming: true,
                                                                 date: date)
-            
+
             self.postNotification(about: message)
-            
+
         case .callOffer(_), .callAnswer(_), .iceCandidate(_):
             //  FIXME: Unify the handling approach for '.text' as well.
             Notifications.post(messageContent: messageContent)
         }
     }
-    
+
     private static func migrationSafeContentImport(from data: Data,
-                                                   version: EncryptedMessageVersion) throws -> MessageContent {
-        let messageContent: MessageContent
-        
+                                                   version: EncryptedMessageVersion) throws -> Message {
+        let messageContent: Message
+
         switch version {
         case .v1:
             let string = String(data: data, encoding: .utf8)!
-            let textContent = MessageContent.Text(body: string)
-            messageContent = MessageContent.text(textContent)
+            let textContent = Message.Text(body: string)
+            messageContent = Message.text(textContent)
         case .v2:
-            messageContent = try MessageContent.import(from: data)
+            messageContent = try Message.import(from: data)
         }
-        
+
         return messageContent
     }
-    
-    private static func setupCoreChannel(name: String) throws -> Channel {
-        let channel: Channel
 
-        if let coreChannel = CoreData.shared.getChannel(withName: name) {
+    private static func setupCoreChannel(name: String) throws -> Storage.Channel {
+        let channel: Storage.Channel
+
+        if let coreChannel = Storage.shared.getChannel(withName: name) {
             channel = coreChannel
         }
         else {
             let card = try Virgil.ethree.findUser(with: name).startSync().get()
 
-            channel = try CoreData.shared.getChannel(withName: name)
-                ?? CoreData.shared.createSingleChannel(initiator: name, card: card)
+            channel = try Storage.shared.getChannel(withName: name)
+                ?? Storage.shared.createSingleChannel(initiator: name, card: card)
         }
-        
+
         return channel
     }
-    
-    private static func decrypt(_ message: EncryptedMessage, from channel: Channel) throws -> Data {
+
+    private static func decrypt(_ message: EncryptedMessage, from channel: Storage.Channel) throws -> Data {
         let decrypted: Data
-        
+
         do {
             decrypted = try Virgil.ethree.authDecrypt(data: message.ciphertext, from: channel.getCard())
         }
         catch {
             // TODO: check if needed
-            try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
-            
+            try Storage.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
+
             throw error
         }
-        
+
         return decrypted
     }
-    
-    private static func postNotification(about message: Message) {
-        guard CoreData.shared.currentChannel != nil else {
+
+    private static func postNotification(about message: Storage.Message) {
+        guard Storage.shared.currentChannel != nil else {
             return Notifications.post(.chatListUpdated)
         }
 

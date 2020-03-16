@@ -68,7 +68,7 @@ public class CallChannel: NSObject {
         }
     }
 
-    func sendAnswer(offer offerSessionDescription: MessageContent.CallOffer,  completion: @escaping (_ error: Error?) -> Void) {
+    func sendAnswer(offer offerSessionDescription: Message.CallOffer,  completion: @escaping (_ error: Error?) -> Void) {
         
         self.peerConnection?.close()
         self.peerConnection = Self.createPeerConnection()
@@ -106,12 +106,12 @@ public class CallChannel: NSObject {
         }
     }
     
-    func acceptAnswer(_ callAnswer: MessageContent.CallAnswer,  completion: @escaping (_ error: Error?) -> Void) {
+    func acceptAnswer(_ callAnswer: Message.CallAnswer,  completion: @escaping (_ error: Error?) -> Void) {
         let sdp = callAnswer.rtcSessionDescription
         self.peerConnection?.setRemoteDescription(sdp, completionHandler: completion)
     }
     
-    func addIceCandidate(_ iceCandidate: MessageContent.IceCandidate) {
+    func addIceCandidate(_ iceCandidate: Message.IceCandidate) {
         self.peerConnection?.add(iceCandidate.rtcIceCandidate)
     }
 
@@ -157,22 +157,22 @@ public class CallChannel: NSObject {
     }
     
     private func sendSignalingMessage(offer sdp: RTCSessionDescription, completion: @escaping (_ error: Error?) -> Void) {
-        let callOffer = MessageContent.CallOffer(from: sdp)
-        let messageContent = MessageContent.callOffer(callOffer)
+        let callOffer = Message.CallOffer(from: sdp)
+        let messageContent = Message.callOffer(callOffer)
         
         self.dataSource.messageSender.send(messageContent: messageContent, date: Date(), channel: self.dataSource.channel, completion: completion)
     }
 
     private func sendSignalingMessage(answer sdp: RTCSessionDescription, completion: @escaping (_ error: Error?) -> Void) {
-        let callAnswer = MessageContent.CallAnswer(from: sdp)
-        let messageContent = MessageContent.callAnswer(callAnswer)
+        let callAnswer = Message.CallAnswer(from: sdp)
+        let messageContent = Message.callAnswer(callAnswer)
 
         self.dataSource.messageSender.send(messageContent: messageContent, date: Date(), channel: self.dataSource.channel, completion: completion)
     }
 
     private func sendSignalingMessage(candidate rtcIceCandidate: RTCIceCandidate, completion: @escaping (_ error: Error?) -> Void) {
-        let iceCandiadte = MessageContent.IceCandidate(from: rtcIceCandidate)
-        let messageContent = MessageContent.iceCandidate(iceCandiadte)
+        let iceCandiadte = Message.IceCandidate(from: rtcIceCandidate)
+        let messageContent = Message.iceCandidate(iceCandiadte)
 
         self.dataSource.messageSender.send(messageContent: messageContent, date: Date(), channel: self.dataSource.channel, completion: completion)
     }

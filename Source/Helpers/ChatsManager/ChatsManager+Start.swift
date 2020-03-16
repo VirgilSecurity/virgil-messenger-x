@@ -21,15 +21,15 @@ public enum ChatsManager {
                     throw UserFriendlyError.createSelfChatForbidded
                 }
 
-                guard !CoreData.shared.existsSingleChannel(with: identity) else {
+                guard !Storage.shared.existsSingleChannel(with: identity) else {
                     throw UserFriendlyError.doubleChannelForbidded
                 }
 
                 startProgressBar()
-                
+
                 let card = try Virgil.ethree.findUser(with: identity).startSync().get()
 
-                _ = try CoreData.shared.createSingleChannel(initiator: Virgil.ethree.identity, card: card)
+                _ = try Storage.shared.createSingleChannel(initiator: Virgil.ethree.identity, card: card)
 
                 completion(nil)
             }
@@ -41,8 +41,8 @@ public enum ChatsManager {
             }
         }
     }
-    
-//    public static func startGroup(with channels: [Channel],
+
+//    public static func startGroup(with channels: [Storage.Channel],
 //                                  name: String,
 //                                  startProgressBar: @escaping () -> Void,
 //                                  completion: @escaping (Error?) -> Void) {
@@ -70,7 +70,7 @@ public enum ChatsManager {
 //                let group = try Virgil.ethree.createGroup(id: sid, with: findUsersResult).startSync().get()
 //
 //                let cards = Array(findUsersResult.values)
-//                let coreChannel = try CoreData.shared.createGroupChannel(name: name,
+//                let coreChannel = try Storage.shared.createGroupChannel(name: name,
 //                                                                         sid: sid,
 //                                                                         initiator: group.initiator,
 //                                                                         cards: cards)

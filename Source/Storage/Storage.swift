@@ -1,5 +1,5 @@
 //
-//  CoreData.swift
+//  Storage.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 11/9/17.
@@ -8,20 +8,20 @@
 
 import CoreData
 
-class CoreData {
-    private(set) static var shared: CoreData = CoreData()
-    private(set) var accounts: [Account] = []
-    private(set) var currentChannel: Channel?
-    private(set) var currentAccount: Account?
+public class Storage {
+    private(set) static var shared: Storage = Storage()
+    private(set) var accounts: [Storage.Account] = []
+    private(set) var currentChannel: Storage.Channel?
+    private(set) var currentAccount: Storage.Account?
 
-    private let queue = DispatchQueue(label: "CoreData")
+    private let queue = DispatchQueue(label: "Storage")
 
     let managedContext: NSManagedObjectContext
 
     public static let dbName = "VirgilMessenger-5"
 
     let persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: CoreData.dbName)
+        let container = NSPersistentContainer(name: Storage.dbName)
 
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
@@ -63,16 +63,16 @@ class CoreData {
         self.accounts = try self.fetch()
     }
 
-    private func fetch() throws -> [Account] {
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: Account.EntityName)
+    private func fetch() throws -> [Storage.Account] {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: Storage.Account.EntityName)
 
-        let accounts = try self.managedContext.fetch(fetchRequest) as? [Account]
+        let accounts = try self.managedContext.fetch(fetchRequest) as? [Storage.Account]
 
         return accounts ?? []
     }
 
     public func clearStorage() throws {
-        Log.debug("Cleaning CoreData storage")
+        Log.debug("Cleaning Storage storage")
 
         for account in self.accounts {
             try account.channels.forEach { try self.delete(channel: $0) }
@@ -85,16 +85,16 @@ class CoreData {
         try self.reloadData()
     }
 
-    func setCurrent(account: Account) {
+    func setCurrent(account: Storage.Account) {
         self.currentAccount = account
     }
 
-    func setCurrent(channel: Channel) {
+    func setCurrent(channel: Storage.Channel) {
         self.currentChannel = channel
         Log.debug("Core Data channel selected: \(String(describing: self.currentChannel?.name))")
     }
 
-    func append(account: Account) {
+    func append(account: Storage.Account) {
         self.accounts.append(account)
     }
 

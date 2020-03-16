@@ -14,9 +14,9 @@ class AddMembersViewController: ViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var addButton: UIBarButtonItem!
 
-    private var channels: [Channel] = []
+    private var channels: [Storage.Channel] = []
 
-    private var selected: [Channel] = [] {
+    private var selected: [Storage.Channel] = [] {
         didSet {
             self.addButton.isEnabled = !self.selected.isEmpty
         }
@@ -58,11 +58,11 @@ class AddMembersViewController: ViewController {
     }
 
     @objc private func reloadTableView() {
-        self.channels = CoreData.shared.getSingleChannels()
+        self.channels = Storage.shared.getSingleChannels()
 
         self.channels = self.channels.filter { channel in
             // FIXME
-            !CoreData.shared.currentChannel!.cards.contains { card in
+            !Storage.shared.currentChannel!.cards.contains { card in
                 channel.cards.first?.identity == card.identity
             }
         }

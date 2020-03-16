@@ -35,7 +35,7 @@ class ChatViewController: BaseChatViewController {
     private let indicator = UIActivityIndicatorView()
     private let indicatorLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
 
-    public var channel: Channel!
+    public var channel: Storage.Channel!
 
     private var soundPlayer: AVAudioPlayer?
     weak private var cachedAudioModel: UIAudioMessageViewModel?
@@ -81,7 +81,7 @@ class ChatViewController: BaseChatViewController {
     }
 
     deinit {
-        CoreData.shared.deselectChannel()
+        Storage.shared.deselectChannel()
     }
 
     private func setupObservers() {
@@ -98,7 +98,7 @@ class ChatViewController: BaseChatViewController {
         }
 
         let showIncommingCall: Notifications.Block = { [weak self] notification in
-            guard let _ : MessageContent.CallOffer = Notifications.parse(notification, for: .message) else {
+            guard let _ : Message.CallOffer = Notifications.parse(notification, for: .message) else {
                 Log.error("Invalid call offer notification")
                 return
             }
@@ -243,7 +243,7 @@ extension ChatViewController {
             viewModelBuilder: UITextMessageViewModelBuilder(),
             interactionHandler: UITextMessageHandler(baseHandler: self.baseMessageHandler)
         )
-        
+
         textMessagePresenter.baseMessageStyle = baseMessageStyle
         textMessagePresenter.textCellStyle = textCellStyle
 

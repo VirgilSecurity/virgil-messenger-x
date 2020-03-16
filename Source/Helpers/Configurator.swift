@@ -38,7 +38,7 @@ public class Configurator {
     private static func initialize() -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                let account = try CoreData.shared.getCurrentAccount()
+                let account = try Storage.shared.getCurrentAccount()
                 let identity = account.identity
 
                 try Ejabberd.shared.initialize(identity: identity)
