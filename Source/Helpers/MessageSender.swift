@@ -18,7 +18,7 @@ public class MessageSender {
                 let messageContent = MessageContent.text(textContent)
                 let exported = try messageContent.exportAsJsonString()
 
-                let ciphertext = try Virgil.ethree.authEncrypt(text: exported, for: coreChannel.getCard())
+                let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: coreChannel.getCard())
 
                 let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
 
