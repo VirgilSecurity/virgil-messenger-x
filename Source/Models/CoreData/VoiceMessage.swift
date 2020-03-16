@@ -15,7 +15,7 @@ import ChattoAdditions
 public class VoiceMessage: Message {
     @NSManaged public var identifier: String
     @NSManaged public var url: URL
-    @NSManaged public var duration: Int
+    @NSManaged public var duration: Int16
     
     private static let EntityName = "VoiceMessage"
     
@@ -35,7 +35,7 @@ public class VoiceMessage: Message {
         self.init(entity: entity, insertInto: managedContext)
 
         self.identifier = identifier
-        self.duration = duration
+        self.duration = Int16(duration)
         self.url = url
         self.isIncoming = isIncoming
         self.date = date
