@@ -161,6 +161,10 @@
 		80AC600C2400225100F6A73C /* DetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AC600B2400225100F6A73C /* DetailTableViewCell.swift */; };
 		80AC600E240023EA00F6A73C /* UIColor+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AC600D240023EA00F6A73C /* UIColor+Constants.swift */; };
 		80AC601024008EAB00F6A73C /* Array+IndexPathSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AC600F24008EA900F6A73C /* Array+IndexPathSubscript.swift */; };
+		97067134241F9D73000E29F8 /* MessageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975F486C2412A68B00232361 /* MessageContent.swift */; };
+		97067135241F9D7A000E29F8 /* TextContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975F486F2412A7DD00232361 /* TextContent.swift */; };
+		97067136241F9D7D000E29F8 /* PhotoContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974215372419170100E2DF42 /* PhotoContent.swift */; };
+		97067137241F9D85000E29F8 /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C0D4502265FF75001F23ED /* MessageType.swift */; };
 		9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
 		97421535241914E600E2DF42 /* PhotoMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97421533241914E600E2DF42 /* PhotoMessage.swift */; };
 		974215382419170100E2DF42 /* PhotoContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974215372419170100E2DF42 /* PhotoContent.swift */; };
@@ -1108,13 +1112,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97067136241F9D7D000E29F8 /* PhotoContent.swift in Sources */,
+				97067135241F9D7A000E29F8 /* TextContent.swift in Sources */,
 				16D4B8D523F5C35300D17B90 /* UserFriendlyError.swift in Sources */,
 				16D4B8D123F5C2EB00D17B90 /* Client.swift in Sources */,
 				16D4B8D423F5C33D00D17B90 /* UIColor+RGB.swift in Sources */,
 				9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */,
 				97AF4D86241AEED000ED9BD7 /* Client+Backend.swift in Sources */,
+				97067137241F9D85000E29F8 /* MessageType.swift in Sources */,
 				16D4B8D923F5CE1700D17B90 /* IdentityDefaults.swift in Sources */,
 				16D4B8D323F5C32D00D17B90 /* ColorPair.swift in Sources */,
+				97067134241F9D73000E29F8 /* MessageContent.swift in Sources */,
 				16D4B8B123F5BCA400D17B90 /* NotificationService.swift in Sources */,
 				16D4B8D623F5C35B00D17B90 /* LocalKeyManager.swift in Sources */,
 				16D4B8D223F5C2F500D17B90 /* Constants.swift in Sources */,
