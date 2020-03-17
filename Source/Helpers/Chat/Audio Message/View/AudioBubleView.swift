@@ -180,11 +180,8 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         textView.bouncesZoom = false
         textView.showsHorizontalScrollIndicator = false
         textView.showsVerticalScrollIndicator = false
-//        textView.layoutManager.allowsNonContiguousLayout = true
         textView.isExclusiveTouch = true
         textView.textContainer.lineFragmentPadding = 0
-//        textView.textAlignment = .left
-//        textView.textContainerInset = UIEdgeInsets.zero
 
         return textView
     }()
@@ -264,7 +261,6 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
     }
 
     private func updateTextView() {
-        Log.debug("AAA")
         self.textView.dataDetectorTypes = []
         guard let style = self.style, let viewModel = self.audioMessageViewModel else { return }
 
