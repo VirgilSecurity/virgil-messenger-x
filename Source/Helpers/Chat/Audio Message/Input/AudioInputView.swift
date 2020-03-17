@@ -15,7 +15,7 @@ protocol AudioInputViewProtocol {
 }
 
 protocol AudioInputViewDelegate: class {
-    func inputView(_ inputView: AudioInputViewProtocol, didFinishedRecording audio: Data)
+    func inputView(_ inputView: AudioInputViewProtocol, didFinishedRecording audioUrl: URL, duration: TimeInterval)
     func inputViewDidRequestMicrophonePermission(_ inputView: AudioInputViewProtocol)
 }
 
@@ -38,6 +38,7 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
     private var audioRecorder: AVAudioRecorder!
     private var timer = Timer()
     private var time: TimeInterval = 0
+    private var audioFile: URL?
 
     init(presentingController: UIViewController?) {
         super.init(frame: CGRect.zero)
@@ -293,8 +294,11 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
         self.cancelLabel.isHidden = false
         self.startRecording()
         self.holdToRecordLabel.text = "Recording..."
-        self.timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(AudioInputView.updateTimer),
-                                          userInfo: nil, repeats: true)
+        self.timer = Timer.scheduledTimer(timeInterval: 0.01,
+                                          target: self,
+                                          selector: #selector(AudioInputView.updateTimer),
+                                          userInfo: nil,
+                                          repeats: true)
     }
 
     @objc func didFinishRecord(_ sender: Any) {
@@ -313,7 +317,11 @@ extension AudioInputView {
         ]
 
         do {
-            audioRecorder = try AVAudioRecorder(url: self.getFileURL(), settings: settings)
+            let identifier = UUID().uuidString
+            let audioURL = try CoreData.shared.getMediaStorage().getURL(name: identifier)
+            self.audioFile = audioURL
+            
+            audioRecorder = try AVAudioRecorder(url: audioURL, settings: settings)
             audioRecorder.delegate = self
             audioRecorder.record()
         } catch {
@@ -331,8 +339,12 @@ extension AudioInputView {
 
         if success {
             do {
-                let data = try Data(contentsOf: self.getFileURL(), options: [])
-                self.delegate?.inputView(self, didFinishedRecording: data)
+                // FIXME delete file at url on error
+                guard let audioUrl = self.audioFile else {
+                    throw NSError()
+                }
+                
+                self.delegate?.inputView(self, didFinishedRecording: audioUrl, duration: self.time)
             } catch {
                 Log.error(error.localizedDescription)
             }
@@ -360,15 +372,5 @@ extension AudioInputView {
         let miliseconds = Int((time - Double(Int(time))) * 100)
 
         return String(format:"%02i:%02i:%02i", minutes, seconds, miliseconds)
-    }
-
-    private func getDocumentsDirectory() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
-    }
-
-    func getFileURL() -> URL {
-        let path = getDocumentsDirectory().appendingPathComponent("temp.m4a")
-        return path
     }
 }

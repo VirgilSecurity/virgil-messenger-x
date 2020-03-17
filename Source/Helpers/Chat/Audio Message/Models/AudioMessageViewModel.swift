@@ -9,7 +9,7 @@
 import ChattoAdditions
 
 public protocol AudioMessageViewModelProtocol: DecoratedMessageViewModelProtocol {
-    var audio: Data { get }
+    var audioUrl: URL { get }
     var duration: TimeInterval { get }
     var state: Observable<PlayingState> { get set }
 }
@@ -23,8 +23,8 @@ public enum PlayingState {
 open class AudioMessageViewModel<AudioMessageModelT: AudioMessageModelProtocol>: AudioMessageViewModelProtocol {
     public let audioMessage: AudioMessageModelT
 
-    open var audio: Data {
-        return self.audioMessage.audio
+    open var audioUrl: URL {
+        return self.audioMessage.audioUrl
     }
 
     open var duration: TimeInterval {

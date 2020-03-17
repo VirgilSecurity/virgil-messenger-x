@@ -50,23 +50,17 @@ public class MessageSender {
     public func send(uiModel: UIAudioMessageModel, channel: Channel) throws {
         self.queue.async {
             do {
-                let audioData = uiModel.audio
+                let data = try Data(contentsOf: uiModel.audioUrl)
                 
-                // TODO: Avoid copypaste
-                let hashString = Virgil.shared.crypto.computeHash(for: audioData)
-                    .subdata(in: 0..<32)
-                    .hexEncodedString()
-                
-                // FIXME: Check if exists
-                try CoreData.shared.storeMediaContent(audioData, name: hashString)
-                
-                let getUrl = try self.upload(data: audioData,
-                                             identifier: hashString,
+                let getUrl = try self.upload(data: data,
+                                             identifier: uiModel.identifier,
                                              channel: channel,
                                              loadDelegate: uiModel)
                 
                 // FIXME duration type
-                let voiceContent = VoiceContent(identifier: hashString, duration: Int(uiModel.duration), url: getUrl)
+                let voiceContent = VoiceContent(identifier: uiModel.identifier,
+                                                duration: Int(uiModel.duration),
+                                                url: getUrl)
                 let content = MessageContent.voice(voiceContent)
                 
                 try self.send(content: content, to: channel, date: uiModel.date)

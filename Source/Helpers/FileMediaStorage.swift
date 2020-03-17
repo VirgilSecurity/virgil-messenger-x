@@ -23,13 +23,17 @@ public class FileMediaStorage {
 
     }
     
-    // TODO: Differentiate photo & voice data
+    // FIXME: Differentiate photo & voice data
     public func store(_ media: Data, name: String) throws {
         try self.fileSystem.write(data: media, name: name)
     }
     
+    public func getURL(name: String) throws -> URL {
+        try self.fileSystem.getFullUrl(name: name, subdir: nil)
+    }
+    
     public func getPath(name: String) throws -> String {
-        try self.fileSystem.getFullUrl(name: name, subdir: nil).path
+        try self.getURL(name: name).path
     }
     
     public func retrieve(name: String) throws -> Data {

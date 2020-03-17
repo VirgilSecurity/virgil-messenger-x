@@ -158,14 +158,12 @@ class DataSource: ChatDataSourceProtocol {
         try self.messageSender.send(uiModel: uiModel, channel: self.channel)
     }
 
-    func addAudioMessage(_ audio: Data) throws {
+    func addVoiceMessage(_ audioUrl: URL, duration: TimeInterval) throws {
         self.nextMessageId += 1
         let id = self.nextMessageId
-        
-        let duration = try AVAudioPlayer(data: audio).duration
 
         let uiModel = UIAudioMessageModel(uid: id,
-                                          audio: audio,
+                                          audioUrl: audioUrl,
                                           duration: duration,
                                           isIncoming: false,
                                           status: .sending,

@@ -304,11 +304,13 @@ extension ChatViewController {
 
     private func createAudioInputItem() -> AudioChatInputItem {
         let item = AudioChatInputItem(presentingController: self)
-        item.audioInputHandler = { [weak self] audioData in
+        
+        item.audioInputHandler = { [weak self] audioUrl, duration in
             if self?.checkReachability() ?? false, Configurator.isUpdated {
-                try? self?.dataSource.addAudioMessage(audioData)
+                try? self?.dataSource.addVoiceMessage(audioUrl, duration: duration)
             }
         }
+        
         return item
     }
 }
@@ -317,7 +319,7 @@ extension ChatViewController: AudioPlayableProtocol {
     func play(model: UIAudioMessageViewModel) {
         try? AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
         do {
-            self.soundPlayer = try AVAudioPlayer(data: model.audio)
+            self.soundPlayer = try AVAudioPlayer(contentsOf: model.audioUrl)
             self.soundPlayer?.delegate = self
             self.soundPlayer?.prepareToPlay()
             self.soundPlayer?.volume = 1.0

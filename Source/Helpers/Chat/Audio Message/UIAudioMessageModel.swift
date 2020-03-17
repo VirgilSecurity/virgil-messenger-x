@@ -14,7 +14,7 @@ public class UIAudioMessageModel: AudioMessageModel<MessageModel>, UIMessageMode
     public private(set) weak var loadDelegate: LoadDelegate?
     
     public required init(uid: Int,
-                         audio: Data,
+                         audioUrl: URL,
                          duration: TimeInterval,
                          isIncoming: Bool,
                          status: MessageStatus,
@@ -31,7 +31,7 @@ public class UIAudioMessageModel: AudioMessageModel<MessageModel>, UIMessageMode
         
         self.state = state
 
-        super.init(messageModel: messageModel, audio: audio, duration: duration)
+        super.init(messageModel: messageModel, audioUrl: audioUrl, duration: duration)
     }
     
     public var status: MessageStatus {
