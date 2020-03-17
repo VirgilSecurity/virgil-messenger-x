@@ -166,7 +166,7 @@ class DataSource: ChatDataSourceProtocol {
                                           audioUrl: audioUrl,
                                           duration: duration,
                                           isIncoming: false,
-                                          status: .sending,
+                                          status: .success,
                                           state: .uploading,
                                           date: Date())
         
@@ -174,27 +174,6 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self)
         
         try self.messageSender.send(uiModel: uiModel, channel: self.channel)
-    }
-    
-    func addChangeMembers(message: String) throws {
-//        self.nextMessageId += 1
-//        let id = self.nextMessageId
-//
-//        let uiModel = UITextMessageModel(uid: id,
-//                                         text: message,
-//                                         isIncoming: false,
-//                                         status: .sending,
-//                                         date: Date())
-//
-//        try self.messageSender.sendChangeMembers(uiModel: uiModel, coreChannel: self.channel)
-//            .startSync()
-//            .get()
-//
-//        self.slidingWindow.insertItem(uiModel, position: .bottom)
-//
-//        DispatchQueue.main.async {
-//            self.delegate?.chatDataSourceDidUpdate(self)
-//        }
     }
 
     func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> ()) {

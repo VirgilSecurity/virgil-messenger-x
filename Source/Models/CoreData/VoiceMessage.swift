@@ -44,6 +44,9 @@ public class VoiceMessage: Message {
     }
     
     public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
-        fatalError("Voice message export in not implemented")
+        // FIXME
+        return UITextMessageModel.corruptedModel(uid: id,
+                                                 isIncoming: self.isIncoming,
+                                                 date: self.date)
     }
 }

@@ -18,7 +18,7 @@ public protocol AudioBubbleViewStyleProtocol {
 }
 
 public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, BackgroundSizingQueryable {
-    let audioMessageText: NSAttributedString = NSAttributedString(string: "Audio Message",
+    let audioMessageText: NSAttributedString = NSAttributedString(string: "Voice Message",
                                                                   attributes: [
                                                                     NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14),
                                                                     NSAttributedString.Key.foregroundColor: UIColor(rgb: 0x8E9094)])
@@ -88,30 +88,75 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         self.buttonWrapperView.translatesAutoresizingMaskIntoConstraints = false
         stackView.addSubview(self.buttonWrapperView)
 
-        self.helpConstraint = NSLayoutConstraint(item: self.buttonWrapperView, attribute: .leading, relatedBy: .equal, toItem: self,
-                                                 attribute: .leading, multiplier: 1, constant: 0)
-        self.addConstraint(NSLayoutConstraint(item: self.buttonWrapperView, attribute: .top, relatedBy: .equal, toItem: self,
-                                              attribute: .top, multiplier: 1, constant: 0))
+        self.helpConstraint = NSLayoutConstraint(item: self.buttonWrapperView,
+                                                 attribute: .leading,
+                                                 relatedBy: .equal,
+                                                 toItem: self,
+                                                 attribute: .leading,
+                                                 multiplier: 1,
+                                                 constant: 0)
+        
+        self.addConstraint(NSLayoutConstraint(item: self.buttonWrapperView,
+                                              attribute: .top,
+                                              relatedBy: .equal,
+                                              toItem: self,
+                                              attribute: .top,
+                                              multiplier: 1,
+                                              constant: 0))
+        
         self.addConstraint(self.helpConstraint)
-        self.addConstraint(NSLayoutConstraint(item: self.buttonWrapperView, attribute: .bottom, relatedBy: .equal, toItem: self,
-                                              attribute: .bottom, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.buttonWrapperView, attribute: .width, relatedBy: .equal,
-                                              toItem: self.buttonWrapperView, attribute: .height, multiplier: 1, constant: 0))
+        
+        self.addConstraint(NSLayoutConstraint(item: self.buttonWrapperView,
+                                              attribute: .bottom,
+                                              relatedBy: .equal,
+                                              toItem: self,
+                                              attribute: .bottom,
+                                              multiplier: 1,
+                                              constant: 0))
+        
+        self.addConstraint(NSLayoutConstraint(item: self.buttonWrapperView,
+                                              attribute: .width,
+                                              relatedBy: .equal,
+                                              toItem: self.buttonWrapperView,
+                                              attribute: .height,
+                                              multiplier: 1,
+                                              constant: 0))
 
-        self.addConstraint(NSLayoutConstraint(item: self.playImageView, attribute: .centerX, relatedBy: .equal,
-                                              toItem: buttonWrapperView, attribute: .centerX, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.playImageView, attribute: .centerY, relatedBy: .equal,
-                                              toItem: buttonWrapperView, attribute: .centerY, multiplier: 1, constant: 0))
+        // Center play image in button wrapper
+        self.addConstraint(NSLayoutConstraint(item: self.playImageView,
+                                              attribute: .centerX,
+                                              relatedBy: .equal,
+                                              toItem: buttonWrapperView,
+                                              attribute: .centerX,
+                                              multiplier: 1,
+                                              constant: 0))
+        
+        self.addConstraint(NSLayoutConstraint(item: self.playImageView,
+                                              attribute: .centerY,
+                                              relatedBy: .equal,
+                                              toItem: buttonWrapperView,
+                                              attribute: .centerY,
+                                              multiplier: 1,
+                                              constant: 0))
 
         stackView.addSubview(self.textView)
         self.textView.translatesAutoresizingMaskIntoConstraints = false
 
-        self.addConstraint(NSLayoutConstraint(item: self.textView, attribute: .leading, relatedBy: .equal,
-                                              toItem: self.buttonWrapperView, attribute: .trailing, multiplier: 1, constant: -5))
-        self.addConstraint(NSLayoutConstraint(item: self.textView, attribute: .height, relatedBy: .equal, toItem: self,
-                                              attribute: .height, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.textView, attribute: .top, relatedBy: .equal, toItem: self,
-                                             attribute: .top, multiplier: 1, constant: 10))
+        self.addConstraint(NSLayoutConstraint(item: self.textView,
+                                              attribute: .leading,
+                                              relatedBy: .equal,
+                                              toItem: self.buttonWrapperView,
+                                              attribute: .trailing,
+                                              multiplier: 1,
+                                              constant: -5))
+        
+        self.addConstraint(NSLayoutConstraint(item: self.textView,
+                                              attribute: .centerY,
+                                              relatedBy: .equal,
+                                              toItem: self,
+                                              attribute: .centerY,
+                                              multiplier: 1,
+                                              constant: 0))
     }
 
     private lazy var bubbleImageView: UIImageView = {
@@ -121,7 +166,7 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
     }()
 
     private var borderImageView: UIImageView = UIImageView()
-    private var textView: UITextViewZeroPaddings = {
+    private var textView: UITextView = {
         let textView = ChatMessageTextView()
         UIView.performWithoutAnimation({ () -> Void in // fixes iOS 8 blinking when cell appears
             textView.backgroundColor = UIColor.clear
@@ -135,12 +180,11 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         textView.bouncesZoom = false
         textView.showsHorizontalScrollIndicator = false
         textView.showsVerticalScrollIndicator = false
-        textView.layoutManager.allowsNonContiguousLayout = true
+//        textView.layoutManager.allowsNonContiguousLayout = true
         textView.isExclusiveTouch = true
         textView.textContainer.lineFragmentPadding = 0
-        textView.textAlignment = .left
-        textView.textContainerInset = UIEdgeInsets.zero
-        textView.textContainer.lineFragmentPadding = 0
+//        textView.textAlignment = .left
+//        textView.textContainerInset = UIEdgeInsets.zero
 
         return textView
     }()
@@ -171,7 +215,11 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
             case .playing:
                 if (self.timer == nil) {
                     self.playImageView.image = UIImage(named: "icon-pause", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
-                    self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(AudioBubbleView.updateTimer), userInfo: nil, repeats: true)
+                    self.timer = Timer.scheduledTimer(timeInterval: 1,
+                                                      target: self,
+                                                      selector: #selector(AudioBubbleView.updateTimer),
+                                                      userInfo: nil,
+                                                      repeats: true)
                     self.updateTimer()
                 }
             case .paused:
@@ -182,6 +230,7 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
                 self.stopTimer()
                 self.displayTime = self.audioMessageViewModel.duration
             }
+            
             if self.viewContext == .sizing { return }
             if self.isUpdating { return }
             guard let style = self.style else { return }
@@ -215,6 +264,7 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
     }
 
     private func updateTextView() {
+        Log.debug("AAA")
         self.textView.dataDetectorTypes = []
         guard let style = self.style, let viewModel = self.audioMessageViewModel else { return }
 
@@ -240,9 +290,6 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         if needsToUpdateText || self.textView.attributedText != self.formattedDisplayTime {
             self.textView.attributedText = self.formattedDisplayTime
         }
-
-        let textInsets = style.textInsets(viewModel: viewModel, isSelected: self.selected)
-        if self.textView.textContainerInset != textInsets { self.textView.textContainerInset = textInsets }
     }
 
     private var formattedDisplayTime: NSMutableAttributedString {

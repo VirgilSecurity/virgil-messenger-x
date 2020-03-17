@@ -50,6 +50,7 @@ public class MessageSender {
     public func send(uiModel: UIAudioMessageModel, channel: Channel) throws {
         self.queue.async {
             do {
+                // FIXME: optimize. Do not fetch data to memrory, use streams
                 let data = try Data(contentsOf: uiModel.audioUrl)
                 
                 let getUrl = try self.upload(data: data,
