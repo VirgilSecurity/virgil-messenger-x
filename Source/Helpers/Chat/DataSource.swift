@@ -148,7 +148,7 @@ class DataSource: ChatDataSourceProtocol {
         let uiModel = UIPhotoMessageModel(uid: id,
                                           image: image,
                                           isIncoming: false,
-                                          status: .sending,
+                                          status: .success,
                                           state: .uploading,
                                           date: Date())
         
