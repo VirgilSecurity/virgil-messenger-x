@@ -42,6 +42,10 @@ public class UIAudioMessageModel: AudioMessageModel<MessageModel>, UIMessageMode
             self._messageModel.status = newValue
         }
     }
+    
+    public func set(loadDelegate: LoadDelegate) {
+        self.loadDelegate = loadDelegate
+    }
 }
 
 extension UIAudioMessageModel: LoadDelegate {

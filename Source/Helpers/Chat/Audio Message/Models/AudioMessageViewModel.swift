@@ -12,6 +12,9 @@ public protocol AudioMessageViewModelProtocol: DecoratedMessageViewModelProtocol
     var audioUrl: URL { get }
     var duration: TimeInterval { get }
     var state: Observable<PlayingState> { get set }
+    var transferDirection: Observable<TransferDirection> { get set }
+    var transferProgress: Observable<Double> { get  set } // in [0,1]
+    var transferStatus: Observable<TransferStatus> { get set }
 }
 
 public enum PlayingState {
@@ -33,6 +36,10 @@ open class AudioMessageViewModel<AudioMessageModelT: AudioMessageModelProtocol>:
 
     public var state: Observable<PlayingState> = Observable(.stopped)
     public var messageViewModel: MessageViewModelProtocol
+    
+    public var transferStatus: Observable<TransferStatus> = Observable(.idle)
+    public var transferProgress: Observable<Double> = Observable(0)
+    public var transferDirection: Observable<TransferDirection> = Observable(.download)
 
     public init(audioMessage: AudioMessageModelT, messageViewModel: MessageViewModelProtocol) {
         self.audioMessage = audioMessage

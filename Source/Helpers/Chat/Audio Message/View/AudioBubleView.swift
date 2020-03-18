@@ -41,6 +41,12 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
     private var buttonWrapperView: UIView = UIView()
     private var helpConstraint: NSLayoutConstraint = NSLayoutConstraint()
     private var timer: Timer?
+    
+    private let noProgressViewStates: [TransferStatus] = [.idle, .success, .failed]
+    
+    public private(set) var progressIndicatorView: CircleProgressIndicatorView = {
+        return CircleProgressIndicatorView(size: CGSize(width: 33, height: 33))
+    }()
 
     public var style: AudioBubbleViewStyleProtocol! {
         didSet {
@@ -78,7 +84,56 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         let stackView = UIStackView()
         self.addSubview(stackView)
 
+        self.setupPlayButton(in: stackView)
+        self.setupTextView(in: stackView)
+        self.setupProgressView(in: stackView)
+    }
+    
+    private func setupProgressView(in stackView: UIStackView) {
+        stackView.addSubview(self.progressIndicatorView)
+        self.progressIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.addConstraint(NSLayoutConstraint(item: self.progressIndicatorView,
+                                              attribute: .centerX,
+                                              relatedBy: .equal,
+                                              toItem: self.buttonWrapperView,
+                                              attribute: .centerX,
+                                              multiplier: 1,
+                                              constant: 0))
+        
+        self.addConstraint(NSLayoutConstraint(item: self.progressIndicatorView,
+                                              attribute: .centerY,
+                                              relatedBy: .equal,
+                                              toItem: self.buttonWrapperView,
+                                              attribute: .centerY,
+                                              multiplier: 1,
+                                              constant: 0))
+    }
+    
+    private func setupTextView(in stackView: UIStackView) {
+        stackView.addSubview(self.textView)
+        self.textView.translatesAutoresizingMaskIntoConstraints = false
+
+        self.addConstraint(NSLayoutConstraint(item: self.textView,
+                                              attribute: .leading,
+                                              relatedBy: .equal,
+                                              toItem: self.buttonWrapperView,
+                                              attribute: .trailing,
+                                              multiplier: 1,
+                                              constant: -5))
+        
+        self.addConstraint(NSLayoutConstraint(item: self.textView,
+                                              attribute: .centerY,
+                                              relatedBy: .equal,
+                                              toItem: self,
+                                              attribute: .centerY,
+                                              multiplier: 1,
+                                              constant: 0))
+    }
+    
+    private func setupPlayButton(in stackView: UIStackView) {
         let playImage = UIImage(named: "icon-play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
+        
         self.playImageView = UIImageView(image: playImage)
         self.playImageView.contentMode = .scaleAspectFit
         self.playImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -86,8 +141,9 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         self.buttonWrapperView = UIView.init(frame: CGRect.zero)
         self.buttonWrapperView.addSubview(self.playImageView)
         self.buttonWrapperView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addSubview(self.buttonWrapperView)
 
+        stackView.addSubview(self.buttonWrapperView)
+        
         self.helpConstraint = NSLayoutConstraint(item: self.buttonWrapperView,
                                                  attribute: .leading,
                                                  relatedBy: .equal,
@@ -135,25 +191,6 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
                                               attribute: .centerY,
                                               relatedBy: .equal,
                                               toItem: buttonWrapperView,
-                                              attribute: .centerY,
-                                              multiplier: 1,
-                                              constant: 0))
-
-        stackView.addSubview(self.textView)
-        self.textView.translatesAutoresizingMaskIntoConstraints = false
-
-        self.addConstraint(NSLayoutConstraint(item: self.textView,
-                                              attribute: .leading,
-                                              relatedBy: .equal,
-                                              toItem: self.buttonWrapperView,
-                                              attribute: .trailing,
-                                              multiplier: 1,
-                                              constant: -5))
-        
-        self.addConstraint(NSLayoutConstraint(item: self.textView,
-                                              attribute: .centerY,
-                                              relatedBy: .equal,
-                                              toItem: self,
                                               attribute: .centerY,
                                               multiplier: 1,
                                               constant: 0))
@@ -208,25 +245,8 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
 
     private func updateViews() {
         DispatchQueue.main.async {
-            switch self.audioMessageViewModel.state.value {
-            case .playing:
-                if (self.timer == nil) {
-                    self.playImageView.image = UIImage(named: "icon-pause", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
-                    self.timer = Timer.scheduledTimer(timeInterval: 1,
-                                                      target: self,
-                                                      selector: #selector(AudioBubbleView.updateTimer),
-                                                      userInfo: nil,
-                                                      repeats: true)
-                    self.updateTimer()
-                }
-            case .paused:
-                self.playImageView.image = UIImage(named: "icon-play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
-                self.stopTimer()
-            case .stopped:
-                self.playImageView.image = UIImage(named: "icon-play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
-                self.stopTimer()
-                self.displayTime = self.audioMessageViewModel.duration
-            }
+            self.updatePlayButtonView()
+            self.updateProgressView()
             
             if self.viewContext == .sizing { return }
             if self.isUpdating { return }
@@ -239,6 +259,56 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
             let borderImage = style.bubbleImageBorder(viewModel: self.audioMessageViewModel, isSelected: self.selected)
             if self.bubbleImageView.image != bubbleImage { self.bubbleImageView.image = bubbleImage }
             if self.borderImageView.image != borderImage { self.borderImageView.image = borderImage }
+        }
+    }
+    
+    private func updateProgressView() {
+        let transferStatus = self.audioMessageViewModel.transferStatus.value
+        let transferProgress = self.audioMessageViewModel.transferProgress.value
+        self.progressIndicatorView.isHidden = self.noProgressViewStates.contains(self.audioMessageViewModel.transferStatus.value)
+  
+        self.progressIndicatorView.progressLineColor = .white
+        
+        self.progressIndicatorView.progressLineWidth = 1
+        self.progressIndicatorView.setProgress(CGFloat(transferProgress))
+
+        switch transferStatus {
+        case .idle, .success, .failed:
+
+            break
+        case .transfering:
+            switch transferProgress {
+            case 0:
+                if self.progressIndicatorView.progressStatus != .starting { self.progressIndicatorView.progressStatus = .starting }
+            case 1:
+                if self.progressIndicatorView.progressStatus != .completed { self.progressIndicatorView.progressStatus = .completed }
+            default:
+                if self.progressIndicatorView.progressStatus != .inProgress { self.progressIndicatorView.progressStatus = .inProgress }
+            }
+        }
+    }
+    
+    private func updatePlayButtonView() {
+        self.playImageView.isHidden = !self.noProgressViewStates.contains(self.audioMessageViewModel.transferStatus.value)
+        
+        switch self.audioMessageViewModel.state.value {
+        case .playing:
+            if (self.timer == nil) {
+                self.playImageView.image = UIImage(named: "icon-pause", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
+                self.timer = Timer.scheduledTimer(timeInterval: 1,
+                                                  target: self,
+                                                  selector: #selector(AudioBubbleView.updateTimer),
+                                                  userInfo: nil,
+                                                  repeats: true)
+                self.updateTimer()
+            }
+        case .paused:
+            self.playImageView.image = UIImage(named: "icon-play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
+            self.stopTimer()
+        case .stopped:
+            self.playImageView.image = UIImage(named: "icon-play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
+            self.stopTimer()
+            self.displayTime = self.audioMessageViewModel.duration
         }
     }
 
