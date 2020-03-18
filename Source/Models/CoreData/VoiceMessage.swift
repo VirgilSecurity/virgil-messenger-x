@@ -44,9 +44,47 @@ public class VoiceMessage: Message {
     }
     
     public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
-        // FIXME
-        return UITextMessageModel.corruptedModel(uid: id,
-                                                 isIncoming: self.isIncoming,
-                                                 date: self.date)
-    }
+        do {
+            let mediaStorage = try CoreData.shared.getMediaStorage()
+            
+            let audioUrl = try mediaStorage.getURL(name: self.identifier)
+            let state: MediaMessageState = try mediaStorage.exists(path: audioUrl.path) ? .normal : .downloading
+            
+            let uiModel = UIAudioMessageModel(uid: id,
+                                              audioUrl: audioUrl,
+                                              duration: TimeInterval(self.duration),
+                                              isIncoming: self.isIncoming,
+                                              status: status,
+                                              state: state,
+                                              date: self.date)
+                        
+            if state == .downloading {
+                try Virgil.shared.client.startDownload(from: self.url,
+                                                       loadDelegate: uiModel,
+                                                       dataHash: self.identifier)
+                { tempFileUrl in
+                    let path = try CoreData.shared.getMediaStorage().getPath(name: self.identifier)
+
+                    guard let inputStream = InputStream(url: tempFileUrl) else {
+                        throw NSError()
+                    }
+
+                    guard let outputStream = OutputStream(toFileAtPath: path, append: false) else {
+                        throw NSError()
+                    }
+
+                    // FIXME: add self card usecase
+                    try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: self.channel.getCard())
+                }
+            }
+            
+            return uiModel
+        }
+        catch {
+            Log.error("FIXME")
+            
+            return UITextMessageModel.corruptedModel(uid: id,
+                                                     isIncoming: self.isIncoming,
+                                                     date: self.date)
+        }    }
 }
