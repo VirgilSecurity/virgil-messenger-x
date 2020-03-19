@@ -32,6 +32,10 @@ public class Notifications {
         case message = "NotificationKeys.Message"
         case error = "NotificationKeys.Error"
     }
+    
+    public enum NotificationError: Int, Swift.Error {
+        case parsingFailed = 1
+    }
 
     private static func notification(_ notification: Notifications) -> Notification.Name {
         return Notification.Name(rawValue: notification.rawValue)
@@ -41,10 +45,10 @@ public class Notifications {
         return Notification.Name(rawValue: notification.rawValue)
     }
 
-    public static func parse<T>(_ notification: Notification, for key: NotificationKeys) -> T? {
+    public static func parse<T>(_ notification: Notification, for key: NotificationKeys) throws -> T {
         guard let userInfo = notification.userInfo,
             let result = userInfo[key.rawValue] as? T else {
-                return nil
+                throw NotificationError.parsingFailed
         }
 
         return result

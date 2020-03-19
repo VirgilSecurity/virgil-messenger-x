@@ -26,7 +26,8 @@ public class EncryptedMessage: Codable {
         return self.codableVersion ?? .v1
     }
     
-    private var codableVersion: EncryptedMessageVersion?
+    // FIXME: rename?
+    private let codableVersion: EncryptedMessageVersion?
 
     public init(ciphertext: Data, date: Date, additionalData: Data?) {
         self.ciphertext = ciphertext

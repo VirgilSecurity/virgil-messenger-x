@@ -58,12 +58,14 @@ class DataSource: ChatDataSourceProtocol {
 
     func setupObservers() {
         let process: Notifications.Block = { [weak self] notification in
-            guard let message: Message = Notifications.parse(notification, for: .message) else {
-                Log.error("Invalid notification")
-                return
+            do {
+                let message: Message = try Notifications.parse(notification, for: .message)
+                
+                self?.process(message: message)
             }
-
-            self?.process(message: message)
+            catch {
+                Log.error(error, message: "Parsing Message notification failed")
+            }
         }
 
         let updateMessageList: Notifications.Block = { [weak self] _ in

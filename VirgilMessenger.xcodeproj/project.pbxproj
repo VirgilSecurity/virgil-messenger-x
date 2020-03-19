@@ -191,7 +191,6 @@
 		97E7C4932403092F00D9CAAA /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4902403092F00D9CAAA /* Fabric.framework */; };
 		97E7C49724030C0B00D9CAAA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97E7C49624030C0B00D9CAAA /* GoogleService-Info.plist */; };
 		97E7C49824030D4800D9CAAA /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4762403085B00D9CAAA /* GoogleAppMeasurement.framework */; };
-		97E7C5542403E50B00D9CAAA /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5532403E50B00D9CAAA /* StoreKit.framework */; };
 		97E7C55E2403E6FF00D9CAAA /* GoogleDataTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C55D2403E6FF00D9CAAA /* GoogleDataTransport.framework */; };
 		97E7C5622403E73200D9CAAA /* FirebaseInstallations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5612403E73200D9CAAA /* FirebaseInstallations.framework */; };
 		97E7C5652403E77C00D9CAAA /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5592403E57100D9CAAA /* PromisesObjC.framework */; };
@@ -394,7 +393,6 @@
 		97E7C48F2403092F00D9CAAA /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Carthage/Build/iOS/Crashlytics.framework; sourceTree = "<group>"; };
 		97E7C4902403092F00D9CAAA /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Carthage/Build/iOS/Fabric.framework; sourceTree = "<group>"; };
 		97E7C49624030C0B00D9CAAA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		97E7C5532403E50B00D9CAAA /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		97E7C5552403E52C00D9CAAA /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		97E7C5572403E54800D9CAAA /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		97E7C5592403E57100D9CAAA /* PromisesObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromisesObjC.framework; path = Carthage/Build/iOS/PromisesObjC.framework; sourceTree = "<group>"; };
@@ -447,7 +445,6 @@
 				16FC7BE8238D691600F7ACE7 /* VirgilCryptoPythia.framework in Frameworks */,
 				1693678A2248FA0800EF9A42 /* Chatto.framework in Frameworks */,
 				97E7C4862403085B00D9CAAA /* FIRAnalyticsConnector.framework in Frameworks */,
-				97E7C5542403E50B00D9CAAA /* StoreKit.framework in Frameworks */,
 				1693678B2248FA0800EF9A42 /* ChattoAdditions.framework in Frameworks */,
 				16B4EC1523BE46E200E7E4DB /* XMPPFramework.framework in Frameworks */,
 				1693678C2248FA0800EF9A42 /* VirgilCrypto.framework in Frameworks */,
@@ -848,7 +845,6 @@
 				97E7C5592403E57100D9CAAA /* PromisesObjC.framework */,
 				97E7C5572403E54800D9CAAA /* libicucore.tbd */,
 				97E7C5552403E52C00D9CAAA /* libsqlite3.tbd */,
-				97E7C5532403E50B00D9CAAA /* StoreKit.framework */,
 				97E7C48F2403092F00D9CAAA /* Crashlytics.framework */,
 				97E7C4902403092F00D9CAAA /* Fabric.framework */,
 				97E7C4782403085B00D9CAAA /* FIRAnalyticsConnector.framework */,

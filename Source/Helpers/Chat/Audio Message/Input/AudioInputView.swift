@@ -63,21 +63,24 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
 
     private func configureAudio() {
         self.recordingSession = AVAudioSession.sharedInstance()
+        
         do {
-            try recordingSession.setCategory(AVAudioSession.Category.playAndRecord, mode: .default)
-            try recordingSession.setActive(true)
-            recordingSession.requestRecordPermission() { [unowned self] allowed in
+            try self.recordingSession.setCategory(AVAudioSession.Category.playAndRecord, mode: .default)
+            try self.recordingSession.setActive(true)
+            
+            self.recordingSession.requestRecordPermission { [unowned self] allowed in
                 DispatchQueue.main.async {
                     if allowed {
                         self.configureView()
-                    } else {
-                        Log.error("Permission to record audio was not granted")
+                    }
+                    else {
                         // TODO: configure View with explanation why audio is not accessable
                     }
                 }
             }
-        } catch {
-            Log.error(error.localizedDescription)
+        }
+        catch {
+            Log.error(error, message: "Configuring audio recording session failed")
         }
     }
 
@@ -321,12 +324,14 @@ extension AudioInputView {
             let audioURL = try CoreData.shared.getMediaStorage().getURL(name: identifier)
             self.audioFile = audioURL
             
-            audioRecorder = try AVAudioRecorder(url: audioURL, settings: settings)
-            audioRecorder.delegate = self
-            audioRecorder.record()
-        } catch {
-            Log.error("Recording failed: \(error.localizedDescription)")
-            finishRecording(success: false)
+            self.audioRecorder = try AVAudioRecorder(url: audioURL, settings: settings)
+            self.audioRecorder.delegate = self
+            self.audioRecorder.record()
+        }
+        catch {
+            Log.error(error, message: "Recording failed")
+            
+            self.finishRecording(success: false)
         }
     }
 
@@ -334,8 +339,8 @@ extension AudioInputView {
         let image = UIImage(named: "button-record-voice", in: Bundle(for: AudioInputView.self), compatibleWith: nil)!
         self.recordButton.setImage(image, for: .normal)
         self.cancelLabel.isHidden = true
-        audioRecorder.stop()
-        audioRecorder = nil
+        self.audioRecorder.stop()
+        self.audioRecorder = nil
 
         if success {
             do {
@@ -345,10 +350,12 @@ extension AudioInputView {
                 }
                 
                 self.delegate?.inputView(self, didFinishedRecording: audioUrl, duration: self.time + 0.9)
-            } catch {
-                Log.error(error.localizedDescription)
+            }
+            catch {
+                Log.error(error, message: "Finish recording failed")
             }
         }
+        
         self.timerLabel.text = self.timeString(0)
         self.holdToRecordLabel.text = "Hold to record"
         self.timer.invalidate()

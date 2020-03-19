@@ -65,7 +65,8 @@ public class SlidingDataSource<Element> {
         }
 
         guard let channel = CoreData.shared.currentChannel else {
-            Log.error("Missing Core Data current channel")
+            Log.error(CoreData.Error.nilCurrentChannel,
+                      message: "Missing current channel to show items for")
             return
         }
 
@@ -81,7 +82,8 @@ public class SlidingDataSource<Element> {
 
     public func updateMessageList() {
         guard let channel = CoreData.shared.currentChannel else {
-            Log.error("Missing Core Data current channel")
+            Log.error(CoreData.Error.nilCurrentChannel,
+                      message: "Missing current channel to show items for")
             return
         }
 

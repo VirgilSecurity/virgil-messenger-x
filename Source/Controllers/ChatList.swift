@@ -57,21 +57,24 @@ class ChatListViewController: ViewController {
         }
 
         let initFailed: Notifications.Block = { [weak self] notification in
-            guard let error: Error = Notifications.parse(notification, for: .error) else {
-                Log.error("Invalid notification")
-                return
-            }
-
-            DispatchQueue.main.async {
-                self?.alert(error) { _ in
-                    UserAuthorizer().logOut { error in
-                        if let error = error {
-                            self?.alert(error)
-                        } else {
-                            self?.goToLogin()
+            do {
+                let error: Error = try Notifications.parse(notification, for: .error)
+                
+                DispatchQueue.main.async {
+                    self?.alert(error) { _ in
+                        UserAuthorizer().logOut { error in
+                            if let error = error {
+                                self?.alert(error)
+                            }
+                            else {
+                                self?.goToLogin()
+                            }
                         }
                     }
                 }
+            }
+            catch {
+                Log.error(error, message: "Parsing Error notification failed")
             }
         }
 
@@ -196,7 +199,8 @@ extension ChatListViewController: UITableViewDataSource {
 extension ChatListViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         guard let selectedChannel = self.channels[safe: cell.tag] else {
-            Log.error("Channel is out of range")
+            Log.error(UserFriendlyError.unknownError,
+                      message: "Tried to tap on Channel, which is out of range")
             return
         }
 

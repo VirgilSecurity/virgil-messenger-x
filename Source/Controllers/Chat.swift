@@ -317,7 +317,9 @@ extension ChatViewController {
 
 extension ChatViewController: AudioPlayableProtocol {
     func play(model: UIAudioMessageViewModel) {
+        // FIXME
         try? AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+
         do {
             self.soundPlayer = try AVAudioPlayer(contentsOf: model.audioUrl)
             self.soundPlayer?.delegate = self
@@ -329,8 +331,9 @@ extension ChatViewController: AudioPlayableProtocol {
                 audioModel.state.value = .stopped
             }
             self.cachedAudioModel = model
-        } catch {
-            Log.error("AVAudioPlayer error: \(error.localizedDescription)")
+        }
+        catch {
+            Log.error(error, message: "AVAudioPlayer playing error")
             self.alert(UserFriendlyError.playingError)
         }
     }

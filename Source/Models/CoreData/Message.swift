@@ -20,7 +20,8 @@ public class Message: NSManagedObject, UIMessageModelExportable {
     @NSManaged public var isHidden: Bool
     
     public func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
-        Log.error("Exporting abstract Message to UI model is forbidden")
+        Log.error(CoreData.Error.exportBaseMessageForbidden,
+                  message: "Exporting abstract Message to UI model is forbidden")
         
         return UITextMessageModel.corruptedModel(uid: id,
                                                  isIncoming: self.isIncoming,

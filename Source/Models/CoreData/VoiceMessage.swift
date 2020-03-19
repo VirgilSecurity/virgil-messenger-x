@@ -81,7 +81,7 @@ public class VoiceMessage: Message {
             return uiModel
         }
         catch {
-            Log.error("FIXME")
+            Log.error(error, message: "Exporting AudioMessage to UI model failed")
             
             return UITextMessageModel.corruptedModel(uid: id,
                                                      isIncoming: self.isIncoming,

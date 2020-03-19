@@ -8,7 +8,6 @@
 
 import XMPPFrameworkSwift
 import VirgilSDK
-import Crashlytics
 
 extension Ejabberd: XMPPStreamDelegate {
     func xmppStreamWillConnect(_ sender: XMPPStream) {
@@ -24,11 +23,9 @@ extension Ejabberd: XMPPStreamDelegate {
     }
 
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
-        Log.debug("Ejabberd: Connect reached timeout")
-
         self.state = .disconnected
         
-        Crashlytics.sharedInstance().recordError(EjabberdError.connectionTimeout)
+        Log.error(EjabberdError.connectionTimeout, message: "Ejabberd connection reached timeout")
         
         self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
     }
@@ -38,11 +35,9 @@ extension Ejabberd: XMPPStreamDelegate {
         self.state = .disconnected
 
         if let error = error {
-            Log.debug("Ejabberd disconnected with error - \(error.localizedDescription)")
-
+            Log.error(error, message: "Ejabberd disconnected")
+            
             if erroredUnlock {
-                Crashlytics.sharedInstance().recordError(error)
-
                 self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
             }
             else {
@@ -83,7 +78,7 @@ extension Ejabberd {
     }
 
     func xmppStream(_ sender: XMPPStream, didFailToSend message: XMPPMessage, error: Error) {
-        Log.error("Ejabberd: Message failed to send \(error)")
+        Log.error(error, message: "Ejabberd: message failed to send")
 
         self.unlockMutex(self.sendMutex, with: error)
     }
@@ -105,7 +100,7 @@ extension Ejabberd {
             try MessageProcessor.process(encryptedMessage, from: author)
         }
         catch {
-            Log.error("\(error.localizedDescription)")
+            Log.error(error, message: "Message processing failed")
         }
     }
 }

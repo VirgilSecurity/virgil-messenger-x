@@ -116,7 +116,7 @@ class Ejabberd: NSObject {
             try mutex.unlock()
         }
         catch {
-            Log.error("Ejabberd: \(error)")
+            Log.error(error, message: "Unlocking mutex failed")
         }
     }
 
@@ -185,10 +185,6 @@ class Ejabberd: NSObject {
                                     size: UInt(size),
                                     contentType: "image/png")
             { (slot, iq, error) in
-                if let error = error {
-                    Log.error("Ejabberd: request media slot failed - \(error.localizedDescription)")
-                }
-                
                 completion(slot, error)
             }
         }

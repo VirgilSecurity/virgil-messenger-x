@@ -27,7 +27,7 @@ class CoreData {
 
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
-                Log.error("Load persistent store failed: \(error.localizedDescription)")
+                Log.error(error, message: "Load persistent store failed")
 
                 fatalError()
             }
@@ -36,7 +36,7 @@ class CoreData {
         return container
     }()
 
-    public enum Error: Int, Swift.Error {
+    public enum Error: Int, Swift.Error, LocalizedError {
         case nilCurrentAccount = 1
         case nilCurrentChannel = 2
         case entityNotFound = 3
@@ -45,6 +45,7 @@ class CoreData {
         case invalidMessage = 6
         case accountNotFound = 7
         case missingVirgilGroup = 8
+        case exportBaseMessageForbidden = 9
     }
 
     private init() {

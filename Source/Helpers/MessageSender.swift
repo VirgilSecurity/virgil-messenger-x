@@ -81,7 +81,7 @@ public class MessageSender {
             }
             catch {
                 self.updateMessage(uiModel, status: .failed)
-                Log.error("Sending message failed with error: \(error.localizedDescription)")
+                Log.error(error, message: "Sending voice message failed")
             }
         }
     }
@@ -126,7 +126,7 @@ public class MessageSender {
             }
             catch {
                 self.updateMessage(uiModel, status: .failed)
-                Log.error("Sending message failed with error: \(error.localizedDescription)")
+                Log.error(error, message: "Sending photo message failed")
             }
         }
     }
@@ -148,7 +148,7 @@ public class MessageSender {
             }
             catch {
                 self.updateMessage(uiModel, status: .failed)
-                Log.error("Sending message failed with error: \(error.localizedDescription)")
+                Log.error(error, message: "Sending text message failed")
             }
         }
     }

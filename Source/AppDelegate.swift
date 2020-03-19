@@ -60,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         catch {
-            Log.error("cleanLocalStorageError: \(error.localizedDescription)")
+            Log.error(error, message: "Clean Local Storage on startup failed")
         }
     }
 
@@ -106,7 +106,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             try CoreData.shared.saveContext()
         }
         catch {
-            Log.error("Saving Core Data context failed with error: \(error.localizedDescription)")
+            Log.error(error, message: "Saving Core Data context on app termination failed")
         }
     }
 
@@ -121,12 +121,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Ejabberd.updatedPushToken = deviceToken
         }
         catch {
-            Log.error("Registering for notification failed with error: \(error.localizedDescription)")
+            Log.error(error, message: "Registering for notification failed")
         }
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        Log.error("Failed to get token, error: \(error)")
+        Log.error(error, message: "Failed to get device token")
 
         Ejabberd.updatedPushToken = nil
     }
