@@ -74,8 +74,8 @@ extension Notifications {
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }
 
-    public static func post(messageContent: Message) {
-        switch(messageContent) {
+    public static func post(message: Message) {
+        switch(message) {
         case .text(_):
             // Is handled via post(message)
             break

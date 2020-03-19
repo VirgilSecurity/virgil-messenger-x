@@ -86,6 +86,9 @@ extension Storage {
             if let textMessage = message as? TextMessage {
                 return textMessage.body
             }
+            else if let call = message as? CallMessage {
+                return call.isIncoming ? "Incomming call from \(call.channelName)" : "Outgoing call to \(call.channelName)"
+            }
             else {
                 // TODO: Hande oher message types.
                 return "Unknown message"

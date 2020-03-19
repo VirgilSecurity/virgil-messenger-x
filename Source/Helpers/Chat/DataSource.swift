@@ -135,7 +135,15 @@ class DataSource: ChatDataSourceProtocol {
                                          status: .sending,
                                          date: Date())
 
-        self.messageSender.send(uiModel: uiModel, coreChannel: self.channel)
+        let message = Message.Text(body: text)
+
+        self.messageSender.send(text: message, date: uiModel.date, channel: self.channel) { (error) in
+            guard let _ = error else {
+                uiModel.status = .success
+                return
+            }
+            uiModel.status = .failed
+        }
 
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)

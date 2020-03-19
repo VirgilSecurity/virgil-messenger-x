@@ -11,21 +11,37 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
 
-    public func send(messageContent: Message, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    private func encryptThenSend(message: Message, date: Date, channel: Storage.Channel) throws {
+        let exported = try message.exportAsJsonData()
+
+        let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: channel.getCard())
+
+        let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date)
+        
+        try Ejabberd.shared.send(encryptedMessage, to: channel.name)
+    }
+    
+    public func send(text: Message.Text, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+        do {
+            try self.encryptThenSend(message: Message.text(text), date: date, channel: channel)
+            
+            _ = try Storage.shared.createTextMessage(text.body, in: channel, isIncoming: false, date: date)
+            
+            completion(nil)
+        }
+        catch {
+            completion(error)
+        }
+    }
+    
+    public func send(callOffer: Message.CallOffer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                let exported = try messageContent.exportAsJsonData()
-
-                let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: channel.getCard())
-
-                let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date)
-
-                try Ejabberd.shared.send(encryptedMessage, to: channel.name)
-
-//                _ = try Storage.shared.createTextMessage(<#T##body: String##String#>, isIncoming: <#T##Bool#>)(uiModel.body,
-//                                                          in: coreChannel,
-//                                                          isIncoming: uiModel.isIncoming,
-//                                                          date: uiModel.date)
+                try self.encryptThenSend(message: Message.callOffer(callOffer), date: date, channel: channel)
+                
+                let storageMessage = try Storage.shared.createCallMessage(in: channel, isIncoming: false, date: date)
+                
+                Notifications.post(message: storageMessage)
 
                 completion(nil)
             }
@@ -34,43 +50,30 @@ public class MessageSender {
             }
         }
     }
-
-    public func send(uiModel: UITextMessageModel, coreChannel: Storage.Channel) {
+    
+    public func send(callAnswer: Message.CallAnswer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                let textContent = Message.Text(body: uiModel.body)
-                let messageContent = Message.text(textContent)
-                let exported = try messageContent.exportAsJsonData()
-
-                let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: coreChannel.getCard())
-
-                let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: uiModel.date)
-
-                try Ejabberd.shared.send(encryptedMessage, to: coreChannel.name)
-
-                _ = try Storage.shared.createTextMessage(uiModel.body,
-                                                          in: coreChannel,
-                                                          isIncoming: uiModel.isIncoming,
-                                                          date: uiModel.date)
-
-                self.updateMessage(uiModel, status: .success)
+                try self.encryptThenSend(message: Message.callAnswer(callAnswer), date: date, channel: channel)
+                
+                completion(nil)
             }
             catch {
-                self.updateMessage(uiModel, status: .failed)
+                completion(error)
             }
         }
     }
 
-    private func updateMessage(_ message: UIMessageModelProtocol, status: MessageStatus) {
-        if message.status != status {
-            message.status = status
-            self.notifyMessageChanged(message)
-        }
-    }
-
-    private func notifyMessageChanged(_ message: UIMessageModelProtocol) {
-        DispatchQueue.main.async {
-            self.onMessageChanged?(message)
+    public func send(iceCandidate: Message.IceCandidate, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+        self.queue.async {
+            do {
+                try self.encryptThenSend(message: Message.iceCandidate(iceCandidate), date: date, channel: channel)
+                
+                completion(nil)
+            }
+            catch {
+                completion(error)
+            }
         }
     }
 }

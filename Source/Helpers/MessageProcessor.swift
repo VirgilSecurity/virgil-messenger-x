@@ -14,14 +14,14 @@ class MessageProcessor {
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
 
-        let messageContent = try self.migrationSafeContentImport(from: decrypted,
+        let message = try self.migrationSafeContentImport(from: decrypted,
                                                                  version: encryptedMessage.version)
 
-        try self.process(messageContent, channel: channel, date: encryptedMessage.date)
+        try self.process(message, channel: channel, date: encryptedMessage.date)
     }
 
-    private static func process(_ messageContent: Message, channel: Storage.Channel, date: Date) throws {
-        switch messageContent {
+    private static func process(_ message: Message, channel: Storage.Channel, date: Date) throws {
+        switch message {
         case .text(let content):
             let message = try Storage.shared.createTextMessage(content.body,
                                                                 in: channel,
@@ -30,26 +30,35 @@ class MessageProcessor {
 
             self.postNotification(about: message)
 
-        case .callOffer(_), .callAnswer(_), .iceCandidate(_):
+        case .callOffer(_):
+            Notifications.post(message: message)
+            
+            let message = try Storage.shared.createCallMessage(in: channel,
+                                                                isIncoming: true,
+                                                                date: date)
+
+            self.postNotification(about: message)
+
+        case .callAnswer(_), .iceCandidate(_):
             //  FIXME: Unify the handling approach for '.text' as well.
-            Notifications.post(messageContent: messageContent)
+            Notifications.post(message: message)
         }
     }
 
     private static func migrationSafeContentImport(from data: Data,
                                                    version: EncryptedMessageVersion) throws -> Message {
-        let messageContent: Message
+        let message: Message
 
         switch version {
         case .v1:
             let string = String(data: data, encoding: .utf8)!
             let textContent = Message.Text(body: string)
-            messageContent = Message.text(textContent)
+            message = Message.text(textContent)
         case .v2:
-            messageContent = try Message.import(from: data)
+            message = try Message.import(from: data)
         }
 
-        return messageContent
+        return message
     }
 
     private static func setupCoreChannel(name: String) throws -> Storage.Channel {

@@ -32,6 +32,14 @@ extension Storage.Message {
                                                status: status,
                                                date: date)
         }
+        else if let call = self as? Storage.CallMessage {
+            let text = call.isIncoming ? "Incomming call from \(call.channelName)" : "Outgoing call to \(call.channelName)"
+            resultMessage = UITextMessageModel(uid: id,
+                                               text: text,
+                                               isIncoming: self.isIncoming,
+                                               status: status,
+                                               date: date)
+        }
         else {
             Log.error("Exporting core data model to ui model failed")
 
@@ -80,14 +88,12 @@ extension Storage {
         return message
     }
 
-    func createCallMessage(_ from: String,
-                           in channel: Storage.Channel? = nil,
+    func createCallMessage(in channel: Storage.Channel? = nil,
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Storage.Message {
         let channel = try channel ?? self.getCurrentChannel()
 
-        let message = try Storage.CallMessage(from: from,
-                                      isIncoming: isIncoming,
+        let message = try Storage.CallMessage(isIncoming: isIncoming,
                                       date: date,
                                       channel: channel,
                                       managedContext: self.managedContext)

@@ -12,12 +12,12 @@ import CoreData
 extension Storage {
     @objc(CallMessage)
     public class CallMessage: Message {
-        @NSManaged public var from: String
+        @NSManaged public var channelName: String
+        @NSManaged public var duration: Int32
 
         private static let EntityName = "CallMessage"
 
-        convenience init(from: String,
-                         isIncoming: Bool,
+        convenience init(isIncoming: Bool,
                          date: Date,
                          channel: Channel,
                          isHidden: Bool = false,
@@ -28,7 +28,7 @@ extension Storage {
 
             self.init(entity: entity, insertInto: managedContext)
 
-            self.from = from
+            self.channelName = channel.name
             self.isIncoming = isIncoming
             self.date = date
             self.channel = channel
