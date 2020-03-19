@@ -345,6 +345,7 @@ extension ChatViewController: AudioPlayableProtocol {
     }
 
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        self.cachedAudioModel?.state.value = .stopped
         self.cachedAudioModel = nil
     }
 }

@@ -295,7 +295,7 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         case .playing:
             if (self.timer == nil) {
                 self.playImageView.image = UIImage(named: "icon-pause", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
-                self.timer = Timer.scheduledTimer(timeInterval: 1,
+                self.timer = Timer.scheduledTimer(timeInterval: 0.01,
                                                   target: self,
                                                   selector: #selector(AudioBubbleView.updateTimer),
                                                   userInfo: nil,
@@ -308,21 +308,21 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         case .stopped:
             self.playImageView.image = UIImage(named: "icon-play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
             self.stopTimer()
-            self.displayTime = self.audioMessageViewModel.duration
+            self.displayTime = self.audioMessageViewModel.duration + 0.9
         }
     }
 
     @objc private func updateTimer() {
         defer { self.textView.attributedText = self.formattedDisplayTime }
-
-        if self.displayTime < 1 {
+        
+        if self.displayTime < 0 {
             self.displayTime = self.audioMessageViewModel.duration
-            self.audioMessageViewModel.state.value = .stopped
             self.stopTimer()
 
             return
         }
-        self.displayTime -= 1
+        
+        self.displayTime -= 0.01
     }
 
     private func stopTimer() {

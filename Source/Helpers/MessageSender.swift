@@ -89,6 +89,7 @@ public class MessageSender {
                 }
         
                 // FIXME: check why string
+                // FIXME: 64 bytes length is too much
                 let hashString = Virgil.shared.crypto.computeHash(for: imageData)
                     .subdata(in: 0..<32)
                     .hexEncodedString()
