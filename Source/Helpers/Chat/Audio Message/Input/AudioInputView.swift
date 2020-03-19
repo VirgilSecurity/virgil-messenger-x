@@ -344,7 +344,7 @@ extension AudioInputView {
                     throw NSError()
                 }
                 
-                self.delegate?.inputView(self, didFinishedRecording: audioUrl, duration: self.time)
+                self.delegate?.inputView(self, didFinishedRecording: audioUrl, duration: self.time + 0.9)
             } catch {
                 Log.error(error.localizedDescription)
             }

@@ -308,7 +308,7 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
         case .stopped:
             self.playImageView.image = UIImage(named: "icon-play", in: Bundle(for: AudioBubbleView.self), compatibleWith: nil)!
             self.stopTimer()
-            self.displayTime = self.audioMessageViewModel.duration + 0.9
+            self.displayTime = self.audioMessageViewModel.duration
         }
     }
 
