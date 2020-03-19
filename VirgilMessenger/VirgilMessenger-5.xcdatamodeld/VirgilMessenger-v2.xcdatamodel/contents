@@ -31,7 +31,7 @@
         <attribute name="body" attributeType="String"/>
     </entity>
     <entity name="VoiceMessage" representedClassName="VoiceMessage" parentEntity="Message" syncable="YES">
-        <attribute name="duration" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="duration" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="identifier" attributeType="String"/>
         <attribute name="url" attributeType="URI"/>
     </entity>

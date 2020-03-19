@@ -10,6 +10,6 @@ import Foundation
 
 struct VoiceContent: Codable {
     let identifier: String
-    let duration: Int
+    let duration: TimeInterval
     let url: URL
 }

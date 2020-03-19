@@ -65,9 +65,8 @@ public class MessageSender {
                                              channel: channel,
                                              loadDelegate: uiModel)
                 
-                // FIXME duration type
                 let voiceContent = VoiceContent(identifier: uiModel.identifier,
-                                                duration: Int(uiModel.duration),
+                                                duration: uiModel.duration,
                                                 url: getUrl)
                 let content = MessageContent.voice(voiceContent)
                 
