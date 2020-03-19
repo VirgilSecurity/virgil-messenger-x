@@ -17,12 +17,19 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
     
-    private func send(content: MessageContent, to channel: Channel, date: Date) throws {
+    private func send(content: MessageContent, additionalData: Data?, to channel: Channel, date: Date) throws {
         let exported = try content.exportAsJsonString()
 
-        let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: channel.getCard())
+        let card = try channel.getCard()
+        let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: card)
+        
+        var additionalData = additionalData
+        
+        if let data = additionalData {
+            additionalData = try Virgil.ethree.authEncrypt(data: data, for: card)
+        }
 
-        let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date)
+        let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date, additionalData: additionalData)
 
         try Ejabberd.shared.send(encryptedMessage, to: channel.name)
     }
@@ -64,7 +71,7 @@ public class MessageSender {
                                                 url: getUrl)
                 let content = MessageContent.voice(voiceContent)
                 
-                try self.send(content: content, to: channel, date: uiModel.date)
+                try self.send(content: content, additionalData: nil, to: channel, date: uiModel.date)
                 
                 _ = try CoreData.shared.createVoiceMessage(with: voiceContent,
                                                            in: channel,
@@ -104,13 +111,14 @@ public class MessageSender {
                                              loadDelegate: uiModel)
                 
                 // encrypt message to ejabberd user
-                let photoContent = PhotoContent(identifier: hashString, thumbnail: thumbnail, url: getUrl)
+                let photoContent = PhotoContent(identifier: hashString, url: getUrl)
                 let content = MessageContent.photo(photoContent)
                 
-                try self.send(content: content, to: channel, date: uiModel.date)
+                try self.send(content: content, additionalData: thumbnail, to: channel, date: uiModel.date)
                 
                 // Save local Core Data entity
                 _ = try CoreData.shared.createPhotoMessage(with: photoContent,
+                                                           thumbnail: thumbnail,
                                                            in: channel,
                                                            isIncoming: false)
                 
@@ -129,7 +137,7 @@ public class MessageSender {
                 let textContent = TextContent(body: uiModel.body)
                 let messageContent = MessageContent.text(textContent)
                 
-                try self.send(content: messageContent, to: channel, date: uiModel.date)
+                try self.send(content: messageContent, additionalData: nil, to: channel, date: uiModel.date)
 
                 _ = try CoreData.shared.createTextMessage(with: textContent,
                                                           in: channel,

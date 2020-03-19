@@ -46,11 +46,12 @@ extension CoreData {
     }
     
     func createPhotoMessage(with content: PhotoContent,
+                            thumbnail: Data,
                             in channel: Channel,
                             isIncoming: Bool,
                             date: Date = Date()) throws -> Message {
         let message = try PhotoMessage(identifier: content.identifier,
-                                       thumbnail: content.thumbnail,
+                                       thumbnail: thumbnail,
                                        url: content.url,
                                        isIncoming: isIncoming,
                                        date: date,

@@ -19,6 +19,7 @@ public enum EncryptedMessageError: Int, Error {
 
 public class EncryptedMessage: Codable {
     let ciphertext: Data
+    let additionalData: Data?
     let date: Date
     
     var version: EncryptedMessageVersion {
@@ -27,9 +28,10 @@ public class EncryptedMessage: Codable {
     
     private var codableVersion: EncryptedMessageVersion?
 
-    public init(ciphertext: Data, date: Date) {
+    public init(ciphertext: Data, date: Date, additionalData: Data?) {
         self.ciphertext = ciphertext
         self.date = date
+        self.additionalData = additionalData
         self.codableVersion = EncryptedMessageVersion.allCases.last
     }
     

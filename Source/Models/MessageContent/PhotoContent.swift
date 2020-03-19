@@ -10,6 +10,5 @@ import Foundation
 
 struct PhotoContent: Codable {
     let identifier: String
-    let thumbnail: Data
     let url: URL
 }

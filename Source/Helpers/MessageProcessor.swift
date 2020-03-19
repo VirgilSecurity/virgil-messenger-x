@@ -14,13 +14,22 @@ class MessageProcessor {
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
         
+        var decryptedAdditional: Data? = nil
+        
+        if let data = encryptedMessage.additionalData {
+            decryptedAdditional = try Virgil.ethree.authDecrypt(data: data, from: channel.getCard())
+        }
+        
         let messageContent = try self.migrationSafeContentImport(from: decrypted,
                                                                  version: encryptedMessage.version)
         
-        try self.process(messageContent, channel: channel, date: encryptedMessage.date)
+        try self.process(messageContent,
+                         additionalData: decryptedAdditional,
+                         channel: channel,
+                         date: encryptedMessage.date)
     }
     
-    private static func process(_ messageContent: MessageContent, channel: Channel, date: Date) throws {
+    private static func process(_ messageContent: MessageContent, additionalData: Data?, channel: Channel, date: Date) throws {
         let message: Message
     
         switch messageContent {
@@ -31,7 +40,12 @@ class MessageProcessor {
                                                             date: date)
             
         case .photo(let photoContent):
+            guard let thumbnail = additionalData else {
+                throw NSError()
+            }
+            
             message = try CoreData.shared.createPhotoMessage(with: photoContent,
+                                                             thumbnail: thumbnail,
                                                              in: channel,
                                                              isIncoming: true,
                                                              date: date)
