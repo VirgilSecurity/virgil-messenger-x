@@ -31,10 +31,15 @@ class MessageProcessor {
         try self.process(messageContent,
                          additionalData: decryptedAdditional,
                          channel: channel,
+                         author: author,
                          date: encryptedMessage.date)
     }
     
-    private static func process(_ messageContent: MessageContent, additionalData: Data?, channel: Channel, date: Date) throws {
+    private static func process(_ messageContent: MessageContent,
+                                additionalData: Data?,
+                                channel: Channel,
+                                author: String,
+                                date: Date) throws {
         let message: Message
     
         switch messageContent {
@@ -61,7 +66,7 @@ class MessageProcessor {
                                                              date: date)
         }
         
-        self.postNotification(about: message)
+        self.postNotification(about: message, author: author)
     }
     
     private static func migrationSafeContentImport(from data: Data,
@@ -115,9 +120,10 @@ class MessageProcessor {
         return decrypted
     }
     
-    private static func postNotification(about message: Message) {
-        guard CoreData.shared.currentChannel != nil else {
-            return Notifications.post(.chatListUpdated)
+    private static func postNotification(about message: Message, author: String) {
+        guard let channel = CoreData.shared.currentChannel,
+            channel.name == author else {
+                return Notifications.post(.chatListUpdated)
         }
     
         Notifications.post(message: message)
