@@ -942,6 +942,7 @@
 				16D4B8B623F5BCA400D17B90 /* Embed App Extensions */,
 				97E7C4952403093D00D9CAAA /* ShellScript */,
 				F47DD29F240E9985006A0341 /* Embed Frameworks */,
+				F48122262425463E0003DD78 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1109,6 +1110,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PROJECT_DIR}/Carthage/Build/iOS/Fabric.framework/run\"\n";
+		};
+		F48122262425463E0003DD78 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# SwiftLint\nif which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
