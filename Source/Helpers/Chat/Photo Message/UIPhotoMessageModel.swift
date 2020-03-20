@@ -25,13 +25,6 @@
 import Chatto
 import ChattoAdditions
 
-// FIXME: Move to other file
-public enum MediaMessageState {
-    case normal
-    case downloading
-    case uploading
-}
-
 public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageModelProtocol {
     public private(set) var state: MediaMessageState
     public private(set) weak var loadDelegate: LoadDelegate?

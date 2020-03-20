@@ -2,7 +2,7 @@ import Chatto
 import ChattoAdditions
 import VirgilSDK
 
-// FIXME: Move to proper file
+// TODO: Move to proper file
 public protocol UIMessageModelExportable {
     func exportAsUIModel(withId id: Int, status: MessageStatus) -> UIMessageModelProtocol
 }
@@ -57,7 +57,7 @@ public class MessageSender {
     public func send(uiModel: UIAudioMessageModel, channel: Channel) throws {
         self.queue.async {
             do {
-                // FIXME: optimize. Do not fetch data to memrory, use streams
+                // TODO: optimize. Do not fetch data to memrory, use streams
                 let data = try Data(contentsOf: uiModel.audioUrl)
                 
                 let getUrl = try self.upload(data: data,
@@ -88,7 +88,6 @@ public class MessageSender {
     public func send(uiModel: UIPhotoMessageModel, channel: Channel) throws {
         self.queue.async {
             do {
-                // FIXME: Compression quality
                 guard let imageData = uiModel.image.jpegData(compressionQuality: 0.0),
                     let thumbnail = uiModel.image.resized(to: 10)?.jpegData(compressionQuality: 1.0) else {
                         throw UserFriendlyError.imageCompressionFailed

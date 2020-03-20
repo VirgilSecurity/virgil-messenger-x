@@ -168,6 +168,7 @@
 		9706713A241FB39B000E29F8 /* VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97067138241FB39B000E29F8 /* VoiceMessage.swift */; };
 		9706713D241FB572000E29F8 /* VoiceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9706713C241FB572000E29F8 /* VoiceContent.swift */; };
 		9706713E241FB642000E29F8 /* VoiceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9706713C241FB572000E29F8 /* VoiceContent.swift */; };
+		9713269E2424CF7E0061A4CF /* UIMediaMessageState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9713269D2424CF7E0061A4CF /* UIMediaMessageState.swift */; };
 		9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
 		97421535241914E600E2DF42 /* PhotoMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97421533241914E600E2DF42 /* PhotoMessage.swift */; };
 		974215382419170100E2DF42 /* PhotoContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974215372419170100E2DF42 /* PhotoContent.swift */; };
@@ -369,6 +370,7 @@
 		80AC600F24008EA900F6A73C /* Array+IndexPathSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+IndexPathSubscript.swift"; sourceTree = "<group>"; };
 		97067138241FB39B000E29F8 /* VoiceMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMessage.swift; sourceTree = "<group>"; };
 		9706713C241FB572000E29F8 /* VoiceContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceContent.swift; sourceTree = "<group>"; };
+		9713269D2424CF7E0061A4CF /* UIMediaMessageState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMediaMessageState.swift; sourceTree = "<group>"; };
 		97421533241914E600E2DF42 /* PhotoMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMessage.swift; sourceTree = "<group>"; };
 		974215372419170100E2DF42 /* PhotoContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoContent.swift; sourceTree = "<group>"; };
 		974CC5462417DD1400FC7554 /* VirgilMessenger-v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VirgilMessenger-v2.xcdatamodel"; sourceTree = "<group>"; };
@@ -736,6 +738,7 @@
 				4280C0CA1F97340B00075B3A /* BaseMessageHandler.swift */,
 				427D1E521F965568002F2CF3 /* DataSource.swift */,
 				427D1E531F965569002F2CF3 /* SlidingDatasSource.swift */,
+				9713269D2424CF7E0061A4CF /* UIMediaMessageState.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -1208,6 +1211,7 @@
 				16013C7920B214460043EA29 /* AudioBubleView.swift in Sources */,
 				16F6FC721FAA235400158615 /* Registration.swift in Sources */,
 				4280C0D91F97341A00075B3A /* UITextMessageHandler.swift in Sources */,
+				9713269E2424CF7E0061A4CF /* UIMediaMessageState.swift in Sources */,
 				80AC600C2400225100F6A73C /* DetailTableViewCell.swift in Sources */,
 				16FE75F0224A3DA000B545AF /* Configurator.swift in Sources */,
 				16FCF2801FE46756000348BC /* Account.swift in Sources */,

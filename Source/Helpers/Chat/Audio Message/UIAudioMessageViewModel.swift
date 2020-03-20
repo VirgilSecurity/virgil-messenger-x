@@ -35,7 +35,7 @@ extension UIAudioMessageViewModel: LoadDelegate {
     func progressChanged(to percent: Double) {
         DispatchQueue.main.async {
             guard self.transferStatus.value == .transfering else {
-                // FIXME: add error logs
+                // TODO: add error logs
                 return
             }
             guard percent < 100 else {
@@ -48,7 +48,6 @@ extension UIAudioMessageViewModel: LoadDelegate {
     }
     
     func failed(with error: Error) {
-        // FIXME: add error logs
         DispatchQueue.main.async {
             self.transferStatus.value = .failed
             self.loadState = .normal
@@ -56,7 +55,7 @@ extension UIAudioMessageViewModel: LoadDelegate {
     }
     
     func completed(dataHash: String) {
-        // FIXME: copypaste
+        // TODO: remove copypaste
         DispatchQueue.main.async {
             self.transferStatus.value = .success
             self.loadState = .normal

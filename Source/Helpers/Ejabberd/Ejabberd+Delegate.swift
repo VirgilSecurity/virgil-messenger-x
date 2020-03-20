@@ -85,8 +85,8 @@ extension Ejabberd {
 
     func xmppStream(_ sender: XMPPStream, didReceive message: XMPPMessage) {
         Log.debug("Ejabberd: Message received")
-
-        // FIXME: Add error message handling
+        
+        // TODO: Add error message handling
         do {
             let author = try message.getAuthor()
             

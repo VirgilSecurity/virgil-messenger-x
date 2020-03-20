@@ -22,7 +22,7 @@ extension CoreData {
     }
 
     func createSingleChannel(initiator: String, card: Card) throws -> Channel {
-        // FIXME
+        // TODO: remove sid on channel migration
         let sid = UUID().uuidString
 
         guard card.identity != Virgil.ethree.identity else {

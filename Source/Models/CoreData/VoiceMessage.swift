@@ -57,11 +57,10 @@ public class VoiceMessage: Message {
                                               status: status,
                                               state: state,
                                               date: self.date)
-                        
             if state == .downloading {
-                let downloadOperation = Virgil.shared.client.startDownload(from: self.url,
-                                                                           loadDelegate: uiModel,
-                                                                           dataHash: self.identifier)
+                try Virgil.shared.client.startDownload(from: self.url,
+                                                       loadDelegate: uiModel,
+                                                       dataHash: self.identifier)
                 { tempFileUrl in
                     let path = try CoreData.shared.getMediaStorage().getPath(name: self.identifier)
 
@@ -73,11 +72,9 @@ public class VoiceMessage: Message {
                         throw FileMediaStorage.Error.outputStreamToPathFailed
                     }
 
-                    // TODO: add self card usecase
+                    // FIXME: add self card usecase
                     try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: self.channel.getCard())
                 }
-                
-                downloadOperation.start()
             }
             
             return uiModel

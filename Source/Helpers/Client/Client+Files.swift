@@ -44,25 +44,27 @@ extension Client {
     public func startDownload(from url: URL,
                               loadDelegate: LoadDelegate,
                               dataHash: String,
-                              saveFileCallback: @escaping (URL) throws -> Void) -> CallbackOperation<Void> {
-        return CallbackOperation { _, completion in
+                              saveFileCallback: @escaping (URL) throws -> Void) throws {
+        let request = Request(url: url, method: .get)
+        
+        let downloadOperation = try self.connection.downloadFile(with: request, saveFileCallback: saveFileCallback)
+        
+        downloadOperation.start { response, error in
             do {
-                let request = Request(url: url, method: .get)
-                
-                let response = try self.connection.downloadFile(with: request, saveFileCallback: saveFileCallback)
-                    .startSync()
-                    .get()
-                
-                try self.validateResponse(response)
-                
-                loadDelegate.completed(dataHash: dataHash)
+                if let error = error {
+                    throw error
+                }
+                else if let response = response {
+                    try self.validateResponse(response)
+                    
+                    loadDelegate.completed(dataHash: dataHash)
+                }
+                else {
+                    throw NSError()
+                }
             }
             catch {
-                Log.error(error, message: "Downloading data failed")
-                
                 loadDelegate.failed(with: error)
-                
-                completion(nil, error)
             }
         }
     }

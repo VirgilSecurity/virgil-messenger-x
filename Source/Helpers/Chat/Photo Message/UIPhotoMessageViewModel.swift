@@ -45,17 +45,13 @@ class UIPhotoMessageViewModel: PhotoMessageViewModel<UIPhotoMessageModel> {
             super.init(photoMessage: photoMessage, messageViewModel: messageViewModel)
         }
     }
-
-    override func willBeShown() {
-        // FIXME: delete
-    }
 }
 
 extension UIPhotoMessageViewModel: LoadDelegate {
     func progressChanged(to percent: Double) {
         DispatchQueue.main.async {
             guard self.transferStatus.value == .transfering else {
-                // FIXME: add error logs
+                // TODO: add error logs
                 return
             }
             guard percent < 100 else {
@@ -91,14 +87,15 @@ extension UIPhotoMessageViewModel: LoadDelegate {
                 break
             }
             
-            // FIXME: copypaste
+            // TODO: remove copypaste
             DispatchQueue.main.async {
                 self.transferStatus.value = .success
                 self.state = .normal
             }
         }
         catch {
-            // FIXME: logs
+            Log.error(error, message: "Image loading completion failed")
+            
             DispatchQueue.main.async {
                 self.transferStatus.value = .failed
                 self.state = .normal

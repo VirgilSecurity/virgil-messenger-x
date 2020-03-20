@@ -344,7 +344,6 @@ extension AudioInputView {
 
         if success {
             do {
-                // FIXME delete file at url on error
                 guard let audioUrl = self.audioFile else {
                     throw UserFriendlyError.voiceRecordingError
                 }
@@ -355,6 +354,13 @@ extension AudioInputView {
                 // TODO: show error to user
                 Log.error(error, message: "Finish recording failed")
             }
+        }
+        else {
+            if let audioUrl = self.audioFile {
+                try? FileManager.default.removeItem(at: audioUrl)
+            }
+            
+            self.audioFile = nil
         }
         
         self.timerLabel.text = self.timeString(0)
