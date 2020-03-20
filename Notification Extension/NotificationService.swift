@@ -55,7 +55,7 @@ class NotificationService: UNNotificationServiceExtension {
             let decrypted = try self.decrypt(notificationInfo: notificationInfo)
 
             let message = try self.process(decrypted: decrypted,
-                                           version: notificationInfo.encryptedMessage.version)
+                                           version: notificationInfo.encryptedMessage.modelVersion)
             
             bestAttemptContent.body = message
 

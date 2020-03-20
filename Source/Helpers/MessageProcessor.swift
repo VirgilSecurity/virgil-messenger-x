@@ -26,7 +26,7 @@ class MessageProcessor {
         }
         
         let messageContent = try self.migrationSafeContentImport(from: decrypted,
-                                                                 version: encryptedMessage.version)
+                                                                 version: encryptedMessage.modelVersion)
         
         try self.process(messageContent,
                          additionalData: decryptedAdditional,

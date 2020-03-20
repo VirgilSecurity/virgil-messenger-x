@@ -22,18 +22,17 @@ public class EncryptedMessage: Codable {
     let additionalData: Data?
     let date: Date
     
-    var version: EncryptedMessageVersion {
-        return self.codableVersion ?? .v1
+    var modelVersion: EncryptedMessageVersion {
+        return self.version ?? .v1
     }
     
-    // FIXME: rename?
-    private let codableVersion: EncryptedMessageVersion?
+    private let version: EncryptedMessageVersion?
 
     public init(ciphertext: Data, date: Date, additionalData: Data?) {
         self.ciphertext = ciphertext
         self.date = date
         self.additionalData = additionalData
-        self.codableVersion = EncryptedMessageVersion.allCases.last
+        self.version = EncryptedMessageVersion.allCases.last
     }
     
     static func `import`(_ string: String) throws -> EncryptedMessage {
