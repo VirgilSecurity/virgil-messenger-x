@@ -13,41 +13,18 @@ import AVFoundation
 import ChattoAdditions
 
 @objc(Message)
-public class Message: NSManagedObject {
+public class Message: NSManagedObject, UIMessageModelExportable {
     @NSManaged public var date: Date
     @NSManaged public var isIncoming: Bool
     @NSManaged public var channel: Channel
     @NSManaged public var isHidden: Bool
     
-    public var type: MessageType {
-        if self is TextMessage {
-            return .text
-        }
-        else {
-            fatalError("Unknown subclass of Message")
-        }
-    }
-}
-
-extension Message {
     public func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
-        let resultMessage: UIMessageModelProtocol
-
-        if let message = self as? TextMessage {
-            resultMessage = UITextMessageModel(uid: id,
-                                               text: message.body,
-                                               isIncoming: self.isIncoming,
-                                               status: status,
-                                               date: date)
-        }
-        else {
-            Log.error("Exporting core data model to ui model failed")
-            
-            resultMessage = UITextMessageModel.corruptedModel(uid: id,
-                                                              isIncoming: self.isIncoming,
-                                                              date: self.date)
-        }
+        Log.error(CoreData.Error.exportBaseMessageForbidden,
+                  message: "Exporting abstract Message to UI model is forbidden")
         
-        return resultMessage
+        return UITextMessageModel.corruptedModel(uid: id,
+                                                 isIncoming: self.isIncoming,
+                                                 date: self.date)
     }
 }

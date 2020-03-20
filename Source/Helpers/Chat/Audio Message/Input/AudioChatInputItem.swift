@@ -10,7 +10,7 @@ import ChattoAdditions
 
 open class AudioChatInputItem {
     public typealias Class = AudioChatInputItem
-    public var audioInputHandler: ((Data) -> Void)?
+    public var audioInputHandler: ((URL, TimeInterval) -> Void)?
     public var microphonePermissionHandler: (() -> Void)?
     public weak var presentingController: UIViewController?
 
@@ -73,16 +73,15 @@ extension AudioChatInputItem: ChatInputItemProtocol {
     }
 
     public func handleInput(_ input: AnyObject) {
-        if let audio = input as? Data {
-            self.audioInputHandler?(audio)
-        }
+        // TODO: check if this called
+        return
     }
 }
 
 // MARK: - AudioInputViewDelegate
 extension AudioChatInputItem: AudioInputViewDelegate {
-    func inputView(_ inputView: AudioInputViewProtocol, didFinishedRecording audio: Data) {
-        self.audioInputHandler?(audio)
+    func inputView(_ inputView: AudioInputViewProtocol, didFinishedRecording audioUrl: URL, duration: TimeInterval) {
+        self.audioInputHandler?(audioUrl, duration)
     }
 
     func inputViewDidRequestMicrophonePermission(_ inputView: AudioInputViewProtocol) {

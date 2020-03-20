@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.1.0</string>
+	<string>3.2.0</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -42,13 +42,13 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>used for ability to add photo attachmants</string>
+	<string>Take photo to send directly from app</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>used for ability to record audio messages</string>
+	<string>Record voice messages</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>used for ability to save photo in photo library</string>
+	<string>Save photos form chats into photo library</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>used for ability to add photo attachmants</string>
+	<string>Send photos</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

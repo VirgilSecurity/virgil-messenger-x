@@ -78,8 +78,15 @@ public class Channel: NSManagedObject {
             return ""
         }
 
+        // TODO: wrap to enum?
         if let textMessage = message as? TextMessage {
             return textMessage.body
+        }
+        else if message is PhotoMessage {
+            return "Photo"
+        }
+        else if message is VoiceMessage {
+            return "Voice Message"
         }
         else {
             return ""

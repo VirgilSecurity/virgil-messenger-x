@@ -29,13 +29,12 @@ extension CoreData {
         try self.save(message)
     }
 
-    func createTextMessage(_ body: String,
-                           in channel: Channel? = nil,
+    func createTextMessage(with content: TextContent,
+                           in channel: Channel,
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Message {
-        let channel = try channel ?? self.getCurrentChannel()
 
-        let message = try TextMessage(body: body,
+        let message = try TextMessage(body: content.body,
                                       isIncoming: isIncoming,
                                       date: date,
                                       channel: channel,
@@ -44,5 +43,52 @@ extension CoreData {
         try self.save(message)
 
         return message
+    }
+    
+    func createPhotoMessage(with content: PhotoContent,
+                            thumbnail: Data,
+                            in channel: Channel,
+                            isIncoming: Bool,
+                            date: Date = Date()) throws -> Message {
+        let message = try PhotoMessage(identifier: content.identifier,
+                                       thumbnail: thumbnail,
+                                       url: content.url,
+                                       isIncoming: isIncoming,
+                                       date: date,
+                                       channel: channel,
+                                       managedContext: self.managedContext)
+
+        try self.save(message)
+
+        return message
+    }
+    
+    func createVoiceMessage(with content: VoiceContent,
+                            in channel: Channel,
+                            isIncoming: Bool,
+                            date: Date = Date()) throws -> Message {
+        let message = try VoiceMessage(identifier: content.identifier,
+                                       duration: content.duration,
+                                       url: content.url,
+                                       isIncoming: isIncoming,
+                                       date: date,
+                                       channel: channel,
+                                       managedContext: self.managedContext)
+
+        try self.save(message)
+
+        return message
+    }
+    
+    func storeMediaContent(_ data: Data, name: String, type: FileMediaStorage.MediaType) throws {
+        let mediaStorage = try self.getMediaStorage()
+        
+        let path = try mediaStorage.getPath(name: name, type: type)
+        
+        if type == .photo, mediaStorage.exists(path: path) {
+            return
+        }
+        
+        try self.getMediaStorage().store(data, name: name, type: type)
     }
 }

@@ -203,8 +203,8 @@ class ChatViewController: BaseChatViewController {
     func createChatInputItems() -> [ChatInputItemProtocol] {
         var items = [ChatInputItemProtocol]()
         items.append(self.createTextInputItem())
-//        items.append(self.createPhotoInputItem())
-//        items.append(self.createAudioInputItem())
+        items.append(self.createPhotoInputItem())
+        items.append(self.createAudioInputItem())
 
         return items
     }
@@ -278,7 +278,7 @@ extension ChatViewController {
             if self?.checkReachability() ?? false,
                 Configurator.isUpdated,
                 !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    try? self?.dataSource.addTextMessage(text)
+                    self?.dataSource.addTextMessage(text)
             }
         }
 
@@ -303,20 +303,24 @@ extension ChatViewController {
 
     private func createAudioInputItem() -> AudioChatInputItem {
         let item = AudioChatInputItem(presentingController: self)
-        item.audioInputHandler = { [weak self] audioData in
+        
+        item.audioInputHandler = { [weak self] audioUrl, duration in
             if self?.checkReachability() ?? false, Configurator.isUpdated {
-                self?.dataSource.addAudioMessage(audioData)
+                self?.dataSource.addVoiceMessage(audioUrl, duration: duration)
             }
         }
+        
         return item
     }
 }
 
 extension ChatViewController: AudioPlayableProtocol {
     func play(model: UIAudioMessageViewModel) {
+        // TODO: error handling
         try? AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+
         do {
-            self.soundPlayer = try AVAudioPlayer(data: model.audio)
+            self.soundPlayer = try AVAudioPlayer(contentsOf: model.audioUrl)
             self.soundPlayer?.delegate = self
             self.soundPlayer?.prepareToPlay()
             self.soundPlayer?.volume = 1.0
@@ -326,8 +330,9 @@ extension ChatViewController: AudioPlayableProtocol {
                 audioModel.state.value = .stopped
             }
             self.cachedAudioModel = model
-        } catch {
-            Log.error("AVAudioPlayer error: \(error.localizedDescription)")
+        }
+        catch {
+            Log.error(error, message: "AVAudioPlayer playing error")
             self.alert(UserFriendlyError.playingError)
         }
     }
@@ -342,6 +347,7 @@ extension ChatViewController: AudioPlayableProtocol {
     }
 
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        self.cachedAudioModel?.state.value = .stopped
         self.cachedAudioModel = nil
     }
 }

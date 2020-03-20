@@ -4,5 +4,6 @@ github "Ogerets/Chatto" "messenger-stable"
 github "pkluz/PKHUD"
 github "Boris-Em/BEMCheckBox" ~> 1.4.1
 github "VirgilSecurity/virgil-crypto-x" ~> 5.2.0
+github "VirgilSecurity/virgil-sdk-x" "develop-messenger"
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json"
 binary "Crashlytics.json"

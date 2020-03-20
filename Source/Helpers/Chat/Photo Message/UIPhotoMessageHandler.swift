@@ -53,12 +53,18 @@ class UIPhotoMessageHandler: NSObject, BaseMessageInteractionHandlerProtocol {
 
     func userDidTapOnBubble(viewModel: UIPhotoMessageViewModel) {
         self.baseHandler.userDidTapOnBubble(viewModel: viewModel)
-        self.photoObserverController.showImage(viewModel.fakeImage)
+        
+        if let image = viewModel.image.value {
+            self.photoObserverController.showImage(image)
+        }
     }
 
     func userDidBeginLongPressOnBubble(viewModel: UIPhotoMessageViewModel) {
         self.baseHandler.userDidBeginLongPressOnBubble(viewModel: viewModel)
-        self.photoObserverController.showSaveImageAlert(viewModel.fakeImage)
+        
+        if let image = viewModel.image.value {
+            self.photoObserverController.showSaveImageAlert(image)
+        }
     }
 
     func userDidEndLongPressOnBubble(viewModel: UIPhotoMessageViewModel) {

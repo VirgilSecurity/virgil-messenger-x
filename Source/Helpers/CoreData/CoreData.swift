@@ -15,6 +15,8 @@ class CoreData {
     private(set) var currentAccount: Account?
 
     private let queue = DispatchQueue(label: "CoreData")
+    
+    private var mediaStorage: FileMediaStorage?
 
     let managedContext: NSManagedObjectContext
 
@@ -25,7 +27,7 @@ class CoreData {
 
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
-                Log.error("Load persistent store failed: \(error.localizedDescription)")
+                Log.error(error, message: "Load persistent store failed")
 
                 fatalError()
             }
@@ -34,7 +36,7 @@ class CoreData {
         return container
     }()
 
-    public enum Error: Int, Swift.Error {
+    public enum Error: Int, Swift.Error, LocalizedError {
         case nilCurrentAccount = 1
         case nilCurrentChannel = 2
         case entityNotFound = 3
@@ -43,6 +45,8 @@ class CoreData {
         case invalidMessage = 6
         case accountNotFound = 7
         case missingVirgilGroup = 8
+        case exportBaseMessageForbidden = 9
+        case nilMediaStorage = 10
     }
 
     private init() {
@@ -81,12 +85,24 @@ class CoreData {
         }
 
         try self.saveContext()
+        
+        try self.mediaStorage?.reset()
 
         try self.reloadData()
+    }
+    
+    internal func getMediaStorage() throws -> FileMediaStorage {
+        guard let storage = self.mediaStorage else {
+            throw Error.nilMediaStorage
+        }
+        
+        return storage
     }
 
     func setCurrent(account: Account) {
         self.currentAccount = account
+        
+        self.mediaStorage = FileMediaStorage(identity: account.identity)
     }
 
     func setCurrent(channel: Channel) {
@@ -106,5 +122,6 @@ class CoreData {
     func resetState() {
         self.currentAccount = nil
         self.deselectChannel()
+        self.mediaStorage = nil
     }
 }

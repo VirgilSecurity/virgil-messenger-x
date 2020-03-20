@@ -10,6 +10,8 @@ import Foundation
 
 enum MessageContent {
     case text(TextContent)
+    case photo(PhotoContent)
+    case voice(VoiceContent)
 }
 
 extension MessageContent: Codable {
@@ -27,6 +29,14 @@ extension MessageContent: Codable {
             let textContent = try container.decode(TextContent.self, forKey: .payload)
             
             self = .text(textContent)
+        case .photo:
+            let photoContent = try container.decode(PhotoContent.self, forKey: .payload)
+            
+            self = .photo(photoContent)
+        case .voice:
+            let voiceContent = try container.decode(VoiceContent.self, forKey: .payload)
+            
+            self = .voice(voiceContent)
         }
     }
     
@@ -39,6 +49,16 @@ extension MessageContent: Codable {
             
             try container.encode(type, forKey: .type)
             try container.encode(textContent, forKey: .payload)
+        case .photo(let photoContent):
+            let type = MessageType.photo
+            
+            try container.encode(type, forKey: .type)
+            try container.encode(photoContent, forKey: .payload)
+        case .voice(let voiceContent):
+            let type = MessageType.voice
+            
+            try container.encode(type, forKey: .type)
+            try container.encode(voiceContent, forKey: .payload)
         }
     }
     
