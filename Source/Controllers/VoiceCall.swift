@@ -32,7 +32,7 @@ class VoiceCallViewController: ViewController {
                 switch (self.callState) {
                 case .none:
                     break;
-                    
+
                 case .initial:
                     self.callDirectionLabel.text = "-"
                     self.callToFromLabel.text = "To"
@@ -45,7 +45,7 @@ class VoiceCallViewController: ViewController {
                     self.callStatus.text = "Waiting for answer..."
                     self.callButton.isEnabled = false
                     self.answerButton.isEnabled = false
-                    
+
                 case .responderWaitingForAnswer:
                     self.callDirectionLabel.text = "Incomming"
                     self.callToFromLabel.text = "From"
@@ -58,32 +58,32 @@ class VoiceCallViewController: ViewController {
                     self.callStatus.text = "Waiting ice negotiating..."
                     self.callButton.isEnabled = false
                     self.answerButton.isEnabled = false
-                    
+
                 case .connected:
                     self.callStatus.text = "Connected"
-                    
+
                 case .abort(let error):
                     self.callStatus.text = error.localizedDescription
                 }
             }
         }
     }
-    
+
     private var lastCallOffer: Message.CallOffer?
-    
-    public var callChannel: CallChannel! {
+
+    public var callChannel: CallManager! {
         didSet {
             self.callChannel.delegate = self
         }
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.callState = .initial
         self.setupObservers()
     }
-        
+
     private func setupObservers() {
         let processCallOffer: Notifications.Block = { [weak self] notification in
             guard let callOffer: Message.CallOffer = Notifications.parse(notification, for: .message) else {
@@ -107,7 +107,7 @@ class VoiceCallViewController: ViewController {
                     self?.callState = .waitingIceNegotiating
                     return
                 }
-                
+
                 Log.error("\(error)")
                 self?.callState = .abort(error)
                 self?.callChannel.endCall()
@@ -135,35 +135,35 @@ class VoiceCallViewController: ViewController {
                 self.callState = .callerWaitingForAnswer
                 return
             }
-            
+
             Log.error("Voice offer was not created \(error)")
             self.callState = .abort(error)
             self.callChannel.endCall()
         }
     }
-    
+
     @IBAction func sendAnswerTapped(_ sender: Any) {
-        
+
         if let sessionDescription = self.lastCallOffer {
             self.callChannel.sendAnswer(offer: sessionDescription) { error in
                 guard let error = error else {
                     Log.debug("Voice offer was created")
                     return
                 }
-                
+
                 Log.error("Voice offer was not created \(error)")
             }
         }
     }
-    
+
     @IBAction func endCallTapped(_ sender: Any) {
         self.callChannel.endCall()
         dismiss(animated: true, completion: nil)
     }
 }
 
-extension VoiceCallViewController: CallChannelDelegate {
-    func callChannel(connected callChannel: CallChannel) {
+extension VoiceCallViewController: CallManagerDelegate {
+    func callChannel(connected callChannel: CallManager) {
         Log.debug("!!! Call Connected")
         self.callState = .connected
     }

@@ -16,14 +16,14 @@ fileprivate let kIceServers = ["stun:stun.l.google.com:19302",
                   "stun:stun4.l.google.com:19302"]
 
 
-public protocol CallChannelDelegate: class {
-    func callChannel(connected callChannel: CallChannel)
+public protocol CallManagerDelegate: class {
+    func callChannel(connected callChannel: CallManager)
 }
 
 
-public class CallChannel: NSObject {
+public class CallManager: NSObject {
 
-    public weak var delegate: CallChannelDelegate?
+    public weak var delegate: CallManagerDelegate?
 
     private static let factory: RTCPeerConnectionFactory = RTCPeerConnectionFactory()
 
@@ -175,7 +175,7 @@ public class CallChannel: NSObject {
     }
 }
 
-extension CallChannel: RTCPeerConnectionDelegate {
+extension CallManager: RTCPeerConnectionDelegate {
 
     public func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
         Log.debug("peerConnection new signaling state: \(stateChanged.rawValue)")

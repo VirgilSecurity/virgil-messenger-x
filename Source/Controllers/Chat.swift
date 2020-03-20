@@ -166,7 +166,7 @@ class ChatViewController: BaseChatViewController {
         }
 
         if let voiceCall = segue.destination as? VoiceCallViewController {
-            voiceCall.callChannel = CallChannel(dataSource: self.dataSource)
+            voiceCall.callChannel = CallManager(dataSource: self.dataSource)
         }
 
         super.prepare(for: segue, sender: sender)

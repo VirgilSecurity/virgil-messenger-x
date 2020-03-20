@@ -172,7 +172,7 @@
 		97E7C5652403E77C00D9CAAA /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5592403E57100D9CAAA /* PromisesObjC.framework */; };
 		97FCD36F240E8ED0002FB905 /* VoiceCall.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97FCD36E240E8ED0002FB905 /* VoiceCall.storyboard */; };
 		F401CDCE241B944800C59572 /* Message+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F401CDCD241B944800C59572 /* Message+WebRTC.swift */; };
-		F401CDD9241B96E300C59572 /* CallChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F401CDD8241B96E300C59572 /* CallChannel.swift */; };
+		F401CDD9241B96E300C59572 /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F401CDD8241B96E300C59572 /* CallManager.swift */; };
 		F40DC077241F8F91006D572F /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975F486C2412A68B00232361 /* Message.swift */; };
 		F40DC078241F8F93006D572F /* Message+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F401CDCD241B944800C59572 /* Message+WebRTC.swift */; };
 		F46EE193241FA09F00BE53AA /* Storage+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18D241FA09F00BE53AA /* Storage+Account.swift */; };
@@ -390,7 +390,7 @@
 		97F48AFC241019DF00BBBF1F /* TextContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextContent.swift; sourceTree = "<group>"; };
 		97FCD36E240E8ED0002FB905 /* VoiceCall.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = VoiceCall.storyboard; sourceTree = "<group>"; };
 		F401CDCD241B944800C59572 /* Message+WebRTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+WebRTC.swift"; sourceTree = "<group>"; };
-		F401CDD8241B96E300C59572 /* CallChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallChannel.swift; sourceTree = "<group>"; };
+		F401CDD8241B96E300C59572 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
 		F46EE18D241FA09F00BE53AA /* Storage+Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+Account.swift"; sourceTree = "<group>"; };
 		F46EE18E241FA09F00BE53AA /* Storage+Messages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+Messages.swift"; sourceTree = "<group>"; };
 		F46EE18F241FA09F00BE53AA /* Storage+TextMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+TextMessage.swift"; sourceTree = "<group>"; };
@@ -905,7 +905,7 @@
 		F4812222242536350003DD78 /* Call */ = {
 			isa = PBXGroup;
 			children = (
-				F401CDD8241B96E300C59572 /* CallChannel.swift */,
+				F401CDD8241B96E300C59572 /* CallManager.swift */,
 			);
 			path = Call;
 			sourceTree = "<group>";
@@ -1182,7 +1182,7 @@
 				1658BA181FD97497005EF9C1 /* Date.swift in Sources */,
 				16FB2DD3204D875400346FA0 /* UIView.swift in Sources */,
 				427D1E541F965569002F2CF3 /* DataSource.swift in Sources */,
-				F401CDD9241B96E300C59572 /* CallChannel.swift in Sources */,
+				F401CDD9241B96E300C59572 /* CallManager.swift in Sources */,
 				F46EE193241FA09F00BE53AA /* Storage+Account.swift in Sources */,
 				16013C7920B214460043EA29 /* AudioBubleView.swift in Sources */,
 				F46EE198241FA09F00BE53AA /* Storage.swift in Sources */,
