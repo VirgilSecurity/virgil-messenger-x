@@ -9,6 +9,11 @@
 import Foundation
 
 class MessageProcessor {
+    enum Error: Swift.Error {
+        case missingThumbnail
+        case dataToStrFailed
+    }
+    
     static func process(_ encryptedMessage: EncryptedMessage, from author: String) throws {
         let channel = try self.setupCoreChannel(name: author)
 
@@ -41,7 +46,7 @@ class MessageProcessor {
             
         case .photo(let photoContent):
             guard let thumbnail = additionalData else {
-                throw NSError()
+                throw Error.missingThumbnail
             }
             
             message = try CoreData.shared.createPhotoMessage(with: photoContent,
@@ -65,9 +70,9 @@ class MessageProcessor {
         
         switch version {
         case .v1:
-            // TODO: test
+            // FIXME: test
             guard let body = String(data: data, encoding: .utf8) else {
-                throw NSError()
+                throw Error.dataToStrFailed
             }
             
             let textContent = TextContent(body: body)

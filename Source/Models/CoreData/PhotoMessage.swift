@@ -44,7 +44,7 @@ public class PhotoMessage: Message {
     
     private func thumbnailImage() throws -> UIImage {
         guard let image = UIImage(data: self.thumbnail) else {
-            throw NSError()
+            throw CoreData.Error.invalidMessage
         }
         
         return image
@@ -75,23 +75,25 @@ public class PhotoMessage: Message {
             
             if state == .downloading {
                 // Download and decrypt photo from server
-                try Virgil.shared.client.startDownload(from: self.url,
-                                                       loadDelegate: uiModel,
-                                                       dataHash: self.identifier)
+                let downloadOperation = Virgil.shared.client.startDownload(from: self.url,
+                                                                           loadDelegate: uiModel,
+                                                                           dataHash: self.identifier)
                 { tempFileUrl in
                     let path = try CoreData.shared.getMediaStorage().getPath(name: self.identifier)
 
                     guard let inputStream = InputStream(url: tempFileUrl) else {
-                        throw NSError()
+                        throw Client.Error.inputStreamFromDownloadedFailed
                     }
 
                     guard let outputStream = OutputStream(toFileAtPath: path, append: false) else {
-                        throw NSError()
+                        throw FileMediaStorage.Error.outputStreamToPathFailed
                     }
 
-                    // FIXME: add self card usecase
+                    // TODO: add self card usecase
                     try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: self.channel.getCard())
                 }
+                
+                downloadOperation.start()
             }
             
             return uiModel

@@ -19,6 +19,8 @@ enum UserFriendlyError: String, Error {
     case playingError = "Playing error"
     case memberAlreadyExists = "This user is already a member of channel"
     case connectionIssue = "Connection failed"
+    case voiceRecordingError = "Voice Recording Error"
+    case imageCompressionFailed = "Image Compression Failed"
 
     init(from error: Error) {
         self = error as? UserFriendlyError ?? .unknownError

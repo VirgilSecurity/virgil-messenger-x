@@ -14,6 +14,7 @@ import VirgilCrypto
 enum NotificationServiceError: Int, LocalizedError {
     case missingIdentityInDefaults = 1
     case parsingNotificationFailed = 2
+    case dataToStrFailed = 3
 }
 
 class NotificationService: UNNotificationServiceExtension {
@@ -56,7 +57,6 @@ class NotificationService: UNNotificationServiceExtension {
             let message = try self.process(decrypted: decrypted,
                                            version: notificationInfo.encryptedMessage.version)
             
-            // TODO: test
             bestAttemptContent.body = message
 
             contentHandler(bestAttemptContent)
@@ -121,7 +121,7 @@ class NotificationService: UNNotificationServiceExtension {
         switch version {
         case .v1:
             guard let string = String(data: decrypted, encoding: .utf8) else {
-                throw NSError()
+                throw NotificationServiceError.dataToStrFailed
             }
             
             message = string

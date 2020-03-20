@@ -8,12 +8,16 @@
 
 import VirgilSDK
 
-// TODO: Check if needed
 public class FileMediaStorage {
     internal let identity: String
 
     private let fileSystem: FileSystem
 
+    public enum Error: String, Swift.Error {
+        case outputStreamToPathFailed
+        case imageFromFileFailed
+    }
+    
     internal init(identity: String) {
         self.identity = identity
 
@@ -36,18 +40,8 @@ public class FileMediaStorage {
         try self.getURL(name: name).path
     }
     
-    public func exists(path: String) throws -> Bool {
-        try self.fileSystem.fileManager.fileExists(atPath: path)
-    }
-    
-    public func retrieve(name: String) throws -> Data {
-        let data = try self.fileSystem.read(name: name)
-
-        guard !data.isEmpty else {
-            throw NSError()
-        }
-
-        return data
+    public func exists(path: String) -> Bool {
+        self.fileSystem.fileManager.fileExists(atPath: path)
     }
     
     public func reset() throws {

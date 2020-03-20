@@ -346,12 +346,13 @@ extension AudioInputView {
             do {
                 // FIXME delete file at url on error
                 guard let audioUrl = self.audioFile else {
-                    throw NSError()
+                    throw UserFriendlyError.voiceRecordingError
                 }
                 
                 self.delegate?.inputView(self, didFinishedRecording: audioUrl, duration: self.time + 0.9)
             }
             catch {
+                // TODO: show error to user
                 Log.error(error, message: "Finish recording failed")
             }
         }

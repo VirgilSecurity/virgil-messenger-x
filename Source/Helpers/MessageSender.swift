@@ -91,7 +91,7 @@ public class MessageSender {
                 // FIXME: Compression quality
                 guard let imageData = uiModel.image.jpegData(compressionQuality: 0.0),
                     let thumbnail = uiModel.image.resized(to: 10)?.jpegData(compressionQuality: 1.0) else {
-                        throw NSError()
+                        throw UserFriendlyError.imageCompressionFailed
                 }
         
                 // FIXME: check why string

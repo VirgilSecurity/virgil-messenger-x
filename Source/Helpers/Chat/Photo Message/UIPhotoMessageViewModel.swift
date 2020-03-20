@@ -68,7 +68,6 @@ extension UIPhotoMessageViewModel: LoadDelegate {
     }
     
     func failed(with error: Error) {
-        // FIXME: add error logs
         DispatchQueue.main.async {
             self.transferStatus.value = .failed
             self.state = .normal
@@ -82,7 +81,7 @@ extension UIPhotoMessageViewModel: LoadDelegate {
                 let path = try CoreData.shared.getMediaStorage().getPath(name: dataHash)
                 
                 guard let fullImage = UIImage(contentsOfFile: path) else {
-                    throw NSError()
+                    throw FileMediaStorage.Error.imageFromFileFailed
                 }
                 
                 DispatchQueue.main.async {
@@ -99,6 +98,7 @@ extension UIPhotoMessageViewModel: LoadDelegate {
             }
         }
         catch {
+            // FIXME: logs
             DispatchQueue.main.async {
                 self.transferStatus.value = .failed
                 self.state = .normal

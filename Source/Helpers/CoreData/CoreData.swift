@@ -46,6 +46,7 @@ class CoreData {
         case accountNotFound = 7
         case missingVirgilGroup = 8
         case exportBaseMessageForbidden = 9
+        case nilMediaStorage = 10
     }
 
     private init() {
@@ -92,7 +93,7 @@ class CoreData {
     
     internal func getMediaStorage() throws -> FileMediaStorage {
         guard let storage = self.mediaStorage else {
-            throw NSError()
+            throw Error.nilMediaStorage
         }
         
         return storage

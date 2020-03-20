@@ -15,14 +15,15 @@ public protocol LoadDelegate: class {
 }
 
 extension Client {
-    // FIXME: remove useless dataHash
+    // TODO: remove useless dataHash
     func upload(data: Data, with request: URLRequest, loadDelegate: LoadDelegate, dataHash: String) -> CallbackOperation<Void> {
         return CallbackOperation { _, completion in
             do {
-                // FIXME make sync for ui
                 let request = try Request(urlRequest: request)
                 
-                let response = try self.connection.upload(data: data, with: request).startSync().get()
+                let response = try self.connection.upload(data: data, with: request)
+                    .startSync()
+                    .get()
             
                 try self.validateResponse(response)
                             
@@ -31,52 +32,38 @@ extension Client {
                 completion((), nil)
             }
             catch {
-                // FIXME: logs
+                Log.error(error, message: "Uploading data failed")
+                
                 loadDelegate.failed(with: error)
+                
                 completion(nil, error)
             }
         }
-//
-//        // FIXME
-//        _ = uploadOperation.task?.progress.observe(\.fractionCompleted) { progress, _ in
-//            Log.debug("Upload progress: \(progress.fractionCompleted)")
-//
-//            loadDelegate.progressChanged(to: progress.fractionCompleted)
-//        }
     }
     
     public func startDownload(from url: URL,
                               loadDelegate: LoadDelegate,
                               dataHash: String,
-                              saveFileCallback: @escaping (URL) throws -> Void) throws {
-        let request = Request(url: url, method: .get)
-        
-        let downloadOperation = try self.connection.downloadFile(with: request, saveFileCallback: saveFileCallback)
-        
-        downloadOperation.start { response, error in
+                              saveFileCallback: @escaping (URL) throws -> Void) -> CallbackOperation<Void> {
+        return CallbackOperation { _, completion in
             do {
-                if let error = error {
-                    throw error
-                }
-                else if let response = response {
-                    try self.validateResponse(response)
-                    
-                    loadDelegate.completed(dataHash: dataHash)
-                }
-                else {
-                    throw NSError()
-                }
+                let request = Request(url: url, method: .get)
+                
+                let response = try self.connection.downloadFile(with: request, saveFileCallback: saveFileCallback)
+                    .startSync()
+                    .get()
+                
+                try self.validateResponse(response)
+                
+                loadDelegate.completed(dataHash: dataHash)
             }
             catch {
+                Log.error(error, message: "Downloading data failed")
+                
                 loadDelegate.failed(with: error)
+                
+                completion(nil, error)
             }
-        }
-        
-        // FIXME
-        _ = downloadOperation.task?.progress.observe(\.fractionCompleted) { progress, _ in
-            Log.debug("Download progress: \(progress.fractionCompleted)")
-
-            loadDelegate.progressChanged(to: progress.fractionCompleted)
         }
     }
 }

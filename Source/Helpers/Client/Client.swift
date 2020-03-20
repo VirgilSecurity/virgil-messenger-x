@@ -18,6 +18,7 @@ public class Client {
         case stringToDataFailed
         case noBody
         case invalidServerResponse
+        case inputStreamFromDownloadedFailed
     }
 
     private let serviceErrorDomain: String = "ClientErrorDomain"

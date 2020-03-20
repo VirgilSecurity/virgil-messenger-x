@@ -78,7 +78,7 @@ public class Channel: NSManagedObject {
             return ""
         }
 
-        // FIXME
+        // TODO: wrap to enum?
         if let textMessage = message as? TextMessage {
             return textMessage.body
         }
