@@ -30,16 +30,16 @@ class MessageProcessor {
 
             self.postNotification(about: message)
 
-        case .callOffer(_):
+        case .callOffer:
             Notifications.post(message: message)
-            
+
             let message = try Storage.shared.createCallMessage(in: channel,
                                                                 isIncoming: true,
                                                                 date: date)
 
             self.postNotification(about: message)
 
-        case .callAnswer(_), .iceCandidate(_):
+        case .callAnswer, .iceCandidate:
             //  FIXME: Unify the handling approach for '.text' as well.
             Notifications.post(message: message)
         }
@@ -66,8 +66,7 @@ class MessageProcessor {
 
         if let coreChannel = Storage.shared.getChannel(withName: name) {
             channel = coreChannel
-        }
-        else {
+        } else {
             let card = try Virgil.ethree.findUser(with: name).startSync().get()
 
             channel = try Storage.shared.getChannel(withName: name)
@@ -82,8 +81,7 @@ class MessageProcessor {
 
         do {
             decrypted = try Virgil.ethree.authDecrypt(data: message.ciphertext, from: channel.getCard())
-        }
-        catch {
+        } catch {
             // TODO: check if needed
             try Storage.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
 

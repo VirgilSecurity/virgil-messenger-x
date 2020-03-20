@@ -20,11 +20,11 @@ public enum EncryptedMessageError: Int, Error {
 public class EncryptedMessage: Codable {
     let ciphertext: Data
     let date: Date
-    
+
     var version: EncryptedMessageVersion {
         return self.codableVersion ?? .v1
     }
-    
+
     private var codableVersion: EncryptedMessageVersion?
 
     public init(ciphertext: Data, date: Date) {
@@ -32,7 +32,7 @@ public class EncryptedMessage: Codable {
         self.date = date
         self.codableVersion = EncryptedMessageVersion.allCases.last
     }
-    
+
     static func `import`(_ string: String) throws -> EncryptedMessage {
         guard let data = Data(base64Encoded: string) else {
             throw EncryptedMessageError.bodyIsNotBase64Encoded

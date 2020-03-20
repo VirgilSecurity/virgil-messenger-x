@@ -63,8 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 UserDefaults.standard.set("initialized", forKey: key)
                 UserDefaults.standard.synchronize()
             }
-        }
-        catch {
+        } catch {
             Log.error("cleanLocalStorageError: \(error.localizedDescription)")
         }
     }
@@ -76,7 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             if settings.authorizationStatus == .notDetermined {
 
-                center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+                center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, _) in
                     Log.debug("User allowed notifications: \(granted)")
 
                     if granted {
@@ -86,8 +85,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     }
                 }
 
-            }
-            else if settings.authorizationStatus == .authorized {
+            } else if settings.authorizationStatus == .authorized {
                 DispatchQueue.main.async {
                     app.registerForRemoteNotifications()
                 }
@@ -101,7 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication,
-                     didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         Log.debug("Received notification")
     }
@@ -110,8 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         RTCCleanupSSL()
         do {
             try Storage.shared.saveContext()
-        }
-        catch {
+        } catch {
             Log.error("Saving Core Data context failed with error: \(error.localizedDescription)")
         }
     }
@@ -125,8 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
 
             Ejabberd.updatedPushToken = deviceToken
-        }
-        catch {
+        } catch {
             Log.error("Registering for notification failed with error: \(error.localizedDescription)")
         }
     }

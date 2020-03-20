@@ -48,7 +48,7 @@ class SettingsViewController: ViewController {
                     $0.textLabel?.text = "Logout"
                     $0.textLabel?.textColor = .dangerTextColor
                 }
-            ),
+            )
         ],
         [
             Cell(
@@ -91,7 +91,7 @@ class SettingsViewController: ViewController {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         let logoutAction = UIAlertAction(title: "Logout", style: .destructive) { _ in
-            UserAuthorizer().logOut() { error in
+            UserAuthorizer().logOut { error in
                 if let error = error {
                     self.alert(error)
                 }
@@ -124,8 +124,7 @@ class SettingsViewController: ViewController {
                 try UserAuthorizer().deleteAccount()
 
                 self.switchNavigationStack(to: AuthenticationViewController.name)
-            }
-            catch {
+            } catch {
                 self.alert(error)
             }
         }

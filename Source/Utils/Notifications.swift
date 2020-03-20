@@ -75,8 +75,8 @@ extension Notifications {
     }
 
     public static func post(message: Message) {
-        switch(message) {
-        case .text(_):
+        switch message {
+        case .text:
             // Is handled via post(message)
             break
 
@@ -105,17 +105,17 @@ extension Notifications {
 }
 
 extension Notifications {
-    public static func observe(for notification: EmptyNotification, block: @escaping Block)  {
+    public static func observe(for notification: EmptyNotification, block: @escaping Block) {
         self.observe(for: [notification], block: block)
     }
 
-    public static func observe(for notification: Notifications, block: @escaping Block)  {
+    public static func observe(for notification: Notifications, block: @escaping Block) {
         let notification = self.notification(notification)
 
         self.center.addObserver(forName: notification, object: nil, queue: nil, using: block)
     }
 
-    public static func observe(for notifications: [EmptyNotification], block: @escaping Block)  {
+    public static func observe(for notifications: [EmptyNotification], block: @escaping Block) {
         notifications.forEach {
             let notification = self.notification($0)
 

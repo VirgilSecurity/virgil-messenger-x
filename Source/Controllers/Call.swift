@@ -9,10 +9,10 @@
 import UIKit
 
 class CallViewController: UIViewController {
-    
-    @IBOutlet weak var calleeLabel : UILabel!
-    @IBOutlet weak var callStatusLabel : UILabel!
-    @IBOutlet weak var connectionStatusLabel : UILabel!
+
+    @IBOutlet weak var calleeLabel: UILabel!
+    @IBOutlet weak var callStatusLabel: UILabel!
+    @IBOutlet weak var connectionStatusLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,8 +22,8 @@ class CallViewController: UIViewController {
             }
         }
     }
-    
+
     @IBAction func endCall(_ sender: Any?) {
-        
+
     }
 }

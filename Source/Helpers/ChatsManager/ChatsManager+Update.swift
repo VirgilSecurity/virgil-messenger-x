@@ -114,8 +114,7 @@ extension ChatsManager {
 //                }
 
                 completion((), nil)
-            }
-            catch {
+            } catch {
                 completion(nil, error)
             }
         }
@@ -127,14 +126,12 @@ extension ChatsManager {
 
         if let cachedGroup = try Virgil.ethree.getGroup(id: coreChannel.sid) {
             group = cachedGroup
-        }
-        else {
+        } else {
             do {
                 group = try Virgil.ethree.loadGroup(id: coreChannel.sid, initiator: initiator)
                     .startSync()
                     .get()
-            }
-            catch GroupError.groupWasNotFound {
+            } catch GroupError.groupWasNotFound {
                 if initiator == Virgil.ethree.identity {
                     var result = FindUsersResult()
                     coreChannel.cards.forEach {
@@ -144,8 +141,7 @@ extension ChatsManager {
                     group = try Virgil.ethree.createGroup(id: coreChannel.sid, with: result)
                         .startSync()
                         .get()
-                }
-                else {
+                } else {
                     throw GroupError.groupWasNotFound
                 }
             }
@@ -158,8 +154,7 @@ extension ChatsManager {
         let coreChannel: Storage.Channel
         if let channel = try? Storage.shared.getChannel(twilioChannel) {
             coreChannel = channel
-        }
-        else {
+        } else {
             let sid = try twilioChannel.getSid()
             let attributes = try twilioChannel.getAttributes()
 

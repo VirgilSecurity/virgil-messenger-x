@@ -32,8 +32,7 @@ public class Client {
                 let token = try self.getVirgilToken(identity: identity)
 
                 completion(token, nil)
-            }
-            catch {
+            } catch {
                 completion(nil, error)
             }
         }
@@ -63,12 +62,11 @@ public class Client {
                 if rawServiceError.code == 40001 || rawServiceError.code == 40002 {
                     return UserFriendlyError.usernameAlreadyUsed
                 }
-                
+
                 return ServiceError(httpStatusCode: statusCode,
                                     rawServiceError: rawServiceError,
                                     errorDomain: self.serviceErrorDomain)
-            }
-            else if let string = String(data: body, encoding: .utf8) {
+            } else if let string = String(data: body, encoding: .utf8) {
                 return NSError(domain: self.serviceErrorDomain,
                                code: statusCode,
                                userInfo: [NSLocalizedDescriptionKey: string])

@@ -29,8 +29,7 @@ extension ChatsManager {
                 try Storage.shared.updateCards(with: cards, for: dataSource.channel)
 
                 completion((), nil)
-            }
-            catch {
+            } catch {
                 completion(nil, error)
             }
         }
@@ -55,8 +54,7 @@ extension ChatsManager {
                 try Storage.shared.updateCards(with: cards, for: dataSource.channel)
 
                 completion((), nil)
-            }
-            catch {
+            } catch {
                 completion(nil, error)
             }
         }

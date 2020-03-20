@@ -28,8 +28,7 @@ class NewMessageViewController: ViewController {
             let height = userList.tableView.rowHeight
             self.usersListHeight.constant = CGFloat(self.users.count) * height
 
-        }
-        else if let chatController = segue.destination as? ChatViewController,
+        } else if let chatController = segue.destination as? ChatViewController,
             let channel = self.selectedUser {
                 chatController.channel = channel
         }

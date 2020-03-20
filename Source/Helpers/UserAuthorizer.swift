@@ -47,8 +47,7 @@ public class UserAuthorizer {
                 IdentityDefaults.shared.set(identity: identity)
 
                 completion(nil)
-            }
-            catch {
+            } catch {
                 completion(error)
             }
         }
@@ -67,8 +66,7 @@ public class UserAuthorizer {
                 IdentityDefaults.shared.reset()
 
                 completion(nil)
-            }
-            catch {
+            } catch {
                 completion(error)
             }
         }
@@ -86,4 +84,3 @@ public class UserAuthorizer {
         self.virgilAuthorizer.logOut()
     }
 }
-

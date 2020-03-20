@@ -19,7 +19,7 @@ enum NotificationServiceError: Int, LocalizedError {
 class NotificationService: UNNotificationServiceExtension {
     var contentHandler: ((UNNotificationContent) -> Void)?
     var bestAttemptContent: UNMutableNotificationContent?
-    
+
     let crypto = try! VirgilCrypto()
 
     enum NotificationKeys: String {
@@ -52,7 +52,7 @@ class NotificationService: UNNotificationServiceExtension {
                 let title = alert[NotificationKeys.title.rawValue] else {
                     throw NotificationServiceError.parsingNotificationFailed
             }
-            
+
             let encryptedMessage = try EncryptedMessage.import(body)
 
             // Initializing KeyStorage with root application name. We need it to fetch shared key from root app
@@ -65,7 +65,7 @@ class NotificationService: UNNotificationServiceExtension {
             let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
             params.storageParams = storageParams
             let ethree = try EThree(params: params)
-            
+
             let card = try ethree.findUser(with: title).startSync().get()
 
             // Decrypting notification body
@@ -77,16 +77,15 @@ class NotificationService: UNNotificationServiceExtension {
             contentHandler(bestAttemptContent)
 
             // Note: We got body from userInfo, not from bestAttemptContent.body directly in a reason of 1000 symbol restriction
-        }
-        catch {
+        } catch {
             bestAttemptContent.body = "New Message"
 
             contentHandler(bestAttemptContent)
-            
+
             print("Notification was not decrypted with error: \(error.localizedDescription)")
         }
     }
-    
+
     override func serviceExtensionTimeWillExpire() {
         // Called just before the extension will be terminated by the system.
         // Use this as an opportunity to deliver your "best attempt" at modified content, otherwise the original push payload will be used.

@@ -148,8 +148,7 @@ class ChatListViewController: ViewController {
                     if let error = error {
                         HUD.hide()
                         self.alert(error)
-                    }
-                    else {
+                    } else {
                         HUD.flash(.success)
                         self.reloadTableView()
                     }
@@ -204,7 +203,6 @@ extension ChatListViewController: CellTapDelegate {
 
         self.performSegue(withIdentifier: "goToChat", sender: self)
     }
-
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let chatController = segue.destination as? ChatViewController,

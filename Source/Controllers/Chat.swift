@@ -124,8 +124,7 @@ class ChatViewController: BaseChatViewController {
     private func setupTitle() {
         if let state = Configurator.state {
             self.setupIndicatorTitle(state)
-        }
-        else {
+        } else {
             self.setupRegularTitle()
         }
     }
@@ -155,7 +154,7 @@ class ChatViewController: BaseChatViewController {
         self.navigationItem.titleView = titleButton
     }
 
-    @IBAction @objc func showChatDetails(_ sender: Any) {
+    @IBAction func showChatDetails(_ sender: Any) {
         self.performSegue(withIdentifier: "goToVoiceCall", sender: self)
     }
 

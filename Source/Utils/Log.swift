@@ -47,7 +47,7 @@ public enum Log {
                              file: String = #file, line: UInt = #line) {
         self.log("<WARNING>: \(closure())", functionName: functionName, file: file, line: line)
     }
-    
+
     private static func log(_ closure: @autoclosure () -> String, functionName: String = #function,
                             file: String = #file, line: UInt = #line) {
         let str = "VIRGILMESSENGER_LOG: \(functionName) : \(closure())"

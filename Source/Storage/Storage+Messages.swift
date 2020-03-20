@@ -31,16 +31,14 @@ extension Storage.Message {
                                                isIncoming: self.isIncoming,
                                                status: status,
                                                date: date)
-        }
-        else if let call = self as? Storage.CallMessage {
+        } else if let call = self as? Storage.CallMessage {
             let text = call.isIncoming ? "Incomming call from \(call.channelName)" : "Outgoing call to \(call.channelName)"
             resultMessage = UITextMessageModel(uid: id,
                                                text: text,
                                                isIncoming: self.isIncoming,
                                                status: status,
                                                date: date)
-        }
-        else {
+        } else {
             Log.error("Exporting core data model to ui model failed")
 
             resultMessage = UITextMessageModel.corruptedModel(uid: id,

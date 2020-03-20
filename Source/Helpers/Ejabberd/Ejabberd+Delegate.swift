@@ -44,12 +44,10 @@ extension Ejabberd: XMPPStreamDelegate {
                 Crashlytics.sharedInstance().recordError(error)
 
                 self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
-            }
-            else {
+            } else {
                 self.retryInitialize(error: error)
             }
-        }
-        else {
+        } else {
             Log.debug("Ejabberd disconnected")
             self.unlockMutex(self.initializeMutex)
         }
@@ -102,8 +100,7 @@ extension Ejabberd {
             let encryptedMessage = try EncryptedMessage.import(body)
 
             try MessageProcessor.process(encryptedMessage, from: author)
-        }
-        catch {
+        } catch {
             Log.error("\(error)")
         }
     }

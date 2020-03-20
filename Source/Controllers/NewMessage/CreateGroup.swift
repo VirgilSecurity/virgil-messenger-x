@@ -85,8 +85,7 @@ class CreateGroupViewController: ViewController {
         if let name = nameTextField.text, let letter = name.uppercased().first {
             letterLabel.text = String(letter)
             createButton.isEnabled = true
-        }
-        else {
+        } else {
             letterLabel.text = ""
             createButton.isEnabled = false
         }
@@ -101,7 +100,7 @@ class CreateGroupViewController: ViewController {
 
         // FIXME: Error handling/logging
         if let userList = segue.destination as? UsersListViewController,
-            let cards = try? self.members.map { try $0.getCard() }  {
+            let cards = try? self.members.map { try $0.getCard() } {
 
             userList.users = cards
 

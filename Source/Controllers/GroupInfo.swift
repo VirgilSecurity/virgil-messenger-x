@@ -78,15 +78,13 @@ class GroupInfoViewController: ViewController {
         self.scrollView.contentSize = CGSize(width: bounds.width, height: height)
     }
 
-
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
         if let userList = segue.destination as? UsersListViewController {
             self.usersListController = userList
             self.updateUserList()
-        }
-        else if let addMembers = segue.destination as? AddMembersViewController {
+        } else if let addMembers = segue.destination as? AddMembersViewController {
             addMembers.dataSource = self.dataSource
         }
     }

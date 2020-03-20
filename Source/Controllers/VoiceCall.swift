@@ -29,9 +29,9 @@ class VoiceCallViewController: ViewController {
     private var callState: CallState = .none {
         willSet {
             DispatchQueue.main.async {
-                switch (self.callState) {
+                switch self.callState {
                 case .none:
-                    break;
+                    break
 
                 case .initial:
                     self.callDirectionLabel.text = "-"

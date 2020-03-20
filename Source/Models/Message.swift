@@ -9,7 +9,7 @@
 import Foundation
 
 public enum Message {
-    
+
     public struct Text: Codable {
         let body: String
     }
@@ -27,7 +27,7 @@ public enum Message {
         let sdpMLineIndex: Int32
         let sdpMid: String?
     }
-    
+
     case text(Text)
     case callOffer(CallOffer)
     case callAnswer(CallAnswer)
@@ -55,7 +55,7 @@ extension Message: Codable {
         case .text:
             let textContent = try container.decode(Text.self, forKey: .payload)
             self = .text(textContent)
-            
+
         case .callOffer:
             let callOffer = try container.decode(CallOffer.self, forKey: .payload)
             self = .callOffer(callOffer)
@@ -69,7 +69,7 @@ extension Message: Codable {
             self = .iceCandidate(iceCandidate)
         }
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
@@ -95,11 +95,11 @@ extension Message: Codable {
             try container.encode(iceCandidate, forKey: .payload)
         }
     }
-    
+
     static func `import`(from jsonData: Data) throws -> Message {
         return try JSONDecoder().decode(Message.self, from: jsonData)
     }
-    
+
     func exportAsJsonData() throws -> Data {
         let data = try JSONEncoder().encode(self)
         return data

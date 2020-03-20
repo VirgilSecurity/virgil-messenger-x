@@ -8,18 +8,15 @@
 
 import WebRTC
 
-
-fileprivate let kIceServers = ["stun:stun.l.google.com:19302",
+private let kIceServers = ["stun:stun.l.google.com:19302",
                   "stun:stun1.l.google.com:19302",
                   "stun:stun2.l.google.com:19302",
                   "stun:stun3.l.google.com:19302",
                   "stun:stun4.l.google.com:19302"]
 
-
 public protocol CallManagerDelegate: class {
     func callChannel(connected callChannel: CallManager)
 }
-
 
 public class CallManager: NSObject {
 
@@ -40,7 +37,7 @@ public class CallManager: NSObject {
     }
 
     func sendOffer(completion: @escaping (_ error: Error?) -> Void) {
-        let constrains = RTCMediaConstraints(mandatoryConstraints:[kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue],
+        let constrains = RTCMediaConstraints(mandatoryConstraints: [kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue],
                                              optionalConstraints: nil)
 
         self.peerConnection?.close()
@@ -68,7 +65,7 @@ public class CallManager: NSObject {
         }
     }
 
-    func sendAnswer(offer offerSessionDescription: Message.CallOffer,  completion: @escaping (_ error: Error?) -> Void) {
+    func sendAnswer(offer offerSessionDescription: Message.CallOffer, completion: @escaping (_ error: Error?) -> Void) {
 
         self.peerConnection?.close()
         self.peerConnection = Self.createPeerConnection()
@@ -79,7 +76,7 @@ public class CallManager: NSObject {
             return
         }
 
-        let constrains = RTCMediaConstraints(mandatoryConstraints:[kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue],
+        let constrains = RTCMediaConstraints(mandatoryConstraints: [kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue],
                                              optionalConstraints: nil)
 
         let offerSdp = offerSessionDescription.rtcSessionDescription
@@ -106,7 +103,7 @@ public class CallManager: NSObject {
         }
     }
 
-    func acceptAnswer(_ callAnswer: Message.CallAnswer,  completion: @escaping (_ error: Error?) -> Void) {
+    func acceptAnswer(_ callAnswer: Message.CallAnswer, completion: @escaping (_ error: Error?) -> Void) {
         let sdp = callAnswer.rtcSessionDescription
         self.peerConnection?.setRemoteDescription(sdp, completionHandler: completion)
     }

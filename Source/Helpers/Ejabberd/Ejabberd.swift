@@ -29,7 +29,7 @@ class Ejabberd: NSObject {
     internal var state: State = .disconnected
     internal var shouldRetry: Bool = true
 
-    static var updatedPushToken: Data? = nil
+    static var updatedPushToken: Data?
 
     internal let serviceErrorDomain: String = "EjabberdErrorDomain"
 
@@ -109,8 +109,7 @@ class Ejabberd: NSObject {
         do {
             self.error = error
             try mutex.unlock()
-        }
-        catch {
+        } catch {
             Log.error("Ejabberd: \(error)")
         }
     }
