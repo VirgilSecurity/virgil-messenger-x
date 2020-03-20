@@ -522,7 +522,6 @@
 				16FE75F1224A436C00B545AF /* Virgil */,
 				1612BC4423B6589300107C7A /* Ejabberd */,
 				163952A4227C4D8A00DD1FDC /* ChatsManager */,
-				F401CDD7241B96CB00C59572 /* Call */,
 				16D8B0E9223A6FD200D7FA67 /* UserAuthorizer.swift */,
 				16D8B0EE223A8FCF00D7FA67 /* Client.swift */,
 				16FE75EF224A3DA000B545AF /* Configurator.swift */,
@@ -694,6 +693,7 @@
 			children = (
 				F401CDDD241F609A00C59572 /* Storage */,
 				16D8B0E5223A6DA700D7FA67 /* Models */,
+				F4812222242536350003DD78 /* Call */,
 				163952A9227C4EE000DD1FDC /* Helpers */,
 				16CC9B7C21553C6100935AEC /* Views */,
 				16D8B0E7223A6E7500D7FA67 /* Controllers */,
@@ -880,14 +880,6 @@
 			path = "Text Message";
 			sourceTree = "<group>";
 		};
-		F401CDD7241B96CB00C59572 /* Call */ = {
-			isa = PBXGroup;
-			children = (
-				F401CDD8241B96E300C59572 /* CallChannel.swift */,
-			);
-			path = Call;
-			sourceTree = "<group>";
-		};
 		F401CDDD241F609A00C59572 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
@@ -908,6 +900,14 @@
 				97F48AFC241019DF00BBBF1F /* TextContent.swift */,
 			);
 			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		F4812222242536350003DD78 /* Call */ = {
+			isa = PBXGroup;
+			children = (
+				F401CDD8241B96E300C59572 /* CallChannel.swift */,
+			);
+			path = Call;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
