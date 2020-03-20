@@ -74,7 +74,7 @@ extension UIPhotoMessageViewModel: LoadDelegate {
         do {
             switch self.state {
             case .downloading:
-                let path = try CoreData.shared.getMediaStorage().getPath(name: dataHash)
+                let path = try CoreData.shared.getMediaStorage().getPath(name: dataHash, type: .photo)
                 
                 guard let fullImage = UIImage(contentsOfFile: path) else {
                     throw FileMediaStorage.Error.imageFromFileFailed

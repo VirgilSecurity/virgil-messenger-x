@@ -127,7 +127,7 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self, updateType: .pagination)
     }
 
-    func addTextMessage(_ text: String) throws {
+    func addTextMessage(_ text: String) {
         self.nextMessageId += 1
         let id = self.nextMessageId
 
@@ -137,13 +137,13 @@ class DataSource: ChatDataSourceProtocol {
                                          status: .sending,
                                          date: Date())
 
-        try self.messageSender.send(uiModel: uiModel, channel: self.channel)
+        self.messageSender.send(uiModel: uiModel, channel: self.channel)
 
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
-    func addPhotoMessage(_ image: UIImage) throws {
+    func addPhotoMessage(_ image: UIImage) {
         self.nextMessageId += 1
         let id = self.nextMessageId
         
@@ -157,10 +157,10 @@ class DataSource: ChatDataSourceProtocol {
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
         
-        try self.messageSender.send(uiModel: uiModel, channel: self.channel)
+        self.messageSender.send(uiModel: uiModel, channel: self.channel)
     }
 
-    func addVoiceMessage(_ audioUrl: URL, duration: TimeInterval) throws {
+    func addVoiceMessage(_ audioUrl: URL, duration: TimeInterval) {
         self.nextMessageId += 1
         let id = self.nextMessageId
 
@@ -175,7 +175,7 @@ class DataSource: ChatDataSourceProtocol {
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
         
-        try self.messageSender.send(uiModel: uiModel, channel: self.channel)
+        self.messageSender.send(uiModel: uiModel, channel: self.channel)
     }
 
     func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> ()) {

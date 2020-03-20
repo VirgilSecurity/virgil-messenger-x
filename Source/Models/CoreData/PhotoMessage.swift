@@ -52,7 +52,7 @@ public class PhotoMessage: Message {
     
     public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
         do {
-            let path = try CoreData.shared.getMediaStorage().getPath(name: self.identifier)
+            let path = try CoreData.shared.getMediaStorage().getPath(name: self.identifier, type: .photo)
             
             let image: UIImage
             let state: MediaMessageState
@@ -78,8 +78,6 @@ public class PhotoMessage: Message {
                                                        loadDelegate: uiModel,
                                                        dataHash: self.identifier)
                 { tempFileUrl in
-                    let path = try CoreData.shared.getMediaStorage().getPath(name: self.identifier)
-
                     guard let inputStream = InputStream(url: tempFileUrl) else {
                         throw Client.Error.inputStreamFromDownloadedFailed
                     }
@@ -88,7 +86,7 @@ public class PhotoMessage: Message {
                         throw FileMediaStorage.Error.outputStreamToPathFailed
                     }
 
-                    // FIXME: add self card usecase
+                    // TODO: add self card usecase
                     try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: self.channel.getCard())
                 }
             }

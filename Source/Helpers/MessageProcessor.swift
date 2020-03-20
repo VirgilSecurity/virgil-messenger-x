@@ -70,7 +70,6 @@ class MessageProcessor {
         
         switch version {
         case .v1:
-            // FIXME: test
             guard let body = String(data: data, encoding: .utf8) else {
                 throw Error.dataToStrFailed
             }

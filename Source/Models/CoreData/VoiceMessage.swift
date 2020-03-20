@@ -47,7 +47,7 @@ public class VoiceMessage: Message {
         do {
             let mediaStorage = try CoreData.shared.getMediaStorage()
             
-            let audioUrl = try mediaStorage.getURL(name: self.identifier)
+            let audioUrl = try mediaStorage.getURL(name: self.identifier, type: .voice)
             let state: MediaMessageState = mediaStorage.exists(path: audioUrl.path) ? .normal : .downloading
             
             let uiModel = UIAudioMessageModel(uid: id,
@@ -62,17 +62,15 @@ public class VoiceMessage: Message {
                                                        loadDelegate: uiModel,
                                                        dataHash: self.identifier)
                 { tempFileUrl in
-                    let path = try CoreData.shared.getMediaStorage().getPath(name: self.identifier)
-
                     guard let inputStream = InputStream(url: tempFileUrl) else {
                         throw Client.Error.inputStreamFromDownloadedFailed
                     }
 
-                    guard let outputStream = OutputStream(toFileAtPath: path, append: false) else {
+                    guard let outputStream = OutputStream(toFileAtPath: audioUrl.path, append: false) else {
                         throw FileMediaStorage.Error.outputStreamToPathFailed
                     }
 
-                    // FIXME: add self card usecase
+                    // TODO: add self card usecase
                     try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: self.channel.getCard())
                 }
             }

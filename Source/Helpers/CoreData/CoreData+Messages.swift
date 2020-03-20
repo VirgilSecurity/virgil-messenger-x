@@ -80,7 +80,15 @@ extension CoreData {
         return message
     }
     
-    func storeMediaContent(_ data: Data, name: String) throws {
-        try self.getMediaStorage().store(data, name: name)
+    func storeMediaContent(_ data: Data, name: String, type: FileMediaStorage.MediaType) throws {
+        let mediaStorage = try self.getMediaStorage()
+        
+        let path = try mediaStorage.getPath(name: name, type: type)
+        
+        if type == .photo, mediaStorage.exists(path: path) {
+            return
+        }
+        
+        try self.getMediaStorage().store(data, name: name, type: type)
     }
 }

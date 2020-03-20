@@ -278,7 +278,7 @@ extension ChatViewController {
             if self?.checkReachability() ?? false,
                 Configurator.isUpdated,
                 !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    try? self?.dataSource.addTextMessage(text)
+                    self?.dataSource.addTextMessage(text)
             }
         }
 
@@ -295,8 +295,7 @@ extension ChatViewController {
 
         item.photoInputHandler = { [weak self] image in
             if self?.checkReachability() ?? false, Configurator.isUpdated {
-                // FIXME: process errors
-                try? self?.dataSource.addPhotoMessage(image)
+                self?.dataSource.addPhotoMessage(image)
             }
         }
         return item
@@ -307,7 +306,7 @@ extension ChatViewController {
         
         item.audioInputHandler = { [weak self] audioUrl, duration in
             if self?.checkReachability() ?? false, Configurator.isUpdated {
-                try? self?.dataSource.addVoiceMessage(audioUrl, duration: duration)
+                self?.dataSource.addVoiceMessage(audioUrl, duration: duration)
             }
         }
         
@@ -317,7 +316,7 @@ extension ChatViewController {
 
 extension ChatViewController: AudioPlayableProtocol {
     func play(model: UIAudioMessageViewModel) {
-        // FIXME
+        // TODO: error handling
         try? AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
 
         do {

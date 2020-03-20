@@ -321,7 +321,7 @@ extension AudioInputView {
 
         do {
             let identifier = UUID().uuidString
-            let audioURL = try CoreData.shared.getMediaStorage().getURL(name: identifier)
+            let audioURL = try CoreData.shared.getMediaStorage().getURL(name: identifier, type: .voice)
             self.audioFile = audioURL
             
             self.audioRecorder = try AVAudioRecorder(url: audioURL, settings: settings)

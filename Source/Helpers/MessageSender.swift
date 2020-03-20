@@ -54,7 +54,7 @@ public class MessageSender {
         return slot.getURL
     }
     
-    public func send(uiModel: UIAudioMessageModel, channel: Channel) throws {
+    public func send(uiModel: UIAudioMessageModel, channel: Channel) {
         self.queue.async {
             do {
                 // TODO: optimize. Do not fetch data to memrory, use streams
@@ -85,7 +85,7 @@ public class MessageSender {
         }
     }
     
-    public func send(uiModel: UIPhotoMessageModel, channel: Channel) throws {
+    public func send(uiModel: UIPhotoMessageModel, channel: Channel) {
         self.queue.async {
             do {
                 guard let imageData = uiModel.image.jpegData(compressionQuality: 0.0),
@@ -93,15 +93,12 @@ public class MessageSender {
                         throw UserFriendlyError.imageCompressionFailed
                 }
         
-                // FIXME: check why string
-                // FIXME: 64 bytes length is too much
                 let hashString = Virgil.shared.crypto.computeHash(for: imageData)
                     .subdata(in: 0..<32)
                     .hexEncodedString()
             
                 // Save it to File Storage
-                // FIXME: Check if exists
-                try CoreData.shared.storeMediaContent(imageData, name: hashString)
+                try CoreData.shared.storeMediaContent(imageData, name: hashString, type: .photo)
                 
                 let getUrl = try self.upload(data: imageData,
                                              identifier: hashString,
@@ -129,7 +126,7 @@ public class MessageSender {
         }
     }
 
-    public func send(uiModel: UITextMessageModel, channel: Channel) throws {
+    public func send(uiModel: UITextMessageModel, channel: Channel) {
         self.queue.async {
             do {
                 let textContent = TextContent(body: uiModel.body)
