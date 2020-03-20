@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="IwX-dp-cd3">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Incomming Call-->
+        <scene sceneID="9Om-jV-AN9">
+            <objects>
+                <viewController id="IwX-dp-cd3" customClass="IncommingCall" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Ti5-ni-4dZ">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="uRR-Ya-2Dc">
+                                <rect key="frame" x="62" y="826" width="290" height="36"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jHe-ZN-oAf">
+                                        <rect key="frame" x="0.0" y="0.0" width="130" height="36"/>
+                                        <color key="backgroundColor" red="0.61824858189999998" green="0.21322733159999999" blue="0.12903854249999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="130" id="hhN-et-YAk"/>
+                                            <constraint firstAttribute="height" constant="36" id="rLJ-K3-sUx"/>
+                                        </constraints>
+                                        <state key="normal" title="Deny">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="denyCall:" destination="IwX-dp-cd3" eventType="touchUpInside" id="gAQ-FG-YAk"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sWZ-Rh-vLt">
+                                        <rect key="frame" x="160" y="0.0" width="130" height="36"/>
+                                        <color key="backgroundColor" red="0.00060290348129410094" green="0.44774176083401018" blue="0.10052994044030919" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="X4g-Dj-d2Z"/>
+                                            <constraint firstAttribute="width" constant="130" id="l0q-q4-TOp"/>
+                                        </constraints>
+                                        <state key="normal" title="Accept">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="acceptCall:" destination="IwX-dp-cd3" eventType="touchUpInside" id="S90-Ma-BdO"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Callee" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hfy-fw-mwM">
+                                <rect key="frame" x="177" y="108" width="60" height="26.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.18978369240000001" green="0.2149117589" blue="0.26721006629999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="oFw-oG-BSx" firstAttribute="bottom" secondItem="uRR-Ya-2Dc" secondAttribute="bottom" id="8nM-uT-4vB"/>
+                            <constraint firstItem="hfy-fw-mwM" firstAttribute="centerX" secondItem="oFw-oG-BSx" secondAttribute="centerX" id="QdX-Db-Xtm"/>
+                            <constraint firstItem="uRR-Ya-2Dc" firstAttribute="centerX" secondItem="oFw-oG-BSx" secondAttribute="centerX" id="RMg-RW-gA4"/>
+                            <constraint firstItem="hfy-fw-mwM" firstAttribute="top" secondItem="oFw-oG-BSx" secondAttribute="top" constant="64" id="jFz-ce-5n6"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="oFw-oG-BSx"/>
+                    </view>
+                    <connections>
+                        <outlet property="calleeLabel" destination="hfy-fw-mwM" id="n79-61-Czh"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3FC-QJ-UTA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="132" y="138"/>
+        </scene>
+    </scenes>
+</document>
