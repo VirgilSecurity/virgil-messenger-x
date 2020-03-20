@@ -31,7 +31,7 @@ extension ChatsManager {
                         }
                     }
 
-                    guard twilioChannels.count > 0 else {
+                    guard !twilioChannels.isEmpty else {
                         completion((), nil)
                         return
                     }
@@ -110,7 +110,7 @@ extension ChatsManager {
 //                        break
 //                    }
 //
-////                    _ = try MessageProcessor.process(message: message, from: twilioChannel, coreChannel: coreChannel)
+//                   _ = try MessageProcessor.process(message: message, from: twilioChannel, coreChannel: coreChannel)
 //                }
 
                 completion((), nil)

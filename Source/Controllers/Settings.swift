@@ -116,7 +116,9 @@ class SettingsViewController: ViewController {
         }
 
         let alertController = UIAlertController(title: "Delete account",
-                                                message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.",
+                                                message: "Account data will be removed from this device. " +
+                                                         "People still will be able to write to you. " +
+                                                         "This nickname cannot be used for registration again.",
                                                 preferredStyle: .alert)
 
         let okAction = UIAlertAction(title: "OK", style: .default) { _ in
