@@ -23,11 +23,10 @@ extension Ejabberd: XMPPStreamDelegate {
     }
 
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
-        Log.debug("Ejabberd: Connect reached timeout")
-
-        // TODO: schedrule retry
-
         self.state = .disconnected
+        
+        Log.error(EjabberdError.connectionTimeout, message: "Ejabberd connection reached timeout")
+        
         self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
     }
 
@@ -36,9 +35,8 @@ extension Ejabberd: XMPPStreamDelegate {
         self.state = .disconnected
 
         if let error = error {
-            Log.debug("Ejabberd disconnected with error - \(error.localizedDescription)")
-
-            // TODO: schedrule retry
+            Log.error(error, message: "Ejabberd disconnected")
+            
             if erroredUnlock {
                 self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
             }
@@ -80,32 +78,29 @@ extension Ejabberd {
     }
 
     func xmppStream(_ sender: XMPPStream, didFailToSend message: XMPPMessage, error: Error) {
-        Log.error("Ejabberd: Message failed to send \(error)")
+        Log.error(error, message: "Ejabberd: message failed to send")
 
         self.unlockMutex(self.sendMutex, with: error)
     }
 
     func xmppStream(_ sender: XMPPStream, didReceive message: XMPPMessage) {
         Log.debug("Ejabberd: Message received")
-
-        self.receiveQueue.async {
-            do {
-                let author = try message.getAuthor()
-                let body = try message.getBody()
-                let encryptedMessage = try EncryptedMessage.import(body)
-
-                guard let message = try MessageProcessor.process(encryptedMessage, from: author),
-                    let currentChannel = CoreData.shared.currentChannel,
-                    currentChannel.name == author else {
-                        // TODO: Check if needed
-                        return Notifications.post(.chatListUpdated)
-                }
-
-                Notifications.post(message: message)
+        
+        // TODO: Add error message handling
+        do {
+            let author = try message.getAuthor()
+            
+            guard author != Virgil.ethree.identity else {
+                return
             }
-            catch {
-                Log.error("\(error)")
-            }
+            
+            let body = try message.getBody()
+            let encryptedMessage = try EncryptedMessage.import(body)
+
+            try MessageProcessor.process(encryptedMessage, from: author)
+        }
+        catch {
+            Log.error(error, message: "Message processing failed")
         }
     }
 }

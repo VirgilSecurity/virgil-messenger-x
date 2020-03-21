@@ -136,7 +136,8 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
                 HUD.hide() { _ in
                     if let error = error {
                         self.alert(title: self.title, error)
-                    } else {
+                    }
+                    else {
                         self.goToChatList()
                     }
                 }

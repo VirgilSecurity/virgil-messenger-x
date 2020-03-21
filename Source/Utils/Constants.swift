@@ -10,7 +10,7 @@ import UIKit
 import XMPPFrameworkSwift
 
 enum Constants {
-    static let keychainAppName: String = "com.virgil.VirgilMessenger\(URLConstants.envPrefix.rawValue)"
+    static let appId = "com.virgil.VirgilMessenger"
     static let pushesNode: String = "node"
     static let appGroup: String = "group.virgil.notification"
 }

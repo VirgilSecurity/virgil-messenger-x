@@ -15,7 +15,7 @@ protocol AudioInputViewProtocol {
 }
 
 protocol AudioInputViewDelegate: class {
-    func inputView(_ inputView: AudioInputViewProtocol, didFinishedRecording audio: Data)
+    func inputView(_ inputView: AudioInputViewProtocol, didFinishedRecording audioUrl: URL, duration: TimeInterval)
     func inputViewDidRequestMicrophonePermission(_ inputView: AudioInputViewProtocol)
 }
 
@@ -38,6 +38,7 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
     private var audioRecorder: AVAudioRecorder!
     private var timer = Timer()
     private var time: TimeInterval = 0
+    private var audioFile: URL?
 
     init(presentingController: UIViewController?) {
         super.init(frame: CGRect.zero)
@@ -62,21 +63,24 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
 
     private func configureAudio() {
         self.recordingSession = AVAudioSession.sharedInstance()
+        
         do {
-            try recordingSession.setCategory(AVAudioSession.Category.playAndRecord, mode: .default)
-            try recordingSession.setActive(true)
-            recordingSession.requestRecordPermission() { [unowned self] allowed in
+            try self.recordingSession.setCategory(AVAudioSession.Category.playAndRecord, mode: .default)
+            try self.recordingSession.setActive(true)
+            
+            self.recordingSession.requestRecordPermission { [unowned self] allowed in
                 DispatchQueue.main.async {
                     if allowed {
                         self.configureView()
-                    } else {
-                        Log.error("Permission to record audio was not granted")
+                    }
+                    else {
                         // TODO: configure View with explanation why audio is not accessable
                     }
                 }
             }
-        } catch {
-            Log.error(error.localizedDescription)
+        }
+        catch {
+            Log.error(error, message: "Configuring audio recording session failed")
         }
     }
 
@@ -293,8 +297,11 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
         self.cancelLabel.isHidden = false
         self.startRecording()
         self.holdToRecordLabel.text = "Recording..."
-        self.timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(AudioInputView.updateTimer),
-                                          userInfo: nil, repeats: true)
+        self.timer = Timer.scheduledTimer(timeInterval: 0.01,
+                                          target: self,
+                                          selector: #selector(AudioInputView.updateTimer),
+                                          userInfo: nil,
+                                          repeats: true)
     }
 
     @objc func didFinishRecord(_ sender: Any) {
@@ -313,12 +320,18 @@ extension AudioInputView {
         ]
 
         do {
-            audioRecorder = try AVAudioRecorder(url: self.getFileURL(), settings: settings)
-            audioRecorder.delegate = self
-            audioRecorder.record()
-        } catch {
-            Log.error("Recording failed: \(error.localizedDescription)")
-            finishRecording(success: false)
+            let identifier = UUID().uuidString
+            let audioURL = try CoreData.shared.getMediaStorage().getURL(name: identifier, type: .voice)
+            self.audioFile = audioURL
+            
+            self.audioRecorder = try AVAudioRecorder(url: audioURL, settings: settings)
+            self.audioRecorder.delegate = self
+            self.audioRecorder.record()
+        }
+        catch {
+            Log.error(error, message: "Recording failed")
+            
+            self.finishRecording(success: false)
         }
     }
 
@@ -326,17 +339,30 @@ extension AudioInputView {
         let image = UIImage(named: "button-record-voice", in: Bundle(for: AudioInputView.self), compatibleWith: nil)!
         self.recordButton.setImage(image, for: .normal)
         self.cancelLabel.isHidden = true
-        audioRecorder.stop()
-        audioRecorder = nil
+        self.audioRecorder.stop()
+        self.audioRecorder = nil
 
         if success {
             do {
-                let data = try Data(contentsOf: self.getFileURL(), options: [])
-                self.delegate?.inputView(self, didFinishedRecording: data)
-            } catch {
-                Log.error(error.localizedDescription)
+                guard let audioUrl = self.audioFile else {
+                    throw UserFriendlyError.voiceRecordingError
+                }
+                
+                self.delegate?.inputView(self, didFinishedRecording: audioUrl, duration: self.time + 0.9)
+            }
+            catch {
+                // TODO: show error to user
+                Log.error(error, message: "Finish recording failed")
             }
         }
+        else {
+            if let audioUrl = self.audioFile {
+                try? FileManager.default.removeItem(at: audioUrl)
+            }
+            
+            self.audioFile = nil
+        }
+        
         self.timerLabel.text = self.timeString(0)
         self.holdToRecordLabel.text = "Hold to record"
         self.timer.invalidate()
@@ -360,15 +386,5 @@ extension AudioInputView {
         let miliseconds = Int((time - Double(Int(time))) * 100)
 
         return String(format:"%02i:%02i:%02i", minutes, seconds, miliseconds)
-    }
-
-    private func getDocumentsDirectory() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
-    }
-
-    func getFileURL() -> URL {
-        let path = getDocumentsDirectory().appendingPathComponent("temp.m4a")
-        return path
     }
 }

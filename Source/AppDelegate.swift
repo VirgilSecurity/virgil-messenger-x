@@ -8,10 +8,9 @@
 
 import UserNotifications
 import UIKit
-import Fabric
-import Crashlytics
 import VirgilSDK
-import CocoaLumberjack
+import Firebase
+import CocoaLumberjackSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -19,12 +18,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        FirebaseApp.configure()
 
         // Defining start controller
         let startStoryboard = UIStoryboard(name: StartViewController.name, bundle: Bundle.main)
         let startController = startStoryboard.instantiateInitialViewController()!
 
-        let logger = DDTTYLogger.sharedInstance!
+        let logger = DDOSLogger.sharedInstance
         DDLog.add(logger, with: .all)
 
         self.window?.rootViewController = startController
@@ -37,8 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Clean notifications
         self.cleanNotifications()
-
-        Fabric.with([Crashlytics.self])
 
         return true
     }
@@ -61,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         catch {
-            Log.error("cleanLocalStorageError: \(error.localizedDescription)")
+            Log.error(error, message: "Clean Local Storage on startup failed")
         }
     }
 
@@ -105,19 +104,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         do {
             try CoreData.shared.saveContext()
-        } catch {
-            Log.error("Saving Core Data context failed with error: \(error.localizedDescription)")
+        }
+        catch {
+            Log.error(error, message: "Saving Core Data context on app termination failed")
         }
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Log.debug("Received device token: \(deviceToken.hexEncodedString())")
-
-        Ejabberd.updatedPushToken = deviceToken
+        
+        do {
+            if Ejabberd.shared.state == .connected {
+                try Ejabberd.shared.registerForNotifications(deviceToken: deviceToken)
+            }
+            
+            Ejabberd.updatedPushToken = deviceToken
+        }
+        catch {
+            Log.error(error, message: "Registering for notification failed")
+        }
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        Log.error("Failed to get token, error: \(error)")
+        Log.error(error, message: "Failed to get device token")
 
         Ejabberd.updatedPushToken = nil
     }

@@ -9,8 +9,57 @@
 import ChattoAdditions
 
 class UIAudioMessageViewModel: AudioMessageViewModel<UIAudioMessageModel>, UIMessageViewModelProtocol {
+    private var loadState: MediaMessageState
+    
     var messageModel: UIMessageModelProtocol {
         return self.audioMessage
+    }
+    
+    override init(audioMessage: UIAudioMessageModel, messageViewModel: MessageViewModelProtocol) {
+        self.loadState = audioMessage.state
+        
+        super.init(audioMessage: audioMessage, messageViewModel: messageViewModel)
+        
+        switch audioMessage.state {
+        case .downloading, .uploading:
+            self.transferStatus.value = .transfering
+
+            audioMessage.set(loadDelegate: self)
+        case .normal:
+            break
+        }
+    }
+}
+
+extension UIAudioMessageViewModel: LoadDelegate {
+    func progressChanged(to percent: Double) {
+        DispatchQueue.main.async {
+            guard self.transferStatus.value == .transfering else {
+                // TODO: add error logs
+                return
+            }
+            guard percent < 100 else {
+                self.transferStatus.value = .success
+                return
+            }
+            
+            self.transferProgress.value = percent
+        }
+    }
+    
+    func failed(with error: Error) {
+        DispatchQueue.main.async {
+            self.transferStatus.value = .failed
+            self.loadState = .normal
+        }
+    }
+    
+    func completed(dataHash: String) {
+        // TODO: remove copypaste
+        DispatchQueue.main.async {
+            self.transferStatus.value = .success
+            self.loadState = .normal
+        }
     }
 }
 

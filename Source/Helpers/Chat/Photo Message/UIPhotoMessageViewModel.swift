@@ -25,35 +25,81 @@
 import ChattoAdditions
 
 class UIPhotoMessageViewModel: PhotoMessageViewModel<UIPhotoMessageModel> {
-    let fakeImage: UIImage
+    private var imageInProgress: UIImage?
+    private var state: MediaMessageState
 
     override init(photoMessage: UIPhotoMessageModel, messageViewModel: MessageViewModelProtocol) {
-        self.fakeImage = photoMessage.image
-        super.init(photoMessage: photoMessage, messageViewModel: messageViewModel)
-    }
-
-    override func willBeShown() {
-        //self.fakeProgress()
-    }
-
-    func fakeProgress() {
-        if [TransferStatus.success, TransferStatus.failed].contains(self.transferStatus.value) {
-            return
+        self.state = photoMessage.state
+        
+        switch photoMessage.state {
+        case .downloading, .uploading:
+            self.imageInProgress = photoMessage.image
+            
+            super.init(photoMessage: photoMessage, messageViewModel: messageViewModel)
+            
+            self.transferStatus.value = .transfering
+            photoMessage.set(loadDelegate: self)
+        case .normal:
+            self.imageInProgress = nil
+            
+            super.init(photoMessage: photoMessage, messageViewModel: messageViewModel)
         }
-        if self.transferProgress.value >= 1.0 {
-            self.transferStatus.value = .success
-            self.image.value = self.fakeImage
+    }
+}
 
-            return
+extension UIPhotoMessageViewModel: LoadDelegate {
+    func progressChanged(to percent: Double) {
+        DispatchQueue.main.async {
+            guard self.transferStatus.value == .transfering else {
+                // TODO: add error logs
+                return
+            }
+            guard percent < 100 else {
+                self.transferStatus.value = .success
+                return
+            }
+            
+            self.transferProgress.value = percent
         }
-        self.transferStatus.value = .transfering
-        let delaySeconds: Double = Double(arc4random_uniform(600)) / 1000.0
-        let delayTime = DispatchTime.now() + Double(Int64(delaySeconds * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
-        DispatchQueue.main.asyncAfter(deadline: delayTime) { [weak self] in
-            guard let sSelf = self else { return }
-            let deltaProgress = Double(arc4random_uniform(15)) / 100.0
-            sSelf.transferProgress.value = min(sSelf.transferProgress.value + deltaProgress, 1)
-            sSelf.fakeProgress()
+    }
+    
+    func failed(with error: Error) {
+        DispatchQueue.main.async {
+            self.transferStatus.value = .failed
+            self.state = .normal
+        }
+    }
+    
+    func completed(dataHash: String) {
+        do {
+            switch self.state {
+            case .downloading:
+                let path = try CoreData.shared.getMediaStorage().getPath(name: dataHash, type: .photo)
+                
+                guard let fullImage = UIImage(contentsOfFile: path) else {
+                    throw FileMediaStorage.Error.imageFromFileFailed
+                }
+                
+                DispatchQueue.main.async {
+                    self.image.value = fullImage
+                }
+            case .uploading, .normal:
+                break
+            }
+            
+            // TODO: remove copypaste
+            DispatchQueue.main.async {
+                self.transferStatus.value = .success
+                self.state = .normal
+            }
+        }
+        catch {
+            Log.error(error, message: "Image loading completion failed")
+            
+            DispatchQueue.main.async {
+                self.transferStatus.value = .failed
+                self.state = .normal
+            }
         }
     }
 }
@@ -70,8 +116,10 @@ class UIPhotoMessageViewModelBuilder: ViewModelBuilderProtocol {
 
     func createViewModel(_ model: UIPhotoMessageModel) -> UIPhotoMessageViewModel {
         let messageViewModel = self.messageViewModelBuilder.createMessageViewModel(model)
+        
         let photoMessageViewModel = UIPhotoMessageViewModel(photoMessage: model, messageViewModel: messageViewModel)
         photoMessageViewModel.avatarImage.value = UIImage(named: "userAvatar")
+        
         return photoMessageViewModel
     }
 

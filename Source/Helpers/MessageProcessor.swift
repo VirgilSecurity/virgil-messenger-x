@@ -6,173 +6,144 @@
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
 //
 
-import Chatto
-import ChattoAdditions
-import AVFoundation
-import VirgilCryptoRatchet
-import VirgilSDKRatchet
+import Foundation
 
 class MessageProcessor {
-    static func process(_ message: EncryptedMessage, from author: String) throws -> Message? {
+    enum Error: Swift.Error {
+        case missingThumbnail
+        case dataToStrFailed
+    }
+    
+    static func process(_ encryptedMessage: EncryptedMessage, from author: String) throws {
+        let channel = try self.setupCoreChannel(name: author)
+
+        let decrypted = try self.decrypt(encryptedMessage, from: channel)
+        
+        var decryptedAdditional: Data? = nil
+        
+        if let data = encryptedMessage.additionalData {
+            decryptedAdditional = try Virgil.ethree.authDecrypt(data: data, from: channel.getCard())
+        }
+        
+        let messageContent = try self.migrationSafeContentImport(from: decrypted,
+                                                                 version: encryptedMessage.modelVersion)
+        
+        try self.process(messageContent,
+                         additionalData: decryptedAdditional,
+                         channel: channel,
+                         author: author,
+                         date: encryptedMessage.date)
+    }
+    
+    private static func process(_ messageContent: MessageContent,
+                                additionalData: Data?,
+                                channel: Channel,
+                                author: String,
+                                date: Date) throws {
+        let message: Message
+    
+        switch messageContent {
+        case .text(let textContent):
+            message = try CoreData.shared.createTextMessage(with: textContent,
+                                                            in: channel,
+                                                            isIncoming: true,
+                                                            date: date)
+            
+        case .photo(let photoContent):
+            guard let thumbnail = additionalData else {
+                throw Error.missingThumbnail
+            }
+            
+            message = try CoreData.shared.createPhotoMessage(with: photoContent,
+                                                             thumbnail: thumbnail,
+                                                             in: channel,
+                                                             isIncoming: true,
+                                                             date: date)
+        case .voice(let voiceContent):
+            message = try CoreData.shared.createVoiceMessage(with: voiceContent,
+                                                             in: channel,
+                                                             isIncoming: true,
+                                                             date: date)
+        }
+        
+        self.postNotification(about: message, author: author)
+    }
+    
+    private static func migrationSafeContentImport(from data: Data,
+                                                   version: EncryptedMessageVersion) throws -> MessageContent {
+        let messageContent: MessageContent
+        
+        switch version {
+        case .v1:
+            guard let body = String(data: data, encoding: .utf8) else {
+                throw Error.dataToStrFailed
+            }
+            
+            let textContent = TextContent(body: body)
+            messageContent = MessageContent.text(textContent)
+        case .v2:
+            messageContent = try MessageContent.import(from: data)
+        }
+        
+        return messageContent
+    }
+    
+    private static func setupCoreChannel(name: String) throws -> Channel {
         let channel: Channel
 
-        if let coreChannel = CoreData.shared.getChannel(withName: author) {
+        if let coreChannel = CoreData.shared.getChannel(withName: name) {
             channel = coreChannel
         }
         else {
-            let card = try Virgil.ethree.findUser(with: author).startSync().get()
+            let card = try Virgil.ethree.findUser(with: name).startSync().get()
 
-            channel = try CoreData.shared.getChannel(withName: author)
-                ?? CoreData.shared.createSingleChannel(initiator: author, card: card)
+            channel = try CoreData.shared.getChannel(withName: name)
+                ?? CoreData.shared.createSingleChannel(initiator: name, card: card)
         }
-
-        let decrypted: String
-        do {
-            decrypted = try Virgil.ethree.authDecrypt(text: message.ciphertext, from: channel.getCard())
-        } catch {
-            try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
-            // FIXME
-            return nil
-        }
-
-        return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: true, date: message.date)
+        
+        return channel
     }
-//
-//    static func process(message: TCHMessage, from twilioChannel: TCHChannel, coreChannel: Channel? = nil) throws -> Message? {
-//        let isIncoming = message.author == Virgil.ethree.identity ? false : true
-//
-//        let date = try message.getDate()
-//        let index = try message.getIndex()
-//
-//        let channel = try coreChannel ?? CoreData.shared.getChannel(twilioChannel)
-//
-//        guard (Int(truncating: index) >= channel.allMessages.count) else {
-//            return nil
-//        }
-//
-//        if message.hasMedia() {
-//            return try self.processMedia(message: message,
-//                                         date: date,
-//                                         isIncoming: isIncoming,
-//                                         channel: channel)
-//        } else if let body = message.body {
-//            return try self.processText(body,
-//                                        date: date,
-//                                        isIncoming: isIncoming,
-//                                        twilioMessage: message,
-//                                        channel: channel)
-//        } else {
-//            throw Twilio.Error.invalidMessage
-//        }
-//    }
-//
-//    private static func processText(_ text: String,
-//                                    date: Date,
-//                                    isIncoming: Bool,
-//                                    twilioMessage: TCHMessage,
-//                                    channel: Channel) throws -> Message? {
-//        let attributes = try twilioMessage.getAttributes()
-//
-//        switch channel.type {
-//        case .single:
-//            return try self.processSingle(text: text,
-//                                          date: date,
-//                                          isIncoming: isIncoming,
-//                                          channel: channel,
-//                                          attributes: attributes)
-//        case .group:
-//            return try self.processGroup(text: text,
-//                                         date: date,
-//                                         isIncoming: isIncoming,
-//                                         twilioMessage: twilioMessage,
-//                                         channel: channel,
-//                                         attributes: attributes)
-//        }
-//    }
-//
-//    private static func processSingle(text: String,
-//                                      date: Date,
-//                                      isIncoming: Bool,
-//                                      channel: Channel,
-//                                      attributes: TCHMessage.Attributes) throws -> Message? {
-//        switch attributes.type {
-//        case .regular:
-//            let decrypted: String
-//            do {
-//                decrypted = try Virgil.ethree.authDecrypt(text: text, from: channel.cards.first)
-//            } catch {
-//                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
-//                // FIXME
-//                return nil
-//            }
-//
-//            return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
-//        case .service:
-//            try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
-//
-//            return nil
-//        }
-//    }
-//
-//    private static func processGroup(text: String,
-//                                     date: Date,
-//                                     isIncoming: Bool,
-//                                     twilioMessage: TCHMessage,
-//                                     channel: Channel,
-//                                     attributes: TCHMessage.Attributes) throws -> Message? {
-//        let author = try twilioMessage.getAuthor()
-//        let group = try channel.getGroup()
-//        let authorCard = try Virgil.ethree.findUser(with: author).startSync().get()
-//
-//        switch attributes.type {
-//        case .regular:
-//            var decrypted: String
-//            do {
-//                decrypted = try group.decrypt(text: text, from: authorCard)
-//            }
-//            catch {
-//                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
-//                return nil
-//            }
-//
-//            decrypted = "\(author): \(decrypted)"
-//
-//            return try CoreData.shared.createTextMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
-//        case .service:
-//            // TODO: optimize
-//            try group.update().startSync().get()
-//
-//            var decrypted: String
-//            do {
-//                decrypted = try group.decrypt(text: text, from: authorCard)
-//            }
-//            catch {
-//                try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: isIncoming, date: date)
-//                return nil
-//            }
-//
-//            decrypted = "\(author) \(decrypted)"
-//
-//            let participants = try Virgil.ethree.findUsers(with: Array(group.participants)).startSync().get()
-//            let cards = Array(participants.values)
-//            try CoreData.shared.updateCards(with: cards, for: channel)
-//
-//            return try CoreData.shared.createChangeMembersMessage(decrypted, in: channel, isIncoming: isIncoming, date: date)
-//        }
-//    }
-//
-//    private static func processMedia(message: TCHMessage,
-//                                     date: Date,
-//                                     isIncoming: Bool,
-//                                     channel: Channel) throws -> Message {
-//        guard let rawValue = message.mediaType,
-//            let mediaType = Twilio.MediaType(rawValue: rawValue),
-//            let type = MessageType(mediaType) else {
-//                throw NSError()
-//        }
-//
-//        let data = try message.getMedia().startSync().get()
-//
-//        return try CoreData.shared.createMediaMessage(data, in: channel, isIncoming: isIncoming, date: date, type: type)
-//    }
+    
+    private static func decrypt(_ message: EncryptedMessage, from channel: Channel) throws -> Data {
+        let decrypted: Data
+        
+        do {
+            decrypted = try Virgil.ethree.authDecrypt(data: message.ciphertext, from: channel.getCard())
+        }
+        catch {
+            // TODO: check if needed
+            try CoreData.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
+            
+            throw error
+        }
+        
+        return decrypted
+    }
+    
+    private static func postNotification(about message: Message, author: String) {
+        guard let channel = CoreData.shared.currentChannel,
+            channel.name == author else {
+                return Notifications.post(.chatListUpdated)
+        }
+    
+        Notifications.post(message: message)
+    }
+    
+    private static func setupChannel(name: String) throws -> Channel {
+        let channel: Channel
+
+        if let coreChannel = CoreData.shared.getChannel(withName: name) {
+            channel = coreChannel
+        }
+        else {
+            let card = try Virgil.ethree.findUser(with: name)
+                .startSync()
+                .get()
+
+            channel = try CoreData.shared.getChannel(withName: name)
+                ?? CoreData.shared.createSingleChannel(initiator: name, card: card)
+        }
+        
+        return channel
+    }
 }

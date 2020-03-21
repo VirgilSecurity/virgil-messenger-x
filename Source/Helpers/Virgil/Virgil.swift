@@ -33,7 +33,7 @@ public class Virgil {
     public static func initialize(identity: String, client: Client) throws {
         let tokenCallback = client.makeTokenCallback(identity: identity)
         let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
-        params.storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.keychainAppName)
+        params.storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.appId)
         
         self.ethree = try EThree(params: params)
 

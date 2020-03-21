@@ -18,70 +18,77 @@ extension CoreData {
         try self.saveContext()
     }
 
-    func createChangeMembersMessage(_ text: String,
-                                    in channel: Channel? = nil,
-                                    isIncoming: Bool,
-                                    date: Date = Date()) throws -> Message {
-        let channel = try channel ?? self.getCurrentChannel()
-
-        let message = try Message(body: text,
-                                  type: .changeMembers,
-                                  isIncoming: isIncoming,
-                                  date: date,
-                                  channel: channel,
-                                  managedContext: self.managedContext)
-
-        try self.save(message)
-
-        return message
-    }
-
     func createEncryptedMessage(in channel: Channel, isIncoming: Bool, date: Date) throws {
-        let message = try Message(body: "Message encrypted",
-                                  type: .text,
-                                  isIncoming: isIncoming,
-                                  date: date,
-                                  channel: channel,
-                                  isHidden: true,
-                                  managedContext: self.managedContext)
+        let message = try TextMessage(body: "Message encrypted",
+                                      isIncoming: isIncoming,
+                                      date: date,
+                                      channel: channel,
+                                      isHidden: true,
+                                      managedContext: self.managedContext)
 
         try self.save(message)
     }
 
-    func createTextMessage(_ body: String,
-                           in channel: Channel? = nil,
+    func createTextMessage(with content: TextContent,
+                           in channel: Channel,
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Message {
-        let channel = try channel ?? self.getCurrentChannel()
 
-        let message = try Message(body: body,
-                                  type: .text,
-                                  isIncoming: isIncoming,
-                                  date: date,
-                                  channel: channel,
-                                  managedContext: self.managedContext)
+        let message = try TextMessage(body: content.body,
+                                      isIncoming: isIncoming,
+                                      date: date,
+                                      channel: channel,
+                                      managedContext: self.managedContext)
 
         try self.save(message)
 
         return message
     }
-
-    func createMediaMessage(_ data: Data,
-                            in channel: Channel? = nil,
+    
+    func createPhotoMessage(with content: PhotoContent,
+                            thumbnail: Data,
+                            in channel: Channel,
                             isIncoming: Bool,
-                            date: Date = Date(),
-                            type: MessageType) throws -> Message {
-        let channel = try channel ?? self.getCurrentChannel()
-
-        let message = try Message(media: data,
-                                  type: type,
-                                  isIncoming: isIncoming,
-                                  date: date,
-                                  channel: channel,
-                                  managedContext: self.managedContext)
+                            date: Date = Date()) throws -> Message {
+        let message = try PhotoMessage(identifier: content.identifier,
+                                       thumbnail: thumbnail,
+                                       url: content.url,
+                                       isIncoming: isIncoming,
+                                       date: date,
+                                       channel: channel,
+                                       managedContext: self.managedContext)
 
         try self.save(message)
 
         return message
+    }
+    
+    func createVoiceMessage(with content: VoiceContent,
+                            in channel: Channel,
+                            isIncoming: Bool,
+                            date: Date = Date()) throws -> Message {
+        let message = try VoiceMessage(identifier: content.identifier,
+                                       duration: content.duration,
+                                       url: content.url,
+                                       isIncoming: isIncoming,
+                                       date: date,
+                                       channel: channel,
+                                       managedContext: self.managedContext)
+
+        try self.save(message)
+
+        return message
+    }
+    
+    func storeMediaContent(_ data: Data, name: String, type: FileMediaStorage.MediaType) throws {
+        let mediaStorage = try self.getMediaStorage()
+        
+        let path = try mediaStorage.getPath(name: name, type: type)
+        
+        if type == .photo, mediaStorage.exists(path: path) {
+            return
+        }
+        
+        try self.getMediaStorage().store(data, name: name, type: type)
     }
 }

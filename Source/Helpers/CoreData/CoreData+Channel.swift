@@ -22,7 +22,7 @@ extension CoreData {
     }
 
     func createSingleChannel(initiator: String, card: Card) throws -> Channel {
-        // FIXME
+        // TODO: remove sid on channel migration
         let sid = UUID().uuidString
 
         guard card.identity != Virgil.ethree.identity else {
@@ -76,16 +76,6 @@ extension CoreData {
     func existsChannel(sid: String) -> Bool {
         return self.getChannels().contains { $0.sid == sid }
     }
-
-//    func getChannel(_ twilioChannel: TCHChannel) throws -> Channel {
-//        let twilioSid = try twilioChannel.getSid()
-//        
-//        guard let channel = self.getChannels().first(where: { $0.sid == twilioSid }) else {
-//            throw Error.channelNotFound
-//        }
-//
-//        return channel
-//    }
 
     func getChannel(withName name: String) -> Channel? {
         return self.getChannels().first { $0.name == name }
