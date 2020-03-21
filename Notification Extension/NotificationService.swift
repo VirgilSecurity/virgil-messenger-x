@@ -72,7 +72,7 @@ class NotificationService: UNNotificationServiceExtension {
             let decrypted = try ethree.authDecrypt(data: encryptedMessage.ciphertext, from: card)
 
             // Changing body of notification from ciphertext to decrypted message
-            bestAttemptContent.body = ""
+            bestAttemptContent.body = String(bytes: decrypted, encoding: .utf8)!
 
             contentHandler(bestAttemptContent)
 
