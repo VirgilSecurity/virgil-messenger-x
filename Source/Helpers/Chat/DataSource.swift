@@ -91,12 +91,7 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     lazy var messageSender: MessageSender = {
-        let sender = MessageSender()
-        sender.onMessageChanged = { [weak self] message in
-            guard let sSelf = self else { return }
-            sSelf.delegate?.chatDataSourceDidUpdate(sSelf)
-        }
-        return sender
+        return MessageSender()
     }()
 
     var hasMoreNext: Bool {

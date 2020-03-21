@@ -7,8 +7,6 @@ public protocol UIMessageModelProtocol: MessageModelProtocol {
 }
 
 public class MessageSender {
-    public var onMessageChanged: ((_ message: UIMessageModelProtocol) -> Void)?
-
     private let queue = DispatchQueue(label: "MessageSender")
 
     private func encryptThenSend(message: Message, date: Date, channel: Storage.Channel) throws {
