@@ -29,7 +29,7 @@ class NotificationService: UNNotificationServiceExtension {
         case body = "body"
         case title = "title"
     }
-    
+
     struct NotificationInfo {
         let sender: String
         let encryptedMessage: EncryptedMessage
@@ -37,18 +37,18 @@ class NotificationService: UNNotificationServiceExtension {
 
     override func didReceive(_ request: UNNotificationRequest,
                              withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
-        
+
         self.contentHandler = contentHandler
-        
+
         guard let bestAttemptContent = request.content.mutableCopy() as? UNMutableNotificationContent else {
             // FIXME: add Logs
             return
         }
-        
+
         bestAttemptContent.body = "New Message"
-        
+
         self.bestAttemptContent = bestAttemptContent
-        
+
         do {
             let notificationInfo = try self.parse(content: bestAttemptContent)
 
@@ -56,14 +56,13 @@ class NotificationService: UNNotificationServiceExtension {
 
             let message = try self.process(decrypted: decrypted,
                                            version: notificationInfo.encryptedMessage.modelVersion)
-            
+
             bestAttemptContent.body = message
 
             contentHandler(bestAttemptContent)
 
             // Note: We got body from userInfo, not from bestAttemptContent.body directly in a reason of 1000 symbol restriction
-        }
-        catch {
+        } catch {
             // FIXME: add Logs
             contentHandler(bestAttemptContent)
 
@@ -78,7 +77,7 @@ class NotificationService: UNNotificationServiceExtension {
             contentHandler(bestAttemptContent)
         }
     }
-    
+
     private func parse(content: UNMutableNotificationContent) throws -> NotificationInfo {
         guard let aps = content.userInfo[NotificationKeys.aps.rawValue] as? [String: Any],
             let alert = aps[NotificationKeys.alert.rawValue] as? [String: String],
@@ -86,17 +85,17 @@ class NotificationService: UNNotificationServiceExtension {
             let title = alert[NotificationKeys.title.rawValue] else {
                 throw NotificationServiceError.parsingNotificationFailed
         }
-        
+
         let encryptedMessage = try EncryptedMessage.import(body)
-        
+
         return NotificationInfo(sender: title, encryptedMessage: encryptedMessage)
     }
-    
+
     private func decrypt(notificationInfo: NotificationInfo) throws -> Data {
         guard let identity = IdentityDefaults.shared.get() else {
             throw NotificationServiceError.missingIdentityInDefaults
         }
-        
+
         // Initializing KeyStorage with root application name. We need it to fetch shared key from root app
         let storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.appId)
 
@@ -107,37 +106,43 @@ class NotificationService: UNNotificationServiceExtension {
         let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
         params.storageParams = storageParams
         let ethree = try EThree(params: params)
-        
+
         let card = try ethree.findUser(with: notificationInfo.sender)
             .startSync()
             .get()
 
         return try ethree.authDecrypt(data: notificationInfo.encryptedMessage.ciphertext, from: card)
     }
-    
+
     private func process(decrypted: Data, version: EncryptedMessageVersion) throws -> String {
-        let message: String
-        
+        let messageString: String
+
         switch version {
         case .v1:
             guard let string = String(data: decrypted, encoding: .utf8) else {
                 throw NotificationServiceError.dataToStrFailed
             }
-            
-            message = string
+
+            messageString = string
         case .v2:
-            let content = try MessageContent.import(from: decrypted)
-            
-            switch content {
-            case .text(let textContent):
-                message = textContent.body
+            let message = try Message.import(from: decrypted)
+
+            switch message {
+            case .text(let text):
+                messageString = text.body
             case .photo:
-                message = "📷 Photo"
+                messageString = "📷 Photo"
             case .voice:
-                message = "🎤 Voice Message"
+                messageString = "🎤 Voice Message"
+            case .callOffer:
+                // TODO:  Add caller name
+                messageString = "Incomming call"
+            case .callAnswer, .iceCandidate:
+                // TODO:  Hide this message
+                messageString = "Service message"
             }
         }
-        
-        return message
+
+        return messageString
     }
 }

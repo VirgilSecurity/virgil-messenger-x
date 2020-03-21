@@ -98,11 +98,6 @@ class ChatViewController: BaseChatViewController {
         }
 
         let showIncommingCall: Notifications.Block = { [weak self] notification in
-            guard let _ : Message.CallOffer = Notifications.parse(notification, for: .message) else {
-                Log.error("Invalid call offer notification")
-                return
-            }
-
             DispatchQueue.main.async {
                 self?.performSegue(withIdentifier: "goToVoiceCall", sender: self)
             }
@@ -273,8 +268,10 @@ extension ChatViewController {
             textStyle: audioTextStyle,
             baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
 
-        let audioMessagePresenter = AudioMessagePresenterBuilder(viewModelBuilder: UIAudioMessageViewModelBuilder(),
-                                                                 interactionHandler: UIAudioMessageHandler(baseHandler: self.baseMessageHandler, playableController: self))
+        let audioMessagePresenter = AudioMessagePresenterBuilder(
+                viewModelBuilder: UIAudioMessageViewModelBuilder(),
+                interactionHandler: UIAudioMessageHandler(baseHandler: self.baseMessageHandler, playableController: self))
+        
         audioMessagePresenter.baseMessageStyle = baseMessageStyle
         audioMessagePresenter.textCellStyle = audioTextCellStyle
 
@@ -316,13 +313,13 @@ extension ChatViewController {
 
     private func createAudioInputItem() -> AudioChatInputItem {
         let item = AudioChatInputItem(presentingController: self)
-        
+
         item.audioInputHandler = { [weak self] audioUrl, duration in
             if self?.checkReachability() ?? false, Configurator.isUpdated {
                 self?.dataSource.addVoiceMessage(audioUrl, duration: duration)
             }
         }
-        
+
         return item
     }
 }
@@ -343,8 +340,7 @@ extension ChatViewController: AudioPlayableProtocol {
                 audioModel.state.value = .stopped
             }
             self.cachedAudioModel = model
-        }
-        catch {
+        } catch {
             Log.error(error, message: "AVAudioPlayer playing error")
             self.alert(UserFriendlyError.playingError)
         }

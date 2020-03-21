@@ -63,8 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 UserDefaults.standard.set("initialized", forKey: key)
                 UserDefaults.standard.synchronize()
             }
-        }
-        catch {
+        } catch {
             Log.error(error, message: "Clean Local Storage on startup failed")
         }
     }
@@ -109,8 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         RTCCleanupSSL()
         do {
             try Storage.shared.saveContext()
-        }
-        catch {
+        } catch {
             Log.error(error, message: "Saving Core Data context on app termination failed")
         }
     }
@@ -124,8 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
 
             Ejabberd.updatedPushToken = deviceToken
-        }
-        catch {
+        } catch {
             Log.error(error, message: "Registering for notification failed")
         }
     }

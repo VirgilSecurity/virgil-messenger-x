@@ -1,5 +1,5 @@
 //
-//  MessageContent+Text.swift
+//  Message+Text.swift
 //  VirgilMessenger
 //
 //  Created by Sergey Seroshtan on 13.03.2020.

@@ -21,11 +21,11 @@ public class EncryptedMessage: Codable {
     let ciphertext: Data
     let additionalData: Data?
     let date: Date
-    
+
     var modelVersion: EncryptedMessageVersion {
         return self.version ?? .v1
     }
-    
+
     private let version: EncryptedMessageVersion?
 
     public init(ciphertext: Data, date: Date, additionalData: Data?) {

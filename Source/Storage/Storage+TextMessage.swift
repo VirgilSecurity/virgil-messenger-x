@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import ChattoAdditions
 
 extension Storage {
     @objc(TextMessage)
@@ -19,7 +20,7 @@ extension Storage {
         convenience init(body: String,
                          isIncoming: Bool,
                          date: Date,
-                         channel: Storage.Channel,
+                         channel: Channel,
                          isHidden: Bool = false,
                          managedContext: NSManagedObjectContext) throws {
             guard let entity = NSEntityDescription.entity(forEntityName: TextMessage.EntityName, in: managedContext) else {
@@ -33,6 +34,14 @@ extension Storage {
             self.date = date
             self.channel = channel
             self.isHidden = isHidden
+        }
+
+        public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
+            return UITextMessageModel(uid: id,
+                                      text: self.body,
+                                      isIncoming: self.isIncoming,
+                                      status: status,
+                                      date: date)
         }
     }
 }

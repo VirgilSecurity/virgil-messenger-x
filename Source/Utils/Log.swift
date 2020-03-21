@@ -44,7 +44,7 @@ public enum Log {
                     "functionName": String(functionName),
                     "file": String(file),
                     "line": String(line)]
-        
+
         Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: info)
 
         self.log("<ERROR>: \(error.localizedDescription), message: \(closure())",

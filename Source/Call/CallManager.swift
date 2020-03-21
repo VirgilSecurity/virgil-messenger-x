@@ -206,7 +206,7 @@ extension CallManager: RTCPeerConnectionDelegate {
 
         self.sendSignalingMessage(candidate: candidate) { error in
             if let error = error {
-                Log.error("\(error)")
+                Log.error(error, message: "Send signaling message")
             }
         }
     }

@@ -30,18 +30,18 @@ class UIPhotoMessageViewModel: PhotoMessageViewModel<UIPhotoMessageModel> {
 
     override init(photoMessage: UIPhotoMessageModel, messageViewModel: MessageViewModelProtocol) {
         self.state = photoMessage.state
-        
+
         switch photoMessage.state {
         case .downloading, .uploading:
             self.imageInProgress = photoMessage.image
-            
+
             super.init(photoMessage: photoMessage, messageViewModel: messageViewModel)
-            
+
             self.transferStatus.value = .transfering
             photoMessage.set(loadDelegate: self)
         case .normal:
             self.imageInProgress = nil
-            
+
             super.init(photoMessage: photoMessage, messageViewModel: messageViewModel)
         }
     }
@@ -58,35 +58,35 @@ extension UIPhotoMessageViewModel: LoadDelegate {
                 self.transferStatus.value = .success
                 return
             }
-            
+
             self.transferProgress.value = percent
         }
     }
-    
+
     func failed(with error: Error) {
         DispatchQueue.main.async {
             self.transferStatus.value = .failed
             self.state = .normal
         }
     }
-    
+
     func completed(dataHash: String) {
         do {
             switch self.state {
             case .downloading:
-                let path = try CoreData.shared.getMediaStorage().getPath(name: dataHash, type: .photo)
-                
+                let path = try Storage.shared.getMediaStorage().getPath(name: dataHash, type: .photo)
+
                 guard let fullImage = UIImage(contentsOfFile: path) else {
                     throw FileMediaStorage.Error.imageFromFileFailed
                 }
-                
+
                 DispatchQueue.main.async {
                     self.image.value = fullImage
                 }
             case .uploading, .normal:
                 break
             }
-            
+
             // TODO: remove copypaste
             DispatchQueue.main.async {
                 self.transferStatus.value = .success
@@ -95,7 +95,7 @@ extension UIPhotoMessageViewModel: LoadDelegate {
         }
         catch {
             Log.error(error, message: "Image loading completion failed")
-            
+
             DispatchQueue.main.async {
                 self.transferStatus.value = .failed
                 self.state = .normal
@@ -116,10 +116,10 @@ class UIPhotoMessageViewModelBuilder: ViewModelBuilderProtocol {
 
     func createViewModel(_ model: UIPhotoMessageModel) -> UIPhotoMessageViewModel {
         let messageViewModel = self.messageViewModelBuilder.createMessageViewModel(model)
-        
+
         let photoMessageViewModel = UIPhotoMessageViewModel(photoMessage: model, messageViewModel: messageViewModel)
         photoMessageViewModel.avatarImage.value = UIImage(named: "userAvatar")
-        
+
         return photoMessageViewModel
     }
 

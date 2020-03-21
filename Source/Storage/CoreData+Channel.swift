@@ -9,7 +9,7 @@
 import CoreData
 import VirgilSDK
 
-extension CoreData {
+extension Storage {
     private func save(_ channel: Channel) throws {
         let channels = channel.account.mutableOrderedSetValue(forKey: Account.ChannelsKey)
         channels.add(channel)
@@ -55,7 +55,7 @@ extension CoreData {
 
     func updateCards(with cards: [Card], for channel: Channel) throws {
         let cards = cards.filter { $0.identity != self.currentAccount?.identity }
-        
+
         channel.cards = cards
 
         try self.saveContext()

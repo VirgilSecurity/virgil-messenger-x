@@ -1,5 +1,5 @@
 //
-//  MessageContent.swift
+//  Message.swift
 //  VirgilMessenger
 //
 //  Created by Yevhen Pyvovarov on 3/6/20.
@@ -12,6 +12,17 @@ public enum Message {
 
     public struct Text: Codable {
         let body: String
+    }
+
+    public struct Photo: Codable {
+        let identifier: String
+        let url: URL
+    }
+
+    public struct Voice: Codable {
+        let identifier: String
+        let duration: TimeInterval
+        let url: URL
     }
 
     public struct CallOffer: Codable {
@@ -29,6 +40,8 @@ public enum Message {
     }
 
     case text(Text)
+    case photo(Photo)
+    case voice(Voice)
     case callOffer(CallOffer)
     case callAnswer(CallAnswer)
     case iceCandidate(IceCandidate)
@@ -37,6 +50,8 @@ public enum Message {
 extension Message: Codable {
     enum TypeCodingKeys: String, Codable {
         case text
+        case photo
+        case voice
         case callOffer = "call_offer"
         case callAnswer = "call_answer"
         case iceCandidate = "ice_candidate"
@@ -53,8 +68,16 @@ extension Message: Codable {
 
         switch type {
         case .text:
-            let textContent = try container.decode(Text.self, forKey: .payload)
-            self = .text(textContent)
+            let text = try container.decode(Text.self, forKey: .payload)
+            self = .text(text)
+
+        case .photo:
+            let photo = try container.decode(Photo.self, forKey: .payload)
+            self = .photo(photo)
+
+        case .voice:
+            let voice = try container.decode(Voice.self, forKey: .payload)
+            self = .voice(voice)
 
         case .callOffer:
             let callOffer = try container.decode(CallOffer.self, forKey: .payload)
@@ -74,10 +97,20 @@ extension Message: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
-        case .text(let textContent):
+        case .text(let text):
             let type = TypeCodingKeys.text
             try container.encode(type, forKey: .type)
-            try container.encode(textContent, forKey: .payload)
+            try container.encode(text, forKey: .payload)
+
+        case .photo(let photo):
+            let type = TypeCodingKeys.photo
+            try container.encode(type, forKey: .type)
+            try container.encode(photo, forKey: .payload)
+
+        case .voice(let voice):
+            let type = TypeCodingKeys.voice
+            try container.encode(type, forKey: .type)
+            try container.encode(voice, forKey: .payload)
 
         case .callOffer(let callOffer):
             let type = TypeCodingKeys.callOffer

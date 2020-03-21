@@ -35,7 +35,7 @@ public class Notifications {
         case message = "NotificationKeys.Message"
         case error = "NotificationKeys.Error"
     }
-    
+
     public enum NotificationError: Int, Swift.Error {
         case parsingFailed = 1
     }
@@ -80,8 +80,9 @@ extension Notifications {
 
     public static func post(message: Message) {
         switch message {
-        case .text:
+        case .text, .photo, .voice:
             // Is handled via post(message)
+            // FIXME: Merge message processing aproach
             break
 
         case .callOffer(let callOffer):

@@ -83,13 +83,17 @@ extension Storage {
                 return ""
             }
 
+            // TODO: wrap to enum?
             if let textMessage = message as? TextMessage {
                 return textMessage.body
+            } else if message is PhotoMessage {
+                return "Photo"
+            } else if message is VoiceMessage {
+                return "Voice Message"
             } else if let call = message as? CallMessage {
                 return call.isIncoming ? "Incomming call from \(call.channelName)" : "Outgoing call to \(call.channelName)"
             } else {
-                // TODO: Hande oher message types.
-                return "Unknown message"
+                return ""
             }
         }
 
@@ -149,118 +153,5 @@ extension Storage {
         public func set(group: Group) {
             self.group = group
         }
-    }
-}
-
-extension Storage {
-    private func save(_ channel: Storage.Channel) throws {
-        let channels = channel.account.mutableOrderedSetValue(forKey: Storage.Account.ChannelsKey)
-        channels.add(channel)
-
-        try self.saveContext()
-    }
-
-    func createGroupChannel(name: String, sid: String, initiator: String, cards: [Card]) throws -> Storage.Channel {
-        return try self.createChannel(type: .group, sid: sid, name: name, initiator: initiator, cards: cards)
-    }
-
-    func createSingleChannel(initiator: String, card: Card) throws -> Storage.Channel {
-        // FIXME
-        let sid = UUID().uuidString
-
-        guard card.identity != Virgil.ethree.identity else {
-            throw UserFriendlyError.createSelfChatForbidded
-        }
-
-        if let channel = self.getChannel(withName: card.identifier) {
-            return channel
-        }
-
-        return try self.createChannel(type: .single, sid: sid, name: card.identity, initiator: initiator, cards: [card])
-    }
-
-    private func createChannel(type: Storage.ChannelType, sid: String, name: String, initiator: String, cards: [Card]) throws -> Storage.Channel {
-        let cards = cards.filter { $0.identity != Virgil.ethree.identity }
-        let account = try self.getCurrentAccount()
-
-        let channel = try Storage.Channel(sid: sid,
-                                  name: name,
-                                  initiator: initiator,
-                                  type: type,
-                                  account: account,
-                                  cards: cards,
-                                  managedContext: self.managedContext)
-
-        try self.save(channel)
-
-        return channel
-    }
-
-    func updateCards(with cards: [Card], for channel: Storage.Channel) throws {
-        let cards = cards.filter { $0.identity != self.currentAccount?.identity }
-
-        channel.cards = cards
-
-        try self.saveContext()
-    }
-
-    func delete(channel: Storage.Channel) throws {
-        channel.allMessages.forEach { self.managedContext.delete($0) }
-
-        self.managedContext.delete(channel)
-
-        try self.saveContext()
-    }
-
-    func existsSingleChannel(with identity: String) -> Bool {
-        return self.getSingleChannels().contains { $0.name == identity }
-    }
-
-    func existsChannel(sid: String) -> Bool {
-        return self.getChannels().contains { $0.sid == sid }
-    }
-
-    func getChannel(withName name: String) -> Storage.Channel? {
-        return self.getChannels().first { $0.name == name }
-    }
-
-    func getChannels() -> [Storage.Channel] {
-        return self.currentAccount!.channels
-    }
-
-    func getSingleChannel(with identity: String) -> Storage.Channel? {
-        return self.getSingleChannels().first { $0.name == identity }
-    }
-
-    func getSingleChannels() -> [Storage.Channel] {
-        return self.getChannels().filter { $0.type == .single }
-    }
-
-    func getGroupChannels() -> [Storage.Channel] {
-        return self.getChannels().filter { $0.type == .group }
-    }
-
-    func getCurrentChannel() throws -> Storage.Channel {
-        guard let channel = self.currentChannel else {
-            throw Error.nilCurrentChannel
-        }
-
-        return channel
-    }
-
-    func getSingleChannelsCards(users: [String]) throws -> [Card] {
-        let cards: [Card] = try users.map {
-            guard let channel = self.getSingleChannel(with: $0) else {
-                throw Error.channelNotFound
-            }
-
-            guard let card = channel.cards.first else {
-                throw Error.invalidChannel
-            }
-
-            return card
-        }
-
-        return cards
     }
 }

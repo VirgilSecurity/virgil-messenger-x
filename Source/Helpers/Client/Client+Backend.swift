@@ -27,7 +27,7 @@ extension Client {
 
         return ["Authorization": authHeader]
     }
-    
+
     public func getEjabberdToken(identity: String) throws -> String {
         let header = try self.makeAuthHeader(for: identity)
 
@@ -55,7 +55,7 @@ extension Client {
 
         return try self.parse(response, for: "token")
     }
-    
+
     public func signUp(identity: String,
                        keyPair: VirgilKeyPair,
                        verifier: VirgilCardVerifier) throws -> Card {

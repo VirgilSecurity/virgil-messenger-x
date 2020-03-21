@@ -24,9 +24,9 @@ extension Ejabberd: XMPPStreamDelegate {
 
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
         self.state = .disconnected
-        
+
         Log.error(EjabberdError.connectionTimeout, message: "Ejabberd connection reached timeout")
-        
+
         self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
     }
 
@@ -36,7 +36,7 @@ extension Ejabberd: XMPPStreamDelegate {
 
         if let error = error {
             Log.error(error, message: "Ejabberd disconnected")
-            
+
             if erroredUnlock {
                 self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
             } else {
@@ -83,7 +83,7 @@ extension Ejabberd {
 
     func xmppStream(_ sender: XMPPStream, didReceive message: XMPPMessage) {
         Log.debug("Ejabberd: Message received")
-        
+
         // TODO: Add error message handling
         do {
             let author = try message.getAuthor()
@@ -96,8 +96,7 @@ extension Ejabberd {
             let encryptedMessage = try EncryptedMessage.import(body)
 
             try MessageProcessor.process(encryptedMessage, from: author)
-        }
-        catch {
+        } catch {
             Log.error(error, message: "Message processing failed")
         }
     }

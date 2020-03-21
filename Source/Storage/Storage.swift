@@ -15,7 +15,7 @@ public class Storage {
     private(set) var currentAccount: Storage.Account?
 
     private let queue = DispatchQueue(label: "CoreData")
-    
+
     private var mediaStorage: FileMediaStorage?
 
     let managedContext: NSManagedObjectContext
@@ -85,23 +85,23 @@ public class Storage {
         }
 
         try self.saveContext()
-        
+
         try self.mediaStorage?.reset()
 
         try self.reloadData()
     }
-    
+
     internal func getMediaStorage() throws -> FileMediaStorage {
         guard let storage = self.mediaStorage else {
             throw Error.nilMediaStorage
         }
-        
+
         return storage
     }
 
     func setCurrent(account: Storage.Account) {
         self.currentAccount = account
-        
+
         self.mediaStorage = FileMediaStorage(identity: account.identity)
     }
 

@@ -60,7 +60,7 @@ class DataSource: ChatDataSourceProtocol {
         let process: Notifications.Block = { [weak self] notification in
             do {
                 let message: Storage.Message = try Notifications.parse(notification, for: .message)
-                
+
                 self?.process(message: message)
             }
             catch {
@@ -85,7 +85,7 @@ class DataSource: ChatDataSourceProtocol {
     @objc private func process(message: Storage.Message) {
         self.nextMessageId += 1
         let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
-        
+
         DispatchQueue.main.async {
             self.slidingWindow.insertItem(uiModel, position: .bottom)
             self.delegate?.chatDataSourceDidUpdate(self)
@@ -134,33 +134,53 @@ class DataSource: ChatDataSourceProtocol {
 
         let message = Message.Text(body: text)
 
-        self.messageSender.send(text: message, date: uiModel.date, channel: self.channel) { (error) in
-            guard let _ = error else {
-                uiModel.status = .success
-                return
-            }
-            uiModel.status = .failed
-        }
-
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
+
+        self.messageSender.send(text: message, date: uiModel.date, channel: self.channel) { (error) in
+            self.updateMessageStatus(uiModel, error)
+        }
     }
 
     func addPhotoMessage(_ image: UIImage) {
         self.nextMessageId += 1
         let id = self.nextMessageId
-        
+
+        // Put image to the chat view
         let uiModel = UIPhotoMessageModel(uid: id,
                                           image: image,
                                           isIncoming: false,
                                           status: .success,
                                           state: .uploading,
                                           date: Date())
-        
+
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
-        
-        self.messageSender.send(uiModel: uiModel, channel: self.channel)
+
+        guard let imageData = image.jpegData(compressionQuality: 0.0),
+            let thumbnailData = image.resized(to: 10)?.jpegData(compressionQuality: 1.0) else {
+                self.updateMessageStatus(uiModel, UserFriendlyError.imageCompressionFailed)
+                return
+        }
+
+        let identifier = Virgil.shared.crypto.computeHash(for: imageData)
+            .subdata(in: 0..<32)
+            .hexEncodedString()
+
+
+        self.messageSender.upload(data: imageData, identifier: identifier, channel: self.channel, loadDelegate: uiModel) { (url, error) in
+            guard let url = url else {
+                assert(error != nil)
+                self.updateMessageStatus(uiModel, error)
+                return
+            }
+
+            let photo = Message.Photo(identifier: identifier, url: url)
+
+            self.messageSender.send(photo: photo, image: imageData, thumbnail: thumbnailData, date: uiModel.date, channel: self.channel) { (error) in
+                self.updateMessageStatus(uiModel, error)
+            }
+        }
     }
 
     func addVoiceMessage(_ audioUrl: URL, duration: TimeInterval) {
@@ -174,16 +194,54 @@ class DataSource: ChatDataSourceProtocol {
                                           status: .success,
                                           state: .uploading,
                                           date: Date())
-        
+
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
-        
-        self.messageSender.send(uiModel: uiModel, channel: self.channel)
+
+        // TODO: optimize. Do not fetch data to memrory, use streams
+        let voiceData: Data
+        do {
+            voiceData = try Data(contentsOf: uiModel.audioUrl)
+        }
+        catch {
+            self.updateMessageStatus(uiModel, error)
+            return
+        }
+
+        self.messageSender.upload(data: voiceData, identifier: uiModel.identifier, channel: self.channel, loadDelegate: uiModel) { (url, error) in
+            guard let url = url else {
+                assert(error != nil)
+                self.updateMessageStatus(uiModel, error)
+                return
+            }
+
+            let voice = Message.Voice(identifier: uiModel.identifier, duration: uiModel.duration, url: url)
+
+            self.messageSender.send(voice: voice, date: uiModel.date, channel: self.channel) { (error) in
+                self.updateMessageStatus(uiModel, error)
+            }
+        }
     }
 
     func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> ()) {
         let didAdjust = self.slidingWindow.adjustWindow(focusPosition: focusPosition,
                                                         maxWindowSize: preferredMaxCount ?? self.preferredMaxWindowSize)
         completion(didAdjust)
+    }
+
+    func updateMessageStatus(_ message: UIMessageModelProtocol, _ error: Error?) {
+        let status: MessageStatus
+
+        if let error = error {
+            status = .failed
+            Log.error(error, message: "Unable to send message")
+        } else {
+            status = .success
+        }
+
+        if message.status != status {
+            message.status = status
+            self.delegate?.chatDataSourceDidUpdate(self)
+        }
     }
 }

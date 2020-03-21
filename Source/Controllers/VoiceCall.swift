@@ -86,8 +86,11 @@ class VoiceCallViewController: ViewController {
 
     private func setupObservers() {
         let processCallOffer: Notifications.Block = { [weak self] notification in
-            guard let callOffer: Message.CallOffer = Notifications.parse(notification, for: .message) else {
-                Log.error("Invalid call offer notification")
+            let callOffer: Message.CallOffer
+            do {
+                callOffer = try Notifications.parse(notification, for: .message)
+            } catch {
+                Log.error(error, message: "Invalid call offer notification")
                 return
             }
 
@@ -97,8 +100,11 @@ class VoiceCallViewController: ViewController {
         Notifications.observe(for: .callOfferReceived, block: processCallOffer)
 
         let processCallAnswer: Notifications.Block = { [weak self] notification in
-            guard let callAnswer: Message.CallAnswer = Notifications.parse(notification, for: .message) else {
-                Log.error("Invalid call answer notification")
+            let callAnswer: Message.CallAnswer
+            do {
+                callAnswer = try Notifications.parse(notification, for: .message)
+            } catch {
+                Log.error(error, message: "Invalid call answer notification")
                 return
             }
 
@@ -108,7 +114,7 @@ class VoiceCallViewController: ViewController {
                     return
                 }
 
-                Log.error("\(error)")
+                Log.error(error, message: "Accept call answer failed")
                 self?.callState = .abort(error)
                 self?.callChannel.endCall()
             }
@@ -116,8 +122,11 @@ class VoiceCallViewController: ViewController {
         Notifications.observe(for: .callAnswerReceived, block: processCallAnswer)
 
         let processIceCandidate: Notifications.Block = { [weak self] notification in
-            guard let iceCandidate: Message.IceCandidate = Notifications.parse(notification, for: .message) else {
-                Log.error("Invalid ice cadidate notification")
+            let iceCandidate: Message.IceCandidate
+            do {
+                iceCandidate = try Notifications.parse(notification, for: .message)
+            } catch {
+                Log.error(error, message: "Invalid ice cadidate notification")
                 return
             }
 
@@ -136,7 +145,7 @@ class VoiceCallViewController: ViewController {
                 return
             }
 
-            Log.error("Voice offer was not created \(error)")
+            Log.error(error, message: "Voice offer was not created")
             self.callState = .abort(error)
             self.callChannel.endCall()
         }
@@ -151,7 +160,7 @@ class VoiceCallViewController: ViewController {
                     return
                 }
 
-                Log.error("Voice offer was not created \(error)")
+                Log.error(error, message: "Voice offer was not created")
             }
         }
     }

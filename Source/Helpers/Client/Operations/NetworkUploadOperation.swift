@@ -36,8 +36,7 @@ open class NetworkUploadOperation: GenericOperation<Response> {
     /// Main function
     override open func main() {
         let task = self.session.uploadTask(with: self.request,
-                                           from: self.data)
-        { [unowned self] data, response, error in
+                                           from: self.data) { [unowned self] data, response, error in
             defer {
                 self.finish()
             }
@@ -66,7 +65,7 @@ open class NetworkUploadOperation: GenericOperation<Response> {
         }
 
         self.task = task
-        
+
         task.resume()
     }
 
