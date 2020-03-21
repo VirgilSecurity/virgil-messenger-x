@@ -26,12 +26,14 @@ import Chatto
 import ChattoAdditions
 
 public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageModelProtocol {
+    public private(set) var state: MediaMessageState
+    public private(set) weak var loadDelegate: LoadDelegate?
     
     public required init(uid: Int,
                          image: UIImage,
-                         size: CGSize,
                          isIncoming: Bool,
                          status: MessageStatus,
+                         state: MediaMessageState,
                          date: Date) {
         let senderId = isIncoming ? "1" : "2"
 
@@ -42,7 +44,9 @@ public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageMode
                                         date: date,
                                         status: status)
 
-        super.init(messageModel: messageModel, imageSize: size, image: image)
+        self.state = state
+        
+        super.init(messageModel: messageModel, imageSize: image.size, image: image)
     }
 
     public var status: MessageStatus {
@@ -52,6 +56,24 @@ public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageMode
         set {
             self._messageModel.status = newValue
         }
+    }
+    
+    public func set(loadDelegate: LoadDelegate) {
+        self.loadDelegate = loadDelegate
+    }
+}
+
+extension UIPhotoMessageModel: LoadDelegate {
+    public func progressChanged(to percent: Double) {
+        self.loadDelegate?.progressChanged(to: percent)
+    }
+    
+    public func failed(with error: Error) {
+        self.loadDelegate?.failed(with: error)
+    }
+    
+    public func completed(dataHash: String) {
+        self.loadDelegate?.completed(dataHash: dataHash)
     }
 }
 

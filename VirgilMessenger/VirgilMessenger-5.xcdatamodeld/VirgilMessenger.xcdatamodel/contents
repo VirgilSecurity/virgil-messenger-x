@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15508" systemVersion="19B88" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15702" systemVersion="19D76" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="identity" attributeType="String" minValueString="1"/>
         <attribute name="numColorPair" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
@@ -21,13 +21,14 @@
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="isHidden" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isIncoming" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="media" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="mediaHash" optional="YES" attributeType="String"/>
+        <attribute name="mediaUrl" optional="YES" attributeType="URI"/>
         <attribute name="rawType" attributeType="String"/>
         <relationship name="channel" maxCount="1" deletionRule="Nullify" destinationEntity="Channel" inverseName="orderedMessages" inverseEntity="Channel"/>
     </entity>
     <elements>
         <element name="Account" positionX="-450" positionY="45" width="128" height="90"/>
         <element name="Channel" positionX="-407" positionY="243" width="128" height="178"/>
-        <element name="Message" positionX="-128" positionY="198" width="128" height="150"/>
+        <element name="Message" positionX="-128" positionY="198" width="128" height="163"/>
     </elements>
 </model>

@@ -19,18 +19,20 @@ public enum EncryptedMessageError: Int, Error {
 
 public class EncryptedMessage: Codable {
     let ciphertext: Data
+    let additionalData: Data?
     let date: Date
-
-    var version: EncryptedMessageVersion {
-        return self.codableVersion ?? .v1
+    
+    var modelVersion: EncryptedMessageVersion {
+        return self.version ?? .v1
     }
+    
+    private let version: EncryptedMessageVersion?
 
-    private var codableVersion: EncryptedMessageVersion?
-
-    public init(ciphertext: Data, date: Date) {
+    public init(ciphertext: Data, date: Date, additionalData: Data?) {
         self.ciphertext = ciphertext
         self.date = date
-        self.codableVersion = EncryptedMessageVersion.allCases.last
+        self.additionalData = additionalData
+        self.version = EncryptedMessageVersion.allCases.last
     }
 
     static func `import`(_ string: String) throws -> EncryptedMessage {

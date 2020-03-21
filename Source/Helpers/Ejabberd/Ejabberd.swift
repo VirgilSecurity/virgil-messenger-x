@@ -29,7 +29,10 @@ class Ejabberd: NSObject {
     internal var state: State = .disconnected
     internal var shouldRetry: Bool = true
 
-    static var updatedPushToken: Data?
+    internal let upload: XMPPHTTPFileUpload = XMPPHTTPFileUpload()
+    private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
+
+    static var updatedPushToken: Data? = nil
 
     internal let serviceErrorDomain: String = "EjabberdErrorDomain"
 
@@ -51,6 +54,8 @@ class Ejabberd: NSObject {
         self.stream.hostPort = URLConstants.ejabberdHostPort
         self.stream.startTLSPolicy = .allowed
         self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
+        
+        self.upload.activate(self.stream)
 
         try? self.initializeMutex.lock()
         try? self.sendMutex.lock()
@@ -109,8 +114,9 @@ class Ejabberd: NSObject {
         do {
             self.error = error
             try mutex.unlock()
-        } catch {
-            Log.error("Ejabberd: \(error)")
+        }
+        catch {
+            Log.error(error, message: "Unlocking mutex failed")
         }
     }
 
@@ -170,6 +176,18 @@ class Ejabberd: NSObject {
         }
 
         self.stream.send(presence)
+    }
+    
+    public func requestMediaSlot(name: String, size: Int) throws -> CallbackOperation<XMPPSlot> {
+        return CallbackOperation { _, completion in
+            self.upload.requestSlot(fromService: self.uploadJid,
+                                    filename: name,
+                                    size: UInt(size),
+                                    contentType: "image/png")
+            { (slot, iq, error) in
+                completion(slot, error)
+            }
+        }
     }
 }
 

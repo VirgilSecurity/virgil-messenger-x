@@ -58,12 +58,14 @@ class DataSource: ChatDataSourceProtocol {
 
     func setupObservers() {
         let process: Notifications.Block = { [weak self] notification in
-            guard let message: Storage.Message = Notifications.parse(notification, for: .message) else {
-                Log.error("Invalid notification")
-                return
+            do {
+                let message: Storage.Message = try Notifications.parse(notification, for: .message)
+                
+                self?.process(message: message)
             }
-
-            self?.process(message: message)
+            catch {
+                Log.error(error, message: "Parsing Message notification failed")
+            }
         }
 
         let updateMessageList: Notifications.Block = { [weak self] _ in
@@ -81,10 +83,10 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     @objc private func process(message: Storage.Message) {
+        self.nextMessageId += 1
+        let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
+        
         DispatchQueue.main.async {
-            self.nextMessageId += 1
-            let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
-
             self.slidingWindow.insertItem(uiModel, position: .bottom)
             self.delegate?.chatDataSourceDidUpdate(self)
         }
@@ -120,7 +122,7 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self, updateType: .pagination)
     }
 
-    func addTextMessage(_ text: String) throws {
+    func addTextMessage(_ text: String) {
         self.nextMessageId += 1
         let id = self.nextMessageId
 
@@ -144,68 +146,44 @@ class DataSource: ChatDataSourceProtocol {
         self.delegate?.chatDataSourceDidUpdate(self)
     }
 
-    func addChangeMembers(message: String) throws {
-//        self.nextMessageId += 1
-//        let id = self.nextMessageId
-//
-//        let uiModel = UITextMessageModel(uid: id,
-//                                         text: message,
-//                                         isIncoming: false,
-//                                         status: .sending,
-//                                         date: Date())
-//
-//        try self.messageSender.sendChangeMembers(uiModel: uiModel, coreChannel: self.channel)
-//            .startSync()
-//            .get()
-//
-//        self.slidingWindow.insertItem(uiModel, position: .bottom)
-//
-//        DispatchQueue.main.async {
-//            self.delegate?.chatDataSourceDidUpdate(self)
-//        }
-    }
-
     func addPhotoMessage(_ image: UIImage) {
-        // TODO
-//        self.nextMessageId += 1
-//        let id = self.nextMessageId
-//        let message = MessageFactory.createPhotoMessageModel(uid: id,
-//                                                             image: image,
-//                                                             size: image.size,
-//                                                             isIncoming: false,
-//                                                             status: .sending)
-//        self.messageSender.sendMessage(message, type: .regular)
-//        self.slidingWindow.insertItem(message, position: .bottom)
-//        self.delegate?.chatDataSourceDidUpdate(self)
+        self.nextMessageId += 1
+        let id = self.nextMessageId
+        
+        let uiModel = UIPhotoMessageModel(uid: id,
+                                          image: image,
+                                          isIncoming: false,
+                                          status: .success,
+                                          state: .uploading,
+                                          date: Date())
+        
+        self.slidingWindow.insertItem(uiModel, position: .bottom)
+        self.delegate?.chatDataSourceDidUpdate(self)
+        
+        self.messageSender.send(uiModel: uiModel, channel: self.channel)
     }
 
-    func addAudioMessage(_ audio: Data) {
-        // TODO
-//        self.nextMessageId += 1
-//        let id = self.nextMessageId
-//
-//        let message: UIMessageModelProtocol
-//
-//        // FIXME
-//        if let duration = try? AVAudioPlayer(data: audio).duration {
-//            message = MessageFactory.createAudioMessageModel(uid: id,
-//                                                             audio: audio,
-//                                                             duration: duration,
-//                                                             isIncoming: false,
-//                                                             status: .sending)
-//        } else {
-//            Log.error("Getting audio duration failed")
-//            message = MessageFactory.createCorruptedMessageModel(uid: id)
-//            return
-//        }
-//
-//        self.messageSender.sendMessage(message, type: .regular)
-//        self.slidingWindow.insertItem(message, position: .bottom)
-//        self.delegate?.chatDataSourceDidUpdate(self)
+    func addVoiceMessage(_ audioUrl: URL, duration: TimeInterval) {
+        self.nextMessageId += 1
+        let id = self.nextMessageId
+
+        let uiModel = UIAudioMessageModel(uid: id,
+                                          audioUrl: audioUrl,
+                                          duration: duration,
+                                          isIncoming: false,
+                                          status: .success,
+                                          state: .uploading,
+                                          date: Date())
+        
+        self.slidingWindow.insertItem(uiModel, position: .bottom)
+        self.delegate?.chatDataSourceDidUpdate(self)
+        
+        self.messageSender.send(uiModel: uiModel, channel: self.channel)
     }
 
     func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> ()) {
-        let didAdjust = self.slidingWindow.adjustWindow(focusPosition: focusPosition, maxWindowSize: preferredMaxCount ?? self.preferredMaxWindowSize)
+        let didAdjust = self.slidingWindow.adjustWindow(focusPosition: focusPosition,
+                                                        maxWindowSize: preferredMaxCount ?? self.preferredMaxWindowSize)
         completion(didAdjust)
     }
 }

@@ -43,7 +43,6 @@ class CreateGroupViewController: ViewController {
     private func updateScrollViewContentSize() {
         let bounds = UIScreen.main.bounds
 
-        // FIXME
         let height = max(self.usersListHeight.constant + 170, bounds.height - self.topBarHeight)
 
         self.scrollView.contentSize = CGSize(width: bounds.width, height: height)
@@ -98,7 +97,7 @@ class CreateGroupViewController: ViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
-        // FIXME: Error handling/logging
+        // TODO: Error handling/logging
         if let userList = segue.destination as? UsersListViewController,
             let cards = try? self.members.map { try $0.getCard() } {
 

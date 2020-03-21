@@ -18,7 +18,7 @@ class NewMessageViewController: ViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
-        // FIXME: Error handling/logging
+        // TODO: Error handling/logging
         if let userList = segue.destination as? UsersListViewController,
             let cards = try? self.users.map { try $0.getCard() } {
 
