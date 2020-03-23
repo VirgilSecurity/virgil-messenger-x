@@ -236,7 +236,8 @@ class DataSource: ChatDataSourceProtocol {
         if let error = error {
             status = .failed
             Log.error(error, message: "Unable to send message")
-        } else {
+        }
+        else {
             status = .success
         }
 
