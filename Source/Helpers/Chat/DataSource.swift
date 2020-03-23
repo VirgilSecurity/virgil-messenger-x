@@ -157,6 +157,7 @@ class DataSource: ChatDataSourceProtocol {
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
 
+        // FIXME: Move out from the main thread
         guard let imageData = image.jpegData(compressionQuality: 0.0),
             let thumbnailData = image.resized(to: 10)?.jpegData(compressionQuality: 1.0) else {
                 self.updateMessageStatus(uiModel, UserFriendlyError.imageCompressionFailed)
