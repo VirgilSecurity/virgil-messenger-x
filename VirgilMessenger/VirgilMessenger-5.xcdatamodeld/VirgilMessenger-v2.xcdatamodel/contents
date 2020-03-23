@@ -7,7 +7,7 @@
     </entity>
     <entity name="CallMessage" representedClassName="CallMessage" parentEntity="Message" syncable="YES">
         <attribute name="channelName" attributeType="String"/>
-        <attribute name="duration" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="duration" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <entity name="Channel" representedClassName="Channel" syncable="YES">
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>

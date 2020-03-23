@@ -14,7 +14,7 @@ extension Storage {
     @objc(CallMessage)
     public class CallMessage: Message {
         @NSManaged public var channelName: String
-        @NSManaged public var duration: Int32
+        @NSManaged public var duration: TimeInterval
 
         private static let EntityName = "CallMessage"
 
