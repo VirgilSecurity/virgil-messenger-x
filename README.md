@@ -10,7 +10,7 @@ $ cd virgil-messenger-x
 ```
 
 ## Prerequisites
-**Virgil Messenger** uses several modules, including **Virgil SDK**. These packages are distributed via Carthage and CocoaPods. Since Carthage is a RECOMMENDED way to integrate those packages into the project, these application's dependencies are managed by it. Carthage integration is easy, convenient and you can simultaneously use CocoaPods to manage all other dependencies.
+**Virgil Messenger** uses several modules, including **Virgil E3kit**. These packages are distributed via Carthage and CocoaPods. Since Carthage is a RECOMMENDED way to integrate those packages into the project, these application's dependencies are managed by it. Carthage integration is easy, convenient and you can simultaneously use CocoaPods to manage all other dependencies.
 
 ### Carthage
 
@@ -44,6 +44,7 @@ To build this sample were used next third-party frameworks
 * [XMPPFramework](https://github.com/robbiehanson/XMPPFramework) - transmitting messages and handling channel events via XMPP.
 * [Chatto](https://github.com/badoo/Chatto) - representing UI of chatting. 
 * [VirgilE3Kit](https://github.com/VirgilSecurity/virgil-e3kit-x) - encrypting, decrypting messages and passwordless authentication.
+* [Crashlytics](https://firebase.google.com/docs/crashlytics/?gclid=CjwKCAjwvOHzBRBoEiwA48i6AoRSMkUm5XbMUKntGYv5akNU7kkHZhrBXonf5Q_s7I3shRxK302DYxoCLrAQAvD_BwE) - crashes and errors reporting.
 * [PKHUD](https://github.com/pkluz/PKHUD) - reimplementing Apple's HUD.
 
 ## Support
