@@ -1,14 +1,12 @@
-# Virgil Demo Messenger
-
-![VirgilSDK](https://cloud.githubusercontent.com/assets/6513916/19643783/bfbf78be-99f4-11e6-8d5a-a43394f2b9b2.png)
+# Virgil Messenger
 
 ## Getting Started
 
 Start with cloning repository to your PC. Open *terminal*, navigate to the folder where you want to store the application and execute
 ```bash
-$ git clone https://github.com/VirgilSecurity/chat-twilio-ios.git -b v5
+$ git clone https://github.com/VirgilSecurity/virgil-messenger-x.git
 
-$ cd chat-twilio-ios
+$ cd virgil-messenger-x
 ```
 
 ## Prerequisites
@@ -29,37 +27,24 @@ $ brew install carthage
 This example already has Carthage file with all required dependencies. All you need to do is to go to the project folder and update these dependencies.
 
 ```bash 
-$ cd PathToProjectFolder/chat-twilio-ios
-$ carthage bootstrap --platform iOS --no-use-binaries
+$ cd PathToProjectFolder/virgil-messenger-x
+$ carthage bootstrap --platform iOS
 ```
-
-### Set Up Backend
-Follow instructions [here](https://github.com/VirgilSecurity/demo-twilio-chat-js/tree/master) for setting up your own backend.
 
 ## Build and Run
 At this point you are ready to build and run the application on iPhone and/or Simulator.
 
-## Credentials
+## Backend
+You can find full backend description [here](https://github.com/VirgilSecurity/virgil-devops-environment/blob/master/instructions/virgil-messenger.md)
+
+## Frameworks
 
 To build this sample were used next third-party frameworks
 
-* [Twilio Programmable Chat](https://www.twilio.com/chat) - transmitting messages and handling channel events.
+* [XMPPFramework](https://github.com/robbiehanson/XMPPFramework) - transmitting messages and handling channel events via XMPP.
 * [Chatto](https://github.com/badoo/Chatto) - representing UI of chatting. 
-* [Virgil SDK](https://github.com/VirgilSecurity/virgil-sdk-x) - encrypting, decrypting messages and passwordless authentication.
+* [VirgilE3Kit](https://github.com/VirgilSecurity/virgil-e3kit-x) - encrypting, decrypting messages and passwordless authentication.
 * [PKHUD](https://github.com/pkluz/PKHUD) - reimplementing Apple's HUD.
-
-## Documentation
-
-Virgil Security has a powerful set of APIs, and the documentation is there to get you started today.
-
-* [Get Started][_getstarted_root] documentation
-  * [Initialize the SDK][_guide_initialization]
-  * [Encrypted storage][_getstarted_storage]
-  * [Encrypted communication][_getstarted_encryption]
-  * [Data integrity][_getstarted_data_integrity]
-* [Guides][_guides]
-  * [Virgil Cards][_guide_virgil_cards]
-* [Reference API][_reference_api]
 
 ## Support
 
