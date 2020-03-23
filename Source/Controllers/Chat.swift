@@ -271,7 +271,7 @@ extension ChatViewController {
         let audioMessagePresenter = AudioMessagePresenterBuilder(
                 viewModelBuilder: UIAudioMessageViewModelBuilder(),
                 interactionHandler: UIAudioMessageHandler(baseHandler: self.baseMessageHandler, playableController: self))
-        
+
         audioMessagePresenter.baseMessageStyle = baseMessageStyle
         audioMessagePresenter.textCellStyle = audioTextCellStyle
 
