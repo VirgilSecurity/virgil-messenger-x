@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import ChattoAdditions
 
 extension Storage {
     @objc(CallMessage)
@@ -33,6 +34,16 @@ extension Storage {
             self.date = date
             self.channel = channel
             self.isHidden = isHidden
+        }
+
+        public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
+            let text = self.isIncoming ? "Incomming call from \(self.channelName)" : "Outgoing call to \(self.channelName)"
+
+            return UITextMessageModel(uid: id,
+                                      text: text,
+                                      isIncoming: self.isIncoming,
+                                      status: status,
+                                      date: date)
         }
     }
 }
