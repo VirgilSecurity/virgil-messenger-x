@@ -32,14 +32,14 @@ $ carthage bootstrap --platform iOS
 ```
 
 ### Crashlytics
-Crashlytics is used for error reporting from the application. To run application you'll need to put corresponding `GoogleService-Info.plist` file into `PathToProjectFolder/virgil-messenger-x/VirgilMessenger` path.
+Crashlytics is used for error reporting from the application. To run application you need to put corresponding `GoogleService-Info.plist` file into `PathToProjectFolder/virgil-messenger-x/VirgilMessenger` path.
 
 ## Backend
 You can find full backend description [here](https://github.com/VirgilSecurity/virgil-devops-environment/blob/master/instructions/virgil-messenger.md)
 
 ## Frameworks
 
-To build this sample were used next third-party frameworks
+To build this app were used next third-party frameworks
 
 * [XMPPFramework](https://github.com/robbiehanson/XMPPFramework) - transmitting messages and handling channel events via XMPP.
 * [Chatto](https://github.com/badoo/Chatto) - representing UI of chatting. 
