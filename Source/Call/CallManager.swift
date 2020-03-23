@@ -6,6 +6,7 @@
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
+import Foundation
 import WebRTC
 
 private let kIceServers = ["stun:stun.l.google.com:19302",
@@ -15,7 +16,17 @@ private let kIceServers = ["stun:stun.l.google.com:19302",
                   "stun:stun4.l.google.com:19302"]
 
 public protocol CallManagerDelegate: class {
-    func callChannel(connected callChannel: CallManager)
+    func callManagerWillStartCall(_ sender: CallManager)
+    func callManagerDidStartCall(_ sender: CallManager)
+    func callManagerWillEndCall(_ sender: CallManager)
+    func callManagerDidEndCall(_ sender: CallManager)
+    func callManagerDidConnect(_ sender: CallManager)
+    func callManagerLoseConnection(_ sender: CallManager)
+    func callManagerStartReconnecting(_ sender: CallManager)
+    func callManagerIsConnecting(_ sender: CallManager)
+    func callManagerDidAcceptCall(_ sender: CallManager)
+    func callManagerDidRejectCall(_ sender: CallManager)
+    func callManagerDidFail(_ sender: CallManager, error: Error?)
 }
 
 public class CallManager: NSObject {
@@ -28,51 +39,76 @@ public class CallManager: NSObject {
 
     private var peerConnection: RTCPeerConnection?
 
-    let dataSource: DataSource
+    private let messageSender: MessageSender
 
-    required init(dataSource: DataSource) {
-        self.dataSource = dataSource
+    private let channel: Storage.Channel
+
+
+    required init(withChannel channel: Storage.Channel) {
+        self.messageSender = MessageSender()
+        self.channel = channel
 
         super.init()
     }
 
-    func sendOffer(completion: @escaping (_ error: Error?) -> Void) {
-        let constrains = RTCMediaConstraints(mandatoryConstraints: [kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue],
-                                             optionalConstraints: nil)
+    func startCall() {
+        self.delegate?.callManagerWillStartCall(self)
+
+        let constrains = RTCMediaConstraints(mandatoryConstraints:
+                [kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue], optionalConstraints: nil)
 
         self.peerConnection?.close()
         self.peerConnection = Self.createPeerConnection()
+
         do {
             try self.configurePeerConnection()
-        } catch {
-            completion(error)
+        }
+        catch {
+            self.delegate?.callManagerDidFail(self, error: error)
             return
         }
 
         self.peerConnection!.offer(for: constrains) { sdp, error in
             guard let sdp = sdp else {
-                completion(error)
+                assert(error != nil)
+                self.delegate?.callManagerDidFail(self, error: error!)
                 return
             }
 
             self.peerConnection!.setLocalDescription(sdp) { error in
-                if error == nil {
-                    self.sendSignalingMessage(offer: sdp, completion: completion)
+                guard let error = error else {
+                    self.sendSignalingMessage(offer: sdp) { error in
+                        guard let error = error else {
+                            self.delegate?.callManagerDidStartCall(self)
+                            return
+                        }
+
+                        self.delegate?.callManagerDidFail(self, error: error)
+                    }
+                    return
                 }
 
-                completion(error)
+                self.delegate?.callManagerDidFail(self, error: error)
             }
         }
     }
 
-    func sendAnswer(offer offerSessionDescription: Message.CallOffer, completion: @escaping (_ error: Error?) -> Void) {
+    func rejectCall() {
+        self.sendSignalingMessageCallRejectedAnswer() { (error) in
+            if let error = error {
+                Log.error(error, message: "Failed to send call rejection")
+            }
+        }
+    }
+
+    func acceptCall(offer offerSessionDescription: Message.CallOffer) {
 
         self.peerConnection?.close()
         self.peerConnection = Self.createPeerConnection()
         do {
             try self.configurePeerConnection()
         } catch {
-            completion(error)
+            self.delegate?.callManagerDidFail(self, error: error)
             return
         }
 
@@ -82,30 +118,50 @@ public class CallManager: NSObject {
         let offerSdp = offerSessionDescription.rtcSessionDescription
         self.peerConnection!.setRemoteDescription(offerSdp) { error in
             if let error = error {
-                completion(error)
+                self.delegate?.callManagerDidFail(self, error: error)
                 return
             }
 
             self.peerConnection!.answer(for: constrains) { localSDP, error in
                 guard let answerSdp = localSDP else {
-                    completion(error)
+                    self.delegate?.callManagerDidFail(self, error: error)
                     return
                 }
 
                 self.peerConnection!.setLocalDescription(answerSdp) { error in
-                    if error == nil {
-                        self.sendSignalingMessage(answer: answerSdp, completion: completion)
+                    guard let error = error else {
+                        self.sendSignalingMessage(callAcceptedAnswer: answerSdp) { (error) in
+                            guard let error = error else {
+                                self.delegate?.callManagerDidAcceptCall(self)
+                                return
+                            }
+
+                            self.delegate?.callManagerDidFail(self, error: error)
+                        }
+                        return
                     }
 
-                    completion(error)
+                    self.delegate?.callManagerDidFail(self, error: error)
                 }
             }
         }
     }
 
-    func acceptAnswer(_ callAnswer: Message.CallAnswer, completion: @escaping (_ error: Error?) -> Void) {
+    func processAcceptedAnswer(_ callAnswer: Message.CallAcceptedAnswer) {
         let sdp = callAnswer.rtcSessionDescription
-        self.peerConnection?.setRemoteDescription(sdp, completionHandler: completion)
+
+        self.peerConnection?.setRemoteDescription(sdp) { (error) in
+            if let error = error {
+                self.delegate?.callManagerDidFail(self, error: error)
+            } else {
+                self.delegate?.callManagerDidAcceptCall(self)
+            }
+        }
+    }
+
+    func processRejectedAnswer(_ callAnswer: Message.CallRejectedAnswer) {
+        self.endCall()
+        self.delegate?.callManagerDidRejectCall(self)
     }
 
     func addIceCandidate(_ iceCandidate: Message.IceCandidate) {
@@ -113,8 +169,15 @@ public class CallManager: NSObject {
     }
 
     func endCall() {
-        self.peerConnection?.close()
-        self.peerConnection = nil
+        if let peerConnection = self.peerConnection {
+            self.delegate?.callManagerWillEndCall(self)
+
+            peerConnection.close()
+
+            self.peerConnection = nil
+
+            self.delegate?.callManagerDidEndCall(self)
+        }
     }
 
     private static func createPeerConnection() -> RTCPeerConnection {
@@ -153,69 +216,34 @@ public class CallManager: NSObject {
         peerConnection.delegate = self
     }
 
-    private func sendSignalingMessage(offer sdp: RTCSessionDescription, completion: @escaping (_ error: Error?) -> Void) {
-        let callOffer = Message.CallOffer(from: sdp)
+    func sendSignalingMessage(offer sdp: RTCSessionDescription, completion: @escaping (_ error: Error?) -> Void) {
+        // FIXME: Maybe account can be obtained in another way
+        guard let accout = Storage.shared.currentAccount else {
+            // TODO: Change error code if necessary
+            completion(UserFriendlyError.userNotFound)
+            return
+        }
 
-        self.dataSource.messageSender.send(callOffer: callOffer, date: Date(), channel: self.dataSource.channel, completion: completion)
+        let callOffer = Message.CallOffer(from: sdp, caller: accout.identity)
+
+        self.messageSender.send(callOffer: callOffer, date: Date(), channel: self.channel, completion: completion)
     }
 
-    private func sendSignalingMessage(answer sdp: RTCSessionDescription, completion: @escaping (_ error: Error?) -> Void) {
-        let callAnswer = Message.CallAnswer(from: sdp)
+    func sendSignalingMessage(callAcceptedAnswer sdp: RTCSessionDescription, completion: @escaping (_ error: Error?) -> Void) {
+        let callAcceptedAnswer = Message.CallAcceptedAnswer(from: sdp)
 
-        self.dataSource.messageSender.send(callAnswer: callAnswer, date: Date(), channel: self.dataSource.channel, completion: completion)
+        self.messageSender.send(callAcceptedAnswer: callAcceptedAnswer, date: Date(), channel: self.channel, completion: completion)
     }
 
-    private func sendSignalingMessage(candidate rtcIceCandidate: RTCIceCandidate, completion: @escaping (_ error: Error?) -> Void) {
+    func sendSignalingMessage(candidate rtcIceCandidate: RTCIceCandidate, completion: @escaping (_ error: Error?) -> Void) {
         let iceCandiadte = Message.IceCandidate(from: rtcIceCandidate)
 
-        self.dataSource.messageSender.send(iceCandidate: iceCandiadte, date: Date(), channel: self.dataSource.channel, completion: completion)
-    }
-}
-
-extension CallManager: RTCPeerConnectionDelegate {
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        Log.debug("peerConnection new signaling state: \(stateChanged.rawValue)")
+        self.messageSender.send(iceCandidate: iceCandiadte, date: Date(), channel: self.channel, completion: completion)
     }
 
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
-        Log.debug("peerConnection did add stream")
-    }
+    func sendSignalingMessageCallRejectedAnswer(completion: @escaping (_ error: Error?) -> Void) {
+        let callRejectedAnswer = Message.CallRejectedAnswer()
 
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {
-        Log.debug("peerConnection did remote stream")
-    }
-
-    public func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {
-        Log.debug("peerConnection should negotiate")
-    }
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
-        if newState == .connected {
-            self.delegate?.callChannel(connected: self)
-        }
-        Log.debug("peerConnection new connection state: \(newState)")
-    }
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState) {
-        Log.debug("peerConnection new gathering state: \(newState)")
-    }
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
-        Log.debug("peerConnection new local candidate: \(candidate)")
-
-        self.sendSignalingMessage(candidate: candidate) { error in
-            if let error = error {
-                Log.error(error, message: "Send signaling message")
-            }
-        }
-    }
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {
-        Log.debug("peerConnection did remove candidate(s)")
-    }
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
-        Log.debug("peerConnection did open data channel")
+        self.messageSender.send(callRejectedAnswer: callRejectedAnswer, date: Date(), channel: self.channel, completion: completion)
     }
 }

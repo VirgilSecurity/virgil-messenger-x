@@ -26,11 +26,15 @@ public enum Message {
     }
 
     public struct CallOffer: Codable {
+        let caller: String
         let sdp: String
     }
 
-    public struct CallAnswer: Codable {
+    public struct CallAcceptedAnswer: Codable {
         let sdp: String
+    }
+
+    public struct CallRejectedAnswer: Codable {
     }
 
     public struct IceCandidate: Codable {
@@ -43,7 +47,8 @@ public enum Message {
     case photo(Photo)
     case voice(Voice)
     case callOffer(CallOffer)
-    case callAnswer(CallAnswer)
+    case callAcceptedAnswer(CallAcceptedAnswer)
+    case callRejectedAnswer(CallRejectedAnswer)
     case iceCandidate(IceCandidate)
 }
 
@@ -53,7 +58,8 @@ extension Message: Codable {
         case photo
         case voice
         case callOffer = "call_offer"
-        case callAnswer = "call_answer"
+        case callAcceptedAnswer = "call_accepted_answer"
+        case callRejectedAnswer = "call_rejected_answer"
         case iceCandidate = "ice_candidate"
     }
 
@@ -83,9 +89,13 @@ extension Message: Codable {
             let callOffer = try container.decode(CallOffer.self, forKey: .payload)
             self = .callOffer(callOffer)
 
-        case .callAnswer:
-            let callAnswer = try container.decode(CallAnswer.self, forKey: .payload)
-            self = .callAnswer(callAnswer)
+        case .callAcceptedAnswer:
+            let callAcceptedAnswer = try container.decode(CallAcceptedAnswer.self, forKey: .payload)
+            self = .callAcceptedAnswer(callAcceptedAnswer)
+
+        case .callRejectedAnswer:
+            let callRejectedAnswer = try container.decode(CallRejectedAnswer.self, forKey: .payload)
+            self = .callRejectedAnswer(callRejectedAnswer)
 
         case .iceCandidate:
             let iceCandidate = try container.decode(IceCandidate.self, forKey: .payload)
@@ -117,10 +127,15 @@ extension Message: Codable {
             try container.encode(type, forKey: .type)
             try container.encode(callOffer, forKey: .payload)
 
-        case .callAnswer(let callAnswer):
-            let type = TypeCodingKeys.callAnswer
+        case .callAcceptedAnswer(let callAnswer):
+            let type = TypeCodingKeys.callAcceptedAnswer
             try container.encode(type, forKey: .type)
             try container.encode(callAnswer, forKey: .payload)
+
+        case .callRejectedAnswer(let callRejectedAnswer):
+            let type = TypeCodingKeys.callRejectedAnswer
+            try container.encode(type, forKey: .type)
+            try container.encode(callRejectedAnswer, forKey: .payload)
 
         case .iceCandidate(let iceCandidate):
             let type = TypeCodingKeys.iceCandidate

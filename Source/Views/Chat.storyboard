@@ -59,7 +59,7 @@
                         <outlet property="avatarView" destination="0iQ-mF-2M9" id="D6N-2i-TTB"/>
                         <outlet property="letterLabel" destination="ilc-h9-8kd" id="964-aO-fAv"/>
                         <segue destination="ZQo-cO-mEW" kind="show" identifier="goToGroupInfo" id="ENG-Sa-gZu"/>
-                        <segue destination="RlX-Q0-WKN" kind="presentation" identifier="goToVoiceCall" modalPresentationStyle="fullScreen" id="Wfq-FI-qxe"/>
+                        <segue destination="RlX-Q0-WKN" kind="presentation" identifier="goToCall" modalPresentationStyle="fullScreen" id="Wfq-FI-qxe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7G7-HX-4MO" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -71,10 +71,10 @@
             </objects>
             <point key="canvasLocation" x="398" y="-170"/>
         </scene>
-        <!--VoiceCall-->
+        <!--Call-->
         <scene sceneID="fOg-BR-Hpa">
             <objects>
-                <viewControllerPlaceholder storyboardName="VoiceCall" id="RlX-Q0-WKN" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="Call" id="RlX-Q0-WKN" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="yui-u7-BFv"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SaS-0u-FvE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

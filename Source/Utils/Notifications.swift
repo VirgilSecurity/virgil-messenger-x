@@ -25,8 +25,9 @@ public class Notifications {
         case connectionStateUpdated = "Notifications.ConnectionStateUpdated"
         case errored = "Notifications.Errored"
         case messageAddedToCurrentChannel = "Notifications.MessageAddedToCurrentChannel"
-        case callOfferReceived = "Notifications.CallOfferReceived"
-        case callAnswerReceived = "Notifications.CallAnswerReceived"
+        case callOfferReceived = "Notifications.IncommingCall"
+        case callIsAccepted = "Notifications.CallIsAccepted"
+        case callIsRejected = "Notifications.CallIsRejected"
         case iceCandidateReceived = "Notifications.IceCandidateReceived"
     }
 
@@ -90,9 +91,14 @@ extension Notifications {
             let userInfo = [NotificationKeys.message.rawValue: callOffer]
             self.center.post(name: notification, object: self, userInfo: userInfo)
 
-        case .callAnswer(let callAnswer):
-            let notification = self.notification(Notifications.callAnswerReceived)
-            let userInfo = [NotificationKeys.message.rawValue: callAnswer]
+        case .callAcceptedAnswer(let callAcceptedAnswer):
+            let notification = self.notification(Notifications.callIsAccepted)
+            let userInfo = [NotificationKeys.message.rawValue: callAcceptedAnswer]
+            self.center.post(name: notification, object: self, userInfo: userInfo)
+
+        case .callRejectedAnswer(let callRejectedAnswer):
+            let notification = self.notification(Notifications.callIsRejected)
+            let userInfo = [NotificationKeys.message.rawValue: callRejectedAnswer]
             self.center.post(name: notification, object: self, userInfo: userInfo)
 
         case .iceCandidate(let iceCandidate):

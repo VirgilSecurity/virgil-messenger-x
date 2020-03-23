@@ -20,6 +20,9 @@ class ChatListViewController: ViewController {
 
     private var channels: [Storage.Channel] = []
 
+    private var lastCallOffer: Message.CallOffer!
+    private var lastCallChannel: Storage.Channel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -76,10 +79,36 @@ class ChatListViewController: ViewController {
             }
         }
 
+        let showIncommingCall: Notifications.Block = { [weak self] notification in
+            guard let sSelf = self else {
+                return
+            }
+
+            do {
+                sSelf.lastCallOffer = try Notifications.parse(notification, for: .message)
+            } catch {
+                Log.error(error, message: "Invalid call offer notification")
+                return
+            }
+
+            guard let lastCallChannel = sSelf.channels.first(where: { $0.name == sSelf.lastCallOffer.caller }) else {
+                // FIXME:
+                Log.error(UserFriendlyError.userNotFound, message: "Caller is unknown")
+                return
+            }
+
+            sSelf.lastCallChannel = lastCallChannel
+
+            DispatchQueue.main.async {
+                self?.performSegue(withIdentifier: "goToIncommingCall", sender: self)
+            }
+        }
+
         Notifications.observe(for: .errored, block: initFailed)
         Notifications.observe(for: .initializingSucceed, block: initialized)
         Notifications.observe(for: .updatingSucceed, block: updated)
         Notifications.observe(for: [.chatListUpdated], block: reloadTableView)
+        Notifications.observe(for: .callOfferReceived, block: showIncommingCall)
     }
 
     private func setupTableView() {
@@ -210,6 +239,9 @@ extension ChatListViewController: CellTapDelegate {
         if let chatController = segue.destination as? ChatViewController,
             let channel = Storage.shared.currentChannel {
                 chatController.channel = channel
+        }
+        else if let incommingCallController = segue.destination as? IncommingCallViewController {
+            incommingCallController.configure(withChannel: self.lastCallChannel, callOffer: self.lastCallOffer)
         }
 
         super.prepare(for: segue, sender: sender)

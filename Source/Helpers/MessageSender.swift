@@ -95,10 +95,24 @@ public class MessageSender {
         }
     }
 
-    public func send(callAnswer: Message.CallAnswer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(callAcceptedAnswer: Message.CallAcceptedAnswer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                let message = Message.callAnswer(callAnswer)
+                let message = Message.callAcceptedAnswer(callAcceptedAnswer)
+
+                try self.send(message: message, additionalData: nil, to: channel, date: date)
+
+                completion(nil)
+            } catch {
+                completion(error)
+            }
+        }
+    }
+
+    public func send(callRejectedAnswer: Message.CallRejectedAnswer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+        self.queue.async {
+            do {
+                let message = Message.callRejectedAnswer(callRejectedAnswer)
 
                 try self.send(message: message, additionalData: nil, to: channel, date: date)
 

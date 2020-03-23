@@ -74,7 +74,7 @@ class MessageProcessor {
                                                                 isIncoming: true,
                                                                 date: date)
 
-        case .callAnswer, .iceCandidate:
+        case .callAcceptedAnswer, .callRejectedAnswer, .iceCandidate:
             //  FIXME: Unify the handling approach for '.text' as well.
             Notifications.post(message: message)
         }

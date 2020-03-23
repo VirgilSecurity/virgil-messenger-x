@@ -97,13 +97,6 @@ class ChatViewController: BaseChatViewController {
             }
         }
 
-        let showIncommingCall: Notifications.Block = { [weak self] notification in
-            DispatchQueue.main.async {
-                self?.performSegue(withIdentifier: "goToVoiceCall", sender: self)
-            }
-        }
-
-        Notifications.observe(for: .callOfferReceived, block: showIncommingCall)
         Notifications.observe(for: [.initializingSucceed, .updatingSucceed], block: updateTitle)
         Notifications.observe(for: .currentChannelDeleted, block: popToRoot)
     }
@@ -150,7 +143,7 @@ class ChatViewController: BaseChatViewController {
     }
 
     @IBAction func showChatDetails(_ sender: Any) {
-        self.performSegue(withIdentifier: "goToVoiceCall", sender: self)
+        self.performSegue(withIdentifier: "goToCall", sender: self)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -158,9 +151,8 @@ class ChatViewController: BaseChatViewController {
             groupInfo.channel = channel
             groupInfo.dataSource = self.dataSource
         }
-
-        if let voiceCall = segue.destination as? VoiceCallViewController {
-            voiceCall.callChannel = CallManager(dataSource: self.dataSource)
+        else if let call = segue.destination as? CallViewController {
+            call.configureForOutgoingCall(withChannel: self.channel)
         }
 
         super.prepare(for: segue, sender: sender)

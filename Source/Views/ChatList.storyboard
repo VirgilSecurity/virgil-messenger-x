@@ -86,6 +86,7 @@ Add new one!</string>
                         <outlet property="tableView" destination="OLu-Yi-HTK" id="p1B-2j-laF"/>
                         <segue destination="tSb-ds-G5u" kind="show" identifier="goToChat" id="28z-YN-Bk9"/>
                         <segue destination="cdC-mY-49V" kind="show" identifier="goToAuth" animates="NO" id="TfX-du-Bf4"/>
+                        <segue destination="AYD-eH-7o3" kind="presentation" identifier="goToIncommingCall" modalPresentationStyle="fullScreen" id="KD4-Lr-PCk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DDd-4J-wX9" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -131,7 +132,7 @@ Add new one!</string>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="re4-ce-Aav" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1360" y="-1090"/>
+            <point key="canvasLocation" x="1366" y="-1047"/>
         </scene>
         <!--Authentication-->
         <scene sceneID="dV1-zg-E74">
@@ -139,7 +140,15 @@ Add new one!</string>
                 <viewControllerPlaceholder storyboardName="Authentication" id="cdC-mY-49V" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nmc-ZR-b88" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1419" y="-874"/>
+            <point key="canvasLocation" x="1409" y="-1140"/>
+        </scene>
+        <!--IncommingCall-->
+        <scene sceneID="I3d-TS-fK0">
+            <objects>
+                <viewControllerPlaceholder storyboardName="IncommingCall" id="AYD-eH-7o3" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mZz-Ye-u3g" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1409" y="-956"/>
         </scene>
     </scenes>
     <resources>

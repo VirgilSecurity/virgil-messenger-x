@@ -8,10 +8,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Incomming Call-->
+        <!--Incomming Call View Controller-->
         <scene sceneID="9Om-jV-AN9">
             <objects>
-                <viewController id="IwX-dp-cd3" customClass="IncommingCall" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="IwX-dp-cd3" customClass="IncommingCallViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ti5-ni-4dZ">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -66,12 +66,21 @@
                         <viewLayoutGuide key="safeArea" id="oFw-oG-BSx"/>
                     </view>
                     <connections>
-                        <outlet property="calleeLabel" destination="hfy-fw-mwM" id="n79-61-Czh"/>
+                        <outlet property="calleeLabel" destination="hfy-fw-mwM" id="Sp5-HO-MrV"/>
+                        <segue destination="cSe-lI-6uC" kind="presentation" identifier="goToCall" modalPresentationStyle="fullScreen" id="Ic2-5F-C2H"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3FC-QJ-UTA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="132" y="138"/>
+        </scene>
+        <!--Call-->
+        <scene sceneID="CNj-Qw-CjG">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7Ze-An-gtx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <viewControllerPlaceholder storyboardName="Call" id="cSe-lI-6uC" sceneMemberID="viewController"/>
+            </objects>
+            <point key="canvasLocation" x="982" y="48"/>
         </scene>
     </scenes>
 </document>
