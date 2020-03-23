@@ -31,8 +31,8 @@ $ cd PathToProjectFolder/virgil-messenger-x
 $ carthage bootstrap --platform iOS
 ```
 
-## Build and Run
-At this point you are ready to build and run the application on iPhone and/or Simulator.
+### Crashlytics
+Crashlytics is used for error reporting from the application. To run application you'll need to put corresponding `GoogleService-Info.plist` file into `PathToProjectFolder/virgil-messenger-x/VirgilMessenger` path.
 
 ## Backend
 You can find full backend description [here](https://github.com/VirgilSecurity/virgil-devops-environment/blob/master/instructions/virgil-messenger.md)
