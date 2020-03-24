@@ -38,12 +38,13 @@ public class Client {
             }
         }
     }
-
+    
     public func makePublishCardCallback(verifier: VirgilCardVerifier) -> EThree.PublishCardCallback {
         return { rawCard in
             do {
                 return try self.signUp(with: rawCard, verifier: verifier)
-            } catch {
+            }
+            catch {
                 Log.debug("asdasd")
                 throw error
             }
