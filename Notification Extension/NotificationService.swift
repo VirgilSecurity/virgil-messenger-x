@@ -96,22 +96,15 @@ class NotificationService: UNNotificationServiceExtension {
             throw NotificationServiceError.missingIdentityInDefaults
         }
 
-        // Initializing KeyStorage with root application name. We need it to fetch shared key from root app
-        let storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.appId)
-
         let client = Client(crypto: self.crypto)
+        try Virgil.initialize(identity: identity, client: client)
 
-        let tokenCallback = client.makeTokenCallback(identity: identity)
-
-        let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
-        params.storageParams = storageParams
-        let ethree = try EThree(params: params)
-
-        let card = try ethree.findUser(with: notificationInfo.sender)
+        let card = try Virgil.ethree.findUser(with: notificationInfo.sender)
             .startSync()
             .get()
 
-        return try ethree.authDecrypt(data: notificationInfo.encryptedMessage.ciphertext, from: card)
+        return try Virgil.ethree.authDecrypt(data: notificationInfo.encryptedMessage.ciphertext,
+                                             from: card)
     }
 
     private func process(decrypted: Data, version: EncryptedMessageVersion) throws -> String {
