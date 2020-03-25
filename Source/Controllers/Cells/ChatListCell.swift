@@ -18,11 +18,13 @@ class ChatListCell: UITableViewCell {
     @IBOutlet weak var lastMessageDateLabel: UILabel!
     @IBOutlet weak var avatarView: GradientView!
     @IBOutlet weak var letterLabel: UILabel!
-
+    @IBOutlet weak var unreadCountLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        self.contentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTap)))
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.didTap))
+        self.contentView.addGestureRecognizer(tapRecognizer)
     }
 
     @objc func didTap() {
@@ -40,5 +42,8 @@ class ChatListCell: UITableViewCell {
 
         self.lastMessageLabel.text = channel.lastMessagesBody
         self.lastMessageDateLabel.text = channel.lastMessagesDate?.shortString() ?? ""
+
+        self.unreadCountLabel.isHidden = channel.unreadCount == 0
+        self.unreadCountLabel.text = String(channel.unreadCount)
     }
 }

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,7 +13,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="94"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="emh-p5-heA" id="sVl-7U-iHI">
-                <rect key="frame" x="0.0" y="0.0" width="375" height="93.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="94"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b6L-BF-qcX">
@@ -28,7 +26,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.59830000000000005" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last message" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ugV-4J-qng">
-                        <rect key="frame" x="88" y="39" width="225" height="38.5"/>
+                        <rect key="frame" x="88" y="39" width="95" height="39"/>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
@@ -63,6 +61,12 @@
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="right" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bY8-9m-C1C">
+                        <rect key="frame" x="351" y="51" width="9" height="16"/>
+                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="13"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <color key="backgroundColor" red="0.16862745098039217" green="0.18823529411764706" blue="0.23137254901960785" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 <constraints>
@@ -73,9 +77,10 @@
                     <constraint firstAttribute="trailing" secondItem="qzb-rE-Xzj" secondAttribute="trailing" constant="15" id="QEI-zU-pvz"/>
                     <constraint firstItem="Jvx-YF-uqp" firstAttribute="centerY" secondItem="sVl-7U-iHI" secondAttribute="centerY" id="RcM-1V-vJM"/>
                     <constraint firstItem="ugV-4J-qng" firstAttribute="top" secondItem="sVl-7U-iHI" secondAttribute="top" constant="39" id="X0K-5N-sai"/>
+                    <constraint firstAttribute="trailing" secondItem="bY8-9m-C1C" secondAttribute="trailing" constant="15" id="fN2-vI-HVd"/>
                     <constraint firstItem="b6L-BF-qcX" firstAttribute="leading" secondItem="sVl-7U-iHI" secondAttribute="leading" constant="88" id="gh7-FH-ald"/>
                     <constraint firstAttribute="bottom" secondItem="ugV-4J-qng" secondAttribute="bottom" constant="16" id="lSN-FA-bP9"/>
-                    <constraint firstAttribute="trailing" secondItem="ugV-4J-qng" secondAttribute="trailing" constant="62" id="uIR-PB-0vb"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="bY8-9m-C1C" secondAttribute="bottom" constant="16" id="ttX-4o-gji"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
@@ -83,6 +88,7 @@
                 <outlet property="lastMessageDateLabel" destination="qzb-rE-Xzj" id="pRc-o6-iuR"/>
                 <outlet property="lastMessageLabel" destination="ugV-4J-qng" id="UAa-hb-r5E"/>
                 <outlet property="letterLabel" destination="7wf-5E-sEa" id="ynG-Zo-UoA"/>
+                <outlet property="unreadCountLabel" destination="bY8-9m-C1C" id="EsM-Jl-dhw"/>
                 <outlet property="usernameLabel" destination="b6L-BF-qcX" id="4Xc-ab-Bni"/>
             </connections>
             <point key="canvasLocation" x="74.400000000000006" y="-209.59520239880061"/>

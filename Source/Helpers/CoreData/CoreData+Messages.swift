@@ -11,7 +11,11 @@ import VirgilCryptoRatchet
 import VirgilSDK
 
 extension CoreData {
-    private func save(_ message: Message) throws {
+    private func save(_ message: Message, unread: Bool) throws {
+        if unread {
+            message.channel.unreadCount += 1
+        }
+        
         let messages = message.channel.mutableOrderedSetValue(forKey: Channel.MessagesKey)
         messages.add(message)
 
@@ -26,10 +30,11 @@ extension CoreData {
                                       isHidden: true,
                                       managedContext: self.managedContext)
 
-        try self.save(message)
+        try self.save(message, unread: false)
     }
 
     func createTextMessage(with content: TextContent,
+                           unread: Bool = false,
                            in channel: Channel,
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Message {
@@ -40,13 +45,14 @@ extension CoreData {
                                       channel: channel,
                                       managedContext: self.managedContext)
 
-        try self.save(message)
+        try self.save(message, unread: unread)
 
         return message
     }
     
     func createPhotoMessage(with content: PhotoContent,
                             thumbnail: Data,
+                            unread: Bool = false,
                             in channel: Channel,
                             isIncoming: Bool,
                             date: Date = Date()) throws -> Message {
@@ -57,13 +63,17 @@ extension CoreData {
                                        date: date,
                                        channel: channel,
                                        managedContext: self.managedContext)
-
-        try self.save(message)
+        if unread {
+            channel.unreadCount += 1
+        }
+        
+        try self.save(message, unread: unread)
 
         return message
     }
     
     func createVoiceMessage(with content: VoiceContent,
+                            unread: Bool = false,
                             in channel: Channel,
                             isIncoming: Bool,
                             date: Date = Date()) throws -> Message {
@@ -75,7 +85,7 @@ extension CoreData {
                                        channel: channel,
                                        managedContext: self.managedContext)
 
-        try self.save(message)
+        try self.save(message, unread: unread)
 
         return message
     }

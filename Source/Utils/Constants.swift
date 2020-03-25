@@ -24,7 +24,7 @@ enum URLConstants {
         case prod = ""
     }
 
-    static let envPrefix: EnvPrefix = .prod
+    static let envPrefix: EnvPrefix = .stg
 
     // Ejabberd
     static let ejabberdHost: String = "xmpp\(URLConstants.envPrefix.rawValue).virgilsecurity.com"
