@@ -63,9 +63,6 @@ extension CoreData {
                                        date: date,
                                        channel: channel,
                                        managedContext: self.managedContext)
-        if unread {
-            channel.unreadCount += 1
-        }
         
         try self.save(message, unread: unread)
 
