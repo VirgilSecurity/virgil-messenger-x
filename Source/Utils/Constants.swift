@@ -10,9 +10,9 @@ import UIKit
 import XMPPFrameworkSwift
 
 enum Constants {
-    static let appId = "com.virgil.VirgilMessenger-stg"
+    static let appId = "com.virgil.VirgilMessenger"
     static let pushesNode: String = "node"
-    static let appGroup: String = "group.virgil.notifications"
+    static let appGroup: String = "group.virgil.notification"
 }
 
 enum URLConstants {
@@ -24,7 +24,7 @@ enum URLConstants {
         case prod = ""
     }
 
-    static let envPrefix: EnvPrefix = .stg
+    static let envPrefix: EnvPrefix = .prod
 
     // Ejabberd
     static let ejabberdHost: String = "xmpp\(URLConstants.envPrefix.rawValue).virgilsecurity.com"
