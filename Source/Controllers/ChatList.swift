@@ -209,7 +209,6 @@ extension ChatListViewController: CellTapDelegate {
         self.performSegue(withIdentifier: "goToChat", sender: self)
     }
 
-
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let chatController = segue.destination as? ChatViewController,
             let channel = CoreData.shared.currentChannel {
