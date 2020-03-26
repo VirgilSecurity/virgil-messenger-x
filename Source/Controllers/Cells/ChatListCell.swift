@@ -45,7 +45,19 @@ class ChatListCell: UITableViewCell {
         self.lastMessageLabel.text = channel.lastMessagesBody
         self.lastMessageDateLabel.text = channel.lastMessagesDate?.shortString() ?? ""
 
-        self.unreadCountView.isHidden = channel.unreadCount == 0
-        self.unreadCountLabel.text = String(channel.unreadCount)
+        self.configureUnreadLabel(with: channel.unreadCount)
+    }
+    
+    private func configureUnreadLabel(with unreadCount: Int16) {
+        if unreadCount > 0 {
+            let text = unreadCount > 999 ? "999" : String(unreadCount)
+                        
+            self.unreadCountLabel.text = text
+            self.unreadCountViewWidth.constant = CGFloat(15 + 7 * text.count)
+            self.unreadCountView.isHidden = false
+        }
+        else {
+            self.unreadCountView.isHidden = true
+        }
     }
 }
