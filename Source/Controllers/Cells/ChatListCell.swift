@@ -19,6 +19,8 @@ class ChatListCell: UITableViewCell {
     @IBOutlet weak var avatarView: GradientView!
     @IBOutlet weak var letterLabel: UILabel!
     @IBOutlet weak var unreadCountLabel: UILabel!
+    @IBOutlet weak var unreadCountView: UIView!
+    @IBOutlet weak var unreadCountViewWidth: NSLayoutConstraint!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -43,7 +45,7 @@ class ChatListCell: UITableViewCell {
         self.lastMessageLabel.text = channel.lastMessagesBody
         self.lastMessageDateLabel.text = channel.lastMessagesDate?.shortString() ?? ""
 
-        self.unreadCountLabel.isHidden = channel.unreadCount == 0
+        self.unreadCountView.isHidden = channel.unreadCount == 0
         self.unreadCountLabel.text = String(channel.unreadCount)
     }
 }
