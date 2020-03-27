@@ -35,10 +35,10 @@ class StartViewController: ViewController {
     }
 
     private func goToChatList() {
-        self.switchNavigationStack(to: "TabBar")
+        self.switchNavigationStack(to: .tabBar)
     }
 
     private func goToLogin() {
-        self.switchNavigationStack(to: AuthenticationViewController.name)
+        self.switchNavigationStack(to: .authentication)
     }
 }

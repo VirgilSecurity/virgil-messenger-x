@@ -88,7 +88,7 @@ class ChatViewController: BaseChatViewController {
     }
 
     deinit {
-        CoreData.shared.deselectChannel()
+        CoreData.shared.deselectChannel(channel)
     }
 
     private func setupObservers() {

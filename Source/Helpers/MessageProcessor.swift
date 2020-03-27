@@ -74,8 +74,9 @@ class MessageProcessor {
                                                              isIncoming: true,
                                                              date: date)
         }
-        
+
         self.postNotification(about: message, unread: unread)
+        self.postLocalPushNotification(content: messageContent, author: author)
     }
     
     private static func migrationSafeContentImport(from data: Data,
@@ -131,6 +132,15 @@ class MessageProcessor {
     
     private static func postNotification(about message: Message, unread: Bool) {
         unread ? Notifications.post(.chatListUpdated) : Notifications.post(message: message)
+    }
+
+    private static func postLocalPushNotification(content: MessageContent, author: String) {
+        let currentChannelName = CoreData.shared.currentChannel?.name
+        guard currentChannelName != nil && currentChannelName != author else {
+                return
+        }
+
+        PushNotifications.post(messageContent: content, author: author)
     }
     
     private static func setupChannel(name: String) throws -> Channel {

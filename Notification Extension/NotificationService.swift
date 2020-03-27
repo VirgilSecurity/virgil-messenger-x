@@ -138,14 +138,7 @@ class NotificationService: UNNotificationServiceExtension {
         case .v2:
             let content = try MessageContent.import(from: decrypted)
             
-            switch content {
-            case .text(let textContent):
-                message = textContent.body
-            case .photo:
-                message = "📷 Photo"
-            case .voice:
-                message = "🎤 Voice Message"
-            }
+            message = content.notificationBody
         }
         
         return message

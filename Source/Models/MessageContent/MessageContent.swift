@@ -70,3 +70,16 @@ extension MessageContent: Codable {
         return try JSONEncoder().encode(self)
     }
 }
+
+extension MessageContent {
+    var notificationBody: String {
+        switch self {
+        case .text(let textContent):
+            return textContent.body
+        case .photo:
+            return "📷 Photo"
+        case .voice:
+            return "🎤 Voice Message"
+        }
+    }
+}

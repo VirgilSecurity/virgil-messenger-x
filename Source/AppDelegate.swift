@@ -15,6 +15,7 @@ import CocoaLumberjackSwift
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
+    var pushNotificationsDelegate = PushNotificationsDelegate()
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -67,6 +68,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func registerRemoteNotifications(for app: UIApplication) {
         let center = UNUserNotificationCenter.current()
 
+        center.delegate = pushNotificationsDelegate
+
         center.getNotificationSettings { settings in
 
             if settings.authorizationStatus == .notDetermined {
@@ -91,8 +94,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func cleanNotifications() {
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        PushNotifications.cleanNotifications()
     }
 
     func application(_ application: UIApplication,
