@@ -143,16 +143,14 @@ class ChatViewController: BaseChatViewController {
     }
 
     @IBAction func showChatDetails(_ sender: Any) {
-        self.performSegue(withIdentifier: "goToCall", sender: self)
+        CallManager.shared.startOutgoingCall(in: self.channel)
+        Notifications.post(Notifications.EmptyNotification.startOugoingCall)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let groupInfo = segue.destination as? GroupInfoViewController {
             groupInfo.channel = channel
             groupInfo.dataSource = self.dataSource
-        }
-        else if let call = segue.destination as? CallViewController {
-            call.configureForOutgoingCall(withChannel: self.channel)
         }
 
         super.prepare(for: segue, sender: sender)

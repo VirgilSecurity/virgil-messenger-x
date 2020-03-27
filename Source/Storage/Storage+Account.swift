@@ -55,21 +55,25 @@ extension Storage {
 
 /// Storage extension
 extension Storage {
-    func createAccount(withIdentity identity: String) throws {
+    func createAccount(withIdentity identity: String) throws -> Account {
         let account = try Storage.Account(identity: identity, managedContext: self.managedContext)
 
         self.append(account: account)
         self.setCurrent(account: account)
 
         try self.saveContext()
+
+        return account
     }
 
-    func loadAccount(withIdentity identity: String) throws {
+    func loadAccount(withIdentity identity: String) throws -> Account {
         guard let account = self.accounts.first(where: { $0.identity == identity }) else {
             throw UserFriendlyError.noUserOnDevice
         }
 
         self.setCurrent(account: account)
+
+        return account
     }
 
     func getCurrentAccount() throws -> Storage.Account {

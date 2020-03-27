@@ -34,13 +34,11 @@ public class VirgilAuthorizer {
             try Virgil.ethree.register(publishCardCallback: publishCardCallback)
                 .startSync()
                 .get()
-            
+
             Log.debug("Yo")
-        }
-        catch EThreeError.privateKeyExists {
+        } catch EThreeError.privateKeyExists {
             throw UserFriendlyError.usernameAlreadyUsed
-        }
-        catch {
+        } catch {
             throw error
         }
     }

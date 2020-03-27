@@ -24,17 +24,22 @@ public class UserAuthorizer {
             throw UserAuthorizerError.noIdentityAtDefaults
         }
 
-        try Storage.shared.loadAccount(withIdentity: identity)
+        let account = try Storage.shared.loadAccount(withIdentity: identity)
 
         try self.virgilAuthorizer.signIn(identity: identity)
+
+        CallManager.shared.set(account: account)
     }
 
     public func signIn(identity: String) throws {
-        try Storage.shared.loadAccount(withIdentity: identity)
+        let account = try Storage.shared.loadAccount(withIdentity: identity)
 
         try self.virgilAuthorizer.signIn(identity: identity)
 
         IdentityDefaults.shared.set(identity: identity)
+
+        CallManager.shared.set(account: account)
+
     }
 
    public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
@@ -42,9 +47,11 @@ public class UserAuthorizer {
             do {
                 _ = try self.virgilAuthorizer.signUp(identity: identity)
 
-                try Storage.shared.createAccount(withIdentity: identity)
+                let account = try Storage.shared.createAccount(withIdentity: identity)
 
                 IdentityDefaults.shared.set(identity: identity)
+
+                CallManager.shared.set(account: account)
 
                 completion(nil)
             } catch {
@@ -64,6 +71,8 @@ public class UserAuthorizer {
                 Storage.shared.resetState()
 
                 IdentityDefaults.shared.reset()
+
+                CallManager.shared.resetAccount()
 
                 completion(nil)
             } catch {

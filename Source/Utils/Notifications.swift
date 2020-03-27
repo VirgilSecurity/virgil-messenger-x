@@ -19,6 +19,11 @@ public class Notifications {
 
         case chatListUpdated = "Notifications.ChatListUpdated"
         case currentChannelDeleted = "Notifications.CurrentChannelDeleted"
+
+        case startOugoingCall = "Notifications.StartOugoingCall"
+        case startIncommingCall = "Notifications.StartIncommingCall"
+        case acceptCall = "Notifications.AcceptCall"
+        case rejectCall = "Notifications.RejectCall"
     }
 
     public enum Notifications: String {
@@ -26,8 +31,8 @@ public class Notifications {
         case errored = "Notifications.Errored"
         case messageAddedToCurrentChannel = "Notifications.MessageAddedToCurrentChannel"
         case callOfferReceived = "Notifications.IncommingCall"
-        case callIsAccepted = "Notifications.CallIsAccepted"
-        case callIsRejected = "Notifications.CallIsRejected"
+        case callIsAccepted = "Notifications.CallIsAccepted" // TODO: Rename to callAcceptedAnswerReceived
+        case callIsRejected = "Notifications.CallIsRejected" // TODO: Rename to callRejectedAnswerReceived
         case iceCandidateReceived = "Notifications.IceCandidateReceived"
     }
 

@@ -11,7 +11,7 @@
         <!--Call View Controller-->
         <scene sceneID="cTX-on-a2M">
             <objects>
-                <viewController storyboardIdentifier="CallStoryboard" useStoryboardIdentifierAsRestorationIdentifier="YES" id="oKU-ay-bMC" customClass="CallViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Call" useStoryboardIdentifierAsRestorationIdentifier="YES" id="oKU-ay-bMC" customClass="CallViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="txv-Gb-c6A">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -52,7 +52,7 @@
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="94x-pT-r01">
-                                <rect key="frame" x="123" y="742" width="130" height="36"/>
+                                <rect key="frame" x="122.66666666666669" y="742" width="130" height="36"/>
                                 <color key="backgroundColor" red="0.61824858189999998" green="0.21322733159999999" blue="0.12903854249999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="130" id="kmf-n6-WWe"/>

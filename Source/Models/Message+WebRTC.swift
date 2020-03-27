@@ -12,7 +12,7 @@ import WebRTC
 extension Message.CallOffer {
     init(from rtcSessionDescription: RTCSessionDescription, caller: String) {
         assert(rtcSessionDescription.type == RTCSdpType.offer)
-        
+
         self.caller = caller
         self.sdp = rtcSessionDescription.sdp
     }
