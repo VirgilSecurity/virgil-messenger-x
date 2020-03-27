@@ -18,11 +18,15 @@ class ChatListCell: UITableViewCell {
     @IBOutlet weak var lastMessageDateLabel: UILabel!
     @IBOutlet weak var avatarView: GradientView!
     @IBOutlet weak var letterLabel: UILabel!
-
+    @IBOutlet weak var unreadCountLabel: UILabel!
+    @IBOutlet weak var unreadCountView: UIView!
+    @IBOutlet weak var unreadCountViewWidth: NSLayoutConstraint!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        self.contentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTap)))
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.didTap))
+        self.contentView.addGestureRecognizer(tapRecognizer)
     }
 
     @objc func didTap() {
@@ -40,5 +44,20 @@ class ChatListCell: UITableViewCell {
 
         self.lastMessageLabel.text = channel.lastMessagesBody
         self.lastMessageDateLabel.text = channel.lastMessagesDate?.shortString() ?? ""
+
+        self.configureUnreadLabel(with: channel.unreadCount)
+    }
+    
+    private func configureUnreadLabel(with unreadCount: Int16) {
+        if unreadCount > 0 {
+            let text = unreadCount > 999 ? "999" : String(unreadCount)
+                        
+            self.unreadCountLabel.text = text
+            self.unreadCountViewWidth.constant = CGFloat(15 + 7 * text.count)
+            self.unreadCountView.isHidden = false
+        }
+        else {
+            self.unreadCountView.isHidden = true
+        }
     }
 }

@@ -40,11 +40,18 @@ class MessageProcessor {
                                 channel: Channel,
                                 author: String,
                                 date: Date) throws {
+        var unread: Bool = true
+        if let channel = CoreData.shared.currentChannel, channel.name == author {
+            unread = false
+        }
+            
         let message: Message
     
         switch messageContent {
         case .text(let textContent):
+            // FIXME: remove copypasting common parameters
             message = try CoreData.shared.createTextMessage(with: textContent,
+                                                            unread: unread,
                                                             in: channel,
                                                             isIncoming: true,
                                                             date: date)
@@ -56,17 +63,19 @@ class MessageProcessor {
             
             message = try CoreData.shared.createPhotoMessage(with: photoContent,
                                                              thumbnail: thumbnail,
+                                                             unread: unread,
                                                              in: channel,
                                                              isIncoming: true,
                                                              date: date)
         case .voice(let voiceContent):
             message = try CoreData.shared.createVoiceMessage(with: voiceContent,
+                                                             unread: unread,
                                                              in: channel,
                                                              isIncoming: true,
                                                              date: date)
         }
         
-        self.postNotification(about: message, author: author)
+        self.postNotification(about: message, unread: unread)
     }
     
     private static func migrationSafeContentImport(from data: Data,
@@ -120,13 +129,8 @@ class MessageProcessor {
         return decrypted
     }
     
-    private static func postNotification(about message: Message, author: String) {
-        guard let channel = CoreData.shared.currentChannel,
-            channel.name == author else {
-                return Notifications.post(.chatListUpdated)
-        }
-    
-        Notifications.post(message: message)
+    private static func postNotification(about message: Message, unread: Bool) {
+        unread ? Notifications.post(.chatListUpdated) : Notifications.post(message: message)
     }
     
     private static func setupChannel(name: String) throws -> Channel {

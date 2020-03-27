@@ -104,6 +104,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         do {
             try CoreData.shared.saveContext()
+            
+            UnreadManager.shared.update()
         }
         catch {
             Log.error(error, message: "Saving Core Data context on app termination failed")
@@ -139,5 +141,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         Ejabberd.shared.set(status: .unavailable)
+    }
+    
+    func applicationWillResignActive(_ application: UIApplication) {
+        UnreadManager.shared.update()
     }
 }

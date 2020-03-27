@@ -18,7 +18,8 @@ class StartViewController: ViewController {
         super.viewDidAppear(animated)
 
         guard self.checkReachability() else {
-            IdentityDefaults.shared.reset()
+            SharedDefaults.shared.reset(.identity)
+            UnreadManager.shared.reset()
             self.goToLogin()
             return
         }

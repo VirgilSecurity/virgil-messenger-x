@@ -49,6 +49,8 @@ class NotificationService: UNNotificationServiceExtension {
         
         self.bestAttemptContent = bestAttemptContent
         
+        self.updateBadge(for: bestAttemptContent)
+        
         do {
             let notificationInfo = try self.parse(content: bestAttemptContent)
 
@@ -79,6 +81,14 @@ class NotificationService: UNNotificationServiceExtension {
         }
     }
     
+    private func updateBadge(for content: UNMutableNotificationContent) {
+        let oldBadgeCount: Int = SharedDefaults.shared.get(.unreadCount) ?? 0
+        let newBadgeCount = oldBadgeCount + 1
+        
+        SharedDefaults.shared.set(unreadCount: newBadgeCount)
+        content.badge = NSNumber(value: newBadgeCount)
+    }
+    
     private func parse(content: UNMutableNotificationContent) throws -> NotificationInfo {
         guard let aps = content.userInfo[NotificationKeys.aps.rawValue] as? [String: Any],
             let alert = aps[NotificationKeys.alert.rawValue] as? [String: String],
@@ -93,7 +103,7 @@ class NotificationService: UNNotificationServiceExtension {
     }
     
     private func decrypt(notificationInfo: NotificationInfo) throws -> Data {
-        guard let identity = IdentityDefaults.shared.get() else {
+        guard let identity: String = SharedDefaults.shared.get(.identity) else {
             throw NotificationServiceError.missingIdentityInDefaults
         }
         

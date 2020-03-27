@@ -87,7 +87,7 @@ class ChatListViewController: ViewController {
     private func setupTableView() {
         let chatListCellNib = UINib(nibName: ChatListCell.name, bundle: Bundle.main)
         self.tableView.register(chatListCellNib, forCellReuseIdentifier: ChatListCell.name)
-        self.tableView.rowHeight = 94
+        self.tableView.rowHeight = 80
         self.tableView.tableFooterView = UIView(frame: .zero)
         self.tableView.dataSource = self
     }
@@ -208,7 +208,6 @@ extension ChatListViewController: CellTapDelegate {
 
         self.performSegue(withIdentifier: "goToChat", sender: self)
     }
-
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let chatController = segue.destination as? ChatViewController,
