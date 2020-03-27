@@ -20,13 +20,15 @@ public class UserAuthorizer {
     }
 
     public func signIn() throws {
-        guard let identity = IdentityDefaults.shared.get() else {
+        guard let identity: String = SharedDefaults.shared.get(.identity) else {
             throw UserAuthorizerError.noIdentityAtDefaults
         }
 
         try CoreData.shared.loadAccount(withIdentity: identity)
 
         try self.virgilAuthorizer.signIn(identity: identity)
+        
+        UnreadManager.shared.update()
     }
 
     public func signIn(identity: String) throws {
@@ -34,7 +36,9 @@ public class UserAuthorizer {
 
         try self.virgilAuthorizer.signIn(identity: identity)
 
-        IdentityDefaults.shared.set(identity: identity)
+        SharedDefaults.shared.set(identity: identity)
+        
+        UnreadManager.shared.update()
     }
 
    public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
@@ -44,7 +48,7 @@ public class UserAuthorizer {
 
                 try CoreData.shared.createAccount(withIdentity: identity)
 
-                IdentityDefaults.shared.set(identity: identity)
+                SharedDefaults.shared.set(identity: identity)
 
                 completion(nil)
             }
@@ -64,7 +68,8 @@ public class UserAuthorizer {
                 Configurator.reset()
                 CoreData.shared.resetState()
 
-                IdentityDefaults.shared.reset()
+                SharedDefaults.shared.reset(.identity)
+                UnreadManager.shared.reset()
 
                 completion(nil)
             }
@@ -75,7 +80,8 @@ public class UserAuthorizer {
     }
 
     public func deleteAccount() throws {
-        IdentityDefaults.shared.reset()
+        SharedDefaults.shared.reset(.identity)
+        UnreadManager.shared.reset()
 
         Configurator.reset()
 

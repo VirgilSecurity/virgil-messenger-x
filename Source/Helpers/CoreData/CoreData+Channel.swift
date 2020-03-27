@@ -8,6 +8,7 @@
 
 import CoreData
 import VirgilSDK
+import UIKit
 
 extension CoreData {
     private func save(_ channel: Channel) throws {
@@ -119,5 +120,13 @@ extension CoreData {
         }
 
         return cards
+    }
+    
+    func resetUnreadCount(for channel: Channel) throws {
+        UIApplication.shared.applicationIconBadgeNumber -= Int(channel.unreadCount)
+        
+        channel.unreadCount = 0
+        
+        try self.saveContext()
     }
 }

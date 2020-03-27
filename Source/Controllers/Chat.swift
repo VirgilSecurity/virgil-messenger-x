@@ -78,6 +78,13 @@ class ChatViewController: BaseChatViewController {
         self.setupObservers()
 
         self.dataSource.setupObservers()
+        
+        do {
+            try CoreData.shared.resetUnreadCount(for: self.channel)
+        }
+        catch {
+            Log.error(error, message: "Reseting unread count for channel failed")
+        }
     }
 
     deinit {

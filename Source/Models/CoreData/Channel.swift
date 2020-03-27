@@ -19,6 +19,7 @@ public class Channel: NSManagedObject {
     @NSManaged public var account: Account
     @NSManaged public var createdAt: Date
     @NSManaged public var initiator: String
+    @NSManaged public var unreadCount: Int16
 
     @NSManaged private var rawType: String
     @NSManaged private var numColorPair: Int32
@@ -127,6 +128,7 @@ public class Channel: NSManagedObject {
         self.type = type
         self.cards = cards
         self.createdAt = Date()
+        self.unreadCount = 0
         self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
     }
 
