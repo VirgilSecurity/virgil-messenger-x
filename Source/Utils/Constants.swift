@@ -18,10 +18,10 @@ enum Constants {
 enum URLConstants {
     enum EnvPrefix: String {
     #if DEBUG
-        case dev = "-dev2"
-        case stg = "-stg2"
+        case dev = "-dev"
+        case stg = "-stg"
     #endif
-        case prod = "-stg"
+        case prod = ""
     }
 
     static let envPrefix: EnvPrefix = .prod
