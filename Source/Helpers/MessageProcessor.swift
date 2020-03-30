@@ -137,7 +137,7 @@ class MessageProcessor {
     private static func postLocalPushNotification(content: MessageContent, author: String) {
         let currentChannelName = CoreData.shared.currentChannel?.name
         guard currentChannelName != nil && currentChannelName != author else {
-                return
+            return
         }
 
         PushNotifications.post(messageContent: content, author: author)

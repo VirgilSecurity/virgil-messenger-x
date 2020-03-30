@@ -14,29 +14,25 @@ public class PushNotifications {
 
 extension PushNotifications {
     static func post(messageContent: MessageContent, author: String) {
-        //create the content for the notification
+        // create the content for the notification
         let content = UNMutableNotificationContent()
         content.title = author
         content.body = messageContent.notificationBody
         content.sound = .default
 
-        //notification trigger can be based on time, calendar or location
-        let trigger = UNTimeIntervalNotificationTrigger(
-            timeInterval:1,
-            repeats: false
-        )
+        // notification trigger can be based on time, calendar or location
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1,
+                                                        repeats: false)
 
-        //create request to display
-        let request = UNNotificationRequest(
-            identifier: "ContentIdentifier",
-            content: content,
-            trigger: trigger
-        )
+        // create request to display
+        let request = UNNotificationRequest(identifier: "ContentIdentifier",
+                                            content: content,
+                                            trigger: trigger)
 
-        //add request to notification center
+        // add request to notification center
         center.add(request) { error in
             if let error = error {
-                Log.debug(error.localizedDescription)
+                Log.error(error, message: "Post local notification failed")
             }
         }
     }

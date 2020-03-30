@@ -22,10 +22,6 @@ class ViewController: UIViewController {
         return .lightContent
     }
 
-    var isRootViewController: Bool {
-        return self.navigationController?.viewControllers.count ?? 1 == 1
-    }
-
     deinit {
         Log.debug(self.description)
     }
