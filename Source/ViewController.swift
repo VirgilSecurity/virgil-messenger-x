@@ -22,24 +22,7 @@ class ViewController: UIViewController {
         return .lightContent
     }
 
-    var isRootViewController: Bool {
-        return self.navigationController?.viewControllers.count ?? 1 == 1
-    }
-
     deinit {
         Log.debug(self.description)
-    }
-
-    func switchNavigationStack(to name: String) {
-        let storyboard = UIStoryboard(name: name, bundle: Bundle.main)
-        let controller = storyboard.instantiateInitialViewController() as! UINavigationController
-
-        let window = UIApplication.shared.keyWindow!
-        window.rootViewController = controller
-
-        UIView.transition(with: window,
-                          duration: UIConstants.TransitionAnimationDuration,
-                          options: .transitionCrossDissolve,
-                          animations: nil)
     }
 }

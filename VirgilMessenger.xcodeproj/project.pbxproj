@@ -158,6 +158,9 @@
 		429228BD1F96261000DCECDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 429228BC1F96261000DCECDF /* Assets.xcassets */; };
 		429228DE1F9637A200DCECDF /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
 		429228EB1F96405800DCECDF /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* Chat.storyboard */; };
+		805F59B8242D8552003421EB /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805F59B7242D8552003421EB /* PushNotifications.swift */; };
+		805F59BA242D86FA003421EB /* PushNotificationsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805F59B9242D86FA003421EB /* PushNotificationsDelegate.swift */; };
+		805F59BC242E690B003421EB /* UIViewController+Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805F59BB242E690B003421EB /* UIViewController+Navigation.swift */; };
 		80AC600C2400225100F6A73C /* DetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AC600B2400225100F6A73C /* DetailTableViewCell.swift */; };
 		80AC600E240023EA00F6A73C /* UIColor+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AC600D240023EA00F6A73C /* UIColor+Constants.swift */; };
 		80AC601024008EAB00F6A73C /* Array+IndexPathSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AC600F24008EA900F6A73C /* Array+IndexPathSubscript.swift */; };
@@ -367,6 +370,9 @@
 		429228DD1F9637A200DCECDF /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		429228EA1F96405800DCECDF /* Chat.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Chat.storyboard; sourceTree = "<group>"; };
 		42E8F8731F978A51007CB39F /* PKHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PKHUD.framework; path = Carthage/Build/iOS/PKHUD.framework; sourceTree = "<group>"; };
+		805F59B7242D8552003421EB /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
+		805F59B9242D86FA003421EB /* PushNotificationsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsDelegate.swift; sourceTree = "<group>"; };
+		805F59BB242E690B003421EB /* UIViewController+Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Navigation.swift"; sourceTree = "<group>"; };
 		80AC600B2400225100F6A73C /* DetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailTableViewCell.swift; sourceTree = "<group>"; };
 		80AC600D240023EA00F6A73C /* UIColor+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Constants.swift"; sourceTree = "<group>"; };
 		80AC600F24008EA900F6A73C /* Array+IndexPathSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+IndexPathSubscript.swift"; sourceTree = "<group>"; };
@@ -584,6 +590,7 @@
 				16CA51051FC468370042AF9D /* Constants.swift */,
 				168E54CB22395DDC00B6E822 /* ColorPair.swift */,
 				16317B9822C506A200A3144A /* Notifications.swift */,
+				805F59B7242D8552003421EB /* PushNotifications.swift */,
 				163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */,
 				16973337229B3E15009E30D0 /* Gradient.swift */,
 				974E01A5242D5274008239B8 /* SwipeableNavigationController.swift */,
@@ -671,6 +678,7 @@
 				16FA91041FFC55A400FE98C7 /* UIViewController+Reachability.swift */,
 				80AC600F24008EA900F6A73C /* Array+IndexPathSubscript.swift */,
 				16132FC12254C868008FD754 /* UIViewController.swift */,
+				805F59BB242E690B003421EB /* UIViewController+Navigation.swift */,
 				16FB2DD2204D875400346FA0 /* UIView.swift */,
 				1696ADC620A0766600EF8C0D /* Collection+SafeSubscript.swift */,
 				1658BA171FD97497005EF9C1 /* Date.swift */,
@@ -728,6 +736,7 @@
 				16D8B0E7223A6E7500D7FA67 /* Controllers */,
 				16961B50203ADFBA0084086E /* Utils */,
 				429228B51F96261000DCECDF /* AppDelegate.swift */,
+				805F59B9242D86FA003421EB /* PushNotificationsDelegate.swift */,
 				429228B71F96261000DCECDF /* ViewController.swift */,
 			);
 			path = Source;
@@ -1163,6 +1172,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				805F59BC242E690B003421EB /* UIViewController+Navigation.swift in Sources */,
 				16F8F3B72264875F00143FB7 /* UsersList.swift in Sources */,
 				16FE75F7224A5CC400B545AF /* ChatsManager+Start.swift in Sources */,
 				164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */,
@@ -1228,10 +1238,12 @@
 				97AF4D83241AEE2000ED9BD7 /* Client+Backend.swift in Sources */,
 				9706713D241FB572000E29F8 /* VoiceContent.swift in Sources */,
 				16F8F3B9226487BE00143FB7 /* UsersListCell.swift in Sources */,
+				805F59BA242D86FA003421EB /* PushNotificationsDelegate.swift in Sources */,
 				4280C0D51F97341300075B3A /* SendingStatusCollectionViewCell.swift in Sources */,
 				97E437E624210C6E0076AA04 /* HttpConnection.swift in Sources */,
 				97F83C8A240D130A003F7451 /* FileMediaStorage.swift in Sources */,
 				4280C0E31F97364F00075B3A /* Chat.swift in Sources */,
+				805F59B8242D8552003421EB /* PushNotifications.swift in Sources */,
 				168E54CC22395DDC00B6E822 /* ColorPair.swift in Sources */,
 				97AF4D85241AEE8800ED9BD7 /* Client+Files.swift in Sources */,
 				1627723F203C5FB00086127C /* CoreData+Account.swift in Sources */,
