@@ -831,7 +831,7 @@
 		974E01A5242D5274008239B8 /* SwipeableNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeableNavigationController.swift; sourceTree = "<group>"; };
 		975F486C2412A68B00232361 /* MessageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContent.swift; sourceTree = "<group>"; };
 		975F486F2412A7DD00232361 /* TextContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextContent.swift; sourceTree = "<group>"; };
-		976E351724323ABD002D1CF2 /* VirgilMessenger-stg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VirgilMessenger-stg.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		976E351724323ABD002D1CF2 /* Virgil STG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Virgil STG.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		976E351924323DE6002D1CF2 /* VirgilMessenger-stg.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "VirgilMessenger-stg.entitlements"; sourceTree = "<group>"; };
 		976E353A24323F03002D1CF2 /* Notification Extension-stg.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Notification Extension-stg.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		976E353E24324011002D1CF2 /* Notification Extension-stg.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "Notification Extension-stg.entitlements"; sourceTree = "<group>"; };
@@ -1417,7 +1417,7 @@
 			children = (
 				429228B21F96261000DCECDF /* VirgilMessenger.app */,
 				16D4B8AE23F5BCA400D17B90 /* Notification Extension.appex */,
-				976E351724323ABD002D1CF2 /* VirgilMessenger-stg.app */,
+				976E351724323ABD002D1CF2 /* Virgil STG.app */,
 				976E353A24323F03002D1CF2 /* Notification Extension-stg.appex */,
 				976E360724329854002D1CF2 /* Virgil DEV.app */,
 				976E362E24329A02002D1CF2 /* Notification Extension-dev.appex */,
@@ -1623,7 +1623,7 @@
 			);
 			name = "VirgilMessenger-stg";
 			productName = VirgilMessenger;
-			productReference = 976E351724323ABD002D1CF2 /* VirgilMessenger-stg.app */;
+			productReference = 976E351724323ABD002D1CF2 /* Virgil STG.app */;
 			productType = "com.apple.product-type.application";
 		};
 		976E351A24323F03002D1CF2 /* Notification Extension-stg */ = {
@@ -2783,7 +2783,7 @@
 					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger.stg;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Virgil STG";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -2815,7 +2815,7 @@
 					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger.stg;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Virgil STG";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
