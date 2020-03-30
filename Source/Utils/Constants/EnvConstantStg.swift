@@ -11,5 +11,3 @@ import Foundation
 extension Constants {
     static let envPrefix: EnvPrefix = .stg
 }
-
-
