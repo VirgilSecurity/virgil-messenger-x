@@ -176,6 +176,8 @@
 		97F83C8A240D130A003F7451 /* FileMediaStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F83C89240D130A003F7451 /* FileMediaStorage.swift */; };
 		F401CDCE241B944800C59572 /* Message+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F401CDCD241B944800C59572 /* Message+WebRTC.swift */; };
 		F40DC078241F8F93006D572F /* Message+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F401CDCD241B944800C59572 /* Message+WebRTC.swift */; };
+		F44C6BAC2431B011007D10E1 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
+		F44C6BAD2431B01E007D10E1 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
 		F46EE193241FA09F00BE53AA /* Storage+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18D241FA09F00BE53AA /* Storage+Account.swift */; };
 		F46EE194241FA09F00BE53AA /* Storage+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18E241FA09F00BE53AA /* Storage+Message.swift */; };
 		F46EE195241FA09F00BE53AA /* Storage+TextMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18F241FA09F00BE53AA /* Storage+TextMessage.swift */; };
@@ -193,7 +195,7 @@
 		F481222A2425CBF60003DD78 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122282425CBF60003DD78 /* Message.swift */; };
 		F48122372425CC180003DD78 /* Storage+VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122322425CC180003DD78 /* Storage+VoiceMessage.swift */; };
 		F48122382425CC180003DD78 /* Storage+PhotoMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122332425CC180003DD78 /* Storage+PhotoMessage.swift */; };
-		F481223B2425D07B0003DD78 /* CoreData+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122392425D07B0003DD78 /* CoreData+Channel.swift */; };
+		F481223B2425D07B0003DD78 /* Storage+ChannelManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122392425D07B0003DD78 /* Storage+ChannelManagement.swift */; };
 		F481223C2425D07B0003DD78 /* CoreData+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481223A2425D07B0003DD78 /* CoreData+Messages.swift */; };
 		F48122452425D45F0003DD78 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122282425CBF60003DD78 /* Message.swift */; };
 		F48122482425D71B0003DD78 /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122472425D71B0003DD78 /* CallManager.swift */; };
@@ -406,6 +408,7 @@
 		97F83C89240D130A003F7451 /* FileMediaStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileMediaStorage.swift; sourceTree = "<group>"; };
 		F401CDCD241B944800C59572 /* Message+WebRTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+WebRTC.swift"; sourceTree = "<group>"; };
 		F401CDD8241B96E300C59572 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
+		F44C6BAB2431B011007D10E1 /* ChannelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelType.swift; sourceTree = "<group>"; };
 		F46EE18D241FA09F00BE53AA /* Storage+Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+Account.swift"; sourceTree = "<group>"; };
 		F46EE18E241FA09F00BE53AA /* Storage+Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+Message.swift"; sourceTree = "<group>"; };
 		F46EE18F241FA09F00BE53AA /* Storage+TextMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+TextMessage.swift"; sourceTree = "<group>"; };
@@ -421,7 +424,7 @@
 		F48122282425CBF60003DD78 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		F48122322425CC180003DD78 /* Storage+VoiceMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+VoiceMessage.swift"; sourceTree = "<group>"; };
 		F48122332425CC180003DD78 /* Storage+PhotoMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+PhotoMessage.swift"; sourceTree = "<group>"; };
-		F48122392425D07B0003DD78 /* CoreData+Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreData+Channel.swift"; sourceTree = "<group>"; };
+		F48122392425D07B0003DD78 /* Storage+ChannelManagement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+ChannelManagement.swift"; sourceTree = "<group>"; };
 		F481223A2425D07B0003DD78 /* CoreData+Messages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreData+Messages.swift"; sourceTree = "<group>"; };
 		F48122472425D71B0003DD78 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
 		F481224B24291CC70003DD78 /* CallStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallStrings.swift; sourceTree = "<group>"; };
@@ -685,6 +688,7 @@
 				16B4EC2523BF610500E7E4DB /* XMPPMessage.swift */,
 				16936791224916D100EF9A42 /* UserFriendlyError.swift */,
 				16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */,
+				F44C6BAB2431B011007D10E1 /* ChannelType.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -923,11 +927,11 @@
 		F401CDDD241F609A00C59572 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				F48122392425D07B0003DD78 /* CoreData+Channel.swift */,
 				F481223A2425D07B0003DD78 /* CoreData+Messages.swift */,
 				F46EE192241FA09F00BE53AA /* Storage.swift */,
 				F46EE18D241FA09F00BE53AA /* Storage+Account.swift */,
 				F46EE190241FA09F00BE53AA /* Storage+Channel.swift */,
+				F48122392425D07B0003DD78 /* Storage+ChannelManagement.swift */,
 				F46EE18E241FA09F00BE53AA /* Storage+Message.swift */,
 				F46EE18F241FA09F00BE53AA /* Storage+TextMessage.swift */,
 				F48122322425CC180003DD78 /* Storage+VoiceMessage.swift */,
@@ -1191,6 +1195,7 @@
 				16D4B8D423F5C33D00D17B90 /* UIColor+RGB.swift in Sources */,
 				9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */,
 				97AF4D86241AEED000ED9BD7 /* Client+Backend.swift in Sources */,
+				F44C6BAD2431B01E007D10E1 /* ChannelType.swift in Sources */,
 				16D4B8D923F5CE1700D17B90 /* IdentityDefaults.swift in Sources */,
 				16D4B8D323F5C32D00D17B90 /* ColorPair.swift in Sources */,
 				16D4B8B123F5BCA400D17B90 /* NotificationService.swift in Sources */,
@@ -1298,12 +1303,13 @@
 				F48122482425D71B0003DD78 /* CallManager.swift in Sources */,
 				16AE1D7A2044315B005DF777 /* UIPhotoMessageModel.swift in Sources */,
 				1612BC4623B658C000107C7A /* Ejabberd.swift in Sources */,
+				F44C6BAC2431B011007D10E1 /* ChannelType.swift in Sources */,
 				F481223C2425D07B0003DD78 /* CoreData+Messages.swift in Sources */,
 				16013C7F20B2C99C0043EA29 /* AudioMessagePresenter.swift in Sources */,
 				16D4B8D823F5CE1700D17B90 /* IdentityDefaults.swift in Sources */,
 				16AE1D7B2044315B005DF777 /* UIPhotoMessageHandler.swift in Sources */,
 				16317B9922C506A200A3144A /* Notifications.swift in Sources */,
-				F481223B2425D07B0003DD78 /* CoreData+Channel.swift in Sources */,
+				F481223B2425D07B0003DD78 /* Storage+ChannelManagement.swift in Sources */,
 				F48122372425CC180003DD78 /* Storage+VoiceMessage.swift in Sources */,
 				4280C0D41F97341300075B3A /* SendingStatusPresenter.swift in Sources */,
 				80AC601024008EAB00F6A73C /* Array+IndexPathSubscript.swift in Sources */,

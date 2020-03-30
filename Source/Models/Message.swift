@@ -43,6 +43,11 @@ public enum Message {
         let sdpMid: String?
     }
 
+    public struct NewChannel: Codable {
+        let type: ChannelType
+        let initiator: String
+    }
+
     case text(Text)
     case photo(Photo)
     case voice(Voice)
@@ -50,6 +55,7 @@ public enum Message {
     case callAcceptedAnswer(CallAcceptedAnswer)
     case callRejectedAnswer(CallRejectedAnswer)
     case iceCandidate(IceCandidate)
+    case newChannel(NewChannel)
 }
 
 extension Message: Codable {
@@ -61,6 +67,7 @@ extension Message: Codable {
         case callAcceptedAnswer = "call_accepted_answer"
         case callRejectedAnswer = "call_rejected_answer"
         case iceCandidate = "ice_candidate"
+        case newChannel = "new_channel"
     }
 
     enum CodingKeys: String, CodingKey {
@@ -100,6 +107,10 @@ extension Message: Codable {
         case .iceCandidate:
             let iceCandidate = try container.decode(IceCandidate.self, forKey: .payload)
             self = .iceCandidate(iceCandidate)
+
+        case .newChannel:
+            let newChannel = try container.decode(NewChannel.self, forKey: .payload)
+            self = .newChannel(newChannel)
         }
     }
 
@@ -141,6 +152,11 @@ extension Message: Codable {
             let type = TypeCodingKeys.iceCandidate
             try container.encode(type, forKey: .type)
             try container.encode(iceCandidate, forKey: .payload)
+
+        case .newChannel(let newChannel):
+            let type = TypeCodingKeys.newChannel
+            try container.encode(type, forKey: .type)
+            try container.encode(newChannel, forKey: .payload)
         }
     }
 

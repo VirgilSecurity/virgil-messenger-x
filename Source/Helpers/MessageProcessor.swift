@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import VirgilE3Kit
 
 class MessageProcessor {
     enum Error: Swift.Error {
@@ -15,18 +16,18 @@ class MessageProcessor {
     }
 
     static func process(_ encryptedMessage: EncryptedMessage, from author: String) throws {
-        let channel = try self.setupCoreChannel(name: author)
+        let channel = try self.setupChannel(name: author)
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
+
+        let message = try self.migrationSafeContentImport(from: decrypted,
+                                                                 version: encryptedMessage.modelVersion)
 
         var decryptedAdditional: Data?
 
         if let data = encryptedMessage.additionalData {
             decryptedAdditional = try Virgil.ethree.authDecrypt(data: data, from: channel.getCard())
         }
-
-        let message = try self.migrationSafeContentImport(from: decrypted,
-                                                                 version: encryptedMessage.modelVersion)
 
         try self.process(message,
                          additionalData: decryptedAdditional,
@@ -73,6 +74,14 @@ class MessageProcessor {
             storageMessage = try Storage.shared.createCallMessage(in: channel,
                                                                 isIncoming: true,
                                                                 date: date)
+        case .newChannel(let newChannel):
+            if newChannel.type == .singleRatchet {
+                _ = try Virgil.ethree.joinRatchetChannel(with: channel.getCard()).startSync().get()
+                channel.type = .singleRatchet
+                try Storage.shared.saveContext()
+            }
+
+            Notifications.post(message: message)
 
         case .callAcceptedAnswer, .callRejectedAnswer, .iceCandidate:
             //  FIXME: Unify the handling approach for '.text' as well.
@@ -108,26 +117,11 @@ class MessageProcessor {
         return message
     }
 
-    private static func setupCoreChannel(name: String) throws -> Storage.Channel {
-        let channel: Storage.Channel
-
-        if let coreChannel = Storage.shared.getChannel(withName: name) {
-            channel = coreChannel
-        } else {
-            let card = try Virgil.ethree.findUser(with: name).startSync().get()
-
-            channel = try Storage.shared.getChannel(withName: name)
-                ?? Storage.shared.createSingleChannel(initiator: name, card: card)
-        }
-
-        return channel
-    }
-
     private static func decrypt(_ message: EncryptedMessage, from channel: Storage.Channel) throws -> Data {
         let decrypted: Data
 
         do {
-            decrypted = try Virgil.ethree.authDecrypt(data: message.ciphertext, from: channel.getCard())
+            decrypted = try self.decrypt(message.ciphertext, from: channel)
         } catch {
             // TODO: check if needed
             try Storage.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
@@ -138,15 +132,24 @@ class MessageProcessor {
         return decrypted
     }
 
+    private static func decrypt(_ data: Data, from channel: Storage.Channel) throws -> Data {
+        if channel.type == .singleRatchet {
+            guard let ratchetChannel = try Virgil.ethree.getRatchetChannel(with: channel.getCard()) else {
+                throw UserFriendlyError.noUserOnDevice
+            }
+            return try ratchetChannel.decrypt(data: data)
+        } else {
+            return try Virgil.ethree.authDecrypt(data: data, from: channel.getCard())
+        }
+    }
+
     private static func setupChannel(name: String) throws -> Storage.Channel {
         let channel: Storage.Channel
 
         if let coreChannel = Storage.shared.getChannel(withName: name) {
             channel = coreChannel
         } else {
-            let card = try Virgil.ethree.findUser(with: name)
-                .startSync()
-                .get()
+            let card = try Virgil.ethree.findUser(with: name).startSync().get()
 
             channel = try Storage.shared.getChannel(withName: name)
                 ?? Storage.shared.createSingleChannel(initiator: name, card: card)

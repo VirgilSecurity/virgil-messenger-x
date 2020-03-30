@@ -1,6 +1,7 @@
 import Chatto
 import ChattoAdditions
 import VirgilSDK
+import VirgilE3Kit
 
 // FIXME: Move to proper file
 public protocol UIMessageModelExportable {
@@ -15,20 +16,49 @@ public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
     private func send(message: Message, additionalData: Data?, to channel: Storage.Channel, date: Date) throws {
+        let card = try channel.getCard()
+
+        let ratchetChannel: RatchetChannel?
+        if channel.type == .singleRatchet {
+            ratchetChannel = try Virgil.ethree.getRatchetChannel(with: card)
+        } else {
+            ratchetChannel = nil
+        }
+
         let exported = try message.exportAsJsonData()
 
-        let card = try channel.getCard()
-        let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: card)
+        let ciphertext = try self.encrypt(data: exported, for: card, withRacthetChannel: ratchetChannel)
 
         var additionalData = additionalData
 
         if let data = additionalData {
-            additionalData = try Virgil.ethree.authEncrypt(data: data, for: card)
+            additionalData = try self.encrypt(data: data, for: card, withRacthetChannel: ratchetChannel)
         }
 
         let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date, additionalData: additionalData)
 
         try Ejabberd.shared.send(encryptedMessage, to: channel.name)
+    }
+
+    private func sendService(message: Message, additionalData: Data?, to channel: Storage.Channel, date: Date) throws {
+        let card = try channel.getCard()
+
+        let exported = try message.exportAsJsonData()
+
+        let ciphertext = try self.encrypt(data: exported, for: card, withRacthetChannel: nil)
+
+        let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date, additionalData: nil)
+
+        try Ejabberd.shared.send(encryptedMessage, to: channel.name)
+    }
+
+    private func encrypt(data: Data, for card: Card, withRacthetChannel ratchetChannel: RatchetChannel?) throws -> Data {
+        if let ratchetChannel = ratchetChannel {
+            return try ratchetChannel.encrypt(data: data)
+        }
+        else {
+            return try Virgil.ethree.authEncrypt(data: data, for: card)
+        }
     }
 
     public func send(text: Message.Text, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
@@ -156,6 +186,20 @@ public class MessageSender {
                 completion(slot.getURL, nil)
             } catch {
                 completion(nil, error)
+            }
+        }
+    }
+
+    public func send(newChannel: Message.NewChannel, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+        self.queue.async {
+            do {
+                let message = Message.newChannel(newChannel)
+
+                try self.sendService(message: message, additionalData: nil, to: channel, date: date)
+
+                completion(nil)
+            } catch {
+                completion(error)
             }
         }
     }

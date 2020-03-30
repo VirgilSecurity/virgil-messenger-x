@@ -34,6 +34,7 @@ public class Virgil {
         let tokenCallback = client.makeTokenCallback(identity: identity)
         let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
         params.storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.appId)
+        params.enableRatchet = true
 
         self.ethree = try EThree(params: params)
 

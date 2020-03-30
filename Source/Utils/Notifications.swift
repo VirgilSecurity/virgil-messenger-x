@@ -110,6 +110,9 @@ extension Notifications {
             let notification = self.notification(Notifications.iceCandidateReceived)
             let userInfo = [NotificationKeys.message.rawValue: iceCandidate]
             self.center.post(name: notification, object: self, userInfo: userInfo)
+
+        case .newChannel:
+            self.post(EmptyNotification.chatListUpdated)
         }
     }
 

@@ -36,6 +36,21 @@ extension Storage {
         return try self.createChannel(type: .single, sid: sid, name: card.identity, initiator: initiator, cards: [card])
     }
 
+    func createSingleRatchetChannel(initiator: String, card: Card) throws -> Channel {
+        // TODO: remove sid on channel migration
+        let sid = UUID().uuidString
+
+        guard card.identity != Virgil.ethree.identity else {
+            throw UserFriendlyError.createSelfChatForbidded
+        }
+
+        if let channel = self.getChannel(withName: card.identifier) {
+            return channel
+        }
+
+        return try self.createChannel(type: .singleRatchet, sid: sid, name: card.identity, initiator: initiator, cards: [card])
+    }
+
     private func createChannel(type: ChannelType, sid: String, name: String, initiator: String, cards: [Card]) throws -> Channel {
         let cards = cards.filter { $0.identity != Virgil.ethree.identity }
         let account = try self.getCurrentAccount()
@@ -90,7 +105,7 @@ extension Storage {
     }
 
     func getSingleChannels() -> [Channel] {
-        return self.getChannels().filter { $0.type == .single }
+        return self.getChannels().filter { ($0.type == .single) || ($0.type == .singleRatchet) }
     }
 
     func getGroupChannels() -> [Channel] {

@@ -130,7 +130,7 @@ class NotificationService: UNNotificationServiceExtension {
             case .callOffer:
                 // FIXME:  Add caller name
                 messageString = "Incomming call"
-            case .callAcceptedAnswer, .callRejectedAnswer, .iceCandidate:
+            case .callAcceptedAnswer, .callRejectedAnswer, .iceCandidate, .newChannel:
                 // FIXME:  Hide this message
                 messageString = "Service message"
             }

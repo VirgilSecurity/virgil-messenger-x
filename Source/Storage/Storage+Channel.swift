@@ -12,11 +12,6 @@ import VirgilE3Kit
 import CoreGraphics
 
 extension Storage {
-    public enum ChannelType: String, Codable {
-        case single
-        case group
-    }
-
     @objc(Channel)
     public class Channel: NSManagedObject {
         @NSManaged public var sid: String
@@ -135,7 +130,7 @@ extension Storage {
         }
 
         public func getCard() throws -> Card {
-            guard self.type == .single, let card = self.cards.first else {
+            guard (self.type == .single) || (self.type == .singleRatchet), let card = self.cards.first else {
                 throw Storage.Error.invalidChannel
             }
 
