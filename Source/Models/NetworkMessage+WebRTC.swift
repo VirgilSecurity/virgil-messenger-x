@@ -1,5 +1,5 @@
 //
-//  Message+Text.swift
+//  NetworkMessage+WebRTC.swift
 //  VirgilMessenger
 //
 //  Created by Sergey Seroshtan on 13.03.2020.
@@ -9,7 +9,7 @@
 import Foundation
 import WebRTC
 
-extension Message.CallOffer {
+extension NetworkMessage.CallOffer {
     init(from rtcSessionDescription: RTCSessionDescription, caller: String) {
         assert(rtcSessionDescription.type == RTCSdpType.offer)
 
@@ -22,7 +22,7 @@ extension Message.CallOffer {
     }
 }
 
-extension Message.CallAcceptedAnswer {
+extension NetworkMessage.CallAcceptedAnswer {
     init(from rtcSessionDescription: RTCSessionDescription) {
         assert(rtcSessionDescription.type == RTCSdpType.answer)
         self.sdp = rtcSessionDescription.sdp
@@ -33,7 +33,7 @@ extension Message.CallAcceptedAnswer {
     }
 }
 
-extension Message.IceCandidate {
+extension NetworkMessage.IceCandidate {
     init(from iceCandidate: RTCIceCandidate) {
         self.sdpMLineIndex = iceCandidate.sdpMLineIndex
         self.sdpMid = iceCandidate.sdpMid

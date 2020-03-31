@@ -132,7 +132,7 @@ class DataSource: ChatDataSourceProtocol {
                                          status: .sending,
                                          date: Date())
 
-        let message = Message.Text(body: text)
+        let message = NetworkMessage.Text(body: text)
 
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
@@ -176,7 +176,7 @@ class DataSource: ChatDataSourceProtocol {
                 return
             }
 
-            let photo = Message.Photo(identifier: identifier, url: url)
+            let photo = NetworkMessage.Photo(identifier: identifier, url: url)
 
             self.messageSender.send(photo: photo, image: imageData, thumbnail: thumbnailData, date: uiModel.date, channel: self.channel) { (error) in
                 self.updateMessageStatus(uiModel, error)
@@ -216,7 +216,7 @@ class DataSource: ChatDataSourceProtocol {
                 return
             }
 
-            let voice = Message.Voice(identifier: uiModel.identifier, duration: uiModel.duration, url: url)
+            let voice = NetworkMessage.Voice(identifier: uiModel.identifier, duration: uiModel.duration, url: url)
 
             self.messageSender.send(voice: voice, date: uiModel.date, channel: self.channel) { (error) in
                 self.updateMessageStatus(uiModel, error)

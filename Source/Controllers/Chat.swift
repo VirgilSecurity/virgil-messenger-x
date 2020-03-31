@@ -78,10 +78,17 @@ class ChatViewController: BaseChatViewController {
         self.setupObservers()
 
         self.dataSource.setupObservers()
+
+        do {
+            try Storage.shared.resetUnreadCount(for: self.channel)
+        }
+        catch {
+            Log.error(error, message: "Reseting unread count for channel failed")
+        }
     }
 
     deinit {
-        Storage.shared.deselectChannel()
+        Storage.shared.deselectChannel(channel)
     }
 
     private func setupObservers() {
@@ -112,7 +119,8 @@ class ChatViewController: BaseChatViewController {
     private func setupTitle() {
         if let state = Configurator.state {
             self.setupIndicatorTitle(state)
-        } else {
+        }
+        else {
             self.setupRegularTitle()
         }
     }

@@ -97,7 +97,7 @@ class SettingsViewController: ViewController {
                 }
 
                 DispatchQueue.main.async {
-                    self.switchNavigationStack(to: AuthenticationViewController.name)
+                    self.switchNavigationStack(to: .authentication)
                 }
             }
         }
@@ -125,8 +125,9 @@ class SettingsViewController: ViewController {
             do {
                 try UserAuthorizer().deleteAccount()
 
-                self.switchNavigationStack(to: AuthenticationViewController.name)
-            } catch {
+                self.switchNavigationStack(to: .authentication)
+            }
+            catch {
                 self.alert(error)
             }
         }

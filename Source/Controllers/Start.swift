@@ -18,7 +18,8 @@ class StartViewController: ViewController {
         super.viewDidAppear(animated)
 
         guard self.checkReachability() else {
-            IdentityDefaults.shared.reset()
+            SharedDefaults.shared.reset(.identity)
+            UnreadManager.shared.reset()
             self.goToLogin()
             return
         }
@@ -33,10 +34,10 @@ class StartViewController: ViewController {
     }
 
     private func goToChatList() {
-        self.switchNavigationStack(to: "TabBar")
+        self.switchNavigationStack(to: .tabBar)
     }
 
     private func goToLogin() {
-        self.switchNavigationStack(to: AuthenticationViewController.name)
+        self.switchNavigationStack(to: .authentication)
     }
 }

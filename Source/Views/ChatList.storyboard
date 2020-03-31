@@ -100,7 +100,7 @@ Add new one!</string>
         <!--Chats-->
         <scene sceneID="5EQ-Nv-Tzg">
             <objects>
-                <navigationController id="xHd-tO-Nab" sceneMemberID="viewController">
+                <navigationController id="xHd-tO-Nab" customClass="SwipeableNavigationController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Chats" image="icon-chats" id="Tjl-PJ-4WF"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>

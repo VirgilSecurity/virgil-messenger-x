@@ -114,9 +114,13 @@ public class Storage {
         self.accounts.append(account)
     }
 
-    func deselectChannel() {
-        Log.debug("Core Data channel deselected: \(String(describing: self.currentChannel?.name))")
-        self.currentChannel = nil
+    func deselectChannel(_ channel: Channel? = Storage.shared.currentChannel) {
+        if self.currentChannel == channel {
+            self.currentChannel = nil
+            Log.debug("Core Data channel deselected: \(String(describing: self.currentChannel?.name))")
+        } else {
+            Log.debug("Core Data channel deselected failed: \(String(describing: self.currentChannel?.name)) is not the current channel")
+        }
     }
 
     func resetState() {

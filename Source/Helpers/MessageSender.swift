@@ -14,7 +14,7 @@ public protocol UIMessageModelProtocol: MessageModelProtocol {
 public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
-    private func send(message: Message, additionalData: Data?, to channel: Storage.Channel, date: Date) throws {
+    private func send(message: NetworkMessage, additionalData: Data?, to channel: Storage.Channel, date: Date) throws {
         let exported = try message.exportAsJsonData()
 
         let card = try channel.getCard()
@@ -31,9 +31,9 @@ public class MessageSender {
         try Ejabberd.shared.send(encryptedMessage, to: channel.name)
     }
 
-    public func send(text: Message.Text, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(text: NetworkMessage.Text, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         do {
-            let message = Message.text(text)
+            let message = NetworkMessage.text(text)
 
             try self.send(message: message, additionalData: nil, to: channel, date: date)
 
@@ -45,10 +45,10 @@ public class MessageSender {
         }
     }
 
-    public func send(photo: Message.Photo, image: Data, thumbnail: Data, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(photo: NetworkMessage.Photo, image: Data, thumbnail: Data, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         do {
 
-            let message = Message.photo(photo)
+            let message = NetworkMessage.photo(photo)
 
             try self.send(message: message, additionalData: thumbnail, to: channel, date: date)
 
@@ -62,10 +62,10 @@ public class MessageSender {
         }
     }
 
-    public func send(voice: Message.Voice, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(voice: NetworkMessage.Voice, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         do {
 
-            let message = Message.voice(voice)
+            let message = NetworkMessage.voice(voice)
 
             try self.send(message: message, additionalData: nil, to: channel, date: date)
 
@@ -77,10 +77,10 @@ public class MessageSender {
         }
     }
 
-    public func send(callOffer: Message.CallOffer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(callOffer: NetworkMessage.CallOffer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                let message = Message.callOffer(callOffer)
+                let message = NetworkMessage.callOffer(callOffer)
 
                 try self.send(message: message, additionalData: nil, to: channel, date: date)
 
@@ -95,10 +95,10 @@ public class MessageSender {
         }
     }
 
-    public func send(callAcceptedAnswer: Message.CallAcceptedAnswer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(callAcceptedAnswer: NetworkMessage.CallAcceptedAnswer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                let message = Message.callAcceptedAnswer(callAcceptedAnswer)
+                let message = NetworkMessage.callAcceptedAnswer(callAcceptedAnswer)
 
                 try self.send(message: message, additionalData: nil, to: channel, date: date)
 
@@ -109,10 +109,10 @@ public class MessageSender {
         }
     }
 
-    public func send(callRejectedAnswer: Message.CallRejectedAnswer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(callRejectedAnswer: NetworkMessage.CallRejectedAnswer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                let message = Message.callRejectedAnswer(callRejectedAnswer)
+                let message = NetworkMessage.callRejectedAnswer(callRejectedAnswer)
 
                 try self.send(message: message, additionalData: nil, to: channel, date: date)
 
@@ -123,10 +123,10 @@ public class MessageSender {
         }
     }
 
-    public func send(iceCandidate: Message.IceCandidate, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(iceCandidate: NetworkMessage.IceCandidate, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                let message = Message.iceCandidate(iceCandidate)
+                let message = NetworkMessage.iceCandidate(iceCandidate)
 
                 try self.send(message: message, additionalData: nil, to: channel, date: date)
 
