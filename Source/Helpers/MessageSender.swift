@@ -20,8 +20,7 @@ public class MessageSender {
 
         if channel.type == .singleRatchet, let ratchetChannel = try Virgil.ethree.getRatchetChannel(with: card) {
             return try ratchetChannel.encrypt(data: data)
-        }
-        else {
+        } else {
             return try Virgil.ethree.authEncrypt(data: data, for: card)
         }
     }

@@ -90,7 +90,6 @@ extension CallViewController: CallManagerObserver {
         }
     }
 
-
     func callManager(_ callManager: CallManager, didChange newConnectionStatus: CallManager.ConnectionStatus) {
         DispatchQueue.main.async {
             self.connectionStatusLabel.text = Self.stringify(connectionStatus: newConnectionStatus)

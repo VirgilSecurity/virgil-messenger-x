@@ -130,7 +130,7 @@ extension Storage {
 
     func turnToRatchet(channel: Channel) throws {
         channel.type = .singleRatchet
-        
+
         try self.saveContext()
     }
 }
