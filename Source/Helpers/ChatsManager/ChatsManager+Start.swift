@@ -68,11 +68,14 @@ public enum ChatsManager {
                 let channel = try Storage.shared.createSingleRatchetChannel(initiator: Virgil.ethree.identity, card: card)
 
                 let sender = MessageSender()
-                let ratchetChannelMessage = Message.NewChannel(type: .singleRatchet, initiator: Virgil.ethree.identity)
-                sender.send(newChannel: ratchetChannelMessage, date: Date(), channel: channel, completion: completion)
-            } catch FindUsersError.cardWasNotFound {
+                let newChannelMessage = Message.NewChannel(type: .singleRatchet, initiator: Virgil.ethree.identity)
+                let message = Message.newChannel(newChannelMessage)
+                try sender.sendService(message: message, additionalData: nil, to: channel, date: Date())
+            }
+            catch FindUsersError.cardWasNotFound {
                 completion(UserFriendlyError.userNotFound)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }

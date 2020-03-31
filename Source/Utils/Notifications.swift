@@ -86,7 +86,7 @@ extension Notifications {
 
     public static func post(message: Message) {
         switch message {
-        case .text, .photo, .voice:
+        case .text, .photo, .voice, .newChannel:
             // Is handled via post(message)
             // FIXME: Merge message processing aproach
             break
@@ -110,9 +110,6 @@ extension Notifications {
             let notification = self.notification(Notifications.iceCandidateReceived)
             let userInfo = [NotificationKeys.message.rawValue: iceCandidate]
             self.center.post(name: notification, object: self, userInfo: userInfo)
-
-        case .newChannel:
-            self.post(EmptyNotification.chatListUpdated)
         }
     }
 

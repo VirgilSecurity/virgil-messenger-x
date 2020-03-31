@@ -26,7 +26,7 @@ class MessageProcessor {
         var decryptedAdditional: Data?
 
         if let data = encryptedMessage.additionalData {
-            decryptedAdditional = try Virgil.ethree.authDecrypt(data: data, from: channel.getCard())
+            decryptedAdditional = try self.decrypt(data, from: channel)
         }
 
         try self.process(message,
@@ -77,14 +77,13 @@ class MessageProcessor {
         case .newChannel(let newChannel):
             if newChannel.type == .singleRatchet {
                 _ = try Virgil.ethree.joinRatchetChannel(with: channel.getCard()).startSync().get()
-                channel.type = .singleRatchet
-                try Storage.shared.saveContext()
+                try Storage.shared.turnToRatchet(channel: channel)
             }
 
-            Notifications.post(message: message)
+            Notifications.post(.chatListUpdated)
 
         case .callAcceptedAnswer, .callRejectedAnswer, .iceCandidate:
-            //  FIXME: Unify the handling approach for '.text' as well.
+            //  TODO: Unify the handling approach for '.text' as well.
             Notifications.post(message: message)
         }
 

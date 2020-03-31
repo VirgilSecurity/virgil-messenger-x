@@ -130,11 +130,16 @@ extension Storage {
         }
 
         public func getCard() throws -> Card {
-            guard (self.type == .single) || (self.type == .singleRatchet), let card = self.cards.first else {
-                throw Storage.Error.invalidChannel
+            switch self.type {
+            case .single, .singleRatchet:
+                if let card = self.cards.first {
+                    return card
+                }
+            case .group:
+                break
             }
 
-            return card
+            throw Storage.Error.invalidChannel
         }
 
         public func getGroup() throws -> Group {
