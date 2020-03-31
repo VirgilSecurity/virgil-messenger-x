@@ -71,6 +71,8 @@ public enum ChatsManager {
                 let newChannelMessage = Message.NewChannel(type: .singleRatchet, initiator: Virgil.ethree.identity)
                 let message = Message.newChannel(newChannelMessage)
                 try sender.sendService(message: message, additionalData: nil, to: channel, date: Date())
+
+                completion(nil)
             } catch FindUsersError.cardWasNotFound {
                 completion(UserFriendlyError.userNotFound)
             } catch {
