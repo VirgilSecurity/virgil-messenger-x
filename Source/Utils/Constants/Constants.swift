@@ -11,10 +11,8 @@ import XMPPFrameworkSwift
 
 enum Constants {
     enum EnvPrefix: String {
-    #if DEBUG
         case dev = "-dev"
         case stg = "-stg"
-    #endif
         case prod = ""
     }
     
