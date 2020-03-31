@@ -25,8 +25,6 @@ extension Storage {
         @NSManaged private var orderedMessages: NSOrderedSet?
         @NSManaged private var rawCards: [String]
 
-        private(set) var group: VirgilE3Kit.Group?
-
         public static let MessagesKey = "orderedMessages"
 
         private static let EntityName = "Channel"
@@ -135,23 +133,9 @@ extension Storage {
                 if let card = self.cards.first {
                     return card
                 }
-            case .group:
-                break
             }
 
             throw Storage.Error.invalidChannel
-        }
-
-        public func getGroup() throws -> Group {
-            guard self.type == .group, let group = self.group else {
-                throw Storage.Error.missingVirgilGroup
-            }
-
-            return group
-        }
-
-        public func set(group: Group) {
-            self.group = group
         }
     }
 }

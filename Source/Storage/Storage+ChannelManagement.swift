@@ -17,10 +17,6 @@ extension Storage {
         try self.saveContext()
     }
 
-    func createGroupChannel(name: String, sid: String, initiator: String, cards: [Card]) throws -> Channel {
-        return try self.createChannel(type: .group, sid: sid, name: name, initiator: initiator, cards: cards)
-    }
-
     func createSingleChannel(initiator: String, card: Card) throws -> Channel {
         // TODO: remove sid on channel migration
         let sid = UUID().uuidString
@@ -106,10 +102,6 @@ extension Storage {
 
     func getSingleChannels() -> [Channel] {
         return self.getChannels().filter { ($0.type == .single) || ($0.type == .singleRatchet) }
-    }
-
-    func getGroupChannels() -> [Channel] {
-        return self.getChannels().filter { $0.type == .group }
     }
 
     func getCurrentChannel() throws -> Channel {

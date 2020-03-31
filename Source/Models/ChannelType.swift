@@ -10,6 +10,5 @@ import Foundation
 
 public enum ChannelType: String, Codable {
     case single
-    case group
     case singleRatchet
 }
