@@ -128,8 +128,8 @@ extension Storage {
         return cards
     }
 
-    func turnToRatchet(channel: Channel) throws {
-        channel.type = .singleRatchet
+    func changeChannel(_ channel: Channel, type: ChannelType) throws {
+        channel.type = type
 
         try self.saveContext()
     }

@@ -42,9 +42,11 @@ public class MessageSender {
     }
 
     public func sendService(message: Message, additionalData: Data?, to channel: Storage.Channel, date: Date) throws {
+        let card = try channel.getCard()
+
         let exported = try message.exportAsJsonData()
 
-        let ciphertext = try self.encrypt(data: exported, for: channel)
+        let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: card)
 
         let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date, additionalData: nil)
 

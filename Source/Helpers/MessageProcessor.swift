@@ -75,10 +75,7 @@ class MessageProcessor {
                                                                 isIncoming: true,
                                                                 date: date)
         case .newChannel(let newChannel):
-            if newChannel.type == .singleRatchet {
-                _ = try Virgil.ethree.joinRatchetChannel(with: channel.getCard()).startSync().get()
-                try Storage.shared.turnToRatchet(channel: channel)
-            }
+            try Virgil.resolveChannel(channel, with: newChannel)
 
             Notifications.post(.chatListUpdated)
 
@@ -136,7 +133,12 @@ class MessageProcessor {
             guard let ratchetChannel = try Virgil.ethree.getRatchetChannel(with: channel.getCard()) else {
                 throw UserFriendlyError.noUserOnDevice
             }
-            return try ratchetChannel.decrypt(data: data)
+
+            do {
+                return try ratchetChannel.decrypt(data: data)
+            } catch {
+                return try Virgil.ethree.authDecrypt(data: data, from: channel.getCard())
+            }
         } else {
             return try Virgil.ethree.authDecrypt(data: data, from: channel.getCard())
         }

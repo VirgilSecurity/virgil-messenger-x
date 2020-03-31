@@ -178,6 +178,7 @@
 		F40DC078241F8F93006D572F /* Message+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F401CDCD241B944800C59572 /* Message+WebRTC.swift */; };
 		F44C6BAC2431B011007D10E1 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
 		F44C6BAD2431B01E007D10E1 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
+		F44C6BB324334084007D10E1 /* Virgil+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BB224334084007D10E1 /* Virgil+Storage.swift */; };
 		F46EE193241FA09F00BE53AA /* Storage+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18D241FA09F00BE53AA /* Storage+Account.swift */; };
 		F46EE194241FA09F00BE53AA /* Storage+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18E241FA09F00BE53AA /* Storage+Message.swift */; };
 		F46EE195241FA09F00BE53AA /* Storage+TextMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18F241FA09F00BE53AA /* Storage+TextMessage.swift */; };
@@ -409,6 +410,7 @@
 		F401CDCD241B944800C59572 /* Message+WebRTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+WebRTC.swift"; sourceTree = "<group>"; };
 		F401CDD8241B96E300C59572 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
 		F44C6BAB2431B011007D10E1 /* ChannelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelType.swift; sourceTree = "<group>"; };
+		F44C6BB224334084007D10E1 /* Virgil+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Virgil+Storage.swift"; sourceTree = "<group>"; };
 		F46EE18D241FA09F00BE53AA /* Storage+Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+Account.swift"; sourceTree = "<group>"; };
 		F46EE18E241FA09F00BE53AA /* Storage+Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+Message.swift"; sourceTree = "<group>"; };
 		F46EE18F241FA09F00BE53AA /* Storage+TextMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+TextMessage.swift"; sourceTree = "<group>"; };
@@ -783,6 +785,7 @@
 			children = (
 				1693678F22490BA000EF9A42 /* VirgilAuthorizer.swift */,
 				167C68441FADDB7800E6E448 /* Virgil.swift */,
+				F44C6BB224334084007D10E1 /* Virgil+Storage.swift */,
 			);
 			path = Virgil;
 			sourceTree = "<group>";
@@ -1262,6 +1265,7 @@
 				16F6FC721FAA235400158615 /* Registration.swift in Sources */,
 				4280C0D91F97341A00075B3A /* UITextMessageHandler.swift in Sources */,
 				9713269E2424CF7E0061A4CF /* UIMediaMessageState.swift in Sources */,
+				F44C6BB324334084007D10E1 /* Virgil+Storage.swift in Sources */,
 				80AC600C2400225100F6A73C /* DetailTableViewCell.swift in Sources */,
 				16FE75F0224A3DA000B545AF /* Configurator.swift in Sources */,
 				423BDA7E1F97602F00C3EE9B /* ChatListCell.swift in Sources */,
