@@ -6,6 +6,5 @@ github "Boris-Em/BEMCheckBox" ~> 1.4.1
 github "VirgilSecurity/virgil-crypto-x" ~> 5.2.0
 github "VirgilSecurity/virgil-sdk-x" "develop-messenger"
 github "sendbird/sendbird-webrtc-ios" ~> 1.1.1
-github "daltoniam/Starscream" ~> 4.0.0
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json"
 binary "Crashlytics.json"
