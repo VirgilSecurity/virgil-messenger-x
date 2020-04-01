@@ -87,17 +87,20 @@ extension Ejabberd {
         Log.debug("Ejabberd: Message received")
         
         // TODO: Add error message handling
+        
+        guard
+            let author = try? message.getAuthor(),
+            author != Virgil.ethree.identity,
+            let body = try? message.getBody(),
+            let xmppId = message.elementID
+        else {
+            return
+        }
+        
         do {
-            let author = try message.getAuthor()
-            
-            guard author != Virgil.ethree.identity else {
-                return
-            }
-            
-            let body = try message.getBody()
             let encryptedMessage = try EncryptedMessage.import(body)
 
-            try MessageProcessor.process(encryptedMessage, from: author)
+            try MessageProcessor.process(encryptedMessage, from: author, xmppId: xmppId)
         }
         catch {
             Log.error(error, message: "Message processing failed")
