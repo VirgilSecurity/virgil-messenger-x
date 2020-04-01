@@ -78,16 +78,6 @@
 		16CC9B7B21552D5800935AEC /* TabBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CC9B7A21552D5800935AEC /* TabBar.storyboard */; };
 		16D4B8B123F5BCA400D17B90 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D4B8B023F5BCA400D17B90 /* NotificationService.swift */; };
 		16D4B8B523F5BCA400D17B90 /* Notification Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 16D4B8AE23F5BCA400D17B90 /* Notification Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		16D4B8BA23F5BFC400D17B90 /* VirgilCryptoPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE3238D691600F7ACE7 /* VirgilCryptoPythia.framework */; };
-		16D4B8BC23F5BFC400D17B90 /* VirgilSDKPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; };
-		16D4B8BE23F5BFC400D17B90 /* VSCPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */; };
-		16D4B8C023F5BFC400D17B90 /* VirgilE3Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */; };
-		16D4B8C223F5BFC400D17B90 /* VirgilCryptoFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */; };
-		16D4B8C423F5BFC400D17B90 /* VirgilCryptoRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */; };
-		16D4B8C623F5BFC400D17B90 /* VirgilSDKRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */; };
-		16D4B8C823F5BFC400D17B90 /* VSCCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29522392339003B8CBA /* VSCCommon.framework */; };
-		16D4B8CA23F5BFC400D17B90 /* VSCFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29422392339003B8CBA /* VSCFoundation.framework */; };
-		16D4B8CC23F5BFC400D17B90 /* VSCRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29B22392339003B8CBA /* VSCRatchet.framework */; };
 		16D4B8D123F5C2EB00D17B90 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D8B0EE223A8FCF00D7FA67 /* Client.swift */; };
 		16D4B8D223F5C2F500D17B90 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51051FC468370042AF9D /* Constants.swift */; };
 		16D4B8D523F5C35300D17B90 /* UserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16936791224916D100EF9A42 /* UserFriendlyError.swift */; };
@@ -556,6 +546,54 @@
 		F4241F1324339E5100E839C3 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4241F0C24339E1700E839C3 /* Fabric.framework */; };
 		F4241F162433A01D00E839C3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97E7C49624030C0B00D9CAAA /* GoogleService-Info.plist */; };
 		F4241F172433A01E00E839C3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97E7C49624030C0B00D9CAAA /* GoogleService-Info.plist */; };
+		F4241F18243432C200E839C3 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
+		F4241F19243432C200E839C3 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
+		F4241F1A243432C500E839C3 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
+		F4241F1B243432C600E839C3 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
+		F4241F1C243432C600E839C3 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
+		F4241F1D2434336200E839C3 /* Virgil+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BB224334084007D10E1 /* Virgil+Storage.swift */; };
+		F4241F1E2434336200E839C3 /* Virgil+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BB224334084007D10E1 /* Virgil+Storage.swift */; };
+		F4241F1F243437B500E839C3 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
+		F4241F20243437B600E839C3 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
+		F4241F2124348DAF00E839C3 /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4792403085B00D9CAAA /* FirebaseAnalytics.framework */; };
+		F4241F242434C40000E839C3 /* VirgilCryptoPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE3238D691600F7ACE7 /* VirgilCryptoPythia.framework */; };
+		F4241F252434C40000E839C3 /* VirgilSDKPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; };
+		F4241F262434C40000E839C3 /* VSCPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */; };
+		F4241F272434C40100E839C3 /* VirgilE3Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */; };
+		F4241F282434C40100E839C3 /* VirgilCryptoFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */; };
+		F4241F292434C40100E839C3 /* VirgilCryptoRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */; };
+		F4241F2A2434C40100E839C3 /* VirgilSDKRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */; };
+		F4241F2B2434C40100E839C3 /* VSCCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29522392339003B8CBA /* VSCCommon.framework */; };
+		F4241F2C2434C40100E839C3 /* VSCFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29422392339003B8CBA /* VSCFoundation.framework */; };
+		F4241F2D2434C40200E839C3 /* VSCRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29B22392339003B8CBA /* VSCRatchet.framework */; };
+		F4241F2E2434C40200E839C3 /* VirgilCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CA1F96287A00DCECDF /* VirgilCrypto.framework */; };
+		F4241F2F2434C40200E839C3 /* VirgilSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CB1F96287A00DCECDF /* VirgilSDK.framework */; };
+		F4241F302434C40B00E839C3 /* VirgilCryptoPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE3238D691600F7ACE7 /* VirgilCryptoPythia.framework */; };
+		F4241F312434C40B00E839C3 /* VirgilSDKPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; };
+		F4241F322434C40C00E839C3 /* VSCPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */; };
+		F4241F332434C40C00E839C3 /* VirgilE3Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */; };
+		F4241F342434C40C00E839C3 /* VirgilCryptoFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */; };
+		F4241F352434C40C00E839C3 /* VirgilCryptoRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */; };
+		F4241F362434C40C00E839C3 /* VirgilSDKRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */; };
+		F4241F372434C40D00E839C3 /* VSCCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29522392339003B8CBA /* VSCCommon.framework */; };
+		F4241F382434C40D00E839C3 /* VSCFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29422392339003B8CBA /* VSCFoundation.framework */; };
+		F4241F392434C40D00E839C3 /* VSCRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29B22392339003B8CBA /* VSCRatchet.framework */; };
+		F4241F3A2434C40D00E839C3 /* VirgilCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CA1F96287A00DCECDF /* VirgilCrypto.framework */; };
+		F4241F3B2434C40E00E839C3 /* VirgilSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CB1F96287A00DCECDF /* VirgilSDK.framework */; };
+		F4241F3C2434C41700E839C3 /* VirgilCryptoPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE3238D691600F7ACE7 /* VirgilCryptoPythia.framework */; };
+		F4241F3D2434C41700E839C3 /* VirgilSDKPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; };
+		F4241F3E2434C41700E839C3 /* VSCPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */; };
+		F4241F3F2434C41700E839C3 /* VirgilE3Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */; };
+		F4241F402434C41800E839C3 /* VirgilCryptoFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */; };
+		F4241F412434C41800E839C3 /* VirgilCryptoRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */; };
+		F4241F422434C41800E839C3 /* VirgilSDKRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */; };
+		F4241F432434C41800E839C3 /* VSCCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29522392339003B8CBA /* VSCCommon.framework */; };
+		F4241F442434C41900E839C3 /* VSCFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29422392339003B8CBA /* VSCFoundation.framework */; };
+		F4241F452434C41900E839C3 /* VSCRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29B22392339003B8CBA /* VSCRatchet.framework */; };
+		F4241F462434C41900E839C3 /* VirgilCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CA1F96287A00DCECDF /* VirgilCrypto.framework */; };
+		F4241F472434C41900E839C3 /* VirgilSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CB1F96287A00DCECDF /* VirgilSDK.framework */; };
+		F44C6BAC2431B011007D10E1 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
+		F44C6BB324334084007D10E1 /* Virgil+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BB224334084007D10E1 /* Virgil+Storage.swift */; };
 		F46EE193241FA09F00BE53AA /* Storage+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18D241FA09F00BE53AA /* Storage+Account.swift */; };
 		F46EE194241FA09F00BE53AA /* Storage+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18E241FA09F00BE53AA /* Storage+Message.swift */; };
 		F46EE195241FA09F00BE53AA /* Storage+TextMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18F241FA09F00BE53AA /* Storage+TextMessage.swift */; };
@@ -847,16 +885,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16D4B8BA23F5BFC400D17B90 /* VirgilCryptoPythia.framework in Frameworks */,
-				16D4B8CC23F5BFC400D17B90 /* VSCRatchet.framework in Frameworks */,
-				16D4B8BE23F5BFC400D17B90 /* VSCPythia.framework in Frameworks */,
-				16D4B8C623F5BFC400D17B90 /* VirgilSDKRatchet.framework in Frameworks */,
-				16D4B8C223F5BFC400D17B90 /* VirgilCryptoFoundation.framework in Frameworks */,
-				16D4B8CA23F5BFC400D17B90 /* VSCFoundation.framework in Frameworks */,
-				16D4B8C823F5BFC400D17B90 /* VSCCommon.framework in Frameworks */,
-				16D4B8C023F5BFC400D17B90 /* VirgilE3Kit.framework in Frameworks */,
-				16D4B8C423F5BFC400D17B90 /* VirgilCryptoRatchet.framework in Frameworks */,
-				16D4B8BC23F5BFC400D17B90 /* VirgilSDKPythia.framework in Frameworks */,
+				F4241F242434C40000E839C3 /* VirgilCryptoPythia.framework in Frameworks */,
+				F4241F252434C40000E839C3 /* VirgilSDKPythia.framework in Frameworks */,
+				F4241F262434C40000E839C3 /* VSCPythia.framework in Frameworks */,
+				F4241F272434C40100E839C3 /* VirgilE3Kit.framework in Frameworks */,
+				F4241F282434C40100E839C3 /* VirgilCryptoFoundation.framework in Frameworks */,
+				F4241F292434C40100E839C3 /* VirgilCryptoRatchet.framework in Frameworks */,
+				F4241F2A2434C40100E839C3 /* VirgilSDKRatchet.framework in Frameworks */,
+				F4241F2B2434C40100E839C3 /* VSCCommon.framework in Frameworks */,
+				F4241F2C2434C40100E839C3 /* VSCFoundation.framework in Frameworks */,
+				F4241F2D2434C40200E839C3 /* VSCRatchet.framework in Frameworks */,
+				F4241F2E2434C40200E839C3 /* VirgilCrypto.framework in Frameworks */,
+				F4241F2F2434C40200E839C3 /* VirgilSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -962,6 +1002,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4241F302434C40B00E839C3 /* VirgilCryptoPythia.framework in Frameworks */,
+				F4241F312434C40B00E839C3 /* VirgilSDKPythia.framework in Frameworks */,
+				F4241F322434C40C00E839C3 /* VSCPythia.framework in Frameworks */,
+				F4241F332434C40C00E839C3 /* VirgilE3Kit.framework in Frameworks */,
+				F4241F342434C40C00E839C3 /* VirgilCryptoFoundation.framework in Frameworks */,
+				F4241F352434C40C00E839C3 /* VirgilCryptoRatchet.framework in Frameworks */,
+				F4241F362434C40C00E839C3 /* VirgilSDKRatchet.framework in Frameworks */,
+				F4241F372434C40D00E839C3 /* VSCCommon.framework in Frameworks */,
+				F4241F382434C40D00E839C3 /* VSCFoundation.framework in Frameworks */,
+				F4241F392434C40D00E839C3 /* VSCRatchet.framework in Frameworks */,
+				F4241F3A2434C40D00E839C3 /* VirgilCrypto.framework in Frameworks */,
+				F4241F3B2434C40E00E839C3 /* VirgilSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1018,6 +1070,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4241F3C2434C41700E839C3 /* VirgilCryptoPythia.framework in Frameworks */,
+				F4241F3D2434C41700E839C3 /* VirgilSDKPythia.framework in Frameworks */,
+				F4241F3E2434C41700E839C3 /* VSCPythia.framework in Frameworks */,
+				F4241F3F2434C41700E839C3 /* VirgilE3Kit.framework in Frameworks */,
+				F4241F402434C41800E839C3 /* VirgilCryptoFoundation.framework in Frameworks */,
+				F4241F412434C41800E839C3 /* VirgilCryptoRatchet.framework in Frameworks */,
+				F4241F422434C41800E839C3 /* VirgilSDKRatchet.framework in Frameworks */,
+				F4241F432434C41800E839C3 /* VSCCommon.framework in Frameworks */,
+				F4241F442434C41900E839C3 /* VSCFoundation.framework in Frameworks */,
+				F4241F452434C41900E839C3 /* VSCRatchet.framework in Frameworks */,
+				F4241F462434C41900E839C3 /* VirgilCrypto.framework in Frameworks */,
+				F4241F472434C41900E839C3 /* VirgilSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
