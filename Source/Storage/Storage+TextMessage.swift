@@ -18,6 +18,7 @@ extension Storage {
         private static let EntityName = "TextMessage"
 
         convenience init(body: String,
+                         xmppId: String,
                          isIncoming: Bool,
                          date: Date,
                          channel: Channel,
@@ -30,6 +31,7 @@ extension Storage {
             self.init(entity: entity, insertInto: managedContext)
 
             self.body = body
+            self.xmppId = xmppId
             self.isIncoming = isIncoming
             self.date = date
             self.channel = channel

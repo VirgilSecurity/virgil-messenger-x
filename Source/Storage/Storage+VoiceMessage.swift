@@ -23,6 +23,7 @@ extension Storage {
         convenience init(identifier: String,
                          duration: Double,
                          url: URL,
+                         xmppId: String,
                          isIncoming: Bool,
                          date: Date,
                          channel: Channel,
@@ -38,6 +39,7 @@ extension Storage {
             self.identifier = identifier
             self.duration = duration
             self.url = url
+            self.xmppId = xmppId
             self.isIncoming = isIncoming
             self.date = date
             self.channel = channel

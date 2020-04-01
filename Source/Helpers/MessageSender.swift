@@ -14,7 +14,8 @@ public protocol UIMessageModelProtocol: MessageModelProtocol {
 public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
-    private func send(message: NetworkMessage, additionalData: Data?, to channel: Storage.Channel, date: Date) throws {
+    // Returns xmppId
+    private func send(message: NetworkMessage, additionalData: Data?, to channel: Storage.Channel, date: Date) throws -> String {
         let exported = try message.exportAsJsonData()
 
         let card = try channel.getCard()
@@ -28,16 +29,16 @@ public class MessageSender {
 
         let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date, additionalData: additionalData)
 
-        try Ejabberd.shared.send(encryptedMessage, to: channel.name)
+        return try Ejabberd.shared.send(encryptedMessage, to: channel.name)
     }
 
     public func send(text: NetworkMessage.Text, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         do {
             let message = NetworkMessage.text(text)
 
-            try self.send(message: message, additionalData: nil, to: channel, date: date)
+            let xmppId = try self.send(message: message, additionalData: nil, to: channel, date: date)
 
-            _ = try Storage.shared.createTextMessage(text, in: channel, isIncoming: false, date: date)
+            _ = try Storage.shared.createTextMessage(text, xmppId: xmppId, in: channel, isIncoming: false, date: date)
 
             completion(nil)
         } catch {
@@ -50,11 +51,11 @@ public class MessageSender {
 
             let message = NetworkMessage.photo(photo)
 
-            try self.send(message: message, additionalData: thumbnail, to: channel, date: date)
+            let xmppId = try self.send(message: message, additionalData: thumbnail, to: channel, date: date)
 
             try Storage.shared.storeMediaContent(image, name: photo.identifier, type: .photo)
 
-            _ = try Storage.shared.createPhotoMessage(photo, thumbnail: thumbnail, in: channel, isIncoming: false)
+            _ = try Storage.shared.createPhotoMessage(photo, thumbnail: thumbnail, xmppId: xmppId, in: channel, isIncoming: false)
 
             completion(nil)
         } catch {
@@ -67,9 +68,9 @@ public class MessageSender {
 
             let message = NetworkMessage.voice(voice)
 
-            try self.send(message: message, additionalData: nil, to: channel, date: date)
+            let xmppId = try self.send(message: message, additionalData: nil, to: channel, date: date)
 
-            _ = try Storage.shared.createVoiceMessage(voice, in: channel, isIncoming: false)
+            _ = try Storage.shared.createVoiceMessage(voice, xmppId: xmppId, in: channel, isIncoming: false)
 
             completion(nil)
         } catch {
@@ -82,9 +83,9 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callOffer(callOffer)
 
-                try self.send(message: message, additionalData: nil, to: channel, date: date)
+                let xmppId = try self.send(message: message, additionalData: nil, to: channel, date: date)
 
-                let storageMessage = try Storage.shared.createCallMessage(in: channel, isIncoming: false, date: date)
+                let storageMessage = try Storage.shared.createCallMessage(xmppId: xmppId, in: channel, isIncoming: false, date: date)
 
                 Notifications.post(message: storageMessage)
 
@@ -100,7 +101,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callAcceptedAnswer(callAcceptedAnswer)
 
-                try self.send(message: message, additionalData: nil, to: channel, date: date)
+                let xmppId = try self.send(message: message, additionalData: nil, to: channel, date: date)
 
                 completion(nil)
             } catch {
@@ -114,7 +115,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callRejectedAnswer(callRejectedAnswer)
 
-                try self.send(message: message, additionalData: nil, to: channel, date: date)
+                let xmppId = try self.send(message: message, additionalData: nil, to: channel, date: date)
 
                 completion(nil)
             } catch {
@@ -128,7 +129,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.iceCandidate(iceCandidate)
 
-                try self.send(message: message, additionalData: nil, to: channel, date: date)
+                let xmppId = try self.send(message: message, additionalData: nil, to: channel, date: date)
 
                 completion(nil)
             } catch {

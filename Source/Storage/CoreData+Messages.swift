@@ -24,6 +24,7 @@ extension Storage {
 
     func createEncryptedMessage(in channel: Storage.Channel, isIncoming: Bool, date: Date) throws {
         let message = try TextMessage(body: "Message encrypted",
+                                      xmppId: UUID().uuidString,
                                       isIncoming: isIncoming,
                                       date: date,
                                       channel: channel,
@@ -35,11 +36,13 @@ extension Storage {
 
     func createTextMessage(_ content: NetworkMessage.Text,
                            unread: Bool = false,
+                           xmppId: String,
                            in channel: Storage.Channel,
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Message {
 
         let message = try TextMessage(body: content.body,
+                                      xmppId: xmppId,
                                       isIncoming: isIncoming,
                                       date: date,
                                       channel: channel,
@@ -53,12 +56,15 @@ extension Storage {
     func createPhotoMessage(_ content: NetworkMessage.Photo,
                             thumbnail: Data,
                             unread: Bool = false,
+                            xmppId: String,
                             in channel: Storage.Channel,
                             isIncoming: Bool,
                             date: Date = Date()) throws -> Message {
+
         let message = try PhotoMessage(identifier: content.identifier,
                                        thumbnail: thumbnail,
                                        url: content.url,
+                                       xmppId: xmppId,
                                        isIncoming: isIncoming,
                                        date: date,
                                        channel: channel,
@@ -71,12 +77,15 @@ extension Storage {
 
     func createVoiceMessage(_ content: NetworkMessage.Voice,
                             unread: Bool = false,
+                            xmppId: String,
                             in channel: Storage.Channel,
                             isIncoming: Bool,
                             date: Date = Date()) throws -> Message {
+
         let message = try VoiceMessage(identifier: content.identifier,
                                        duration: content.duration,
                                        url: content.url,
+                                       xmppId: xmppId,
                                        isIncoming: isIncoming,
                                        date: date,
                                        channel: channel,
@@ -87,14 +96,15 @@ extension Storage {
         return message
     }
 
-    func createCallMessage(in channel: Storage.Channel? = nil,
+    func createCallMessage(xmppId: String,
+                           in channel: Storage.Channel,
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Storage.Message {
-        let channel = try channel ?? self.getCurrentChannel()
 
-        let message = try Storage.CallMessage(isIncoming: isIncoming,
-                                      date: date,
-                                      channel: channel,
+        let message = try Storage.CallMessage(xmppId: xmppId,
+                                              isIncoming: isIncoming,
+                                              date: date,
+                                              channel: channel,
                                       managedContext: self.managedContext)
 
         try self.save(message, unread: false)

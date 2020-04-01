@@ -21,6 +21,7 @@
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="isHidden" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isIncoming" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="xmppId" attributeType="String" defaultValueString="NILID"/>
         <relationship name="channel" maxCount="1" deletionRule="Nullify" destinationEntity="Channel" inverseName="orderedMessages" inverseEntity="Channel"/>
     </entity>
     <entity name="PhotoMessage" representedClassName="PhotoMessage" parentEntity="Message" syncable="YES">
@@ -43,7 +44,7 @@
     <elements>
         <element name="Account" positionX="-450" positionY="45" width="128" height="90"/>
         <element name="Channel" positionX="-407" positionY="243" width="128" height="193"/>
-        <element name="Message" positionX="-128" positionY="198" width="128" height="103"/>
+        <element name="Message" positionX="-128" positionY="198" width="128" height="118"/>
         <element name="PhotoMessage" positionX="-288" positionY="198" width="128" height="88"/>
         <element name="TextMessage" positionX="-128.25" positionY="86.609375" width="128" height="58"/>
         <element name="VoiceMessage" positionX="-288" positionY="198" width="128" height="88"/>

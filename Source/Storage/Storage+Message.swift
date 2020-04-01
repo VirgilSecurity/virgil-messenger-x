@@ -14,6 +14,7 @@ import ChattoAdditions
 extension Storage {
     @objc(Message)
     public class Message: NSManagedObject, UIMessageModelExportable {
+        @NSManaged public var xmppId: String
         @NSManaged public var date: Date
         @NSManaged public var isIncoming: Bool
         @NSManaged public var channel: Storage.Channel

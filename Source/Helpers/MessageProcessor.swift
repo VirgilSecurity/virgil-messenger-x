@@ -14,7 +14,7 @@ class MessageProcessor {
         case dataToStrFailed
     }
 
-    static func process(_ encryptedMessage: EncryptedMessage, from author: String) throws {
+    static func process(_ encryptedMessage: EncryptedMessage, from author: String, xmppId: String) throws {
         let channel = try self.setupCoreChannel(name: author)
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
@@ -30,6 +30,7 @@ class MessageProcessor {
 
         try self.process(message,
                          additionalData: decryptedAdditional,
+                         xmppId: xmppId,
                          channel: channel,
                          author: author,
                          date: encryptedMessage.date)
@@ -37,6 +38,7 @@ class MessageProcessor {
 
     private static func process(_ message: NetworkMessage,
                                 additionalData: Data?,
+                                xmppId: String,
                                 channel: Storage.Channel,
                                 author: String,
                                 date: Date) throws {
@@ -52,6 +54,7 @@ class MessageProcessor {
         case .text(let text):
             storageMessage = try Storage.shared.createTextMessage(text,
                                                                   unread: unread,
+                                                                  xmppId: xmppId,
                                                                   in: channel,
                                                                   isIncoming: true,
                                                                   date: date)
@@ -62,24 +65,27 @@ class MessageProcessor {
             }
 
             storageMessage = try Storage.shared.createPhotoMessage(photo,
-                                                             thumbnail: thumbnail,
-                                                             unread: unread,
-                                                             in: channel,
-                                                             isIncoming: true,
-                                                             date: date)
+                                                                   thumbnail: thumbnail,
+                                                                   unread: unread,
+                                                                   xmppId: xmppId,
+                                                                   in: channel,
+                                                                   isIncoming: true,
+                                                                   date: date)
         case .voice(let voice):
             storageMessage = try Storage.shared.createVoiceMessage(voice,
-                                                             unread: unread,
-                                                             in: channel,
-                                                             isIncoming: true,
-                                                             date: date)
+                                                                   unread: unread,
+                                                                   xmppId: xmppId,
+                                                                   in: channel,
+                                                                   isIncoming: true,
+                                                                   date: date)
 
         case .callOffer:
             Notifications.post(message: message)
 
-            storageMessage = try Storage.shared.createCallMessage(in: channel,
-                                                                isIncoming: true,
-                                                                date: date)
+            storageMessage = try Storage.shared.createCallMessage(xmppId: xmppId,
+                                                                  in: channel,
+                                                                  isIncoming: true,
+                                                                  date: date)
 
         case .callAcceptedAnswer, .callRejectedAnswer, .iceCandidate:
             //  FIXME: Unify the handling approach for '.text' as well.
