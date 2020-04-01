@@ -147,7 +147,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
     private func goToChatList() {
         Notifications.removeObservers(self)
 
-        self.switchNavigationStack(to: "TabBar")
+        self.switchNavigationStack(to: .tabBar)
     }
 
     private func openUrl(urlStr: String) {

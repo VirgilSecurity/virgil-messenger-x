@@ -68,8 +68,8 @@ public enum ChatsManager {
                 let channel = try Storage.shared.createSingleRatchetChannel(initiator: Virgil.ethree.identity, card: card)
 
                 let sender = MessageSender()
-                let newChannelMessage = Message.NewChannel(type: .singleRatchet, initiator: Virgil.ethree.identity)
-                let message = Message.newChannel(newChannelMessage)
+                let newChannelMessage = NetworkMessage.NewChannel(type: .singleRatchet, initiator: Virgil.ethree.identity)
+                let message = NetworkMessage.newChannel(newChannelMessage)
                 try sender.sendService(message: message, additionalData: nil, to: channel, date: Date())
 
                 completion(nil)

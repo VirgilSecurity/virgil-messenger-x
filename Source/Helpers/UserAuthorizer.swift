@@ -20,13 +20,15 @@ public class UserAuthorizer {
     }
 
     public func signIn() throws {
-        guard let identity = IdentityDefaults.shared.get() else {
+        guard let identity: String = SharedDefaults.shared.get(.identity) else {
             throw UserAuthorizerError.noIdentityAtDefaults
         }
 
         let account = try Storage.shared.loadAccount(withIdentity: identity)
 
         try self.virgilAuthorizer.signIn(identity: identity)
+
+        UnreadManager.shared.update()
 
         CallManager.shared.set(account: account)
     }
@@ -36,10 +38,11 @@ public class UserAuthorizer {
 
         try self.virgilAuthorizer.signIn(identity: identity)
 
-        IdentityDefaults.shared.set(identity: identity)
+        SharedDefaults.shared.set(identity: identity)
+
+        UnreadManager.shared.update()
 
         CallManager.shared.set(account: account)
-
     }
 
    public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
@@ -49,7 +52,7 @@ public class UserAuthorizer {
 
                 let account = try Storage.shared.createAccount(withIdentity: identity)
 
-                IdentityDefaults.shared.set(identity: identity)
+                SharedDefaults.shared.set(identity: identity)
 
                 CallManager.shared.set(account: account)
 
@@ -70,7 +73,8 @@ public class UserAuthorizer {
                 Configurator.reset()
                 Storage.shared.resetState()
 
-                IdentityDefaults.shared.reset()
+                SharedDefaults.shared.reset(.identity)
+                UnreadManager.shared.reset()
 
                 CallManager.shared.resetAccount()
 
@@ -82,7 +86,8 @@ public class UserAuthorizer {
     }
 
     public func deleteAccount() throws {
-        IdentityDefaults.shared.reset()
+        SharedDefaults.shared.reset(.identity)
+        UnreadManager.shared.reset()
 
         Configurator.reset()
 

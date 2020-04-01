@@ -36,20 +36,26 @@ class MessageProcessor {
                          date: encryptedMessage.date)
     }
 
-    private static func process(_ message: Message,
+    private static func process(_ message: NetworkMessage,
                                 additionalData: Data?,
                                 channel: Storage.Channel,
                                 author: String,
                                 date: Date) throws {
+
+        var unread: Bool = true
+        if let channel = Storage.shared.currentChannel, channel.name == author {
+            unread = false
+        }
 
         var storageMessage: Storage.Message?
 
         switch message {
         case .text(let text):
             storageMessage = try Storage.shared.createTextMessage(text,
-                                                                in: channel,
-                                                                isIncoming: true,
-                                                                date: date)
+                                                                  unread: unread,
+                                                                  in: channel,
+                                                                  isIncoming: true,
+                                                                  date: date)
 
         case .photo(let photo):
             guard let thumbnail = additionalData else {
@@ -58,12 +64,13 @@ class MessageProcessor {
 
             storageMessage = try Storage.shared.createPhotoMessage(photo,
                                                              thumbnail: thumbnail,
+                                                             unread: unread,
                                                              in: channel,
                                                              isIncoming: true,
                                                              date: date)
-
         case .voice(let voice):
             storageMessage = try Storage.shared.createVoiceMessage(voice,
+                                                             unread: unread,
                                                              in: channel,
                                                              isIncoming: true,
                                                              date: date)
@@ -90,13 +97,15 @@ class MessageProcessor {
         }
 
         if let storageMessage = storageMessage {
-            Notifications.post(message: storageMessage)
+            self.postNotification(about: storageMessage, unread: unread)
         }
+
+        self.postLocalPushNotification(message: message, author: author)
     }
 
     private static func migrationSafeContentImport(from data: Data,
-                                                   version: EncryptedMessageVersion) throws -> Message {
-        let message: Message
+                                                   version: EncryptedMessageVersion) throws -> NetworkMessage {
+        let message: NetworkMessage
 
         switch version {
         case .v1:
@@ -104,10 +113,10 @@ class MessageProcessor {
                 throw Error.dataToStrFailed
             }
 
-            let text = Message.Text(body: body)
-            message = Message.text(text)
+            let text = NetworkMessage.Text(body: body)
+            message = NetworkMessage.text(text)
         case .v2:
-            message = try Message.import(from: data)
+            message = try NetworkMessage.import(from: data)
         }
 
         return message
@@ -142,6 +151,19 @@ class MessageProcessor {
         } else {
             return try Virgil.ethree.authDecrypt(data: data, from: channel.getCard())
         }
+    }
+
+    private static func postNotification(about message: Storage.Message, unread: Bool) {
+        unread ? Notifications.post(.chatListUpdated) : Notifications.post(message: message)
+    }
+
+    private static func postLocalPushNotification(message: NetworkMessage, author: String) {
+        let currentChannelName = Storage.shared.currentChannel?.name
+        guard currentChannelName != nil && currentChannelName != author else {
+            return
+        }
+
+        PushNotifications.post(message: message, author: author)
     }
 
     private static func setupChannel(name: String) throws -> Storage.Channel {

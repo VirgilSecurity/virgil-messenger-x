@@ -1,5 +1,5 @@
 //
-//  Message.swift
+//  NetworkMessage.swift
 //  VirgilMessenger
 //
 //  Created by Yevhen Pyvovarov on 3/6/20.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum Message {
+public enum NetworkMessage {
 
     public struct Text: Codable {
         let body: String
@@ -58,7 +58,7 @@ public enum Message {
     case newChannel(NewChannel)
 }
 
-extension Message: Codable {
+extension NetworkMessage: Codable {
     enum TypeCodingKeys: String, Codable {
         case text
         case photo
@@ -160,12 +160,31 @@ extension Message: Codable {
         }
     }
 
-    static func `import`(from jsonData: Data) throws -> Message {
-        return try JSONDecoder().decode(Message.self, from: jsonData)
+    static func `import`(from jsonData: Data) throws -> NetworkMessage {
+        return try JSONDecoder().decode(NetworkMessage.self, from: jsonData)
     }
 
     func exportAsJsonData() throws -> Data {
         let data = try JSONEncoder().encode(self)
         return data
+    }
+}
+
+extension NetworkMessage {
+    var notificationBody: String {
+        switch self {
+        case .text(let text):
+            return text.body
+        case .photo:
+            return "📷 Photo"
+        case .voice:
+            return "🎤 Voice Message"
+        case .callOffer:
+            // FIXME:  Add caller name
+            return "Incomming call"
+        case .callAcceptedAnswer, .callRejectedAnswer, .iceCandidate, .newChannel:
+            // FIXME:  Hide this message
+            return "Service message"
+        }
     }
 }

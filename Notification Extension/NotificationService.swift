@@ -49,6 +49,8 @@ class NotificationService: UNNotificationServiceExtension {
 
         self.bestAttemptContent = bestAttemptContent
 
+        self.updateBadge(for: bestAttemptContent)
+
         do {
             let notificationInfo = try self.parse(content: bestAttemptContent)
 
@@ -78,6 +80,14 @@ class NotificationService: UNNotificationServiceExtension {
         }
     }
 
+    private func updateBadge(for content: UNMutableNotificationContent) {
+        let oldBadgeCount: Int = SharedDefaults.shared.get(.unreadCount) ?? 0
+        let newBadgeCount = oldBadgeCount + 1
+
+        SharedDefaults.shared.set(unreadCount: newBadgeCount)
+        content.badge = NSNumber(value: newBadgeCount)
+    }
+
     private func parse(content: UNMutableNotificationContent) throws -> NotificationInfo {
         guard let aps = content.userInfo[NotificationKeys.aps.rawValue] as? [String: Any],
             let alert = aps[NotificationKeys.alert.rawValue] as? [String: String],
@@ -92,14 +102,22 @@ class NotificationService: UNNotificationServiceExtension {
     }
 
     private func decrypt(notificationInfo: NotificationInfo) throws -> Data {
-        guard let identity = IdentityDefaults.shared.get() else {
+        guard let identity: String = SharedDefaults.shared.get(.identity) else {
             throw NotificationServiceError.missingIdentityInDefaults
         }
 
-        let client = Client(crypto: self.crypto)
-        try Virgil.initialize(identity: identity, client: client)
+        // Initializing KeyStorage with root application name. We need it to fetch shared key from root app
+        let storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.KeychainGroup)
 
-        let card = try Virgil.ethree.findUser(with: notificationInfo.sender)
+        let client = Client(crypto: self.crypto)
+
+        let tokenCallback = client.makeTokenCallback(identity: identity)
+
+        let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
+        params.storageParams = storageParams
+        let ethree = try EThree(params: params)
+
+        let card = try ethree.findUser(with: notificationInfo.sender)
             .startSync()
             .get()
 
@@ -118,22 +136,9 @@ class NotificationService: UNNotificationServiceExtension {
 
             messageString = string
         case .v2:
-            let message = try Message.import(from: decrypted)
+            let message = try NetworkMessage.import(from: decrypted)
 
-            switch message {
-            case .text(let text):
-                messageString = text.body
-            case .photo:
-                messageString = "📷 Photo"
-            case .voice:
-                messageString = "🎤 Voice Message"
-            case .callOffer:
-                // FIXME:  Add caller name
-                messageString = "Incomming call"
-            case .callAcceptedAnswer, .callRejectedAnswer, .iceCandidate, .newChannel:
-                // FIXME:  Hide this message
-                messageString = "Service message"
-            }
+            messageString = message.notificationBody
         }
 
         return messageString

@@ -22,9 +22,9 @@ extension Storage {
         public static let EntityName = "Account"
         public static let ChannelsKey = "orderedChannels"
 
-        public var channels: [Storage.Channel] {
+        public var channels: [Channel] {
             get {
-                return self.orderedChannels?.array as? [Storage.Channel] ?? []
+                return self.orderedChannels?.array as? [Channel] ?? []
             }
         }
 
@@ -49,6 +49,18 @@ extension Storage {
 
             self.identity = identity
             self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
+        }
+
+        func totalUnreadCount() -> Int {
+            // FIXME: in swift 5.2
+            // let totalUnreadCount = self.channels.map(\.unreadCount).reduce(0, +)
+
+            var totalUnreadCount: Int16 = 0
+            self.channels.forEach {
+                totalUnreadCount += $0.unreadCount
+            }
+
+            return Int(totalUnreadCount)
         }
     }
 }

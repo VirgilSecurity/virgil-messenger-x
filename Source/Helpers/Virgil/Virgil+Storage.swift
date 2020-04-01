@@ -9,7 +9,7 @@
 import Foundation
 
 extension Virgil {
-    public static func resolveChannel(_ channel: Storage.Channel, with newChannel: Message.NewChannel) throws {
+    public static func resolveChannel(_ channel: Storage.Channel, with newChannel: NetworkMessage.NewChannel) throws {
         // single -> singleRatchet
         if channel.type == .single && newChannel.type == .singleRatchet {
             _ = try Virgil.ethree.joinRatchetChannel(with: channel.getCard()).startSync().get()

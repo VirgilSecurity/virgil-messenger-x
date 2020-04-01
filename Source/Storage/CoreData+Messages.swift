@@ -11,7 +11,11 @@ import VirgilCryptoRatchet
 import VirgilSDK
 
 extension Storage {
-    private func save(_ message: Message) throws {
+    private func save(_ message: Message, unread: Bool) throws {
+        if unread {
+            message.channel.unreadCount += 1
+        }
+
         let messages = message.channel.mutableOrderedSetValue(forKey: Channel.MessagesKey)
         messages.add(message)
 
@@ -26,10 +30,11 @@ extension Storage {
                                       isHidden: true,
                                       managedContext: self.managedContext)
 
-        try self.save(message)
+        try self.save(message, unread: false)
     }
 
-    func createTextMessage(_ content: VirgilMessenger.Message.Text,
+    func createTextMessage(_ content: NetworkMessage.Text,
+                           unread: Bool = false,
                            in channel: Storage.Channel,
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Message {
@@ -40,13 +45,14 @@ extension Storage {
                                       channel: channel,
                                       managedContext: self.managedContext)
 
-        try self.save(message)
+        try self.save(message, unread: unread)
 
         return message
     }
 
-    func createPhotoMessage(_ content: VirgilMessenger.Message.Photo,
+    func createPhotoMessage(_ content: NetworkMessage.Photo,
                             thumbnail: Data,
+                            unread: Bool = false,
                             in channel: Storage.Channel,
                             isIncoming: Bool,
                             date: Date = Date()) throws -> Message {
@@ -58,12 +64,13 @@ extension Storage {
                                        channel: channel,
                                        managedContext: self.managedContext)
 
-        try self.save(message)
+        try self.save(message, unread: unread)
 
         return message
     }
 
-    func createVoiceMessage(_ content: VirgilMessenger.Message.Voice,
+    func createVoiceMessage(_ content: NetworkMessage.Voice,
+                            unread: Bool = false,
                             in channel: Storage.Channel,
                             isIncoming: Bool,
                             date: Date = Date()) throws -> Message {
@@ -75,7 +82,7 @@ extension Storage {
                                        channel: channel,
                                        managedContext: self.managedContext)
 
-        try self.save(message)
+        try self.save(message, unread: unread)
 
         return message
     }
@@ -90,7 +97,7 @@ extension Storage {
                                       channel: channel,
                                       managedContext: self.managedContext)
 
-        try self.save(message)
+        try self.save(message, unread: false)
 
         return message
     }

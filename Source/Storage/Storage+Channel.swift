@@ -16,9 +16,10 @@ extension Storage {
     public class Channel: NSManagedObject {
         @NSManaged public var sid: String
         @NSManaged public var name: String
-        @NSManaged public var account: Storage.Account
+        @NSManaged public var account: Account
         @NSManaged public var createdAt: Date
         @NSManaged public var initiator: String
+        @NSManaged public var unreadCount: Int16
 
         @NSManaged private var rawType: String
         @NSManaged private var numColorPair: Int32
@@ -29,16 +30,16 @@ extension Storage {
 
         private static let EntityName = "Channel"
 
-        public var visibleMessages: [Storage.Message] {
-            guard let messages = self.orderedMessages?.array as? [Storage.Message] else {
+        public var visibleMessages: [Message] {
+            guard let messages = self.orderedMessages?.array as? [Message] else {
                 return []
             }
 
             return messages.filter { !$0.isHidden }
         }
 
-        public var allMessages: [Storage.Message] {
-            return self.orderedMessages?.array as? [Storage.Message] ?? []
+        public var allMessages: [Message] {
+            return self.orderedMessages?.array as? [Message] ?? []
         }
 
         public var cards: [Card] {
@@ -76,16 +77,20 @@ extension Storage {
                 return ""
             }
 
-            // TODO: wrap to enum?
-            if let textMessage = message as? TextMessage {
+            switch message {
+            case let textMessage as TextMessage:
                 return textMessage.body
-            } else if message is PhotoMessage {
+
+            case is PhotoMessage:
                 return "Photo"
-            } else if message is VoiceMessage {
+
+            case is VoiceMessage:
                 return "Voice Message"
-            } else if let call = message as? CallMessage {
-                return call.isIncoming ? "Incomming call from \(call.channelName)" : "Outgoing call to \(call.channelName)"
-            } else {
+
+            case let callMessage as CallMessage:
+                return callMessage.isIncoming ? "Call from \(callMessage.channelName)" : "Call to \(callMessage.channelName)"
+
+            default:
                 return ""
             }
         }
@@ -108,10 +113,10 @@ extension Storage {
                          name: String,
                          initiator: String,
                          type: ChannelType,
-                         account: Storage.Account,
+                         account: Account,
                          cards: [Card],
                          managedContext: NSManagedObjectContext) throws {
-            guard let entity = NSEntityDescription.entity(forEntityName: Storage.Channel.EntityName, in: managedContext) else {
+            guard let entity = NSEntityDescription.entity(forEntityName: Channel.EntityName, in: managedContext) else {
                 throw Storage.Error.entityNotFound
             }
 
@@ -124,6 +129,7 @@ extension Storage {
             self.type = type
             self.cards = cards
             self.createdAt = Date()
+            self.unreadCount = 0
             self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
         }
 

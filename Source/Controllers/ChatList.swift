@@ -21,7 +21,7 @@ class ChatListViewController: ViewController {
 
     static let name = "ChatList"
 
-    private var channels: [Storage.Channel] = []
+    var channels: [Storage.Channel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,7 +80,7 @@ class ChatListViewController: ViewController {
         }
 
         let callOfferReceived: Notifications.Block = { [weak self] notification in
-            let callOffer: Message.CallOffer
+            let callOffer: NetworkMessage.CallOffer
             do {
                 callOffer = try Notifications.parse(notification, for: .message)
             } catch {
@@ -103,7 +103,7 @@ class ChatListViewController: ViewController {
                 return
             }
 
-            let iceCandidate: Message.IceCandidate
+            let iceCandidate: NetworkMessage.IceCandidate
             do {
                 iceCandidate = try Notifications.parse(notification, for: .message)
             } catch {
@@ -119,7 +119,7 @@ class ChatListViewController: ViewController {
                 return
             }
 
-            let callAceptedAnswer: Message.CallAcceptedAnswer
+            let callAceptedAnswer: NetworkMessage.CallAcceptedAnswer
             do {
                 callAceptedAnswer = try Notifications.parse(notification, for: .message)
             } catch {
@@ -136,7 +136,7 @@ class ChatListViewController: ViewController {
                 return
             }
 
-            let callRejectedAnswer: Message.CallRejectedAnswer
+            let callRejectedAnswer: NetworkMessage.CallRejectedAnswer
             do {
                 callRejectedAnswer = try Notifications.parse(notification, for: .message)
             } catch {
@@ -224,7 +224,7 @@ class ChatListViewController: ViewController {
     private func setupTableView() {
         let chatListCellNib = UINib(nibName: ChatListCell.name, bundle: Bundle.main)
         self.tableView.register(chatListCellNib, forCellReuseIdentifier: ChatListCell.name)
-        self.tableView.rowHeight = 94
+        self.tableView.rowHeight = 80
         self.tableView.tableFooterView = UIView(frame: .zero)
         self.tableView.dataSource = self
     }
@@ -306,7 +306,7 @@ class ChatListViewController: ViewController {
 
     private func goToLogin() {
         DispatchQueue.main.async {
-            self.switchNavigationStack(to: AuthenticationViewController.name)
+            self.switchNavigationStack(to: .authentication)
         }
     }
 }
@@ -340,9 +340,7 @@ extension ChatListViewController: CellTapDelegate {
             return
         }
 
-        Storage.shared.setCurrent(channel: selectedChannel)
-
-        self.performSegue(withIdentifier: "goToChat", sender: self)
+        self.moveToChannel(selectedChannel)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -352,5 +350,12 @@ extension ChatListViewController: CellTapDelegate {
         }
 
         super.prepare(for: segue, sender: sender)
+    }
+}
+
+extension ChatListViewController {
+    func moveToChannel(_ channel: Storage.Channel) {
+        Storage.shared.setCurrent(channel: channel)
+        self.performSegue(withIdentifier: "goToChat", sender: self)
     }
 }

@@ -84,7 +84,7 @@ extension Notifications {
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }
 
-    public static func post(message: Message) {
+    public static func post(message: NetworkMessage) {
         switch message {
         case .text, .photo, .voice, .newChannel:
             // Is handled via post(message)

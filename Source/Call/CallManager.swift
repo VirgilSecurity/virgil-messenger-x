@@ -89,7 +89,7 @@ public class CallManager: NSObject {
 
     private var channel: Storage.Channel?
 
-    private var callOffer: Message.CallOffer?
+    private var callOffer: NetworkMessage.CallOffer?
 
     private(set) var callDirection: CallDirection = .none
 
@@ -213,7 +213,7 @@ public class CallManager: NSObject {
         }
     }
 
-    func startIncommingCall(callOffer: Message.CallOffer, in channel: Storage.Channel) {
+    func startIncommingCall(callOffer: NetworkMessage.CallOffer, in channel: Storage.Channel) {
         self.cleanup()
         self.callDirection = .incoming
         self.connectionStatus = .new
@@ -310,7 +310,7 @@ public class CallManager: NSObject {
         }
     }
 
-    func processCallAcceptedAnswer(_ callAcceptedAnswer: Message.CallAcceptedAnswer) {
+    func processCallAcceptedAnswer(_ callAcceptedAnswer: NetworkMessage.CallAcceptedAnswer) {
         if (self.callDirection != .outgoing) || (self.connectionStatus != .waitingForAnswer) {
             self.connectionStatus = .failed(CallManagerContractError.preconditionViolated)
             return
@@ -332,7 +332,7 @@ public class CallManager: NSObject {
         }
     }
 
-    func processCallRejectedAnswer(_ callRejectedAnswer: Message.CallRejectedAnswer) {
+    func processCallRejectedAnswer(_ callRejectedAnswer: NetworkMessage.CallRejectedAnswer) {
         if (self.callDirection != .outgoing) || (self.connectionStatus != .waitingForAnswer) {
             self.connectionStatus = .failed(CallManagerContractError.preconditionViolated)
             return
@@ -347,7 +347,7 @@ public class CallManager: NSObject {
         self.cleanup()
     }
 
-    func addIceCandidate(_ iceCandidate: Message.IceCandidate) {
+    func addIceCandidate(_ iceCandidate: NetworkMessage.IceCandidate) {
         switch self.connectionStatus {
         case .new, .acceptAnswer, .connected, .negotiating, .waitingForAnswer:
             break
@@ -413,7 +413,7 @@ public class CallManager: NSObject {
             return
         }
 
-        let callOffer = Message.CallOffer(from: sdp, caller: account.identity)
+        let callOffer = NetworkMessage.CallOffer(from: sdp, caller: account.identity)
 
         self.messageSender.send(callOffer: callOffer, date: Date(), channel: channel) { (error) in
             guard let error = error else {
@@ -432,7 +432,7 @@ public class CallManager: NSObject {
             return
         }
 
-        let callAcceptedAnswer = Message.CallAcceptedAnswer(from: sdp)
+        let callAcceptedAnswer = NetworkMessage.CallAcceptedAnswer(from: sdp)
 
         self.messageSender.send(callAcceptedAnswer: callAcceptedAnswer, date: Date(), channel: channel) { (error) in
             guard let error = error else {
@@ -451,7 +451,7 @@ public class CallManager: NSObject {
             return
         }
 
-        let callRejectedAnswer = Message.CallRejectedAnswer()
+        let callRejectedAnswer = NetworkMessage.CallRejectedAnswer()
 
         self.messageSender.send(callRejectedAnswer: callRejectedAnswer, date: Date(), channel: channel) { (error) in
             guard let error = error else {
@@ -470,7 +470,7 @@ public class CallManager: NSObject {
             return
         }
 
-        let iceCandiadte = Message.IceCandidate(from: rtcIceCandidate)
+        let iceCandiadte = NetworkMessage.IceCandidate(from: rtcIceCandidate)
 
         self.messageSender.send(iceCandidate: iceCandiadte, date: Date(), channel: channel) { (error) in
             guard let error = error else {
