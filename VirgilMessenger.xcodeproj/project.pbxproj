@@ -470,8 +470,6 @@
 		F4241EA32433946C00E839C3 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5552403E52C00D9CAAA /* libsqlite3.tbd */; };
 		F4241EA42433946C00E839C3 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C48F2403092F00D9CAAA /* Crashlytics.framework */; };
 		F4241EA62433946C00E839C3 /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4782403085B00D9CAAA /* FIRAnalyticsConnector.framework */; };
-		F4241EA72433946C00E839C3 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C47B2403085B00D9CAAA /* Firebase.framework */; };
-		F4241EA82433946C00E839C3 /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4792403085B00D9CAAA /* FirebaseAnalytics.framework */; };
 		F4241EA92433946C00E839C3 /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4772403085B00D9CAAA /* FirebaseCore.framework */; };
 		F4241EAA2433946C00E839C3 /* FirebaseCoreDiagnostics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C47A2403085B00D9CAAA /* FirebaseCoreDiagnostics.framework */; };
 		F4241EAC2433946C00E839C3 /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4762403085B00D9CAAA /* GoogleAppMeasurement.framework */; };
@@ -516,7 +514,6 @@
 		F4241EDB2433964500E839C3 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5552403E52C00D9CAAA /* libsqlite3.tbd */; };
 		F4241EDC2433964500E839C3 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C48F2403092F00D9CAAA /* Crashlytics.framework */; };
 		F4241EDE2433964500E839C3 /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4782403085B00D9CAAA /* FIRAnalyticsConnector.framework */; };
-		F4241EDF2433964500E839C3 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C47B2403085B00D9CAAA /* Firebase.framework */; };
 		F4241EE02433964500E839C3 /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4792403085B00D9CAAA /* FirebaseAnalytics.framework */; };
 		F4241EE12433964500E839C3 /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4772403085B00D9CAAA /* FirebaseCore.framework */; };
 		F4241EE22433964500E839C3 /* FirebaseCoreDiagnostics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C47A2403085B00D9CAAA /* FirebaseCoreDiagnostics.framework */; };
@@ -554,7 +551,6 @@
 		F4241F0824339D5100E839C3 /* PKHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42E8F8731F978A51007CB39F /* PKHUD.framework */; };
 		F4241F0924339D7500E839C3 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5572403E54800D9CAAA /* libicucore.tbd */; };
 		F4241F0A24339D7500E839C3 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5552403E52C00D9CAAA /* libsqlite3.tbd */; };
-		F4241F0B24339D7500E839C3 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C47B2403085B00D9CAAA /* Firebase.framework */; };
 		F4241F0D24339E1700E839C3 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4241F0C24339E1700E839C3 /* Fabric.framework */; };
 		F4241F1024339E3E00E839C3 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4241F0C24339E1700E839C3 /* Fabric.framework */; };
 		F4241F1324339E5100E839C3 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4241F0C24339E1700E839C3 /* Fabric.framework */; };
@@ -569,6 +565,7 @@
 		F4241F1E2434336200E839C3 /* Virgil+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BB224334084007D10E1 /* Virgil+Storage.swift */; };
 		F4241F1F243437B500E839C3 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
 		F4241F20243437B600E839C3 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
+		F4241F2124348DAF00E839C3 /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4792403085B00D9CAAA /* FirebaseAnalytics.framework */; };
 		F44C6BAC2431B011007D10E1 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
 		F44C6BB324334084007D10E1 /* Virgil+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BB224334084007D10E1 /* Virgil+Storage.swift */; };
 		F46EE193241FA09F00BE53AA /* Storage+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18D241FA09F00BE53AA /* Storage+Account.swift */; };
@@ -900,7 +897,6 @@
 				169367862248FA0800EF9A42 /* VSCFoundation.framework in Frameworks */,
 				F4241F0924339D7500E839C3 /* libicucore.tbd in Frameworks */,
 				F4241F0A24339D7500E839C3 /* libsqlite3.tbd in Frameworks */,
-				F4241F0B24339D7500E839C3 /* Firebase.framework in Frameworks */,
 				F4241F0824339D5100E839C3 /* PKHUD.framework in Frameworks */,
 				169367882248FA0800EF9A42 /* VSCRatchet.framework in Frameworks */,
 				97E7C4842403085B00D9CAAA /* FirebaseCore.framework in Frameworks */,
@@ -939,8 +935,6 @@
 				F4241EA32433946C00E839C3 /* libsqlite3.tbd in Frameworks */,
 				F4241EA42433946C00E839C3 /* Crashlytics.framework in Frameworks */,
 				F4241EA62433946C00E839C3 /* FIRAnalyticsConnector.framework in Frameworks */,
-				F4241EA72433946C00E839C3 /* Firebase.framework in Frameworks */,
-				F4241EA82433946C00E839C3 /* FirebaseAnalytics.framework in Frameworks */,
 				F4241EA92433946C00E839C3 /* FirebaseCore.framework in Frameworks */,
 				F4241EAA2433946C00E839C3 /* FirebaseCoreDiagnostics.framework in Frameworks */,
 				F4241EAC2433946C00E839C3 /* GoogleAppMeasurement.framework in Frameworks */,
@@ -965,6 +959,7 @@
 				F4241EBE2433946C00E839C3 /* VSCCommon.framework in Frameworks */,
 				F4241EBF2433946C00E839C3 /* VSCFoundation.framework in Frameworks */,
 				F4241EC02433946C00E839C3 /* VSCRatchet.framework in Frameworks */,
+				F4241F2124348DAF00E839C3 /* FirebaseAnalytics.framework in Frameworks */,
 				F4241EC12433946C00E839C3 /* SystemConfiguration.framework in Frameworks */,
 				F4241EC22433946C00E839C3 /* libc++.tbd in Frameworks */,
 				F4241EC32433946C00E839C3 /* libz.tbd in Frameworks */,
@@ -997,7 +992,6 @@
 				F4241EDB2433964500E839C3 /* libsqlite3.tbd in Frameworks */,
 				F4241EDC2433964500E839C3 /* Crashlytics.framework in Frameworks */,
 				F4241EDE2433964500E839C3 /* FIRAnalyticsConnector.framework in Frameworks */,
-				F4241EDF2433964500E839C3 /* Firebase.framework in Frameworks */,
 				F4241EE02433964500E839C3 /* FirebaseAnalytics.framework in Frameworks */,
 				F4241EE12433964500E839C3 /* FirebaseCore.framework in Frameworks */,
 				F4241EE22433964500E839C3 /* FirebaseCoreDiagnostics.framework in Frameworks */,
