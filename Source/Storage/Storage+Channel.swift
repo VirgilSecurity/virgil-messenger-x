@@ -84,17 +84,20 @@ extension Storage {
                 return ""
             }
 
-            // TODO: wrap to enum?
-            if let textMessage = message as? TextMessage {
+            switch message {
+            case let textMessage as TextMessage:
                 return textMessage.body
-            }
-            else if message is PhotoMessage {
+
+            case is PhotoMessage:
                 return "Photo"
-            }
-            else if message is VoiceMessage {
+
+            case is VoiceMessage:
                 return "Voice Message"
-            }
-            else {
+
+            case let callMessage as CallMessage:
+                return callMessage.isIncoming ? "Call from \(callMessage.channelName)" : "Call to \(callMessage.channelName)"
+
+            default:
                 return ""
             }
         }
