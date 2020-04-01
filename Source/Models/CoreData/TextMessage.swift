@@ -18,6 +18,7 @@ public class TextMessage: Message {
     private static let EntityName = "TextMessage"
     
     convenience init(body: String,
+                     xmppId: String,
                      isIncoming: Bool,
                      date: Date,
                      channel: Channel,
@@ -29,6 +30,7 @@ public class TextMessage: Message {
 
         self.init(entity: entity, insertInto: managedContext)
 
+        self.xmppId = xmppId
         self.body = body
         self.isIncoming = isIncoming
         self.date = date

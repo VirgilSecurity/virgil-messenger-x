@@ -17,7 +17,8 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
     
-    private func send(content: MessageContent, additionalData: Data?, to channel: Channel, date: Date) throws {
+    // Returns xmppId
+    private func send(content: MessageContent, additionalData: Data?, to channel: Channel, date: Date) throws -> String {
         let exported = try content.exportAsJsonString()
 
         let card = try channel.getCard()
@@ -31,7 +32,7 @@ public class MessageSender {
 
         let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date, additionalData: additionalData)
 
-        try Ejabberd.shared.send(encryptedMessage, to: channel.name)
+        return try Ejabberd.shared.send(encryptedMessage, to: channel.name)
     }
     
     private func upload(data: Data, identifier: String, channel: Channel, loadDelegate: LoadDelegate) throws -> URL {
@@ -70,9 +71,10 @@ public class MessageSender {
                                                 url: getUrl)
                 let content = MessageContent.voice(voiceContent)
                 
-                try self.send(content: content, additionalData: nil, to: channel, date: uiModel.date)
+                let xmppId = try self.send(content: content, additionalData: nil, to: channel, date: uiModel.date)
                 
                 _ = try CoreData.shared.createVoiceMessage(with: voiceContent,
+                                                           xmppId: xmppId,
                                                            in: channel,
                                                            isIncoming: false)
                 
@@ -109,11 +111,15 @@ public class MessageSender {
                 let photoContent = PhotoContent(identifier: hashString, url: getUrl)
                 let content = MessageContent.photo(photoContent)
                 
-                try self.send(content: content, additionalData: thumbnail, to: channel, date: uiModel.date)
+                let xmppId = try self.send(content: content,
+                                           additionalData: thumbnail,
+                                           to: channel,
+                                           date: uiModel.date)
                 
                 // Save local Core Data entity
                 _ = try CoreData.shared.createPhotoMessage(with: photoContent,
                                                            thumbnail: thumbnail,
+                                                           xmppId: xmppId,
                                                            in: channel,
                                                            isIncoming: false)
                 
@@ -132,9 +138,10 @@ public class MessageSender {
                 let textContent = TextContent(body: uiModel.body)
                 let messageContent = MessageContent.text(textContent)
                 
-                try self.send(content: messageContent, additionalData: nil, to: channel, date: uiModel.date)
+                let xmppId = try self.send(content: messageContent, additionalData: nil, to: channel, date: uiModel.date)
 
                 _ = try CoreData.shared.createTextMessage(with: textContent,
+                                                          xmppId: xmppId,
                                                           in: channel,
                                                           isIncoming: uiModel.isIncoming,
                                                           date: uiModel.date)

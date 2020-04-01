@@ -22,6 +22,7 @@ public class VoiceMessage: Message {
     convenience init(identifier: String,
                      duration: Double,
                      url: URL,
+                     xmppId: String,
                      isIncoming: Bool,
                      date: Date,
                      channel: Channel,

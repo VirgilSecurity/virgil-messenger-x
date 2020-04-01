@@ -14,7 +14,7 @@ class MessageProcessor {
         case dataToStrFailed
     }
     
-    static func process(_ encryptedMessage: EncryptedMessage, from author: String) throws {
+    static func process(_ encryptedMessage: EncryptedMessage, from author: String, xmppId: String) throws {
         let channel = try self.setupCoreChannel(name: author)
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
@@ -30,6 +30,7 @@ class MessageProcessor {
         
         try self.process(messageContent,
                          additionalData: decryptedAdditional,
+                         xmppId: xmppId,
                          channel: channel,
                          author: author,
                          date: encryptedMessage.date)
@@ -37,6 +38,7 @@ class MessageProcessor {
     
     private static func process(_ messageContent: MessageContent,
                                 additionalData: Data?,
+                                xmppId: String,
                                 channel: Channel,
                                 author: String,
                                 date: Date) throws {
@@ -52,6 +54,7 @@ class MessageProcessor {
             // FIXME: remove copypasting common parameters
             message = try CoreData.shared.createTextMessage(with: textContent,
                                                             unread: unread,
+                                                            xmppId: xmppId,
                                                             in: channel,
                                                             isIncoming: true,
                                                             date: date)
@@ -64,12 +67,14 @@ class MessageProcessor {
             message = try CoreData.shared.createPhotoMessage(with: photoContent,
                                                              thumbnail: thumbnail,
                                                              unread: unread,
+                                                             xmppId: xmppId,
                                                              in: channel,
                                                              isIncoming: true,
                                                              date: date)
         case .voice(let voiceContent):
             message = try CoreData.shared.createVoiceMessage(with: voiceContent,
                                                              unread: unread,
+                                                             xmppId: xmppId,
                                                              in: channel,
                                                              isIncoming: true,
                                                              date: date)

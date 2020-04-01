@@ -24,6 +24,7 @@ extension CoreData {
 
     func createEncryptedMessage(in channel: Channel, isIncoming: Bool, date: Date) throws {
         let message = try TextMessage(body: "Message encrypted",
+                                      xmppId: UUID().uuidString,
                                       isIncoming: isIncoming,
                                       date: date,
                                       channel: channel,
@@ -35,11 +36,13 @@ extension CoreData {
 
     func createTextMessage(with content: TextContent,
                            unread: Bool = false,
+                           xmppId: String,
                            in channel: Channel,
                            isIncoming: Bool,
                            date: Date = Date()) throws -> Message {
 
         let message = try TextMessage(body: content.body,
+                                      xmppId: xmppId,
                                       isIncoming: isIncoming,
                                       date: date,
                                       channel: channel,
@@ -53,12 +56,14 @@ extension CoreData {
     func createPhotoMessage(with content: PhotoContent,
                             thumbnail: Data,
                             unread: Bool = false,
+                            xmppId: String,
                             in channel: Channel,
                             isIncoming: Bool,
                             date: Date = Date()) throws -> Message {
         let message = try PhotoMessage(identifier: content.identifier,
                                        thumbnail: thumbnail,
                                        url: content.url,
+                                       xmppId: xmppId,
                                        isIncoming: isIncoming,
                                        date: date,
                                        channel: channel,
@@ -71,12 +76,14 @@ extension CoreData {
     
     func createVoiceMessage(with content: VoiceContent,
                             unread: Bool = false,
+                            xmppId: String,
                             in channel: Channel,
                             isIncoming: Bool,
                             date: Date = Date()) throws -> Message {
         let message = try VoiceMessage(identifier: content.identifier,
                                        duration: content.duration,
                                        url: content.url,
+                                       xmppId: xmppId,
                                        isIncoming: isIncoming,
                                        date: date,
                                        channel: channel,

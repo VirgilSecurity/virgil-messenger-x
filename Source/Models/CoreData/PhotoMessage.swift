@@ -22,6 +22,7 @@ public class PhotoMessage: Message {
     convenience init(identifier: String,
                      thumbnail: Data,
                      url: URL,
+                     xmppId: String,
                      isIncoming: Bool,
                      date: Date,
                      channel: Channel,
@@ -36,6 +37,7 @@ public class PhotoMessage: Message {
         self.identifier = identifier
         self.thumbnail = thumbnail
         self.url = url
+        self.xmppId = xmppId
         self.isIncoming = isIncoming
         self.date = date
         self.channel = channel
