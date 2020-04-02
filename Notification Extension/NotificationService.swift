@@ -106,15 +106,14 @@ class NotificationService: UNNotificationServiceExtension {
             throw NotificationServiceError.missingIdentityInDefaults
         }
 
+        _ = try Storage.shared.loadAccount(withIdentity: identity)
+
         let client = Client(crypto: self.crypto)
         try Virgil.initialize(identity: identity, client: client)
 
-        let card = try Virgil.ethree.findUser(with: notificationInfo.sender)
-            .startSync()
-            .get()
+        let channel = try Self.setupChannel(name: notificationInfo.sender)
 
-        return try Virgil.ethree.authDecrypt(data: notificationInfo.encryptedMessage.ciphertext,
-                                             from: card)
+        return try Virgil.decrypt(notificationInfo.encryptedMessage, from: channel)
     }
 
     private func process(decrypted: Data, version: EncryptedMessageVersion) throws -> String {
@@ -135,4 +134,21 @@ class NotificationService: UNNotificationServiceExtension {
 
         return messageString
     }
+
+    // TODO: This function is duplicated - refactor it
+    private static func setupChannel(name: String) throws -> Storage.Channel {
+        let channel: Storage.Channel
+
+        if let coreChannel = Storage.shared.getChannel(withName: name) {
+            channel = coreChannel
+        } else {
+            let card = try Virgil.ethree.findUser(with: name).startSync().get()
+
+            channel = try Storage.shared.getChannel(withName: name)
+                ?? Storage.shared.createSingleChannel(initiator: name, card: card)
+        }
+
+        return channel
+    }
+
 }

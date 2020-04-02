@@ -8,6 +8,15 @@
 
 import CoreData
 
+class NSCustomPersistentContainer: NSPersistentContainer {
+    override open class func defaultDirectoryURL() -> URL {
+        if let storeURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.appGroup) {
+            return storeURL
+        }
+        fatalError()
+    }
+}
+
 public class Storage {
     private(set) static var shared: Storage = Storage()
     private(set) var accounts: [Storage.Account] = []
@@ -23,7 +32,7 @@ public class Storage {
     public static let dbName = "VirgilMessenger-5"
 
     let persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: Storage.dbName)
+        let container = NSCustomPersistentContainer(name: Storage.dbName)
 
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
