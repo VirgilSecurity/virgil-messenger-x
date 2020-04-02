@@ -47,7 +47,7 @@ class MessageProcessor {
             unread = false
         }
             
-        let baseParams = Message.Params(xmppId: xmppId, isIncoming: true, channel: channel, date: date)
+        let baseParams = Message.Params(xmppId: xmppId, isIncoming: true, channel: channel, state: .received, date: date)
         
         let message: Message
     

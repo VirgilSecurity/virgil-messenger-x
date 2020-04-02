@@ -73,7 +73,7 @@ public class MessageSender {
                 
                 let xmppId = try self.send(content: content, additionalData: nil, to: channel, date: uiModel.date)
                 
-                let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel)
+                let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel, state: .sent)
                 try CoreData.shared.createVoiceMessage(with: voiceContent, baseParams: baseParams)
                 
                 self.updateMessage(uiModel, status: .success)
@@ -115,7 +115,7 @@ public class MessageSender {
                                            date: uiModel.date)
                 
                 // Save local Core Data entity
-                let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel)
+                let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel, state: .sent)
                 try CoreData.shared.createPhotoMessage(with: photoContent,
                                                        thumbnail: thumbnail,
                                                        baseParams: baseParams)
@@ -137,7 +137,7 @@ public class MessageSender {
                 
                 let xmppId = try self.send(content: messageContent, additionalData: nil, to: channel, date: uiModel.date)
 
-                let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel)
+                let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel, state: .sent)
                 try CoreData.shared.createTextMessage(with: textContent, baseParams: baseParams)
                 
                 self.updateMessage(uiModel, status: .success)

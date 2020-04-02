@@ -26,6 +26,7 @@ extension CoreData {
         let params = Message.Params(xmppId: UUID().uuidString,
                                     isIncoming: isIncoming,
                                     channel: channel,
+                                    state: .failed,
                                     date: date,
                                     isHidden: true)
         
