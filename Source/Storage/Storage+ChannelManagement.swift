@@ -130,8 +130,6 @@ extension Storage {
     }
 
     func resetUnreadCount(for channel: Channel) throws {
-        UIApplication.shared.applicationIconBadgeNumber -= Int(channel.unreadCount)
-
         channel.unreadCount = 0
 
         try self.saveContext()

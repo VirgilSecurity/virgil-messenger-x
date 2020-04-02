@@ -619,6 +619,51 @@
 		F4DDCC5024363479001E63B1 /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
 		F4DDCC512436350F001E63B1 /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
 		F4DDCC522436350F001E63B1 /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
+		F4DDCC5324364058001E63B1 /* Virgil+CryptoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC2C24362E8C001E63B1 /* Virgil+CryptoOperation.swift */; };
+		F4DDCC5424364058001E63B1 /* Virgil+CryptoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC2C24362E8C001E63B1 /* Virgil+CryptoOperation.swift */; };
+		F4DDCC5524364059001E63B1 /* Virgil+CryptoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC2C24362E8C001E63B1 /* Virgil+CryptoOperation.swift */; };
+		F4DDCC5624364090001E63B1 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE192241FA09F00BE53AA /* Storage.swift */; };
+		F4DDCC5724364090001E63B1 /* Storage+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18D241FA09F00BE53AA /* Storage+Account.swift */; };
+		F4DDCC5824364090001E63B1 /* Storage+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE190241FA09F00BE53AA /* Storage+Channel.swift */; };
+		F4DDCC5924364090001E63B1 /* Storage+ChannelManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122392425D07B0003DD78 /* Storage+ChannelManagement.swift */; };
+		F4DDCC5A24364090001E63B1 /* Storage+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18E241FA09F00BE53AA /* Storage+Message.swift */; };
+		F4DDCC5B24364090001E63B1 /* Storage+TextMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18F241FA09F00BE53AA /* Storage+TextMessage.swift */; };
+		F4DDCC5C24364090001E63B1 /* Storage+VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122322425CC180003DD78 /* Storage+VoiceMessage.swift */; };
+		F4DDCC5D24364090001E63B1 /* Storage+PhotoMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122332425CC180003DD78 /* Storage+PhotoMessage.swift */; };
+		F4DDCC5E24364090001E63B1 /* Storage+CallMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE191241FA09F00BE53AA /* Storage+CallMessage.swift */; };
+		F4DDCC5F24364090001E63B1 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE192241FA09F00BE53AA /* Storage.swift */; };
+		F4DDCC6024364090001E63B1 /* Storage+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18D241FA09F00BE53AA /* Storage+Account.swift */; };
+		F4DDCC6124364090001E63B1 /* Storage+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE190241FA09F00BE53AA /* Storage+Channel.swift */; };
+		F4DDCC6224364090001E63B1 /* Storage+ChannelManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122392425D07B0003DD78 /* Storage+ChannelManagement.swift */; };
+		F4DDCC6324364090001E63B1 /* Storage+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18E241FA09F00BE53AA /* Storage+Message.swift */; };
+		F4DDCC6424364090001E63B1 /* Storage+TextMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18F241FA09F00BE53AA /* Storage+TextMessage.swift */; };
+		F4DDCC6524364090001E63B1 /* Storage+VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122322425CC180003DD78 /* Storage+VoiceMessage.swift */; };
+		F4DDCC6624364090001E63B1 /* Storage+PhotoMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122332425CC180003DD78 /* Storage+PhotoMessage.swift */; };
+		F4DDCC6724364090001E63B1 /* Storage+CallMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE191241FA09F00BE53AA /* Storage+CallMessage.swift */; };
+		F4DDCC6824364091001E63B1 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE192241FA09F00BE53AA /* Storage.swift */; };
+		F4DDCC6924364091001E63B1 /* Storage+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18D241FA09F00BE53AA /* Storage+Account.swift */; };
+		F4DDCC6A24364091001E63B1 /* Storage+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE190241FA09F00BE53AA /* Storage+Channel.swift */; };
+		F4DDCC6B24364091001E63B1 /* Storage+ChannelManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122392425D07B0003DD78 /* Storage+ChannelManagement.swift */; };
+		F4DDCC6C24364091001E63B1 /* Storage+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18E241FA09F00BE53AA /* Storage+Message.swift */; };
+		F4DDCC6D24364091001E63B1 /* Storage+TextMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18F241FA09F00BE53AA /* Storage+TextMessage.swift */; };
+		F4DDCC6E24364091001E63B1 /* Storage+VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122322425CC180003DD78 /* Storage+VoiceMessage.swift */; };
+		F4DDCC6F24364091001E63B1 /* Storage+PhotoMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122332425CC180003DD78 /* Storage+PhotoMessage.swift */; };
+		F4DDCC7024364091001E63B1 /* Storage+CallMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE191241FA09F00BE53AA /* Storage+CallMessage.swift */; };
+		F4DDCC71243640DE001E63B1 /* FileMediaStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F83C89240D130A003F7451 /* FileMediaStorage.swift */; };
+		F4DDCC72243640DF001E63B1 /* FileMediaStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F83C89240D130A003F7451 /* FileMediaStorage.swift */; };
+		F4DDCC73243640DF001E63B1 /* FileMediaStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F83C89240D130A003F7451 /* FileMediaStorage.swift */; };
+		F4DDCC74243640FC001E63B1 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
+		F4DDCC75243640FC001E63B1 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
+		F4DDCC76243640FD001E63B1 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
+		F4DDCC7724364115001E63B1 /* CoreData+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481223A2425D07B0003DD78 /* CoreData+Messages.swift */; };
+		F4DDCC7824364116001E63B1 /* CoreData+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481223A2425D07B0003DD78 /* CoreData+Messages.swift */; };
+		F4DDCC7924364116001E63B1 /* CoreData+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481223A2425D07B0003DD78 /* CoreData+Messages.swift */; };
+		F4DDCC7A243641C6001E63B1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C48F2403092F00D9CAAA /* Crashlytics.framework */; };
+		F4DDCC7C2436422A001E63B1 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4241F0C24339E1700E839C3 /* Fabric.framework */; };
+		F4DDCC7D2436425B001E63B1 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4241F0C24339E1700E839C3 /* Fabric.framework */; };
+		F4DDCC7E2436425B001E63B1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C48F2403092F00D9CAAA /* Crashlytics.framework */; };
+		F4DDCC7F24364263001E63B1 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4241F0C24339E1700E839C3 /* Fabric.framework */; };
+		F4DDCC8024364263001E63B1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C48F2403092F00D9CAAA /* Crashlytics.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -895,6 +940,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4DDCC7D2436425B001E63B1 /* Fabric.framework in Frameworks */,
+				F4DDCC7E2436425B001E63B1 /* Crashlytics.framework in Frameworks */,
 				F4241F242434C40000E839C3 /* VirgilCryptoPythia.framework in Frameworks */,
 				F4241F252434C40000E839C3 /* VirgilSDKPythia.framework in Frameworks */,
 				F4241F262434C40000E839C3 /* VSCPythia.framework in Frameworks */,
@@ -1012,6 +1059,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4DDCC7C2436422A001E63B1 /* Fabric.framework in Frameworks */,
+				F4DDCC7A243641C6001E63B1 /* Crashlytics.framework in Frameworks */,
 				F4241F302434C40B00E839C3 /* VirgilCryptoPythia.framework in Frameworks */,
 				F4241F312434C40B00E839C3 /* VirgilSDKPythia.framework in Frameworks */,
 				F4241F322434C40C00E839C3 /* VSCPythia.framework in Frameworks */,
@@ -1080,6 +1129,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4DDCC7F24364263001E63B1 /* Fabric.framework in Frameworks */,
+				F4DDCC8024364263001E63B1 /* Crashlytics.framework in Frameworks */,
 				F4241F3C2434C41700E839C3 /* VirgilCryptoPythia.framework in Frameworks */,
 				F4241F3D2434C41700E839C3 /* VirgilSDKPythia.framework in Frameworks */,
 				F4241F3E2434C41700E839C3 /* VSCPythia.framework in Frameworks */,
@@ -2132,17 +2183,30 @@
 			files = (
 				F4241D4A24337E9C00E839C3 /* EnvConstantProd.swift in Sources */,
 				9775CFD8242A2D3D009F1693 /* Virgil.swift in Sources */,
+				F4DDCC5B24364090001E63B1 /* Storage+TextMessage.swift in Sources */,
+				F4DDCC5924364090001E63B1 /* Storage+ChannelManagement.swift in Sources */,
+				F4DDCC5C24364090001E63B1 /* Storage+VoiceMessage.swift in Sources */,
+				F4DDCC5E24364090001E63B1 /* Storage+CallMessage.swift in Sources */,
 				F4241E46243386AC00E839C3 /* UIColor+RGB.swift in Sources */,
+				F4DDCC74243640FC001E63B1 /* Log.swift in Sources */,
+				F4DDCC5A24364090001E63B1 /* Storage+Message.swift in Sources */,
 				F48122452425D45F0003DD78 /* NetworkMessage.swift in Sources */,
 				16D4B8D523F5C35300D17B90 /* UserFriendlyError.swift in Sources */,
 				16D4B8D123F5C2EB00D17B90 /* Client.swift in Sources */,
 				F4241D56243380C400E839C3 /* ColorPair.swift in Sources */,
 				9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */,
+				F4DDCC7724364115001E63B1 /* CoreData+Messages.swift in Sources */,
+				F4DDCC5824364090001E63B1 /* Storage+Channel.swift in Sources */,
+				F4DDCC71243640DE001E63B1 /* FileMediaStorage.swift in Sources */,
 				97AF4D86241AEED000ED9BD7 /* Client+Backend.swift in Sources */,
 				16D4B8D923F5CE1700D17B90 /* SharedDefaults.swift in Sources */,
 				16D4B8B123F5BCA400D17B90 /* NotificationService.swift in Sources */,
 				F4241F1A243432C500E839C3 /* ChannelType.swift in Sources */,
 				16D4B8D223F5C2F500D17B90 /* Constants.swift in Sources */,
+				F4DDCC5D24364090001E63B1 /* Storage+PhotoMessage.swift in Sources */,
+				F4DDCC5724364090001E63B1 /* Storage+Account.swift in Sources */,
+				F4DDCC5324364058001E63B1 /* Virgil+CryptoOperation.swift in Sources */,
+				F4DDCC5624364090001E63B1 /* Storage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2395,17 +2459,30 @@
 			files = (
 				F4241D822433855700E839C3 /* EncryptedMessage.swift in Sources */,
 				F4241E47243386AD00E839C3 /* UIColor+RGB.swift in Sources */,
+				F4DDCC6424364090001E63B1 /* Storage+TextMessage.swift in Sources */,
+				F4DDCC6224364090001E63B1 /* Storage+ChannelManagement.swift in Sources */,
+				F4DDCC6524364090001E63B1 /* Storage+VoiceMessage.swift in Sources */,
+				F4DDCC6724364090001E63B1 /* Storage+CallMessage.swift in Sources */,
 				F4241D7E2433855000E839C3 /* UserFriendlyError.swift in Sources */,
+				F4DDCC75243640FC001E63B1 /* Log.swift in Sources */,
+				F4DDCC6324364090001E63B1 /* Storage+Message.swift in Sources */,
 				F4241D912433857D00E839C3 /* Client+Backend.swift in Sources */,
 				F4241E6B243386E500E839C3 /* NotificationService.swift in Sources */,
 				F4241E5B243386C000E839C3 /* ColorPair.swift in Sources */,
 				F4241D8D2433857900E839C3 /* Client.swift in Sources */,
 				F4241DDC243385FE00E839C3 /* Virgil.swift in Sources */,
+				F4DDCC7824364116001E63B1 /* CoreData+Messages.swift in Sources */,
+				F4DDCC6124364090001E63B1 /* Storage+Channel.swift in Sources */,
+				F4DDCC72243640DF001E63B1 /* FileMediaStorage.swift in Sources */,
 				F4241D762433853B00E839C3 /* NetworkMessage.swift in Sources */,
 				F4241D4B24337EA000E839C3 /* EnvConstantStg.swift in Sources */,
 				F4241D5024337ECC00E839C3 /* Constants.swift in Sources */,
 				F4241F1B243432C600E839C3 /* ChannelType.swift in Sources */,
 				F4241DEE2433862E00E839C3 /* SharedDefaults.swift in Sources */,
+				F4DDCC6624364090001E63B1 /* Storage+PhotoMessage.swift in Sources */,
+				F4DDCC6024364090001E63B1 /* Storage+Account.swift in Sources */,
+				F4DDCC5424364058001E63B1 /* Virgil+CryptoOperation.swift in Sources */,
+				F4DDCC5F24364090001E63B1 /* Storage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2536,17 +2613,30 @@
 			files = (
 				F4241D832433855800E839C3 /* EncryptedMessage.swift in Sources */,
 				F4241E48243386AD00E839C3 /* UIColor+RGB.swift in Sources */,
+				F4DDCC6D24364091001E63B1 /* Storage+TextMessage.swift in Sources */,
+				F4DDCC6B24364091001E63B1 /* Storage+ChannelManagement.swift in Sources */,
+				F4DDCC6E24364091001E63B1 /* Storage+VoiceMessage.swift in Sources */,
+				F4DDCC7024364091001E63B1 /* Storage+CallMessage.swift in Sources */,
 				F4241D7F2433855100E839C3 /* UserFriendlyError.swift in Sources */,
+				F4DDCC76243640FD001E63B1 /* Log.swift in Sources */,
+				F4DDCC6C24364091001E63B1 /* Storage+Message.swift in Sources */,
 				F4241D922433857E00E839C3 /* Client+Backend.swift in Sources */,
 				F4241E6C243386E500E839C3 /* NotificationService.swift in Sources */,
 				F4241E5C243386C100E839C3 /* ColorPair.swift in Sources */,
 				F4241D8E2433857900E839C3 /* Client.swift in Sources */,
 				F4241DDD243385FE00E839C3 /* Virgil.swift in Sources */,
+				F4DDCC7924364116001E63B1 /* CoreData+Messages.swift in Sources */,
+				F4DDCC6A24364091001E63B1 /* Storage+Channel.swift in Sources */,
+				F4DDCC73243640DF001E63B1 /* FileMediaStorage.swift in Sources */,
 				F4241D772433853B00E839C3 /* NetworkMessage.swift in Sources */,
 				F4241D4D24337EAD00E839C3 /* EnvConstantDev.swift in Sources */,
 				F4241D5124337ECC00E839C3 /* Constants.swift in Sources */,
 				F4241F1C243432C600E839C3 /* ChannelType.swift in Sources */,
 				F4241DEF2433862E00E839C3 /* SharedDefaults.swift in Sources */,
+				F4DDCC6F24364091001E63B1 /* Storage+PhotoMessage.swift in Sources */,
+				F4DDCC6924364091001E63B1 /* Storage+Account.swift in Sources */,
+				F4DDCC5524364059001E63B1 /* Virgil+CryptoOperation.swift in Sources */,
+				F4DDCC6824364091001E63B1 /* Storage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

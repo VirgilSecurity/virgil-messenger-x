@@ -80,6 +80,7 @@ class ChatViewController: BaseChatViewController {
         self.dataSource.setupObservers()
 
         do {
+            UIApplication.shared.applicationIconBadgeNumber -= Int(self.channel.unreadCount)
             try Storage.shared.resetUnreadCount(for: self.channel)
         }
         catch {
