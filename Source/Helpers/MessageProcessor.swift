@@ -18,7 +18,7 @@ class MessageProcessor {
     static func process(_ encryptedMessage: EncryptedMessage, from author: String) throws {
         let channel = try self.setupChannel(name: author)
 
-        let decrypted = try self.decrypt(encryptedMessage, from: channel)
+        let decrypted = try Virgil.decrypt(encryptedMessage, from: channel)
 
         let message = try self.migrationSafeContentImport(from: decrypted,
                                                                  version: encryptedMessage.modelVersion)
@@ -26,7 +26,7 @@ class MessageProcessor {
         var decryptedAdditional: Data?
 
         if let data = encryptedMessage.additionalData {
-            decryptedAdditional = try self.decrypt(data, from: channel)
+            decryptedAdditional = try Virgil.decrypt(data, from: channel)
         }
 
         try self.process(message,
@@ -120,37 +120,6 @@ class MessageProcessor {
         }
 
         return message
-    }
-
-    private static func decrypt(_ message: EncryptedMessage, from channel: Storage.Channel) throws -> Data {
-        let decrypted: Data
-
-        do {
-            decrypted = try self.decrypt(message.ciphertext, from: channel)
-        } catch {
-            // TODO: check if needed
-            try Storage.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
-
-            throw error
-        }
-
-        return decrypted
-    }
-
-    private static func decrypt(_ data: Data, from channel: Storage.Channel) throws -> Data {
-        if channel.type == .singleRatchet {
-            guard let ratchetChannel = try Virgil.ethree.getRatchetChannel(with: channel.getCard()) else {
-                throw UserFriendlyError.noUserOnDevice
-            }
-
-            do {
-                return try ratchetChannel.decrypt(data: data)
-            } catch {
-                return try Virgil.ethree.authDecrypt(data: data, from: channel.getCard())
-            }
-        } else {
-            return try Virgil.ethree.authDecrypt(data: data, from: channel.getCard())
-        }
     }
 
     private static func postNotification(about message: Storage.Message, unread: Bool) {

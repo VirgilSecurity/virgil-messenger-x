@@ -15,25 +15,15 @@ public protocol UIMessageModelProtocol: MessageModelProtocol {
 public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
-    private func encrypt(data: Data, for channel: Storage.Channel) throws -> Data {
-        let card = try channel.getCard()
-
-        if channel.type == .singleRatchet, let ratchetChannel = try Virgil.ethree.getRatchetChannel(with: card) {
-            return try ratchetChannel.encrypt(data: data)
-        } else {
-            return try Virgil.ethree.authEncrypt(data: data, for: card)
-        }
-    }
-
     private func send(message: NetworkMessage, additionalData: Data?, to channel: Storage.Channel, date: Date) throws {
         let exported = try message.exportAsJsonData()
 
-        let ciphertext = try self.encrypt(data: exported, for: channel)
+        let ciphertext = try Virgil.encrypt(data: exported, for: channel)
 
         var additionalData = additionalData
 
         if let data = additionalData {
-            additionalData = try self.encrypt(data: data, for: channel)
+            additionalData = try Virgil.encrypt(data: data, for: channel)
         }
 
         let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date, additionalData: additionalData)
