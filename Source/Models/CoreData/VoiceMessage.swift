@@ -22,26 +22,13 @@ public class VoiceMessage: Message {
     convenience init(identifier: String,
                      duration: Double,
                      url: URL,
-                     xmppId: String,
-                     isIncoming: Bool,
-                     date: Date,
-                     channel: Channel,
-                     isHidden: Bool = false,
-                     managedContext: NSManagedObjectContext) throws {
-        guard let entity = NSEntityDescription.entity(forEntityName: VoiceMessage.EntityName,
-                                                      in: managedContext) else {
-            throw CoreData.Error.entityNotFound
-        }
-
-        self.init(entity: entity, insertInto: managedContext)
-
+                     baseParams: Message.Params,
+                     context: NSManagedObjectContext) throws {
+        try self.init(entityName: VoiceMessage.EntityName, context: context, params: baseParams)
+        
         self.identifier = identifier
         self.duration = duration
         self.url = url
-        self.isIncoming = isIncoming
-        self.date = date
-        self.channel = channel
-        self.isHidden = isHidden
     }
     
     public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {

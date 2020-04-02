@@ -23,71 +23,57 @@ extension CoreData {
     }
 
     func createEncryptedMessage(in channel: Channel, isIncoming: Bool, date: Date) throws {
+        let params = Message.Params(xmppId: UUID().uuidString,
+                                    isIncoming: isIncoming,
+                                    channel: channel,
+                                    date: date,
+                                    isHidden: true)
+        
         let message = try TextMessage(body: "Message encrypted",
-                                      xmppId: UUID().uuidString,
-                                      isIncoming: isIncoming,
-                                      date: date,
-                                      channel: channel,
-                                      isHidden: true,
-                                      managedContext: self.managedContext)
+                                      baseParams: params,
+                                      context: self.managedContext)
 
         try self.save(message, unread: false)
     }
 
+    @discardableResult
     func createTextMessage(with content: TextContent,
                            unread: Bool = false,
-                           xmppId: String,
-                           in channel: Channel,
-                           isIncoming: Bool,
-                           date: Date = Date()) throws -> Message {
-
+                           baseParams: Message.Params) throws -> Message {
         let message = try TextMessage(body: content.body,
-                                      xmppId: xmppId,
-                                      isIncoming: isIncoming,
-                                      date: date,
-                                      channel: channel,
-                                      managedContext: self.managedContext)
+                                      baseParams: baseParams,
+                                      context: self.managedContext)
 
         try self.save(message, unread: unread)
 
         return message
     }
     
+    @discardableResult
     func createPhotoMessage(with content: PhotoContent,
                             thumbnail: Data,
                             unread: Bool = false,
-                            xmppId: String,
-                            in channel: Channel,
-                            isIncoming: Bool,
-                            date: Date = Date()) throws -> Message {
+                            baseParams: Message.Params) throws -> Message {
         let message = try PhotoMessage(identifier: content.identifier,
                                        thumbnail: thumbnail,
                                        url: content.url,
-                                       xmppId: xmppId,
-                                       isIncoming: isIncoming,
-                                       date: date,
-                                       channel: channel,
-                                       managedContext: self.managedContext)
+                                       baseParams: baseParams,
+                                       context: self.managedContext)
         
         try self.save(message, unread: unread)
 
         return message
     }
     
+    @discardableResult
     func createVoiceMessage(with content: VoiceContent,
                             unread: Bool = false,
-                            xmppId: String,
-                            in channel: Channel,
-                            isIncoming: Bool,
-                            date: Date = Date()) throws -> Message {
+                            baseParams: Message.Params) throws -> Message {
         let message = try VoiceMessage(identifier: content.identifier,
                                        duration: content.duration,
                                        url: content.url,
-                                       xmppId: xmppId,
-                                       isIncoming: isIncoming,
-                                       date: date,
-                                       channel: channel,
-                                       managedContext: self.managedContext)
+                                       baseParams: baseParams,
+                                       context: self.managedContext)
 
         try self.save(message, unread: unread)
 

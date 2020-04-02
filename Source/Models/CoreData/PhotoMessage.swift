@@ -22,26 +22,13 @@ public class PhotoMessage: Message {
     convenience init(identifier: String,
                      thumbnail: Data,
                      url: URL,
-                     xmppId: String,
-                     isIncoming: Bool,
-                     date: Date,
-                     channel: Channel,
-                     isHidden: Bool = false,
-                     managedContext: NSManagedObjectContext) throws {
-        guard let entity = NSEntityDescription.entity(forEntityName: PhotoMessage.EntityName, in: managedContext) else {
-            throw CoreData.Error.entityNotFound
-        }
-
-        self.init(entity: entity, insertInto: managedContext)
-
+                     baseParams: Message.Params,
+                     context: NSManagedObjectContext) throws {
+        try self.init(entityName: PhotoMessage.EntityName, context: context, params: baseParams)
+        
         self.identifier = identifier
         self.thumbnail = thumbnail
         self.url = url
-        self.xmppId = xmppId
-        self.isIncoming = isIncoming
-        self.date = date
-        self.channel = channel
-        self.isHidden = isHidden
     }
     
     private func thumbnailImage() throws -> UIImage {

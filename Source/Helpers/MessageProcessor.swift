@@ -47,17 +47,15 @@ class MessageProcessor {
             unread = false
         }
             
+        let baseParams = Message.Params(xmppId: xmppId, isIncoming: true, channel: channel, date: date)
+        
         let message: Message
     
         switch messageContent {
         case .text(let textContent):
-            // FIXME: remove copypasting common parameters
             message = try CoreData.shared.createTextMessage(with: textContent,
                                                             unread: unread,
-                                                            xmppId: xmppId,
-                                                            in: channel,
-                                                            isIncoming: true,
-                                                            date: date)
+                                                            baseParams: baseParams)
             
         case .photo(let photoContent):
             guard let thumbnail = additionalData else {
@@ -67,17 +65,11 @@ class MessageProcessor {
             message = try CoreData.shared.createPhotoMessage(with: photoContent,
                                                              thumbnail: thumbnail,
                                                              unread: unread,
-                                                             xmppId: xmppId,
-                                                             in: channel,
-                                                             isIncoming: true,
-                                                             date: date)
+                                                             baseParams: baseParams)
         case .voice(let voiceContent):
             message = try CoreData.shared.createVoiceMessage(with: voiceContent,
                                                              unread: unread,
-                                                             xmppId: xmppId,
-                                                             in: channel,
-                                                             isIncoming: true,
-                                                             date: date)
+                                                             baseParams: baseParams)
         }
 
         self.postNotification(about: message, unread: unread)

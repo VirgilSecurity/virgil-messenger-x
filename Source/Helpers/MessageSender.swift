@@ -73,10 +73,8 @@ public class MessageSender {
                 
                 let xmppId = try self.send(content: content, additionalData: nil, to: channel, date: uiModel.date)
                 
-                _ = try CoreData.shared.createVoiceMessage(with: voiceContent,
-                                                           xmppId: xmppId,
-                                                           in: channel,
-                                                           isIncoming: false)
+                let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel)
+                try CoreData.shared.createVoiceMessage(with: voiceContent, baseParams: baseParams)
                 
                 self.updateMessage(uiModel, status: .success)
             }
@@ -117,11 +115,10 @@ public class MessageSender {
                                            date: uiModel.date)
                 
                 // Save local Core Data entity
-                _ = try CoreData.shared.createPhotoMessage(with: photoContent,
-                                                           thumbnail: thumbnail,
-                                                           xmppId: xmppId,
-                                                           in: channel,
-                                                           isIncoming: false)
+                let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel)
+                try CoreData.shared.createPhotoMessage(with: photoContent,
+                                                       thumbnail: thumbnail,
+                                                       baseParams: baseParams)
                 
                 self.updateMessage(uiModel, status: .success)
             }
@@ -140,12 +137,9 @@ public class MessageSender {
                 
                 let xmppId = try self.send(content: messageContent, additionalData: nil, to: channel, date: uiModel.date)
 
-                _ = try CoreData.shared.createTextMessage(with: textContent,
-                                                          xmppId: xmppId,
-                                                          in: channel,
-                                                          isIncoming: uiModel.isIncoming,
-                                                          date: uiModel.date)
-
+                let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel)
+                try CoreData.shared.createTextMessage(with: textContent, baseParams: baseParams)
+                
                 self.updateMessage(uiModel, status: .success)
             }
             catch {
