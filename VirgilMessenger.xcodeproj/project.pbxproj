@@ -613,6 +613,9 @@
 		F48122452425D45F0003DD78 /* NetworkMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122282425CBF60003DD78 /* NetworkMessage.swift */; };
 		F48122482425D71B0003DD78 /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122472425D71B0003DD78 /* CallManager.swift */; };
 		F481224C24291CC70003DD78 /* CallStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481224B24291CC70003DD78 /* CallStrings.swift */; };
+		F4DDCC2D24362E8C001E63B1 /* Virgil+CryptoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC2C24362E8C001E63B1 /* Virgil+CryptoOperation.swift */; };
+		F4DDCC2E24362E90001E63B1 /* Virgil+CryptoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC2C24362E8C001E63B1 /* Virgil+CryptoOperation.swift */; };
+		F4DDCC2F24362E91001E63B1 /* Virgil+CryptoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC2C24362E8C001E63B1 /* Virgil+CryptoOperation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -880,6 +883,7 @@
 		F481223A2425D07B0003DD78 /* CoreData+Messages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreData+Messages.swift"; sourceTree = "<group>"; };
 		F48122472425D71B0003DD78 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
 		F481224B24291CC70003DD78 /* CallStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallStrings.swift; sourceTree = "<group>"; };
+		F4DDCC2C24362E8C001E63B1 /* Virgil+CryptoOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Virgil+CryptoOperation.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1381,6 +1385,7 @@
 				1693678F22490BA000EF9A42 /* VirgilAuthorizer.swift */,
 				167C68441FADDB7800E6E448 /* Virgil.swift */,
 				F44C6BB224334084007D10E1 /* Virgil+Storage.swift */,
+				F4DDCC2C24362E8C001E63B1 /* Virgil+CryptoOperation.swift */,
 			);
 			path = Virgil;
 			sourceTree = "<group>";
@@ -2231,6 +2236,7 @@
 				16132FC22254C868008FD754 /* UIViewController.swift in Sources */,
 				16013C7D20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift in Sources */,
 				F481221D2424CD360003DD78 /* Call.swift in Sources */,
+				F4DDCC2D24362E8C001E63B1 /* Virgil+CryptoOperation.swift in Sources */,
 				164E173C20AB297900AB1AAD /* AudioInputView.swift in Sources */,
 				16D8B0EF223A8FCF00D7FA67 /* Client.swift in Sources */,
 				F4241D57243383AA00E839C3 /* SwipeableNavigationController.swift in Sources */,
@@ -2358,6 +2364,7 @@
 				F4241E422433869400E839C3 /* UIColor+RGB.swift in Sources */,
 				F4241D5A2433850200E839C3 /* CallManager.swift in Sources */,
 				F4241E2F2433866100E839C3 /* ChatList.swift in Sources */,
+				F4DDCC2E24362E90001E63B1 /* Virgil+CryptoOperation.swift in Sources */,
 				F4241DF12433863400E839C3 /* UnreadManager.swift in Sources */,
 				F4241D972433859100E839C3 /* UITextMessageViewModel.swift in Sources */,
 				F4241D7B2433854A00E839C3 /* XMPPMessage.swift in Sources */,
@@ -2497,6 +2504,7 @@
 				F4241E432433869400E839C3 /* UIColor+RGB.swift in Sources */,
 				F4241D5B2433850300E839C3 /* CallManager.swift in Sources */,
 				F4241E382433866200E839C3 /* ChatList.swift in Sources */,
+				F4DDCC2F24362E91001E63B1 /* Virgil+CryptoOperation.swift in Sources */,
 				F4241DF32433863400E839C3 /* UnreadManager.swift in Sources */,
 				F4241D982433859300E839C3 /* UITextMessageViewModel.swift in Sources */,
 				F4241D7A2433854A00E839C3 /* XMPPMessage.swift in Sources */,
