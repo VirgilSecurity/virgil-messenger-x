@@ -37,13 +37,5 @@ extension Storage {
             self.channel = channel
             self.isHidden = isHidden
         }
-
-        public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
-            return UITextMessageModel(uid: id,
-                                      text: self.body,
-                                      isIncoming: self.isIncoming,
-                                      status: status,
-                                      date: date)
-        }
     }
 }

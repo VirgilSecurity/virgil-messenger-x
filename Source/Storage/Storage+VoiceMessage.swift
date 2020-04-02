@@ -45,46 +45,5 @@ extension Storage {
             self.channel = channel
             self.isHidden = isHidden
         }
-
-        public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
-            do {
-                let mediaStorage = try Storage.shared.getMediaStorage()
-
-                let audioUrl = try mediaStorage.getURL(name: self.identifier, type: .voice)
-                let state: MediaMessageState = mediaStorage.exists(path: audioUrl.path) ? .normal : .downloading
-
-                let uiModel = UIAudioMessageModel(uid: id,
-                                                  audioUrl: audioUrl,
-                                                  duration: TimeInterval(self.duration),
-                                                  isIncoming: self.isIncoming,
-                                                  status: status,
-                                                  state: state,
-                                                  date: self.date)
-                if state == .downloading {
-                    try Virgil.shared.client.startDownload(from: self.url,
-                                                           loadDelegate: uiModel,
-                                                           dataHash: self.identifier) { tempFileUrl in
-                        guard let inputStream = InputStream(url: tempFileUrl) else {
-                            throw Client.Error.inputStreamFromDownloadedFailed
-                        }
-
-                        guard let outputStream = OutputStream(toFileAtPath: audioUrl.path, append: false) else {
-                            throw FileMediaStorage.Error.outputStreamToPathFailed
-                        }
-
-                        // TODO: add self card usecase
-                        try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: self.channel.getCard())
-                    }
-                }
-
-                return uiModel
-            } catch {
-                Log.error(error, message: "Exporting AudioMessage to UI model failed")
-
-                return UITextMessageModel.corruptedModel(uid: id,
-                                                         isIncoming: self.isIncoming,
-                                                         date: self.date)
-            }
-        }
     }
 }

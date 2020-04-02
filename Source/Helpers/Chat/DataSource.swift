@@ -50,7 +50,7 @@ class DataSource: ChatDataSourceProtocol {
                     return UITextMessageModel.corruptedModel(uid: id)
             }
 
-            return message.exportAsUIModel(withId: id)
+            return Storage.exportAsUIModel(message: message, with: id)
         }
 
         self.delegate?.chatDataSourceDidUpdate(self)
@@ -84,7 +84,7 @@ class DataSource: ChatDataSourceProtocol {
 
     @objc private func process(message: Storage.Message) {
         self.nextMessageId += 1
-        let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
+        let uiModel = Storage.exportAsUIModel(message: message, with: self.nextMessageId)
 
         DispatchQueue.main.async {
             self.slidingWindow.insertItem(uiModel, position: .bottom)
