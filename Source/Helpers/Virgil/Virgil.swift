@@ -35,6 +35,7 @@ public class Virgil {
         let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
         params.storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.KeychainGroup)
         params.enableRatchet = true
+        params.securityApplicationGroupIdentifier = Constants.appGroup
 
         self.ethree = try EThree(params: params)
 
