@@ -613,6 +613,9 @@
 		F48122452425D45F0003DD78 /* NetworkMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122282425CBF60003DD78 /* NetworkMessage.swift */; };
 		F48122482425D71B0003DD78 /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122472425D71B0003DD78 /* CallManager.swift */; };
 		F481224C24291CC70003DD78 /* CallStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481224B24291CC70003DD78 /* CallStrings.swift */; };
+		F4C889F624366347004A0CFA /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C889F524366346004A0CFA /* CoreData.framework */; };
+		F4C889F72436667C004A0CFA /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C889F524366346004A0CFA /* CoreData.framework */; };
+		F4C889F824366680004A0CFA /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C889F524366346004A0CFA /* CoreData.framework */; };
 		F4DDCC2D24362E8C001E63B1 /* Virgil+CryptoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC2C24362E8C001E63B1 /* Virgil+CryptoOperation.swift */; };
 		F4DDCC2E24362E90001E63B1 /* Virgil+CryptoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC2C24362E8C001E63B1 /* Virgil+CryptoOperation.swift */; };
 		F4DDCC2F24362E91001E63B1 /* Virgil+CryptoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC2C24362E8C001E63B1 /* Virgil+CryptoOperation.swift */; };
@@ -664,6 +667,14 @@
 		F4DDCC7E2436425B001E63B1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C48F2403092F00D9CAAA /* Crashlytics.framework */; };
 		F4DDCC7F24364263001E63B1 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4241F0C24339E1700E839C3 /* Fabric.framework */; };
 		F4DDCC8024364263001E63B1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C48F2403092F00D9CAAA /* Crashlytics.framework */; };
+		F4DDCC81243649F5001E63B1 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
+		F4DDCC82243649F5001E63B1 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
+		F4DDCC83243649F6001E63B1 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
+		F4DDCC84243649FB001E63B1 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
+		F4DDCC85243649FB001E63B1 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
+		F4DDCC86243649FC001E63B1 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
+		F4DDCC87243649FC001E63B1 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
+		F4DDCC88243649FD001E63B1 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -931,6 +942,7 @@
 		F481223A2425D07B0003DD78 /* CoreData+Messages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreData+Messages.swift"; sourceTree = "<group>"; };
 		F48122472425D71B0003DD78 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
 		F481224B24291CC70003DD78 /* CallStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallStrings.swift; sourceTree = "<group>"; };
+		F4C889F524366346004A0CFA /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		F4DDCC2C24362E8C001E63B1 /* Virgil+CryptoOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Virgil+CryptoOperation.swift"; sourceTree = "<group>"; };
 		F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+MessageUI.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -940,6 +952,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4C889F72436667C004A0CFA /* CoreData.framework in Frameworks */,
 				F4DDCC7D2436425B001E63B1 /* Fabric.framework in Frameworks */,
 				F4DDCC7E2436425B001E63B1 /* Crashlytics.framework in Frameworks */,
 				F4241F242434C40000E839C3 /* VirgilCryptoPythia.framework in Frameworks */,
@@ -1059,6 +1072,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4C889F624366347004A0CFA /* CoreData.framework in Frameworks */,
 				F4DDCC7C2436422A001E63B1 /* Fabric.framework in Frameworks */,
 				F4DDCC7A243641C6001E63B1 /* Crashlytics.framework in Frameworks */,
 				F4241F302434C40B00E839C3 /* VirgilCryptoPythia.framework in Frameworks */,
@@ -1129,6 +1143,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4C889F824366680004A0CFA /* CoreData.framework in Frameworks */,
 				F4DDCC7F24364263001E63B1 /* Fabric.framework in Frameworks */,
 				F4DDCC8024364263001E63B1 /* Crashlytics.framework in Frameworks */,
 				F4241F3C2434C41700E839C3 /* VirgilCryptoPythia.framework in Frameworks */,
@@ -1506,6 +1521,7 @@
 		429228C71F96287A00DCECDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F4C889F524366346004A0CFA /* CoreData.framework */,
 				F4241F0C24339E1700E839C3 /* Fabric.framework */,
 				F47DD295240E9546006A0341 /* WebRTC.framework */,
 				97E7C5612403E73200D9CAAA /* FirebaseInstallations.framework */,
@@ -2182,6 +2198,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4241D4A24337E9C00E839C3 /* EnvConstantProd.swift in Sources */,
+				F4DDCC81243649F5001E63B1 /* VirgilMessenger-5.xcdatamodeld in Sources */,
 				9775CFD8242A2D3D009F1693 /* Virgil.swift in Sources */,
 				F4DDCC5B24364090001E63B1 /* Storage+TextMessage.swift in Sources */,
 				F4DDCC5924364090001E63B1 /* Storage+ChannelManagement.swift in Sources */,
@@ -2206,6 +2223,7 @@
 				F4DDCC5D24364090001E63B1 /* Storage+PhotoMessage.swift in Sources */,
 				F4DDCC5724364090001E63B1 /* Storage+Account.swift in Sources */,
 				F4DDCC5324364058001E63B1 /* Virgil+CryptoOperation.swift in Sources */,
+				F4DDCC86243649FC001E63B1 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
 				F4DDCC5624364090001E63B1 /* Storage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2371,6 +2389,7 @@
 				F4241E49243386BB00E839C3 /* UIColor+Constants.swift in Sources */,
 				F4241D4824337E3C00E839C3 /* EnvConstantStg.swift in Sources */,
 				F4241E212433865300E839C3 /* Registration.swift in Sources */,
+				F4DDCC84243649FB001E63B1 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
 				F4241E142433864F00E839C3 /* CellTapDelegate.swift in Sources */,
 				F4241D842433856000E839C3 /* NetworkUploadOperation.swift in Sources */,
 				F4241D6B2433852100E839C3 /* Storage+TextMessage.swift in Sources */,
@@ -2458,6 +2477,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4241D822433855700E839C3 /* EncryptedMessage.swift in Sources */,
+				F4DDCC82243649F5001E63B1 /* VirgilMessenger-5.xcdatamodeld in Sources */,
 				F4241E47243386AD00E839C3 /* UIColor+RGB.swift in Sources */,
 				F4DDCC6424364090001E63B1 /* Storage+TextMessage.swift in Sources */,
 				F4DDCC6224364090001E63B1 /* Storage+ChannelManagement.swift in Sources */,
@@ -2482,6 +2502,7 @@
 				F4DDCC6624364090001E63B1 /* Storage+PhotoMessage.swift in Sources */,
 				F4DDCC6024364090001E63B1 /* Storage+Account.swift in Sources */,
 				F4DDCC5424364058001E63B1 /* Virgil+CryptoOperation.swift in Sources */,
+				F4DDCC87243649FC001E63B1 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
 				F4DDCC5F24364090001E63B1 /* Storage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2525,6 +2546,7 @@
 				F4241E52243386BB00E839C3 /* UIColor+Constants.swift in Sources */,
 				F4241D4924337E3F00E839C3 /* EnvConstantDev.swift in Sources */,
 				F4241E242433865300E839C3 /* Registration.swift in Sources */,
+				F4DDCC85243649FB001E63B1 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
 				F4241E1A2433864F00E839C3 /* CellTapDelegate.swift in Sources */,
 				F4241D852433856100E839C3 /* NetworkUploadOperation.swift in Sources */,
 				F4241D6D2433852400E839C3 /* Storage+TextMessage.swift in Sources */,
@@ -2612,6 +2634,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4241D832433855800E839C3 /* EncryptedMessage.swift in Sources */,
+				F4DDCC83243649F6001E63B1 /* VirgilMessenger-5.xcdatamodeld in Sources */,
 				F4241E48243386AD00E839C3 /* UIColor+RGB.swift in Sources */,
 				F4DDCC6D24364091001E63B1 /* Storage+TextMessage.swift in Sources */,
 				F4DDCC6B24364091001E63B1 /* Storage+ChannelManagement.swift in Sources */,
@@ -2636,6 +2659,7 @@
 				F4DDCC6F24364091001E63B1 /* Storage+PhotoMessage.swift in Sources */,
 				F4DDCC6924364091001E63B1 /* Storage+Account.swift in Sources */,
 				F4DDCC5524364059001E63B1 /* Virgil+CryptoOperation.swift in Sources */,
+				F4DDCC88243649FD001E63B1 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
 				F4DDCC6824364091001E63B1 /* Storage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
