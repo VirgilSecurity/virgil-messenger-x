@@ -43,61 +43,12 @@ extension Storage {
             self.isHidden = isHidden
         }
 
-        private func thumbnailImage() throws -> UIImage {
+        func thumbnailImage() throws -> UIImage {
             guard let image = UIImage(data: self.thumbnail) else {
                 throw Storage.Error.invalidMessage
             }
 
             return image
-        }
-
-        public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
-            do {
-                let path = try Storage.shared.getMediaStorage().getPath(name: self.identifier, type: .photo)
-
-                let image: UIImage
-                let state: MediaMessageState
-
-                if let fullImage = UIImage(contentsOfFile: path) {
-                    image = fullImage
-                    state = .normal
-                } else {
-                    image = try self.thumbnailImage()
-                    state = .downloading
-                }
-
-               let uiModel = UIPhotoMessageModel(uid: id,
-                                                 image: image,
-                                                 isIncoming: self.isIncoming,
-                                                 status: status,
-                                                 state: state,
-                                                 date: self.date)
-
-                if state == .downloading {
-                    try Virgil.shared.client.startDownload(from: self.url,
-                                                           loadDelegate: uiModel,
-                                                           dataHash: self.identifier) { tempFileUrl in
-                        guard let inputStream = InputStream(url: tempFileUrl) else {
-                            throw Client.Error.inputStreamFromDownloadedFailed
-                        }
-
-                        guard let outputStream = OutputStream(toFileAtPath: path, append: false) else {
-                            throw FileMediaStorage.Error.outputStreamToPathFailed
-                        }
-
-                        // TODO: add self card usecase
-                        try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: self.channel.getCard())
-                    }
-                }
-
-                return uiModel
-            } catch {
-                Log.error(error, message: "Exporting PhotoMessage to UI model failed")
-
-                return UITextMessageModel.corruptedModel(uid: id,
-                                                         isIncoming: self.isIncoming,
-                                                         date: self.date)
-            }
         }
     }
 }

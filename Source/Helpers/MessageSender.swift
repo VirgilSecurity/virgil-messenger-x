@@ -3,15 +3,6 @@ import ChattoAdditions
 import VirgilSDK
 import VirgilE3Kit
 
-// FIXME: Move to proper file
-public protocol UIMessageModelExportable {
-    func exportAsUIModel(withId id: Int, status: MessageStatus) -> UIMessageModelProtocol
-}
-
-public protocol UIMessageModelProtocol: MessageModelProtocol {
-    var status: MessageStatus { get set }
-}
-
 public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
