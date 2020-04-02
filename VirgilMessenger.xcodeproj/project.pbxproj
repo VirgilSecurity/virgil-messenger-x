@@ -612,20 +612,6 @@
 			remoteGlobalIDString = 976E351A24323F03002D1CF2;
 			remoteInfo = "Notification Extension-stg";
 		};
-		976E354B243290C8002D1CF2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 429228AA1F96261000DCECDF /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 976E351A24323F03002D1CF2;
-			remoteInfo = "Notification Extension-stg";
-		};
-		976E355224329854002D1CF2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 429228AA1F96261000DCECDF /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 976E351A24323F03002D1CF2;
-			remoteInfo = "Notification Extension-stg";
-		};
 		976E363424329B2C002D1CF2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 429228AA1F96261000DCECDF /* Project object */;
@@ -1619,7 +1605,6 @@
 			);
 			dependencies = (
 				976E353D24323F88002D1CF2 /* PBXTargetDependency */,
-				976E354C243290C8002D1CF2 /* PBXTargetDependency */,
 			);
 			name = "VirgilMessenger-stg";
 			productName = VirgilMessenger;
@@ -1658,7 +1643,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				976E355124329854002D1CF2 /* PBXTargetDependency */,
 				976E363524329B2C002D1CF2 /* PBXTargetDependency */,
 			);
 			name = "VirgilMessenger-dev";
@@ -2504,16 +2488,6 @@
 			isa = PBXTargetDependency;
 			target = 976E351A24323F03002D1CF2 /* Notification Extension-stg */;
 			targetProxy = 976E353C24323F88002D1CF2 /* PBXContainerItemProxy */;
-		};
-		976E354C243290C8002D1CF2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 976E351A24323F03002D1CF2 /* Notification Extension-stg */;
-			targetProxy = 976E354B243290C8002D1CF2 /* PBXContainerItemProxy */;
-		};
-		976E355124329854002D1CF2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 976E351A24323F03002D1CF2 /* Notification Extension-stg */;
-			targetProxy = 976E355224329854002D1CF2 /* PBXContainerItemProxy */;
 		};
 		976E363524329B2C002D1CF2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
