@@ -609,6 +609,9 @@
 		F4EF79152438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
 		F4EF79162438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
 		F4EF79172438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
+		F4DDCC5024363479001E63B1 /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
+		F4DDCC512436350F001E63B1 /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
+		F4DDCC522436350F001E63B1 /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -875,6 +878,7 @@
 		F48122472425D71B0003DD78 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
 		F481224B24291CC70003DD78 /* CallStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallStrings.swift; sourceTree = "<group>"; };
 		F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CallManager+WebRTC.swift"; sourceTree = "<group>"; };
+		F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+MessageUI.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1561,6 +1565,7 @@
 				F48122322425CC180003DD78 /* Storage+VoiceMessage.swift */,
 				F48122332425CC180003DD78 /* Storage+PhotoMessage.swift */,
 				F46EE191241FA09F00BE53AA /* Storage+CallMessage.swift */,
+				F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -2213,6 +2218,7 @@
 				1693679022490BA000EF9A42 /* VirgilAuthorizer.swift in Sources */,
 				162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */,
 				164E173820AB1BED00AB1AAD /* AudioChatInputItem.swift in Sources */,
+				F4DDCC5024363479001E63B1 /* Storage+MessageUI.swift in Sources */,
 				1644C07B20B85AC500073D99 /* UIPhotosChatInputItem.swift in Sources */,
 				16B4EC2823BF63BA00E7E4DB /* EncryptedMessage.swift in Sources */,
 				166BFAA422687D4F00EF72AD /* GroupInfo.swift in Sources */,
@@ -2336,6 +2342,7 @@
 				F4241DC2243385EF00E839C3 /* TimeSeparatorModel.swift in Sources */,
 				F4241DBC243385D900E839C3 /* UIAudioMessageHandler.swift in Sources */,
 				F4241D642433851300E839C3 /* Storage.swift in Sources */,
+				F4DDCC512436350F001E63B1 /* Storage+MessageUI.swift in Sources */,
 				F4241DEC2433862D00E839C3 /* SharedDefaults.swift in Sources */,
 				F4241D5C2433850500E839C3 /* CallStrings.swift in Sources */,
 				F4241E162433864F00E839C3 /* ChatListCell.swift in Sources */,
@@ -2474,6 +2481,7 @@
 				F4241DCD243385F000E839C3 /* TimeSeparatorModel.swift in Sources */,
 				F4241DBF243385D900E839C3 /* UIAudioMessageHandler.swift in Sources */,
 				F4241D632433851200E839C3 /* Storage.swift in Sources */,
+				F4DDCC522436350F001E63B1 /* Storage+MessageUI.swift in Sources */,
 				F4241DED2433862D00E839C3 /* SharedDefaults.swift in Sources */,
 				F4241D5D2433850600E839C3 /* CallStrings.swift in Sources */,
 				F4241E1C2433864F00E839C3 /* ChatListCell.swift in Sources */,
