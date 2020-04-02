@@ -19,7 +19,7 @@ extension CoreData {
     }
 
     func createGroupChannel(name: String, sid: String, initiator: String, cards: [Card]) throws -> Channel {
-        return try self.createChannel(type: .group, sid: sid, name: name, initiator: initiator, cards: cards)
+        try self.createChannel(type: .group, sid: sid, name: name, initiator: initiator, cards: cards)
     }
 
     @discardableResult
@@ -38,7 +38,11 @@ extension CoreData {
         return try self.createChannel(type: .single, sid: sid, name: card.identity, initiator: initiator, cards: [card])
     }
 
-    private func createChannel(type: ChannelType, sid: String, name: String, initiator: String, cards: [Card]) throws -> Channel {
+    private func createChannel(type: ChannelType,
+                               sid: String,
+                               name: String,
+                               initiator: String,
+                               cards: [Card]) throws -> Channel {
         let cards = cards.filter { $0.identity != Virgil.ethree.identity }
         let account = try self.getCurrentAccount()
 
@@ -124,8 +128,6 @@ extension CoreData {
     }
     
     func resetUnreadCount(for channel: Channel) throws {
-        UIApplication.shared.applicationIconBadgeNumber -= Int(channel.unreadCount)
-        
         channel.unreadCount = 0
         
         try self.saveContext()
