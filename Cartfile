@@ -1,4 +1,4 @@
-github "VirgilSecurity/virgil-e3kit-x" "develop-strings"
+github "VirgilSecurity/virgil-e3kit-x" "develop-register"
 github "robbiehanson/XMPPFramework" ~> 4.0
 github "Ogerets/Chatto" "messenger-stable"
 github "pkluz/PKHUD"
