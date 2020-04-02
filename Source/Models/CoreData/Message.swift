@@ -31,7 +31,13 @@ public class Message: NSManagedObject, UIMessageModelExportable {
     }
     
     public var state: State {
-        return State(rawValue: self.rawState) ?? .read
+        get {
+            return State(rawValue: self.rawState) ?? .read
+        }
+        
+        set {
+            self.rawState = newValue.rawValue
+        }
     }
     
     public struct Params {

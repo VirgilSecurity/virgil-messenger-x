@@ -24,4 +24,12 @@ extension XMPPMessage {
 
         return author
     }
+    
+    func getReceiptId() throws -> String {
+        guard let receiptId = self.receiptResponseID else {
+            throw EjabberdError.missingElementId
+        }
+        
+        return receiptId
+    }
 }

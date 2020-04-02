@@ -15,6 +15,7 @@ public enum EjabberdError: Int, Error {
     case missingAuthor = 3
     case jidFormingFailed = 4
     case missingStreamJID = 5
+    case missingElementId = 6
 }
 
 class Ejabberd: NSObject {
@@ -29,7 +30,9 @@ class Ejabberd: NSObject {
     internal var state: State = .disconnected
     internal var shouldRetry: Bool = true
 
-    internal let upload: XMPPHTTPFileUpload = XMPPHTTPFileUpload()
+    internal let upload = XMPPHTTPFileUpload()
+    internal let deliveryReceipts = XMPPMessageDeliveryReceipts()
+
     private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
     static var updatedPushToken: Data? = nil
@@ -56,6 +59,10 @@ class Ejabberd: NSObject {
         self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
         
         self.upload.activate(self.stream)
+        
+        self.deliveryReceipts.activate(self.stream)
+        self.deliveryReceipts.autoSendMessageDeliveryReceipts = true
+        self.deliveryReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
 
         try? self.initializeMutex.lock()
         try? self.sendMutex.lock()
@@ -154,6 +161,7 @@ class Ejabberd: NSObject {
         
         let message = XMPPMessage(messageType: .chat, to: user, elementID: xmppId)
         message.addBody(body)
+        message.addReceiptRequest()
 
         self.stream.send(message)
 

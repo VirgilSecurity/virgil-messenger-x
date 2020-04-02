@@ -107,3 +107,20 @@ extension Ejabberd {
         }
     }
 }
+
+extension Ejabberd: XMPPMessageDeliveryReceiptsDelegate {
+    func xmppMessageDeliveryReceipts(_ xmppMessageDeliveryReceipts: XMPPMessageDeliveryReceipts,
+                                     didReceiveReceiptResponseMessage message: XMPPMessage) {
+        Log.debug("Delivery receipt received")
+        
+        do {
+            let author = try message.getAuthor()
+            let receiptId = try message.getReceiptId()
+            
+            try MessageProcessor.processReceipt(withId: receiptId, from: author)
+        }
+        catch {
+            Log.error(error, message: "Delivery receipt processing failed")
+        }
+    }
+}

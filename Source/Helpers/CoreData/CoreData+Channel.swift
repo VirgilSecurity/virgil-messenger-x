@@ -31,11 +31,28 @@ extension CoreData {
             throw UserFriendlyError.createSelfChatForbidded
         }
 
-        if let channel = self.getChannel(withName: card.identifier) {
+        if let channel = self.getChannel(withName: card.identity) {
             return channel
         }
 
         return try self.createChannel(type: .single, sid: sid, name: card.identity, initiator: initiator, cards: [card])
+    }
+    
+    public func processReceiptMessage(withId receiptId: String, from channel: Channel) throws {
+        guard let message = channel.allMessages.first(where: { $0.xmppId == receiptId }) else {
+            throw NSError()
+        }
+        
+        switch message.state {
+        case .sent:
+            message.state = .delivered
+        case .delivered:
+            message.state = .read
+        case .received, .read, .failed:
+            break
+        }
+        
+        try self.saveContext()
     }
 
     private func createChannel(type: ChannelType,

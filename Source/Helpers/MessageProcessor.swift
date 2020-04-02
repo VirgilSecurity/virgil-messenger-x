@@ -14,8 +14,16 @@ class MessageProcessor {
         case dataToStrFailed
     }
     
+    static func processReceipt(withId receiptId: String, from author: String) throws {
+        let channel = try self.setupChannel(name: author)
+        
+        try CoreData.shared.processReceiptMessage(withId: receiptId, from: channel)
+        
+        // TODO: Add UI changing
+    }
+    
     static func process(_ encryptedMessage: EncryptedMessage, from author: String, xmppId: String) throws {
-        let channel = try self.setupCoreChannel(name: author)
+        let channel = try self.setupChannel(name: author)
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
         
@@ -95,22 +103,6 @@ class MessageProcessor {
         return messageContent
     }
     
-    private static func setupCoreChannel(name: String) throws -> Channel {
-        let channel: Channel
-
-        if let coreChannel = CoreData.shared.getChannel(withName: name) {
-            channel = coreChannel
-        }
-        else {
-            let card = try Virgil.ethree.findUser(with: name).startSync().get()
-
-            channel = try CoreData.shared.getChannel(withName: name)
-                ?? CoreData.shared.createSingleChannel(initiator: name, card: card)
-        }
-        
-        return channel
-    }
-    
     private static func decrypt(_ message: EncryptedMessage, from channel: Channel) throws -> Data {
         let decrypted: Data
         
@@ -151,8 +143,7 @@ class MessageProcessor {
                 .startSync()
                 .get()
 
-            channel = try CoreData.shared.getChannel(withName: name)
-                ?? CoreData.shared.createSingleChannel(initiator: name, card: card)
+            channel = try CoreData.shared.createSingleChannel(initiator: name, card: card)
         }
         
         return channel
