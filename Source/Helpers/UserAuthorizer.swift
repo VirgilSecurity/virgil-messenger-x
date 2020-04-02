@@ -44,7 +44,7 @@ public class UserAuthorizer {
    public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
-                _ = try self.virgilAuthorizer.signUp(identity: identity)
+                try self.virgilAuthorizer.signUp(identity: identity)
 
                 try CoreData.shared.createAccount(withIdentity: identity)
 

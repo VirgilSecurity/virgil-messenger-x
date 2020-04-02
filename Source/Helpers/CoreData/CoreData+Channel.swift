@@ -22,6 +22,7 @@ extension CoreData {
         return try self.createChannel(type: .group, sid: sid, name: name, initiator: initiator, cards: cards)
     }
 
+    @discardableResult
     func createSingleChannel(initiator: String, card: Card) throws -> Channel {
         // TODO: remove sid on channel migration
         let sid = UUID().uuidString
