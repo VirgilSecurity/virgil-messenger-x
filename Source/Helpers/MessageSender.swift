@@ -4,7 +4,7 @@ import VirgilSDK
 
 // TODO: Move to proper file
 public protocol UIMessageModelExportable {
-    func exportAsUIModel(withId id: Int, status: MessageStatus) -> UIMessageModelProtocol
+    func exportAsUIModel(withId id: Int) -> UIMessageModelProtocol
 }
 
 public protocol UIMessageModelProtocol: MessageModelProtocol {
@@ -76,7 +76,7 @@ public class MessageSender {
                 let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel, state: .sent)
                 try CoreData.shared.createVoiceMessage(with: voiceContent, baseParams: baseParams)
                 
-                self.updateMessage(uiModel, status: .success)
+                self.updateMessage(uiModel, status: .sent)
             }
             catch {
                 self.updateMessage(uiModel, status: .failed)
@@ -120,7 +120,7 @@ public class MessageSender {
                                                        thumbnail: thumbnail,
                                                        baseParams: baseParams)
                 
-                self.updateMessage(uiModel, status: .success)
+                self.updateMessage(uiModel, status: .failed)
             }
             catch {
                 self.updateMessage(uiModel, status: .failed)
@@ -140,7 +140,7 @@ public class MessageSender {
                 let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel, state: .sent)
                 try CoreData.shared.createTextMessage(with: textContent, baseParams: baseParams)
                 
-                self.updateMessage(uiModel, status: .success)
+                self.updateMessage(uiModel, status: .sent)
             }
             catch {
                 self.updateMessage(uiModel, status: .failed)

@@ -23,7 +23,9 @@ public class TextMessage: Message {
         self.body = body
     }
     
-    public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
+    public override func exportAsUIModel(withId id: Int) -> UIMessageModelProtocol {
+        let status = self.state.exportAsMessageStatus()
+        
         return UITextMessageModel(uid: id,
                                   text: self.body,
                                   isIncoming: self.isIncoming,

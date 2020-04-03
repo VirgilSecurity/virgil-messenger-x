@@ -71,7 +71,9 @@ class SendingStatusPresenter: ChatItemPresenterProtocol {
     }
 
     static func registerCells(_ collectionView: UICollectionView) {
-        collectionView.register(UINib(nibName: "SendingStatusCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "SendingStatusCollectionViewCell")
+        let nib = UINib(nibName: "SendingStatusCollectionViewCell", bundle: nil)
+
+        collectionView.register(nib, forCellWithReuseIdentifier: "SendingStatusCollectionViewCell")
     }
 
     func dequeueCell(collectionView: UICollectionView, indexPath: IndexPath) -> UICollectionViewCell {
@@ -84,14 +86,19 @@ class SendingStatusPresenter: ChatItemPresenterProtocol {
             assert(false, "expecting status cell")
             return
         }
+        
+        let failed = self.statusModel.status == .failed
 
         let attrs = [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 10.0),
-            NSAttributedString.Key.foregroundColor: self.statusModel.status == .failed ? UIColor.red : UIColor.white
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 9.0),
+            NSAttributedString.Key.foregroundColor: failed ? UIColor.red : UIColor.white.withAlphaComponent(0.5)
         ]
+        
         statusCell.text = NSAttributedString(
             string: self.statusText(),
             attributes: attrs)
+        
+        statusCell.trailingConstraint.constant = failed ? 45 : 20
     }
 
     func statusText() -> String {
@@ -100,8 +107,12 @@ class SendingStatusPresenter: ChatItemPresenterProtocol {
             return NSLocalizedString("Sending failed", comment: "")
         case .sending:
             return NSLocalizedString("Sending...", comment: "")
-        default:
-            return ""
+        case .sent:
+            return NSLocalizedString("Sent", comment: "")
+        case .delivered:
+            return NSLocalizedString("Delivered", comment: "")
+        case .read:
+            return NSLocalizedString("Read", comment: "")
         }
     }
 

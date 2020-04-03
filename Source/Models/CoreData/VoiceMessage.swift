@@ -31,7 +31,9 @@ public class VoiceMessage: Message {
         self.url = url
     }
     
-    public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
+    public override func exportAsUIModel(withId id: Int) -> UIMessageModelProtocol {
+        let status = self.state.exportAsMessageStatus()
+        
         do {
             let mediaStorage = try CoreData.shared.getMediaStorage()
             

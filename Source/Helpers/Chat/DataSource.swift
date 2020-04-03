@@ -150,7 +150,7 @@ class DataSource: ChatDataSourceProtocol {
         let uiModel = UIPhotoMessageModel(uid: id,
                                           image: image,
                                           isIncoming: false,
-                                          status: .success,
+                                          status: .sending,
                                           state: .uploading,
                                           date: Date())
         
@@ -168,7 +168,7 @@ class DataSource: ChatDataSourceProtocol {
                                           audioUrl: audioUrl,
                                           duration: duration,
                                           isIncoming: false,
-                                          status: .success,
+                                          status: .sending,
                                           state: .uploading,
                                           date: Date())
         

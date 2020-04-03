@@ -28,6 +28,21 @@ public class Message: NSManagedObject, UIMessageModelExportable {
         case sent
         case delivered
         case read
+        
+        func exportAsMessageStatus() -> MessageStatus {
+            switch self {
+            case .failed:
+                return .failed
+            case .sent:
+                return .sent
+            case .delivered:
+                return .delivered
+            case .read:
+                return .read
+            case .received:
+                return .read
+            }
+        }
     }
     
     public var state: State {
@@ -64,7 +79,7 @@ public class Message: NSManagedObject, UIMessageModelExportable {
         self.rawState = params.state.rawValue
     }
         
-    public func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
+    public func exportAsUIModel(withId id: Int) -> UIMessageModelProtocol {
         Log.error(CoreData.Error.exportBaseMessageForbidden,
                   message: "Exporting abstract Message to UI model is forbidden")
         

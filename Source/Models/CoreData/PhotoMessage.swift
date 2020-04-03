@@ -39,7 +39,9 @@ public class PhotoMessage: Message {
         return image
     }
     
-    public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
+    public override func exportAsUIModel(withId id: Int) -> UIMessageModelProtocol {
+        let status = self.state.exportAsMessageStatus()
+        
         do {
             let path = try CoreData.shared.getMediaStorage().getPath(name: self.identifier, type: .photo)
             
