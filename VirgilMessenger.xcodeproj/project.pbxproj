@@ -546,15 +546,6 @@
 		F4241F1324339E5100E839C3 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4241F0C24339E1700E839C3 /* Fabric.framework */; };
 		F4241F162433A01D00E839C3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97E7C49624030C0B00D9CAAA /* GoogleService-Info.plist */; };
 		F4241F172433A01E00E839C3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97E7C49624030C0B00D9CAAA /* GoogleService-Info.plist */; };
-		F4241F18243432C200E839C3 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
-		F4241F19243432C200E839C3 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
-		F4241F1A243432C500E839C3 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
-		F4241F1B243432C600E839C3 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
-		F4241F1C243432C600E839C3 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
-		F4241F1D2434336200E839C3 /* Virgil+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BB224334084007D10E1 /* Virgil+Storage.swift */; };
-		F4241F1E2434336200E839C3 /* Virgil+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BB224334084007D10E1 /* Virgil+Storage.swift */; };
-		F4241F1F243437B500E839C3 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
-		F4241F20243437B600E839C3 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
 		F4241F2124348DAF00E839C3 /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C4792403085B00D9CAAA /* FirebaseAnalytics.framework */; };
 		F4241F242434C40000E839C3 /* VirgilCryptoPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE3238D691600F7ACE7 /* VirgilCryptoPythia.framework */; };
 		F4241F252434C40000E839C3 /* VirgilSDKPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; };
@@ -592,8 +583,6 @@
 		F4241F452434C41900E839C3 /* VSCRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29B22392339003B8CBA /* VSCRatchet.framework */; };
 		F4241F462434C41900E839C3 /* VirgilCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CA1F96287A00DCECDF /* VirgilCrypto.framework */; };
 		F4241F472434C41900E839C3 /* VirgilSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429228CB1F96287A00DCECDF /* VirgilSDK.framework */; };
-		F44C6BAC2431B011007D10E1 /* ChannelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BAB2431B011007D10E1 /* ChannelType.swift */; };
-		F44C6BB324334084007D10E1 /* Virgil+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44C6BB224334084007D10E1 /* Virgil+Storage.swift */; };
 		F46EE193241FA09F00BE53AA /* Storage+Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18D241FA09F00BE53AA /* Storage+Account.swift */; };
 		F46EE194241FA09F00BE53AA /* Storage+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18E241FA09F00BE53AA /* Storage+Message.swift */; };
 		F46EE195241FA09F00BE53AA /* Storage+TextMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE18F241FA09F00BE53AA /* Storage+TextMessage.swift */; };
@@ -613,6 +602,10 @@
 		F48122452425D45F0003DD78 /* NetworkMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122282425CBF60003DD78 /* NetworkMessage.swift */; };
 		F48122482425D71B0003DD78 /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122472425D71B0003DD78 /* CallManager.swift */; };
 		F481224C24291CC70003DD78 /* CallStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481224B24291CC70003DD78 /* CallStrings.swift */; };
+		F492235E24376BD800A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
+		F492235F24376BD900A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
+		F492236024376C1100A07951 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
+		F492236124376C1200A07951 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2127,7 +2120,6 @@
 				97AF4D86241AEED000ED9BD7 /* Client+Backend.swift in Sources */,
 				16D4B8D923F5CE1700D17B90 /* SharedDefaults.swift in Sources */,
 				16D4B8B123F5BCA400D17B90 /* NotificationService.swift in Sources */,
-				16D4B8D623F5C35B00D17B90 /* (null) in Sources */,
 				16D4B8D223F5C2F500D17B90 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2316,6 +2308,7 @@
 				F4241DE42433862500E839C3 /* Configurator.swift in Sources */,
 				F4241D692433851E00E839C3 /* Storage+Message.swift in Sources */,
 				F4241DA7243385B700E839C3 /* AudioMessageViewModel.swift in Sources */,
+				F492235E24376BD800A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */,
 				F4241E312433866100E839C3 /* AddMembers.swift in Sources */,
 				F4241E66243386D700E839C3 /* PushNotificationsDelegate.swift in Sources */,
 				F4241DA4243385B700E839C3 /* AudioMessageModel.swift in Sources */,
@@ -2352,6 +2345,7 @@
 				F4241DF12433863400E839C3 /* UnreadManager.swift in Sources */,
 				F4241D972433859100E839C3 /* UITextMessageViewModel.swift in Sources */,
 				F4241D7B2433854A00E839C3 /* XMPPMessage.swift in Sources */,
+				F492236024376C1100A07951 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
 				F4241E67243386D700E839C3 /* ViewController.swift in Sources */,
 				F4241D802433855600E839C3 /* EncryptedMessage.swift in Sources */,
 				F4241DC3243385EF00E839C3 /* TimeSeparatorPresenter.swift in Sources */,
@@ -2451,6 +2445,7 @@
 				F4241DE92433862500E839C3 /* Configurator.swift in Sources */,
 				F4241D6A2433851F00E839C3 /* Storage+Message.swift in Sources */,
 				F4241DAB243385B800E839C3 /* AudioMessageViewModel.swift in Sources */,
+				F492235F24376BD900A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */,
 				F4241E3A2433866200E839C3 /* AddMembers.swift in Sources */,
 				F4241E69243386D800E839C3 /* PushNotificationsDelegate.swift in Sources */,
 				F4241DA8243385B800E839C3 /* AudioMessageModel.swift in Sources */,
@@ -2487,6 +2482,7 @@
 				F4241DF32433863400E839C3 /* UnreadManager.swift in Sources */,
 				F4241D982433859300E839C3 /* UITextMessageViewModel.swift in Sources */,
 				F4241D7A2433854A00E839C3 /* XMPPMessage.swift in Sources */,
+				F492236124376C1200A07951 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
 				F4241E6A243386D800E839C3 /* ViewController.swift in Sources */,
 				F4241D812433855700E839C3 /* EncryptedMessage.swift in Sources */,
 				F4241DCE243385F000E839C3 /* TimeSeparatorPresenter.swift in Sources */,
