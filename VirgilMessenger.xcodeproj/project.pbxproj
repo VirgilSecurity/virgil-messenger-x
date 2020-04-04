@@ -606,6 +606,9 @@
 		F492235F24376BD900A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
 		F492236024376C1100A07951 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
 		F492236124376C1200A07951 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
+		F4EF79152438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
+		F4EF79162438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
+		F4EF79172438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -871,6 +874,7 @@
 		F481223A2425D07B0003DD78 /* CoreData+Messages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreData+Messages.swift"; sourceTree = "<group>"; };
 		F48122472425D71B0003DD78 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
 		F481224B24291CC70003DD78 /* CallStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallStrings.swift; sourceTree = "<group>"; };
+		F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CallManager+WebRTC.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1580,6 +1584,7 @@
 			children = (
 				F48122472425D71B0003DD78 /* CallManager.swift */,
 				F481224B24291CC70003DD78 /* CallStrings.swift */,
+				F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */,
 			);
 			path = Call;
 			sourceTree = "<group>";
@@ -2188,6 +2193,7 @@
 				16FE75F0224A3DA000B545AF /* Configurator.swift in Sources */,
 				423BDA7E1F97602F00C3EE9B /* ChatListCell.swift in Sources */,
 				97AF4D83241AEE2000ED9BD7 /* Client+Backend.swift in Sources */,
+				F4EF79152438BAF100F26291 /* CallManager+WebRTC.swift in Sources */,
 				16F8F3B9226487BE00143FB7 /* UsersListCell.swift in Sources */,
 				805F59BA242D86FA003421EB /* PushNotificationsDelegate.swift in Sources */,
 				4280C0D51F97341300075B3A /* SendingStatusCollectionViewCell.swift in Sources */,
@@ -2306,6 +2312,7 @@
 				F4241DBA243385D900E839C3 /* UIAudioMessageModel.swift in Sources */,
 				F4241D992433859600E839C3 /* UITextMessageHandler.swift in Sources */,
 				F4241DE42433862500E839C3 /* Configurator.swift in Sources */,
+				F4EF79162438BAF100F26291 /* CallManager+WebRTC.swift in Sources */,
 				F4241D692433851E00E839C3 /* Storage+Message.swift in Sources */,
 				F4241DA7243385B700E839C3 /* AudioMessageViewModel.swift in Sources */,
 				F492235E24376BD800A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */,
@@ -2443,6 +2450,7 @@
 				F4241DBD243385D900E839C3 /* UIAudioMessageModel.swift in Sources */,
 				F4241D9A2433859600E839C3 /* UITextMessageHandler.swift in Sources */,
 				F4241DE92433862500E839C3 /* Configurator.swift in Sources */,
+				F4EF79172438BAF100F26291 /* CallManager+WebRTC.swift in Sources */,
 				F4241D6A2433851F00E839C3 /* Storage+Message.swift in Sources */,
 				F4241DAB243385B800E839C3 /* AudioMessageViewModel.swift in Sources */,
 				F492235F24376BD900A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */,
