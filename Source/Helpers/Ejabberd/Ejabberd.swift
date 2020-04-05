@@ -32,6 +32,7 @@ class Ejabberd: NSObject {
 
     internal let upload = XMPPHTTPFileUpload()
     internal let deliveryReceipts = XMPPMessageDeliveryReceipts()
+    internal let readReceipts = XMPPMessageReadReceipts()
 
     private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
@@ -61,9 +62,12 @@ class Ejabberd: NSObject {
         self.upload.activate(self.stream)
         
         self.deliveryReceipts.activate(self.stream)
-        self.deliveryReceipts.autoSendMessageDeliveryReceipts = true
         self.deliveryReceipts.autoSendMessageDeliveryRequests = true
         self.deliveryReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
+        
+        self.readReceipts.activate(self.stream)
+        self.readReceipts.autoSendMessageReadRequests = true
+        self.readReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
 
         try? self.initializeMutex.lock()
         try? self.sendMutex.lock()
@@ -160,7 +164,7 @@ class Ejabberd: NSObject {
         
         let message = XMPPMessage(messageType: .chat, to: user, elementID: xmppId)
         message.addBody(body)
-
+        
         try self.send(message: message, to: user)
     }
     

@@ -38,17 +38,15 @@ extension CoreData {
         return try self.createChannel(type: .single, sid: sid, name: card.identity, initiator: initiator, cards: [card])
     }
     
-    public func processReceiptMessage(withId receiptId: String, from channel: Channel) throws -> Message.State {
+    public func updateMessageState(to state: Message.State, withId receiptId: String, from channel: Channel) throws -> Message.State {
         guard let message = channel.allMessages.first(where: { $0.xmppId == receiptId }) else {
             throw NSError()
         }
         
         switch message.state {
-        case .sent:
-            message.state = .delivered
-        case .delivered:
-            message.state = .read
-        case .received, .read, .failed:
+        case .sent, .delivered, .failed:
+            message.state = state
+        case .received, .read:
             break
         }
         

@@ -14,12 +14,10 @@ class MessageProcessor {
         case dataToStrFailed
     }
     
-    static func processReceipt(withId receiptId: String, from author: String) throws {
+    static func processNewMessageState(_ state: Message.State, withId receiptId: String, from author: String) throws {
         let channel = try self.setupChannel(name: author)
         
-        let newState = try CoreData.shared.processReceiptMessage(withId: receiptId, from: channel)
-        
-        // TODO: Add UI changing
+        let newState = try CoreData.shared.updateMessageState(to: state, withId: receiptId, from: channel)
         
         if let channel = CoreData.shared.currentChannel, channel.name == author {
             Notifications.post(newState: newState, messageId: receiptId)

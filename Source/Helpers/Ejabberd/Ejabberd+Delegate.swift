@@ -74,11 +74,20 @@ extension Ejabberd {
     func xmppStream(_ sender: XMPPStream, didSend message: XMPPMessage) {
         Log.debug("Ejabberd: Message sent")
 
+        guard !message.hasReadReceiptResponse, !message.hasDeliveryReceiptResponse else {
+            return
+        }
+        
         self.unlockMutex(self.sendMutex)
     }
 
     func xmppStream(_ sender: XMPPStream, didFailToSend message: XMPPMessage, error: Error) {
         Log.error(error, message: "Ejabberd: message failed to send")
+        
+        guard !message.hasReadReceiptResponse, !message.hasDeliveryReceiptResponse else {
+            Log.error(error, message: "Sending receipt failed")
+            return
+        }
 
         self.unlockMutex(self.sendMutex, with: error)
     }
@@ -96,8 +105,10 @@ extension Ejabberd {
         else {
             return
         }
-        
+                
         do {
+            try self.sendReceipt(to: message)
+
             let encryptedMessage = try EncryptedMessage.import(body)
 
             try MessageProcessor.process(encryptedMessage, from: author, xmppId: xmppId)
@@ -106,9 +117,27 @@ extension Ejabberd {
             Log.error(error, message: "Message processing failed")
         }
     }
+    
+    private func sendReceipt(to message: XMPPMessage) throws {
+        let author = try message.getAuthor()
+        
+        if message.hasReadReceiptRequest,
+            let channel = CoreData.shared.currentChannel,
+            channel.name == author
+        {
+            let readReceiptResponse = try message.generateReadReceiptResponse()
+
+            self.stream.send(readReceiptResponse)
+        }
+        else if message.hasDeliveryReceiptRequest {
+            let deliveryReceiptResponse = try message.generateDeliveryReceiptResponse()
+            
+            self.stream.send(deliveryReceiptResponse)
+        }
+    }
 }
 
-extension Ejabberd: XMPPMessageDeliveryReceiptsDelegate {
+extension Ejabberd: XMPPMessageDeliveryReceiptsDelegate, XMPPMessageReadReceiptsDelegate {
     func xmppMessageDeliveryReceipts(_ xmppMessageDeliveryReceipts: XMPPMessageDeliveryReceipts,
                                      didReceiveReceiptResponseMessage message: XMPPMessage) {
         Log.debug("Delivery receipt received")
@@ -117,10 +146,24 @@ extension Ejabberd: XMPPMessageDeliveryReceiptsDelegate {
             let author = try message.getAuthor()
             let receiptId = try message.getDeliveryReceiptId()
             
-            try MessageProcessor.processReceipt(withId: receiptId, from: author)
+            try MessageProcessor.processNewMessageState(.delivered, withId: receiptId, from: author)
         }
         catch {
             Log.error(error, message: "Delivery receipt processing failed")
+        }
+    }
+    
+    func xmppMessageReadReceipts(_ xmppMessageReadReceipts: XMPPMessageReadReceipts, didReceiveReadReceiptResponseMessage message: XMPPMessage) {
+        Log.debug("Read receipt received")
+        
+        do {
+            let author = try message.getAuthor()
+            let receiptId = try message.getReadReceiptId()
+            
+            try MessageProcessor.processNewMessageState(.read, withId: receiptId, from: author)
+        }
+        catch {
+            Log.error(error, message: "Read receipt processing failed")
         }
     }
 }

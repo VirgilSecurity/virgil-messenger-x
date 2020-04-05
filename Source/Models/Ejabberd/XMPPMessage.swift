@@ -32,4 +32,28 @@ extension XMPPMessage {
         
         return receiptId
     }
+    
+    func getReadReceiptId() throws -> String {
+        guard let receiptId = self.readReceiptResponseID else {
+            throw EjabberdError.missingElementId
+        }
+        
+        return receiptId
+    }
+    
+    func generateReadReceiptResponse() throws -> XMPPMessage {
+        guard let readReceiptResponse = self.generateReadReceiptResponse else {
+            throw NSError()
+        }
+        
+        return readReceiptResponse
+    }
+    
+    func generateDeliveryReceiptResponse() throws -> XMPPMessage {
+        guard let deliveryReceiptResponse = self.generateDeliveryReceiptResponse else {
+            throw NSError()
+        }
+        
+        return deliveryReceiptResponse
+    }
 }
