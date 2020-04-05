@@ -68,6 +68,9 @@ extension CallViewController: CallManagerObserver {
         case .connected:
             return "connected"
 
+        case .disconnected:
+            return "disconnected"
+
         case .closed:
             return "closed"
 

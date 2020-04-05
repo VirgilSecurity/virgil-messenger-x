@@ -54,6 +54,7 @@ public class CallManager: NSObject {
         case acceptAnswer // when user press accept call button
         case negotiating // esteblish connection parameters
         case connected // connection stable
+        case disconnected // temporary disconnected
         case closed // connection was closed by one of the parties
         case failed(Error) // connection failed after being disconnected
 
@@ -89,11 +90,9 @@ public class CallManager: NSObject {
 
     private var channel: Storage.Channel?
 
-    private var callOffer: NetworkMessage.CallOffer?
-
     private(set) var callDirection: CallDirection = .none
 
-    private(set) var connectionStatus: ConnectionStatus = .none {
+    var connectionStatus: ConnectionStatus = .none {
         didSet {
             if connectionStatus != .none {
                 self.notifyObservers { (observer) in
@@ -156,7 +155,6 @@ public class CallManager: NSObject {
         self.peerConnection = nil
         self.callDirection = .none
         self.connectionStatus = .none
-        self.callOffer = nil
         self.channel = nil
     }
 
@@ -217,7 +215,6 @@ public class CallManager: NSObject {
         self.cleanup()
         self.callDirection = .incoming
         self.connectionStatus = .new
-        self.callOffer = callOffer
         self.channel = channel
 
         do {
@@ -227,7 +224,15 @@ public class CallManager: NSObject {
             return
         }
 
-        self.connectionStatus = .waitingForAnswer
+        self.peerConnection!.setRemoteDescription(callOffer.rtcSessionDescription) { error in
+            guard let error = error else {
+                self.connectionStatus = .waitingForAnswer
+                return
+            }
+
+            Log.error(error, message: "Failed to set an offer session description as remote session description")
+            self.connectionStatus = .failed(CallManagerError.configurationFailed)
+        }
     }
 
     func rejectCall() {
@@ -263,49 +268,35 @@ public class CallManager: NSObject {
             return
         }
 
-        guard let callOffer = self.callOffer else {
-            self.connectionStatus = .failed(CallManagerContractError.noCallOffer)
-            return
-        }
-
         self.connectionStatus = .acceptAnswer
 
         let constrains = RTCMediaConstraints(mandatoryConstraints: [kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue],
                                              optionalConstraints: nil)
 
-        let offer = callOffer.rtcSessionDescription
-        peerConnection.setRemoteDescription(offer) { error in
-            if let error = error {
-                Log.error(error, message: "Failed to set an offer session description as remote session description")
+        peerConnection.answer(for: constrains) { localSDP, error in
+            guard let answerSdp = localSDP else {
+                if let error = error {
+                    Log.error(error, message: "Failed to create an answer session description")
+                }
                 self.connectionStatus = .failed(CallManagerError.configurationFailed)
                 return
             }
 
-            peerConnection.answer(for: constrains) { localSDP, error in
-                guard let answerSdp = localSDP else {
-                    if let error = error {
-                        Log.error(error, message: "Failed to create an answer session description")
+            peerConnection.setLocalDescription(answerSdp) { error in
+                guard let error = error else {
+                    self.sendSignalingMessage(callAcceptedAnswer: answerSdp) { (error) in
+                        guard let error = error else {
+                            self.connectionStatus = .negotiating
+                            return
+                        }
+
+                        self.connectionStatus = .failed(error)
                     }
-                    self.connectionStatus = .failed(CallManagerError.configurationFailed)
                     return
                 }
 
-                peerConnection.setLocalDescription(answerSdp) { error in
-                    guard let error = error else {
-                        self.sendSignalingMessage(callAcceptedAnswer: answerSdp) { (error) in
-                            guard let error = error else {
-                                self.connectionStatus = .negotiating
-                                return
-                            }
-
-                            self.connectionStatus = .failed(error)
-                        }
-                        return
-                    }
-
-                    Log.error(error, message: "Failed to set an answer session description as local session description")
-                    self.connectionStatus = .failed(CallManagerError.configurationFailed)
-                }
+                Log.error(error, message: "Failed to set an answer session description as local session description")
+                self.connectionStatus = .failed(CallManagerError.configurationFailed)
             }
         }
     }
@@ -362,6 +353,8 @@ public class CallManager: NSObject {
         }
 
         let candidate = iceCandidate.rtcIceCandidate
+
+        Log.debug("WebRTC: will add remote candidate:\n    sdp = \(candidate.sdp)")
 
         peerConnection.add(candidate)
     }
@@ -481,80 +474,5 @@ public class CallManager: NSObject {
             Log.error(error, message: "Failed to send 'ice candidate' signaling message")
             completion(CallManagerError.signalingFailed)
         }
-    }
-}
-
-extension CallManager: RTCPeerConnectionDelegate {
-
-    public func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {
-        Log.debug(#function)
-
-        self.connectionStatus = .negotiating
-    }
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
-        Log.debug(#function + " newState: \(newState)")
-
-        switch newState {
-        case .new, .checking:
-            self.connectionStatus = .negotiating
-
-        case .connected:
-            self.connectionStatus = .connected
-
-        case .disconnected:
-            self.endCall()
-
-        case .failed:
-            self.connectionStatus = .failed(CallManagerError.connectionFailed)
-
-        case .closed:
-            self.connectionStatus = .closed
-
-        case .completed, .count:
-            break
-
-        @unknown default:
-            break
-        }
-    }
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
-        Log.debug(#function)
-
-        self.sendSignalingMessage(candidate: candidate) { error in
-            if let error = error {
-                self.connectionStatus = .failed(error)
-            }
-        }
-    }
-}
-
-extension CallManager /* RTCPeerConnectionDelegate stubs */ {
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        // This delegate is supperceeded by the delegate -
-        //     peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState)
-        Log.debug(#function)
-    }
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
-        Log.debug(#function)
-    }
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {
-        // This is not called when RTCSdpSemanticsUnifiedPlan is specified.
-        Log.debug(#function)
-    }
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState) {
-        Log.debug(#function)
-    }
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {
-        Log.debug(#function)
-    }
-
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
-        Log.debug(#function)
     }
 }
