@@ -12,6 +12,7 @@ import VirgilSDK
 import Firebase
 import CocoaLumberjackSwift
 import WebRTC
+import PushKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -45,7 +46,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Clean notifications
         self.cleanNotifications()
 
+        // Registering for Voip notifications
+        self.registerVoip()
+
         return true
+    }
+
+    private func registerVoip() {
+        let voipRegistry = PKPushRegistry(queue: DispatchQueue.main)
+        voipRegistry.delegate = self
+        voipRegistry.desiredPushTypes = [PKPushType.voIP]
     }
 
     private func cleanLocalStorage() {
@@ -148,5 +158,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillResignActive(_ application: UIApplication) {
         UnreadManager.shared.update()
+    }
+}
+
+extension AppDelegate: PKPushRegistryDelegate {
+    func pushRegistry(_ registry: PKPushRegistry, didUpdate pushCredentials: PKPushCredentials, for type: PKPushType) {
+        // FIXME: implement
+        let token = pushCredentials.token
+    }
+
+    func pushRegistry(_ registry: PKPushRegistry,
+                      didReceiveIncomingPushWith payload: PKPushPayload,
+                      for type: PKPushType,
+                      completion: @escaping () -> Void) {
+
     }
 }
