@@ -18,6 +18,7 @@ public enum EjabberdError: Int, Error {
     case missingElementId = 6
 }
 
+// TODO: Split file
 class Ejabberd: NSObject {
     private(set) static var shared: Ejabberd = Ejabberd()
 
@@ -174,6 +175,14 @@ class Ejabberd: NSObject {
         try self.sendMutex.lock()
 
         try self.checkError()
+    }
+    
+    public func sendGlobalReadResponse(to user: String) throws {
+        let jid = try Ejabberd.setupJid(with: user)
+        
+        let message = XMPPMessage.generateReadReceipt(for: jid)
+        
+        self.stream.send(message)
     }
 
     public func set(status: Status) {

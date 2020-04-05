@@ -78,22 +78,24 @@ class DataSource: ChatDataSourceProtocol {
             guard let strongSelf = self else { return }
 
             do {
-                let messageId: String = try Notifications.parse(notification, for: .messageId)
+                let messageIds: [String] = try Notifications.parse(notification, for: .messageIds)
                 let newState: Message.State = try Notifications.parse(notification, for: .newState)
                 
                 let selectPredicate = { (item: ChatItemProtocol) -> Bool in
-                    item.uid == messageId
+                    messageIds.contains(item.uid)
                 }
                 
-                let changePredicate = { (item: ChatItemProtocol) -> ChatItemProtocol in
-                    let item = item as! UIMessageModelProtocol
+                let changePredicate = { (item: ChatItemProtocol) throws -> ChatItemProtocol in
+                    guard let item = item as? UIMessageModelProtocol else {
+                        throw NSError()
+                    }
 
                     item.status = newState.exportAsMessageStatus()
                     
                     return item
                 }
                 
-                try strongSelf.slidingWindow.updateItem(where: selectPredicate, changePredicate: changePredicate)
+                try strongSelf.slidingWindow.updateItems(where: selectPredicate, changePredicate: changePredicate)
             }
             catch {
                 Log.error(error, message: "NewState notification processing failed")

@@ -38,6 +38,25 @@ extension CoreData {
         return try self.createChannel(type: .single, sid: sid, name: card.identity, initiator: initiator, cards: [card])
     }
     
+    // Returns changed messages ids
+    public func markAllMessagesAsRead(in channel: Channel) throws -> [String] {
+        var changedMessagesIds: [String] = []
+        
+        channel.allMessages.forEach { message in
+            switch message.state {
+            case .delivered:
+                changedMessagesIds.append(message.xmppId)
+                message.state = .read
+            case .failed, .received, .sent, .read:
+                break
+            }
+        }
+        
+        try self.saveContext()
+        
+        return changedMessagesIds
+    }
+    
     public func updateMessageState(to state: Message.State, withId receiptId: String, from channel: Channel) throws -> Message.State {
         guard let message = channel.allMessages.first(where: { $0.xmppId == receiptId }) else {
             throw NSError()

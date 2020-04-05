@@ -30,7 +30,7 @@ public class Notifications {
 
     public enum NotificationKeys: String {
         case newState = "NotificationKeys.NewState"
-        case messageId = "NotificationKeys.MessageId"
+        case messageIds = "NotificationKeys.MessageIds"
         case message = "NotificationKeys.Message"
         case error = "NotificationKeys.Error"
     }
@@ -77,10 +77,10 @@ extension Notifications {
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }
     
-    public static func post(newState: Message.State, messageId: String) {
+    public static func post(newState: Message.State, messageIds: [String]) {
         let notification = self.notification(.messageStatusUpdated)
         let userInfo: [String: Any] = [NotificationKeys.newState.rawValue: newState,
-                                       NotificationKeys.messageId.rawValue: messageId]
+                                       NotificationKeys.messageIds.rawValue: messageIds]
 
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }

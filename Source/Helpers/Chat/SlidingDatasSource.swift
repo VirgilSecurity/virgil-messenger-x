@@ -94,16 +94,10 @@ public class SlidingDataSource<Element> {
         }
     }
     
-    public func updateItem(where selectPredicate: (Element) -> Bool, changePredicate: (Element) -> Element) throws {
-        guard let itemIndex = self.items.firstIndex(where: selectPredicate) else {
-            throw NSError()
+    public func updateItems(where selectPredicate: (Element) -> Bool, changePredicate: (Element) throws -> Element) throws {
+        self.items = try self.items.map {
+            try selectPredicate($0) ? changePredicate($0) : $0
         }
-        
-        let item = self.items[itemIndex]
-        
-        let newItem = changePredicate(item)
-        
-        self.items[itemIndex] = newItem
     }
 
     public func insertItem(_ item: Element, position: InsertPosition) {

@@ -80,10 +80,12 @@ class ChatViewController: BaseChatViewController {
         self.dataSource.setupObservers()
         
         do {
+            try Ejabberd.shared.sendGlobalReadResponse(to: self.channel.name)
+            
             try CoreData.shared.resetUnreadCount(for: self.channel)
         }
         catch {
-            Log.error(error, message: "Reseting unread count for channel failed")
+            Log.error(error, message: "Chat viewDidLoad failed")
         }
     }
 

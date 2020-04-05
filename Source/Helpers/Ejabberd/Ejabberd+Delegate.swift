@@ -158,9 +158,13 @@ extension Ejabberd: XMPPMessageDeliveryReceiptsDelegate, XMPPMessageReadReceipts
         
         do {
             let author = try message.getAuthor()
-            let receiptId = try message.getReadReceiptId()
             
-            try MessageProcessor.processNewMessageState(.read, withId: receiptId, from: author)
+            if let receiptId = message.readReceiptResponseID {
+                try MessageProcessor.processNewMessageState(.read, withId: receiptId, from: author)
+            }
+            else {
+                try MessageProcessor.processGlobalReadState(from: author)
+            }
         }
         catch {
             Log.error(error, message: "Read receipt processing failed")

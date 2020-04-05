@@ -33,14 +33,6 @@ extension XMPPMessage {
         return receiptId
     }
     
-    func getReadReceiptId() throws -> String {
-        guard let receiptId = self.readReceiptResponseID else {
-            throw EjabberdError.missingElementId
-        }
-        
-        return receiptId
-    }
-    
     func generateReadReceiptResponse() throws -> XMPPMessage {
         guard let readReceiptResponse = self.generateReadReceiptResponse else {
             throw NSError()
