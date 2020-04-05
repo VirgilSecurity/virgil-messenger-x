@@ -115,7 +115,7 @@ extension Ejabberd: XMPPMessageDeliveryReceiptsDelegate {
         
         do {
             let author = try message.getAuthor()
-            let receiptId = try message.getReceiptId()
+            let receiptId = try message.getDeliveryReceiptId()
             
             try MessageProcessor.processReceipt(withId: receiptId, from: author)
         }

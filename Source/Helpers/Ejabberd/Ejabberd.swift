@@ -62,6 +62,7 @@ class Ejabberd: NSObject {
         
         self.deliveryReceipts.activate(self.stream)
         self.deliveryReceipts.autoSendMessageDeliveryReceipts = true
+        self.deliveryReceipts.autoSendMessageDeliveryRequests = true
         self.deliveryReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
 
         try? self.initializeMutex.lock()
@@ -159,7 +160,6 @@ class Ejabberd: NSObject {
         
         let message = XMPPMessage(messageType: .chat, to: user, elementID: xmppId)
         message.addBody(body)
-        message.addReceiptRequest()
 
         try self.send(message: message, to: user)
     }
