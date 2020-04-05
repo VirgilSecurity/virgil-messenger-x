@@ -4,7 +4,7 @@ import VirgilSDK
 
 // TODO: Move to proper file
 public protocol UIMessageModelExportable {
-    func exportAsUIModel(withId id: Int) -> UIMessageModelProtocol
+    func exportAsUIModel() -> UIMessageModelProtocol
 }
 
 public protocol UIMessageModelProtocol: MessageModelProtocol {
@@ -17,8 +17,7 @@ public class MessageSender {
 
     private let queue = DispatchQueue(label: "MessageSender")
     
-    // Returns xmppId
-    private func send(content: MessageContent, additionalData: Data?, to channel: Channel, date: Date) throws -> String {
+    private func send(content: MessageContent, additionalData: Data?, to channel: Channel, date: Date, messageId: String) throws {
         let exported = try content.exportAsJsonString()
 
         let card = try channel.getCard()
@@ -32,7 +31,7 @@ public class MessageSender {
 
         let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date, additionalData: additionalData)
 
-        return try Ejabberd.shared.send(encryptedMessage, to: channel.name)
+        try Ejabberd.shared.send(encryptedMessage, to: channel.name, xmppId: messageId)
     }
     
     private func upload(data: Data, identifier: String, channel: Channel, loadDelegate: LoadDelegate) throws -> URL {
@@ -71,9 +70,9 @@ public class MessageSender {
                                                 url: getUrl)
                 let content = MessageContent.voice(voiceContent)
                 
-                let xmppId = try self.send(content: content, additionalData: nil, to: channel, date: uiModel.date)
+                try self.send(content: content, additionalData: nil, to: channel, date: uiModel.date, messageId: uiModel.uid)
                 
-                let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel, state: .sent)
+                let baseParams = Message.Params(xmppId: uiModel.uid, isIncoming: false, channel: channel, state: .sent)
                 try CoreData.shared.createVoiceMessage(with: voiceContent, baseParams: baseParams)
                 
                 self.updateMessage(uiModel, status: .sent)
@@ -109,18 +108,19 @@ public class MessageSender {
                 let photoContent = PhotoContent(identifier: hashString, url: getUrl)
                 let content = MessageContent.photo(photoContent)
                 
-                let xmppId = try self.send(content: content,
-                                           additionalData: thumbnail,
-                                           to: channel,
-                                           date: uiModel.date)
+                try self.send(content: content,
+                              additionalData: thumbnail,
+                              to: channel,
+                              date: uiModel.date,
+                              messageId: uiModel.uid)
                 
                 // Save local Core Data entity
-                let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel, state: .sent)
+                let baseParams = Message.Params(xmppId: uiModel.uid, isIncoming: false, channel: channel, state: .sent)
                 try CoreData.shared.createPhotoMessage(with: photoContent,
                                                        thumbnail: thumbnail,
                                                        baseParams: baseParams)
                 
-                self.updateMessage(uiModel, status: .failed)
+                self.updateMessage(uiModel, status: .sent)
             }
             catch {
                 self.updateMessage(uiModel, status: .failed)
@@ -135,9 +135,13 @@ public class MessageSender {
                 let textContent = TextContent(body: uiModel.body)
                 let messageContent = MessageContent.text(textContent)
                 
-                let xmppId = try self.send(content: messageContent, additionalData: nil, to: channel, date: uiModel.date)
+                try self.send(content: messageContent,
+                              additionalData: nil,
+                              to: channel,
+                              date: uiModel.date,
+                              messageId: uiModel.uid)
 
-                let baseParams = Message.Params(xmppId: xmppId, isIncoming: false, channel: channel, state: .sent)
+                let baseParams = Message.Params(xmppId: uiModel.uid, isIncoming: false, channel: channel, state: .sent)
                 try CoreData.shared.createTextMessage(with: textContent, baseParams: baseParams)
                 
                 self.updateMessage(uiModel, status: .sent)

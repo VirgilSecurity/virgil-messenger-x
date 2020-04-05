@@ -39,7 +39,7 @@ public class PhotoMessage: Message {
         return image
     }
     
-    public override func exportAsUIModel(withId id: Int) -> UIMessageModelProtocol {
+    public override func exportAsUIModel() -> UIMessageModelProtocol {
         let status = self.state.exportAsMessageStatus()
         
         do {
@@ -57,12 +57,12 @@ public class PhotoMessage: Message {
                 state = .downloading
             }
 
-           let uiModel = UIPhotoMessageModel(uid: id,
-                                             image: image,
-                                             isIncoming: self.isIncoming,
-                                             status: status,
-                                             state: state,
-                                             date: self.date)
+            let uiModel = UIPhotoMessageModel(uid: self.xmppId,
+                                              image: image,
+                                              isIncoming: self.isIncoming,
+                                              status: status,
+                                              state: state,
+                                              date: self.date)
             
             if state == .downloading {
                 try Virgil.shared.client.startDownload(from: self.url,
@@ -87,7 +87,7 @@ public class PhotoMessage: Message {
         catch {
             Log.error(error, message: "Exporting PhotoMessage to UI model failed")
             
-            return UITextMessageModel.corruptedModel(uid: id,
+            return UITextMessageModel.corruptedModel(uid: self.xmppId,
                                                      isIncoming: self.isIncoming,
                                                      date: self.date)
         }

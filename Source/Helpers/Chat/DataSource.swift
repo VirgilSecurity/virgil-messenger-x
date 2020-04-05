@@ -29,7 +29,6 @@ import VirgilSDK
 
 class DataSource: ChatDataSourceProtocol {
     public let channel: Channel
-    public var nextMessageId: Int = 0
 
     private let preferredMaxWindowSize = 500
     private var slidingWindow: SlidingDataSource<ChatItemProtocol>!
@@ -42,15 +41,12 @@ class DataSource: ChatDataSourceProtocol {
         self.channel = channel
 
         self.slidingWindow = SlidingDataSource(count: count) { [weak self] (messageNumber, messages) -> ChatItemProtocol in
-            self?.nextMessageId += 1
-            let id = self?.nextMessageId ?? 0
-
             guard self != nil,
                 let message = messages[safe: messageNumber] else {
-                    return UITextMessageModel.corruptedModel(uid: id)
+                    return UITextMessageModel.corruptedModel(uid: UUID().uuidString)
             }
 
-            return message.exportAsUIModel(withId: id)
+            return message.exportAsUIModel()
         }
 
         self.delegate?.chatDataSourceDidUpdate(self)
@@ -83,8 +79,7 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     @objc private func process(message: Message) {
-        self.nextMessageId += 1
-        let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
+        let uiModel = message.exportAsUIModel()
         
         DispatchQueue.main.async {
             self.slidingWindow.insertItem(uiModel, position: .bottom)
@@ -128,10 +123,9 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addTextMessage(_ text: String) {
-        self.nextMessageId += 1
-        let id = self.nextMessageId
-
-        let uiModel = UITextMessageModel(uid: id,
+        let messageId = UUID().uuidString
+        
+        let uiModel = UITextMessageModel(uid: messageId,
                                          text: text,
                                          isIncoming: false,
                                          status: .sending,
@@ -144,10 +138,9 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addPhotoMessage(_ image: UIImage) {
-        self.nextMessageId += 1
-        let id = self.nextMessageId
+        let messageId = UUID().uuidString
         
-        let uiModel = UIPhotoMessageModel(uid: id,
+        let uiModel = UIPhotoMessageModel(uid: messageId,
                                           image: image,
                                           isIncoming: false,
                                           status: .sending,
@@ -161,10 +154,9 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addVoiceMessage(_ audioUrl: URL, duration: TimeInterval) {
-        self.nextMessageId += 1
-        let id = self.nextMessageId
+        let messageId = UUID().uuidString
 
-        let uiModel = UIAudioMessageModel(uid: id,
+        let uiModel = UIAudioMessageModel(uid: messageId,
                                           audioUrl: audioUrl,
                                           duration: duration,
                                           isIncoming: false,

@@ -29,7 +29,7 @@ public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageMode
     public private(set) var state: MediaMessageState
     public private(set) weak var loadDelegate: LoadDelegate?
     
-    public required init(uid: Int,
+    public required init(uid: String,
                          image: UIImage,
                          isIncoming: Bool,
                          status: MessageStatus,
@@ -37,7 +37,7 @@ public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageMode
                          date: Date) {
         let senderId = isIncoming ? "1" : "2"
 
-        let messageModel = MessageModel(uid: String(uid),
+        let messageModel = MessageModel(uid: uid,
                                         senderId: senderId,
                                         type: PhotoMessageModel<MessageModel>.chatItemType,
                                         isIncoming: isIncoming,

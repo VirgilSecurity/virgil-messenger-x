@@ -31,7 +31,7 @@ public class VoiceMessage: Message {
         self.url = url
     }
     
-    public override func exportAsUIModel(withId id: Int) -> UIMessageModelProtocol {
+    public override func exportAsUIModel() -> UIMessageModelProtocol {
         let status = self.state.exportAsMessageStatus()
         
         do {
@@ -40,7 +40,7 @@ public class VoiceMessage: Message {
             let audioUrl = try mediaStorage.getURL(name: self.identifier, type: .voice)
             let state: MediaMessageState = mediaStorage.exists(path: audioUrl.path) ? .normal : .downloading
             
-            let uiModel = UIAudioMessageModel(uid: id,
+            let uiModel = UIAudioMessageModel(uid: self.xmppId,
                                               audioUrl: audioUrl,
                                               duration: TimeInterval(self.duration),
                                               isIncoming: self.isIncoming,
@@ -70,7 +70,7 @@ public class VoiceMessage: Message {
         catch {
             Log.error(error, message: "Exporting AudioMessage to UI model failed")
             
-            return UITextMessageModel.corruptedModel(uid: id,
+            return UITextMessageModel.corruptedModel(uid: self.xmppId,
                                                      isIncoming: self.isIncoming,
                                                      date: self.date)
         }    }

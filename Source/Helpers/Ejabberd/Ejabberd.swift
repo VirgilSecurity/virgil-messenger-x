@@ -151,25 +151,25 @@ class Ejabberd: NSObject {
         try self.checkError()
     }
 
-    // Returns xmppId
-    public func send(_ message: EncryptedMessage, to user: String) throws -> String {
+    public func send(_ message: EncryptedMessage, to user: String, xmppId: String) throws {
         Log.debug("Ejabberd: Sending message")
 
         let user = try Ejabberd.setupJid(with: user)
         let body = try message.export()
-        let xmppId = UUID().uuidString
         
         let message = XMPPMessage(messageType: .chat, to: user, elementID: xmppId)
         message.addBody(body)
         message.addReceiptRequest()
 
+        try self.send(message: message, to: user)
+    }
+    
+    internal func send(message: XMPPMessage, to user: XMPPJID) throws {
         self.stream.send(message)
 
         try self.sendMutex.lock()
 
         try self.checkError()
-        
-        return xmppId
     }
 
     public func set(status: Status) {

@@ -27,7 +27,7 @@ import ChattoAdditions
 
 public class UITextMessageModel: TextMessageModel<MessageModel>, UIMessageModelProtocol {
     
-    public required init(uid: Int,
+    public required init(uid: String,
                          text: String,
                          isIncoming: Bool,
                          status: MessageStatus,
@@ -38,7 +38,7 @@ public class UITextMessageModel: TextMessageModel<MessageModel>, UIMessageModelP
 
         let senderId = isIncoming ? "1" : "2"
 
-        let messageModel = MessageModel(uid: String(uid),
+        let messageModel = MessageModel(uid: uid,
                                         senderId: senderId,
                                         type: TextMessageModel<MessageModel>.chatItemType,
                                         isIncoming: isIncoming,
@@ -48,7 +48,7 @@ public class UITextMessageModel: TextMessageModel<MessageModel>, UIMessageModelP
         super.init(messageModel: messageModel, text: text)
     }
 
-    static func corruptedModel(uid: Int, isIncoming: Bool = false, date: Date = Date() /* avatar: UIImage */) -> UITextMessageModel {
+    static func corruptedModel(uid: String, isIncoming: Bool = false, date: Date = Date() /* avatar: UIImage */) -> UITextMessageModel {
         return self.init(uid: uid,
                          text: "Corrupted Message",
                          isIncoming: isIncoming,

@@ -13,7 +13,7 @@ public class UIAudioMessageModel: AudioMessageModel<MessageModel>, UIMessageMode
     public private(set) var state: MediaMessageState
     public private(set) weak var loadDelegate: LoadDelegate?
     
-    public required init(uid: Int,
+    public required init(uid: String,
                          audioUrl: URL,
                          duration: TimeInterval,
                          isIncoming: Bool,
@@ -22,7 +22,7 @@ public class UIAudioMessageModel: AudioMessageModel<MessageModel>, UIMessageMode
                          date: Date) {
         let senderId = isIncoming ? "1" : "2"
 
-        let messageModel = MessageModel(uid: String(uid),
+        let messageModel = MessageModel(uid: uid,
                                         senderId: senderId,
                                         type: AudioMessageModel<MessageModel>.chatItemType,
                                         isIncoming: isIncoming,

@@ -79,11 +79,11 @@ public class Message: NSManagedObject, UIMessageModelExportable {
         self.rawState = params.state.rawValue
     }
         
-    public func exportAsUIModel(withId id: Int) -> UIMessageModelProtocol {
+    public func exportAsUIModel() -> UIMessageModelProtocol {
         Log.error(CoreData.Error.exportBaseMessageForbidden,
                   message: "Exporting abstract Message to UI model is forbidden")
         
-        return UITextMessageModel.corruptedModel(uid: id,
+        return UITextMessageModel.corruptedModel(uid: self.xmppId,
                                                  isIncoming: self.isIncoming,
                                                  date: self.date)
     }

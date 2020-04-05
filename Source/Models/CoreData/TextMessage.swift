@@ -23,10 +23,10 @@ public class TextMessage: Message {
         self.body = body
     }
     
-    public override func exportAsUIModel(withId id: Int) -> UIMessageModelProtocol {
+    public override func exportAsUIModel() -> UIMessageModelProtocol {
         let status = self.state.exportAsMessageStatus()
         
-        return UITextMessageModel(uid: id,
+        return UITextMessageModel(uid: self.xmppId,
                                   text: self.body,
                                   isIncoming: self.isIncoming,
                                   status: status,

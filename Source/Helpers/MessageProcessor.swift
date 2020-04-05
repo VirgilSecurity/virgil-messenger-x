@@ -20,6 +20,7 @@ class MessageProcessor {
         try CoreData.shared.processReceiptMessage(withId: receiptId, from: channel)
         
         // TODO: Add UI changing
+        
     }
     
     static func process(_ encryptedMessage: EncryptedMessage, from author: String, xmppId: String) throws {
