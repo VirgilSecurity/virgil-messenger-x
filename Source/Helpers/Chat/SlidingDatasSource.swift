@@ -93,6 +93,18 @@ public class SlidingDataSource<Element> {
             self.insertItem(itemGenerator(self.allItemsCount, messages), position: .bottom)
         }
     }
+    
+    public func updateItem(where selectPredicate: (Element) -> Bool, changePredicate: (Element) -> Element) throws {
+        guard let itemIndex = self.items.firstIndex(where: selectPredicate) else {
+            throw NSError()
+        }
+        
+        let item = self.items[itemIndex]
+        
+        let newItem = changePredicate(item)
+        
+        self.items[itemIndex] = newItem
+    }
 
     public func insertItem(_ item: Element, position: InsertPosition) {
         if position == .top {

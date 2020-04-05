@@ -29,6 +29,7 @@ public class Message: NSManagedObject, UIMessageModelExportable {
         case delivered
         case read
         
+        // FIXME: Make as constructor at MessageStatus
         func exportAsMessageStatus() -> MessageStatus {
             switch self {
             case .failed:

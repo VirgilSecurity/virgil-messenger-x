@@ -73,9 +73,40 @@ class DataSource: ChatDataSourceProtocol {
                 strongSelf.delegate?.chatDataSourceDidUpdate(strongSelf, updateType: .messageCountReduction)
             }
         }
+        
+        let updateMessageState: Notifications.Block = { [weak self] notification in
+            guard let strongSelf = self else { return }
+
+            do {
+                let messageId: String = try Notifications.parse(notification, for: .messageId)
+                let newState: Message.State = try Notifications.parse(notification, for: .newState)
+                
+                let selectPredicate = { (item: ChatItemProtocol) -> Bool in
+                    item.uid == messageId
+                }
+                
+                let changePredicate = { (item: ChatItemProtocol) -> ChatItemProtocol in
+                    let item = item as! UIMessageModelProtocol
+
+                    item.status = newState.exportAsMessageStatus()
+                    
+                    return item
+                }
+                
+                try strongSelf.slidingWindow.updateItem(where: selectPredicate, changePredicate: changePredicate)
+            }
+            catch {
+                Log.error(error, message: "NewState notification processing failed")
+            }
+
+            DispatchQueue.main.async {
+                strongSelf.delegate?.chatDataSourceDidUpdate(strongSelf)
+            }
+        }
 
         Notifications.observe(for: .messageAddedToCurrentChannel, block: process)
         Notifications.observe(for: .updatingSucceed, block: updateMessageList)
+        Notifications.observe(for: .messageStatusUpdated, block: updateMessageState)
     }
 
     @objc private func process(message: Message) {

@@ -25,10 +25,12 @@ public class Notifications {
         case connectionStateUpdated = "Notifications.ConnectionStateUpdated"
         case errored = "Notifications.Errored"
         case messageAddedToCurrentChannel = "Notifications.MessageAddedToCurrentChannel"
+        case messageStatusUpdated = "Notifications.MessageStatusUpdated"
     }
 
     public enum NotificationKeys: String {
         case newState = "NotificationKeys.NewState"
+        case messageId = "NotificationKeys.MessageId"
         case message = "NotificationKeys.Message"
         case error = "NotificationKeys.Error"
     }
@@ -71,6 +73,14 @@ extension Notifications {
     public static func post(message: Message) {
         let notification = self.notification(.messageAddedToCurrentChannel)
         let userInfo = [NotificationKeys.message.rawValue: message]
+
+        self.center.post(name: notification, object: self, userInfo: userInfo)
+    }
+    
+    public static func post(newState: Message.State, messageId: String) {
+        let notification = self.notification(.messageStatusUpdated)
+        let userInfo: [String: Any] = [NotificationKeys.newState.rawValue: newState,
+                                       NotificationKeys.messageId.rawValue: messageId]
 
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }

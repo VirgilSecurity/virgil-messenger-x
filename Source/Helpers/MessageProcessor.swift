@@ -17,10 +17,13 @@ class MessageProcessor {
     static func processReceipt(withId receiptId: String, from author: String) throws {
         let channel = try self.setupChannel(name: author)
         
-        try CoreData.shared.processReceiptMessage(withId: receiptId, from: channel)
+        let newState = try CoreData.shared.processReceiptMessage(withId: receiptId, from: channel)
         
         // TODO: Add UI changing
         
+        if let channel = CoreData.shared.currentChannel, channel.name == author {
+            Notifications.post(newState: newState, messageId: receiptId)
+        }
     }
     
     static func process(_ encryptedMessage: EncryptedMessage, from author: String, xmppId: String) throws {

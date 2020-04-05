@@ -38,7 +38,7 @@ extension CoreData {
         return try self.createChannel(type: .single, sid: sid, name: card.identity, initiator: initiator, cards: [card])
     }
     
-    public func processReceiptMessage(withId receiptId: String, from channel: Channel) throws {
+    public func processReceiptMessage(withId receiptId: String, from channel: Channel) throws -> Message.State {
         guard let message = channel.allMessages.first(where: { $0.xmppId == receiptId }) else {
             throw NSError()
         }
@@ -53,6 +53,8 @@ extension CoreData {
         }
         
         try self.saveContext()
+        
+        return message.state
     }
 
     private func createChannel(type: ChannelType,
