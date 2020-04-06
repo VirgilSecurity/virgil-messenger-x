@@ -60,7 +60,7 @@ extension Client {
                     loadDelegate.completed(dataHash: dataHash)
                 }
                 else {
-                    throw NSError()
+                    throw Error.inconsistencyState
                 }
             }
             catch {

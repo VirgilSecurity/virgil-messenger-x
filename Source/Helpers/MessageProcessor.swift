@@ -17,7 +17,7 @@ class MessageProcessor {
     static func processGlobalReadState(from author: String) throws {
         let channel = try self.setupChannel(name: author)
 
-        let messagesToUpdateIds = try CoreData.shared.markAllMessagesAsRead(in: channel)
+        let messagesToUpdateIds = try CoreData.shared.markDeliveredMessagesAsRead(in: channel)
 
         if let channel = CoreData.shared.currentChannel, channel.name == author {
             Notifications.post(newState: .read, messageIds: messagesToUpdateIds)

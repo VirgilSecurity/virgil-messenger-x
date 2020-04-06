@@ -35,7 +35,7 @@ extension XMPPMessage {
 
     func generateReadReceiptResponse() throws -> XMPPMessage {
         guard let readReceiptResponse = self.generateReadReceiptResponse else {
-            throw NSError()
+            throw EjabberdError.generatingReadResponseFailed
         }
 
         return readReceiptResponse
@@ -43,7 +43,7 @@ extension XMPPMessage {
 
     func generateDeliveryReceiptResponse() throws -> XMPPMessage {
         guard let deliveryReceiptResponse = self.generateDeliveryReceiptResponse else {
-            throw NSError()
+            throw EjabberdError.generatingDeliveryResponseFailed
         }
 
         return deliveryReceiptResponse

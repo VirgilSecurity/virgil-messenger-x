@@ -33,6 +33,10 @@ class DataSource: ChatDataSourceProtocol {
     private let preferredMaxWindowSize = 500
     private var slidingWindow: SlidingDataSource<ChatItemProtocol>!
 
+    public enum Error: Int, Swift.Error, LocalizedError {
+        case chatItemIsNotUIMessageModel = 1
+    }
+
     private var count: Int {
         return self.channel.visibleMessages.count
     }
@@ -87,7 +91,7 @@ class DataSource: ChatDataSourceProtocol {
 
                 let changePredicate = { (item: ChatItemProtocol) throws -> ChatItemProtocol in
                     guard let item = item as? UIMessageModelProtocol else {
-                        throw NSError()
+                        throw Error.chatItemIsNotUIMessageModel
                     }
 
                     item.status = newState.exportAsMessageStatus()

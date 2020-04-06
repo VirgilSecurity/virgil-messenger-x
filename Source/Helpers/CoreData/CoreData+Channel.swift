@@ -39,7 +39,7 @@ extension CoreData {
     }
 
     // Returns changed messages ids
-    public func markAllMessagesAsRead(in channel: Channel) throws -> [String] {
+    public func markDeliveredMessagesAsRead(in channel: Channel) throws -> [String] {
         var changedMessagesIds: [String] = []
 
         channel.allMessages.forEach { message in
@@ -59,7 +59,7 @@ extension CoreData {
 
     public func updateMessageState(to state: Message.State, withId receiptId: String, from channel: Channel) throws -> Message.State {
         guard let message = channel.allMessages.first(where: { $0.xmppId == receiptId }) else {
-            throw NSError()
+            throw Error.messageWithIdNotFound
         }
 
         switch message.state {

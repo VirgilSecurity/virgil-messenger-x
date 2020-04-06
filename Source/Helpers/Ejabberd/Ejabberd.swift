@@ -16,6 +16,8 @@ public enum EjabberdError: Int, Error {
     case jidFormingFailed = 4
     case missingStreamJID = 5
     case missingElementId = 6
+    case generatingReadResponseFailed = 7
+    case generatingDeliveryResponseFailed = 8
 }
 
 // TODO: Split file
