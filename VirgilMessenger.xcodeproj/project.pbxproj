@@ -166,6 +166,9 @@
 		97E7C5652403E77C00D9CAAA /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5592403E57100D9CAAA /* PromisesObjC.framework */; };
 		97F83C8A240D130A003F7451 /* FileMediaStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F83C89240D130A003F7451 /* FileMediaStorage.swift */; };
 		F401CDCE241B944800C59572 /* NetworkMessage+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F401CDCD241B944800C59572 /* NetworkMessage+WebRTC.swift */; };
+		F40BC401243B1E23009AB5DF /* CallMnager+CallKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40BC400243B1E23009AB5DF /* CallMnager+CallKit.swift */; };
+		F40BC402243B1E39009AB5DF /* CallMnager+CallKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40BC400243B1E23009AB5DF /* CallMnager+CallKit.swift */; };
+		F40BC403243B1E39009AB5DF /* CallMnager+CallKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40BC400243B1E23009AB5DF /* CallMnager+CallKit.swift */; };
 		F4241D4724337E3800E839C3 /* EnvConstantProd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976E35432432566F002D1CF2 /* EnvConstantProd.swift */; };
 		F4241D4824337E3C00E839C3 /* EnvConstantStg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976E354024324062002D1CF2 /* EnvConstantStg.swift */; };
 		F4241D4924337E3F00E839C3 /* EnvConstantDev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976E3609243298D9002D1CF2 /* EnvConstantDev.swift */; };
@@ -606,12 +609,12 @@
 		F492235F24376BD900A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
 		F492236024376C1100A07951 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
 		F492236124376C1200A07951 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
-		F4EF79152438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
-		F4EF79162438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
-		F4EF79172438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
 		F4DDCC5024363479001E63B1 /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
 		F4DDCC512436350F001E63B1 /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
 		F4DDCC522436350F001E63B1 /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
+		F4EF79152438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
+		F4EF79162438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
+		F4EF79172438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -858,6 +861,7 @@
 		97F83C89240D130A003F7451 /* FileMediaStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileMediaStorage.swift; sourceTree = "<group>"; };
 		F401CDCD241B944800C59572 /* NetworkMessage+WebRTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkMessage+WebRTC.swift"; sourceTree = "<group>"; };
 		F401CDD8241B96E300C59572 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
+		F40BC400243B1E23009AB5DF /* CallMnager+CallKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CallMnager+CallKit.swift"; sourceTree = "<group>"; };
 		F4241F0C24339E1700E839C3 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Carthage/Build/iOS/Fabric.framework; sourceTree = "<group>"; };
 		F46EE18D241FA09F00BE53AA /* Storage+Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+Account.swift"; sourceTree = "<group>"; };
 		F46EE18E241FA09F00BE53AA /* Storage+Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+Message.swift"; sourceTree = "<group>"; };
@@ -877,8 +881,8 @@
 		F481223A2425D07B0003DD78 /* CoreData+Messages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreData+Messages.swift"; sourceTree = "<group>"; };
 		F48122472425D71B0003DD78 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
 		F481224B24291CC70003DD78 /* CallStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallStrings.swift; sourceTree = "<group>"; };
-		F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CallManager+WebRTC.swift"; sourceTree = "<group>"; };
 		F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+MessageUI.swift"; sourceTree = "<group>"; };
+		F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CallManager+WebRTC.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1590,6 +1594,7 @@
 				F48122472425D71B0003DD78 /* CallManager.swift */,
 				F481224B24291CC70003DD78 /* CallStrings.swift */,
 				F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */,
+				F40BC400243B1E23009AB5DF /* CallMnager+CallKit.swift */,
 			);
 			path = Call;
 			sourceTree = "<group>";
@@ -2154,6 +2159,7 @@
 				16FA91051FFC55A400FE98C7 /* UIViewController+Reachability.swift in Sources */,
 				97E437EA24210CF00076AA04 /* NetworkUploadOperation.swift in Sources */,
 				97CE26F52418231300903116 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
+				F40BC401243B1E23009AB5DF /* CallMnager+CallKit.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				16FC679B2260D7860044CC70 /* CreateGroup.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
@@ -2274,6 +2280,7 @@
 				F4241E262433865900E839C3 /* NewMessage.swift in Sources */,
 				F4241D942433858300E839C3 /* Client+Files.swift in Sources */,
 				F4241D612433850F00E839C3 /* CoreData+Messages.swift in Sources */,
+				F40BC402243B1E39009AB5DF /* CallMnager+CallKit.swift in Sources */,
 				F4241E4F243386BB00E839C3 /* Collection+SafeSubscript.swift in Sources */,
 				F4241E362433866200E839C3 /* IncomingCall.swift in Sources */,
 				F4241DE32433862500E839C3 /* UserAuthorizer.swift in Sources */,
@@ -2413,6 +2420,7 @@
 				F4241E2A2433865B00E839C3 /* NewMessage.swift in Sources */,
 				F4241D932433858200E839C3 /* Client+Files.swift in Sources */,
 				F4241D622433850F00E839C3 /* CoreData+Messages.swift in Sources */,
+				F40BC403243B1E39009AB5DF /* CallMnager+CallKit.swift in Sources */,
 				F4241E58243386BB00E839C3 /* Collection+SafeSubscript.swift in Sources */,
 				F4241E3F2433866200E839C3 /* IncomingCall.swift in Sources */,
 				F4241DE82433862500E839C3 /* UserAuthorizer.swift in Sources */,
