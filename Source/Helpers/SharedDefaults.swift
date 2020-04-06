@@ -17,29 +17,29 @@ public class SharedDefaults {
         case identity = "last_username"
         case unreadCount = "unread_count"
     }
-    
+
     public func set(identity: String) {
         self.defaults.set(identity, forKey: Key.identity.rawValue)
     }
-    
+
     public func set(unreadCount: Int) {
         self.defaults.set(unreadCount, forKey: Key.unreadCount.rawValue)
     }
 
     public func get<T>(_ key: Key) -> T? {
         let result: Any?
-        
+
         switch key {
         case .identity:
             guard let identity = self.defaults.string(forKey: key.rawValue), !identity.isEmpty else {
                 return nil
             }
-            
+
             result = identity
         case .unreadCount:
             result = self.defaults.integer(forKey: key.rawValue)
         }
-                
+
         return result as? T
     }
 

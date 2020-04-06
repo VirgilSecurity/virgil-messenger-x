@@ -15,7 +15,7 @@ open class NetworkDownloadOperation: GenericOperation<Response> {
 
     /// Url Sesssion
     public let session: URLSession
-    
+
     // Callback to be called after file downloaded in order to move it to persistant storage
     public let saveFileCallback: (URL) throws -> Void
 
@@ -39,7 +39,7 @@ open class NetworkDownloadOperation: GenericOperation<Response> {
             defer {
                 self.finish()
             }
-            
+
             do {
                 if let error = error {
                     throw error
@@ -48,7 +48,7 @@ open class NetworkDownloadOperation: GenericOperation<Response> {
                 guard let response = response as? HTTPURLResponse else {
                     throw ServiceConnectionError.wrongResponseType
                 }
-                
+
                 guard let tempFileUrl = tempFileUrl else {
                     throw ServiceConnectionError.fileAllocationFailed
                 }
@@ -58,9 +58,9 @@ open class NetworkDownloadOperation: GenericOperation<Response> {
                 Log.debug("NetworkOperation: response headers: \(response.allHeaderFields as AnyObject)")
 
                 let result = Response(statusCode: response.statusCode, response: response, body: nil)
-        
+
                 try self.saveFileCallback(tempFileUrl)
-                
+
                 self.result = .success(result)
             }
             catch {
@@ -69,7 +69,7 @@ open class NetworkDownloadOperation: GenericOperation<Response> {
         }
 
         self.task = task
-        
+
         task.resume()
     }
 

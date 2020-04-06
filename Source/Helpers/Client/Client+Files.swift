@@ -20,35 +20,35 @@ extension Client {
         return CallbackOperation { _, completion in
             do {
                 let request = try Request(urlRequest: request)
-                
+
                 let response = try self.connection.upload(data: data, with: request)
                     .startSync()
                     .get()
-            
+
                 try self.validateResponse(response)
-                            
+
                 loadDelegate.completed(dataHash: dataHash)
-                                        
+
                 completion((), nil)
             }
             catch {
                 Log.error(error, message: "Uploading data failed")
-                
+
                 loadDelegate.failed(with: error)
-                
+
                 completion(nil, error)
             }
         }
     }
-    
+
     public func startDownload(from url: URL,
                               loadDelegate: LoadDelegate,
                               dataHash: String,
                               saveFileCallback: @escaping (URL) throws -> Void) throws {
         let request = Request(url: url, method: .get)
-        
+
         let downloadOperation = try self.connection.downloadFile(with: request, saveFileCallback: saveFileCallback)
-        
+
         downloadOperation.start { response, error in
             do {
                 if let error = error {
@@ -56,7 +56,7 @@ extension Client {
                 }
                 else if let response = response {
                     try self.validateResponse(response)
-                    
+
                     loadDelegate.completed(dataHash: dataHash)
                 }
                 else {

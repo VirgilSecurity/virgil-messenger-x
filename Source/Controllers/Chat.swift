@@ -78,12 +78,12 @@ class ChatViewController: BaseChatViewController {
         self.setupObservers()
 
         self.dataSource.setupObservers()
-        
+
         do {
             if self.channel.unreadCount > 0 {
                 try Ejabberd.shared.sendGlobalReadResponse(to: self.channel.name)
             }
-            
+
             try CoreData.shared.resetUnreadCount(for: self.channel)
         }
         catch {
@@ -240,7 +240,7 @@ extension ChatViewController {
             viewModelBuilder: UITextMessageViewModelBuilder(),
             interactionHandler: UITextMessageHandler(baseHandler: self.baseMessageHandler)
         )
-        
+
         textMessagePresenter.baseMessageStyle = baseMessageStyle
         textMessagePresenter.textCellStyle = textCellStyle
 
@@ -314,13 +314,13 @@ extension ChatViewController {
 
     private func createAudioInputItem() -> AudioChatInputItem {
         let item = AudioChatInputItem(presentingController: self)
-        
+
         item.audioInputHandler = { [weak self] audioUrl, duration in
             if self?.checkReachability() ?? false, Configurator.isUpdated {
                 self?.dataSource.addVoiceMessage(audioUrl, duration: duration)
             }
         }
-        
+
         return item
     }
 }

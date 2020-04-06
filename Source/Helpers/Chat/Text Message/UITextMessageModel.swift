@@ -26,7 +26,7 @@ import Chatto
 import ChattoAdditions
 
 public class UITextMessageModel: TextMessageModel<MessageModel>, UIMessageModelProtocol {
-    
+
     public required init(uid: String,
                          text: String,
                          isIncoming: Bool,
@@ -76,4 +76,3 @@ extension TextMessageModel {
         return "text"
     }
 }
-

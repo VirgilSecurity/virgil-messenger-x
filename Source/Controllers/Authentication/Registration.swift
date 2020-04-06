@@ -133,7 +133,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
 
         self.userAuthorizer.signUp(identity: username) { error in
             DispatchQueue.main.async {
-                HUD.hide() { _ in
+                HUD.hide { _ in
                     if let error = error {
                         self.alert(title: self.title, error)
                     }
@@ -152,7 +152,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
     }
 
     private func openUrl(urlStr: String) {
-        if let url = NSURL(string:urlStr) {
+        if let url = NSURL(string: urlStr) {
             UIApplication.shared.open(url as URL, options: [:], completionHandler: nil)
         }
     }

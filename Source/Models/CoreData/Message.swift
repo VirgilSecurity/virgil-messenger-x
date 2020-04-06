@@ -18,9 +18,9 @@ public class Message: NSManagedObject, UIMessageModelExportable {
     @NSManaged public var isIncoming: Bool
     @NSManaged public var channel: Channel
     @NSManaged public var isHidden: Bool
-    
+
     @NSManaged private var rawState: String
-    
+
     // TODO: Remove isIncoming and rely on state only on migration/reset
     public enum State: String {
         case failed
@@ -28,7 +28,7 @@ public class Message: NSManagedObject, UIMessageModelExportable {
         case sent
         case delivered
         case read
-        
+
         // FIXME: Make as constructor at MessageStatus
         func exportAsMessageStatus() -> MessageStatus {
             switch self {
@@ -45,17 +45,17 @@ public class Message: NSManagedObject, UIMessageModelExportable {
             }
         }
     }
-    
+
     public var state: State {
         get {
             return State(rawValue: self.rawState) ?? .read
         }
-        
+
         set {
             self.rawState = newValue.rawValue
         }
     }
-    
+
     public struct Params {
         var xmppId: String
         var isIncoming: Bool
@@ -64,14 +64,14 @@ public class Message: NSManagedObject, UIMessageModelExportable {
         var date: Date = Date()
         var isHidden: Bool = false
     }
-    
+
     convenience public init(entityName: String, context: NSManagedObjectContext, params: Params) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: entityName, in: context) else {
             throw CoreData.Error.entityNotFound
         }
-        
+
         self.init(entity: entity, insertInto: context)
-        
+
         self.xmppId = params.xmppId
         self.isIncoming = params.isIncoming
         self.channel = params.channel
@@ -79,11 +79,11 @@ public class Message: NSManagedObject, UIMessageModelExportable {
         self.isHidden = params.isHidden
         self.rawState = params.state.rawValue
     }
-        
+
     public func exportAsUIModel() -> UIMessageModelProtocol {
         Log.error(CoreData.Error.exportBaseMessageForbidden,
                   message: "Exporting abstract Message to UI model is forbidden")
-        
+
         return UITextMessageModel.corruptedModel(uid: self.xmppId,
                                                  isIncoming: self.isIncoming,
                                                  date: self.date)

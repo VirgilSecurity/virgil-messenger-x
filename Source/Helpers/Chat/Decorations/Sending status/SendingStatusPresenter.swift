@@ -86,18 +86,18 @@ class SendingStatusPresenter: ChatItemPresenterProtocol {
             assert(false, "expecting status cell")
             return
         }
-        
+
         let failed = self.statusModel.status == .failed
 
         let attrs = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 9.0),
             NSAttributedString.Key.foregroundColor: failed ? UIColor.red : UIColor.white.withAlphaComponent(0.5)
         ]
-        
+
         statusCell.text = NSAttributedString(
             string: self.statusText(),
             attributes: attrs)
-        
+
         statusCell.trailingConstraint.constant = failed ? 45 : 20
     }
 

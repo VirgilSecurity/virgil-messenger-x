@@ -27,7 +27,7 @@ public class UserAuthorizer {
         try CoreData.shared.loadAccount(withIdentity: identity)
 
         try self.virgilAuthorizer.signIn(identity: identity)
-        
+
         UnreadManager.shared.update()
     }
 
@@ -37,7 +37,7 @@ public class UserAuthorizer {
         try self.virgilAuthorizer.signIn(identity: identity)
 
         SharedDefaults.shared.set(identity: identity)
-        
+
         UnreadManager.shared.update()
     }
 
@@ -62,7 +62,7 @@ public class UserAuthorizer {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
                 try Ejabberd.shared.deregisterFromNotifications()
-                
+
                 try Ejabberd.shared.disconect()
 
                 Configurator.reset()
@@ -92,4 +92,3 @@ public class UserAuthorizer {
         self.virgilAuthorizer.logOut()
     }
 }
-

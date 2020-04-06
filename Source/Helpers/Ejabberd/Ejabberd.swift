@@ -37,7 +37,7 @@ class Ejabberd: NSObject {
 
     private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
-    static var updatedPushToken: Data? = nil
+    static var updatedPushToken: Data?
 
     internal let serviceErrorDomain: String = "EjabberdErrorDomain"
 
@@ -59,13 +59,13 @@ class Ejabberd: NSObject {
         self.stream.hostPort = URLConstants.ejabberdHostPort
         self.stream.startTLSPolicy = .allowed
         self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
-        
+
         self.upload.activate(self.stream)
-        
+
         self.deliveryReceipts.activate(self.stream)
         self.deliveryReceipts.autoSendMessageDeliveryRequests = true
         self.deliveryReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
-        
+
         self.readReceipts.activate(self.stream)
         self.readReceipts.autoSendMessageReadRequests = true
         self.readReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
@@ -162,13 +162,13 @@ class Ejabberd: NSObject {
 
         let user = try Ejabberd.setupJid(with: user)
         let body = try message.export()
-        
+
         let message = XMPPMessage(messageType: .chat, to: user, elementID: xmppId)
         message.addBody(body)
-        
+
         try self.send(message: message, to: user)
     }
-    
+
     internal func send(message: XMPPMessage, to user: XMPPJID) throws {
         self.stream.send(message)
 
@@ -176,12 +176,12 @@ class Ejabberd: NSObject {
 
         try self.checkError()
     }
-    
+
     public func sendGlobalReadResponse(to user: String) throws {
         let jid = try Ejabberd.setupJid(with: user)
-        
+
         let message = XMPPMessage.generateReadReceipt(for: jid)
-        
+
         self.stream.send(message)
     }
 
@@ -201,7 +201,7 @@ class Ejabberd: NSObject {
 
         self.stream.send(presence)
     }
-    
+
     public func requestMediaSlot(name: String, size: Int) throws -> CallbackOperation<XMPPSlot> {
         return CallbackOperation { _, completion in
             self.upload.requestSlot(fromService: self.uploadJid,

@@ -34,7 +34,7 @@ public class Notifications {
         case message = "NotificationKeys.Message"
         case error = "NotificationKeys.Error"
     }
-    
+
     public enum NotificationError: Int, Swift.Error {
         case parsingFailed = 1
     }
@@ -76,7 +76,7 @@ extension Notifications {
 
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }
-    
+
     public static func post(newState: Message.State, messageIds: [String]) {
         let notification = self.notification(.messageStatusUpdated)
         let userInfo: [String: Any] = [NotificationKeys.newState.rawValue: newState,

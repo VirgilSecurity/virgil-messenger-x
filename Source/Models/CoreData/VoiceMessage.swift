@@ -16,30 +16,30 @@ public class VoiceMessage: Message {
     @NSManaged public var identifier: String
     @NSManaged public var url: URL
     @NSManaged public var duration: Double
-    
+
     private static let EntityName = "VoiceMessage"
-    
+
     convenience init(identifier: String,
                      duration: Double,
                      url: URL,
                      baseParams: Message.Params,
                      context: NSManagedObjectContext) throws {
         try self.init(entityName: VoiceMessage.EntityName, context: context, params: baseParams)
-        
+
         self.identifier = identifier
         self.duration = duration
         self.url = url
     }
-    
+
     public override func exportAsUIModel() -> UIMessageModelProtocol {
         let status = self.state.exportAsMessageStatus()
-        
+
         do {
             let mediaStorage = try CoreData.shared.getMediaStorage()
-            
+
             let audioUrl = try mediaStorage.getURL(name: self.identifier, type: .voice)
             let state: MediaMessageState = mediaStorage.exists(path: audioUrl.path) ? .normal : .downloading
-            
+
             let uiModel = UIAudioMessageModel(uid: self.xmppId,
                                               audioUrl: audioUrl,
                                               duration: TimeInterval(self.duration),
@@ -64,12 +64,12 @@ public class VoiceMessage: Message {
                     try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: self.channel.getCard())
                 }
             }
-            
+
             return uiModel
         }
         catch {
             Log.error(error, message: "Exporting AudioMessage to UI model failed")
-            
+
             return UITextMessageModel.corruptedModel(uid: self.xmppId,
                                                      isIncoming: self.isIncoming,
                                                      date: self.date)

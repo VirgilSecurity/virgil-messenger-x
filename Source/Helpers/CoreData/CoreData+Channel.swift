@@ -37,11 +37,11 @@ extension CoreData {
 
         return try self.createChannel(type: .single, sid: sid, name: card.identity, initiator: initiator, cards: [card])
     }
-    
+
     // Returns changed messages ids
     public func markAllMessagesAsRead(in channel: Channel) throws -> [String] {
         var changedMessagesIds: [String] = []
-        
+
         channel.allMessages.forEach { message in
             switch message.state {
             case .delivered:
@@ -51,26 +51,26 @@ extension CoreData {
                 break
             }
         }
-        
+
         try self.saveContext()
-        
+
         return changedMessagesIds
     }
-    
+
     public func updateMessageState(to state: Message.State, withId receiptId: String, from channel: Channel) throws -> Message.State {
         guard let message = channel.allMessages.first(where: { $0.xmppId == receiptId }) else {
             throw NSError()
         }
-        
+
         switch message.state {
         case .sent, .delivered, .failed:
             message.state = state
         case .received, .read:
             break
         }
-        
+
         try self.saveContext()
-        
+
         return message.state
     }
 
@@ -97,7 +97,7 @@ extension CoreData {
 
     func updateCards(with cards: [Card], for channel: Channel) throws {
         let cards = cards.filter { $0.identity != self.currentAccount?.identity }
-        
+
         channel.cards = cards
 
         try self.saveContext()
@@ -162,10 +162,10 @@ extension CoreData {
 
         return cards
     }
-    
+
     func resetUnreadCount(for channel: Channel) throws {
         channel.unreadCount = 0
-        
+
         try self.saveContext()
     }
 }

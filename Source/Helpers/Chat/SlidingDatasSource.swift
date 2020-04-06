@@ -93,7 +93,7 @@ public class SlidingDataSource<Element> {
             self.insertItem(itemGenerator(self.allItemsCount, messages), position: .bottom)
         }
     }
-    
+
     public func updateItems(where selectPredicate: (Element) -> Bool, changePredicate: (Element) throws -> Element) throws {
         self.items = try self.items.map {
             try selectPredicate($0) ? changePredicate($0) : $0

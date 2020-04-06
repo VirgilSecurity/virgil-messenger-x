@@ -16,35 +16,35 @@ public class PhotoMessage: Message {
     @NSManaged public var identifier: String
     @NSManaged public var thumbnail: Data
     @NSManaged public var url: URL
-    
+
     private static let EntityName = "PhotoMessage"
-    
+
     convenience init(identifier: String,
                      thumbnail: Data,
                      url: URL,
                      baseParams: Message.Params,
                      context: NSManagedObjectContext) throws {
         try self.init(entityName: PhotoMessage.EntityName, context: context, params: baseParams)
-        
+
         self.identifier = identifier
         self.thumbnail = thumbnail
         self.url = url
     }
-    
+
     private func thumbnailImage() throws -> UIImage {
         guard let image = UIImage(data: self.thumbnail) else {
             throw CoreData.Error.invalidMessage
         }
-        
+
         return image
     }
-    
+
     public override func exportAsUIModel() -> UIMessageModelProtocol {
         let status = self.state.exportAsMessageStatus()
-        
+
         do {
             let path = try CoreData.shared.getMediaStorage().getPath(name: self.identifier, type: .photo)
-            
+
             let image: UIImage
             let state: MediaMessageState
 
@@ -63,7 +63,7 @@ public class PhotoMessage: Message {
                                               status: status,
                                               state: state,
                                               date: self.date)
-            
+
             if state == .downloading {
                 try Virgil.shared.client.startDownload(from: self.url,
                                                        loadDelegate: uiModel,
@@ -81,12 +81,12 @@ public class PhotoMessage: Message {
                     try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: self.channel.getCard())
                 }
             }
-            
+
             return uiModel
         }
         catch {
             Log.error(error, message: "Exporting PhotoMessage to UI model failed")
-            
+
             return UITextMessageModel.corruptedModel(uid: self.xmppId,
                                                      isIncoming: self.isIncoming,
                                                      date: self.date)

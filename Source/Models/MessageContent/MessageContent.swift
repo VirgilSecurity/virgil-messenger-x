@@ -27,45 +27,45 @@ extension MessageContent: Codable {
         switch type {
         case .text:
             let textContent = try container.decode(TextContent.self, forKey: .payload)
-            
+
             self = .text(textContent)
         case .photo:
             let photoContent = try container.decode(PhotoContent.self, forKey: .payload)
-            
+
             self = .photo(photoContent)
         case .voice:
             let voiceContent = try container.decode(VoiceContent.self, forKey: .payload)
-            
+
             self = .voice(voiceContent)
         }
     }
-    
+
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
         case .text(let textContent):
             let type = MessageType.text
-            
+
             try container.encode(type, forKey: .type)
             try container.encode(textContent, forKey: .payload)
         case .photo(let photoContent):
             let type = MessageType.photo
-            
+
             try container.encode(type, forKey: .type)
             try container.encode(photoContent, forKey: .payload)
         case .voice(let voiceContent):
             let type = MessageType.voice
-            
+
             try container.encode(type, forKey: .type)
             try container.encode(voiceContent, forKey: .payload)
         }
     }
-    
+
     static func `import`(from data: Data) throws -> MessageContent {
         return try JSONDecoder().decode(MessageContent.self, from: data)
     }
-    
+
     func exportAsJsonString() throws -> Data {
         return try JSONEncoder().encode(self)
     }

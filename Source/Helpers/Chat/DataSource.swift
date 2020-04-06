@@ -56,7 +56,7 @@ class DataSource: ChatDataSourceProtocol {
         let process: Notifications.Block = { [weak self] notification in
             do {
                 let message: Message = try Notifications.parse(notification, for: .message)
-                
+
                 self?.process(message: message)
             }
             catch {
@@ -73,28 +73,28 @@ class DataSource: ChatDataSourceProtocol {
                 strongSelf.delegate?.chatDataSourceDidUpdate(strongSelf, updateType: .messageCountReduction)
             }
         }
-        
+
         let updateMessageState: Notifications.Block = { [weak self] notification in
             guard let strongSelf = self else { return }
 
             do {
                 let messageIds: [String] = try Notifications.parse(notification, for: .messageIds)
                 let newState: Message.State = try Notifications.parse(notification, for: .newState)
-                
+
                 let selectPredicate = { (item: ChatItemProtocol) -> Bool in
                     messageIds.contains(item.uid)
                 }
-                
+
                 let changePredicate = { (item: ChatItemProtocol) throws -> ChatItemProtocol in
                     guard let item = item as? UIMessageModelProtocol else {
                         throw NSError()
                     }
 
                     item.status = newState.exportAsMessageStatus()
-                    
+
                     return item
                 }
-                
+
                 try strongSelf.slidingWindow.updateItems(where: selectPredicate, changePredicate: changePredicate)
             }
             catch {
@@ -113,7 +113,7 @@ class DataSource: ChatDataSourceProtocol {
 
     @objc private func process(message: Message) {
         let uiModel = message.exportAsUIModel()
-        
+
         DispatchQueue.main.async {
             self.slidingWindow.insertItem(uiModel, position: .bottom)
             self.delegate?.chatDataSourceDidUpdate(self)
@@ -157,7 +157,7 @@ class DataSource: ChatDataSourceProtocol {
 
     func addTextMessage(_ text: String) {
         let messageId = UUID().uuidString
-        
+
         let uiModel = UITextMessageModel(uid: messageId,
                                          text: text,
                                          isIncoming: false,
@@ -172,17 +172,17 @@ class DataSource: ChatDataSourceProtocol {
 
     func addPhotoMessage(_ image: UIImage) {
         let messageId = UUID().uuidString
-        
+
         let uiModel = UIPhotoMessageModel(uid: messageId,
                                           image: image,
                                           isIncoming: false,
                                           status: .sending,
                                           state: .uploading,
                                           date: Date())
-        
+
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
-        
+
         self.messageSender.send(uiModel: uiModel, channel: self.channel)
     }
 
@@ -196,14 +196,14 @@ class DataSource: ChatDataSourceProtocol {
                                           status: .sending,
                                           state: .uploading,
                                           date: Date())
-        
+
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
-        
+
         self.messageSender.send(uiModel: uiModel, channel: self.channel)
     }
 
-    func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> ()) {
+    func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> Void) {
         let didAdjust = self.slidingWindow.adjustWindow(focusPosition: focusPosition,
                                                         maxWindowSize: preferredMaxCount ?? self.preferredMaxWindowSize)
         completion(didAdjust)

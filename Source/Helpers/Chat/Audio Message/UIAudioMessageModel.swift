@@ -12,7 +12,7 @@ import ChattoAdditions
 public class UIAudioMessageModel: AudioMessageModel<MessageModel>, UIMessageModelProtocol {
     public private(set) var state: MediaMessageState
     public private(set) weak var loadDelegate: LoadDelegate?
-    
+
     public required init(uid: String,
                          audioUrl: URL,
                          duration: TimeInterval,
@@ -28,12 +28,12 @@ public class UIAudioMessageModel: AudioMessageModel<MessageModel>, UIMessageMode
                                         isIncoming: isIncoming,
                                         date: date,
                                         status: status)
-        
+
         self.state = state
 
         super.init(messageModel: messageModel, audioUrl: audioUrl, duration: duration)
     }
-    
+
     public var status: MessageStatus {
         get {
             return self._messageModel.status
@@ -42,7 +42,7 @@ public class UIAudioMessageModel: AudioMessageModel<MessageModel>, UIMessageMode
             self._messageModel.status = newValue
         }
     }
-    
+
     public func set(loadDelegate: LoadDelegate) {
         self.loadDelegate = loadDelegate
     }
@@ -52,11 +52,11 @@ extension UIAudioMessageModel: LoadDelegate {
     public func progressChanged(to percent: Double) {
         self.loadDelegate?.progressChanged(to: percent)
     }
-    
+
     public func failed(with error: Error) {
         self.loadDelegate?.failed(with: error)
     }
-    
+
     public func completed(dataHash: String) {
         self.loadDelegate?.completed(dataHash: dataHash)
     }
@@ -67,4 +67,3 @@ extension AudioMessageModel {
         return "audio"
     }
 }
-

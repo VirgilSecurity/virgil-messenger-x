@@ -63,11 +63,11 @@ class AudioInputView: UIView, AudioInputViewProtocol, AVAudioRecorderDelegate {
 
     private func configureAudio() {
         self.recordingSession = AVAudioSession.sharedInstance()
-        
+
         do {
             try self.recordingSession.setCategory(AVAudioSession.Category.playAndRecord, mode: .default)
             try self.recordingSession.setActive(true)
-            
+
             self.recordingSession.requestRecordPermission { [unowned self] allowed in
                 DispatchQueue.main.async {
                     if allowed {
@@ -323,14 +323,14 @@ extension AudioInputView {
             let identifier = UUID().uuidString
             let audioURL = try CoreData.shared.getMediaStorage().getURL(name: identifier, type: .voice)
             self.audioFile = audioURL
-            
+
             self.audioRecorder = try AVAudioRecorder(url: audioURL, settings: settings)
             self.audioRecorder.delegate = self
             self.audioRecorder.record()
         }
         catch {
             Log.error(error, message: "Recording failed")
-            
+
             self.finishRecording(success: false)
         }
     }
@@ -347,7 +347,7 @@ extension AudioInputView {
                 guard let audioUrl = self.audioFile else {
                     throw UserFriendlyError.voiceRecordingError
                 }
-                
+
                 self.delegate?.inputView(self, didFinishedRecording: audioUrl, duration: self.time + 0.9)
             }
             catch {
@@ -359,10 +359,10 @@ extension AudioInputView {
             if let audioUrl = self.audioFile {
                 try? FileManager.default.removeItem(at: audioUrl)
             }
-            
+
             self.audioFile = nil
         }
-        
+
         self.timerLabel.text = self.timeString(0)
         self.holdToRecordLabel.text = "Hold to record"
         self.timer.invalidate()
@@ -385,6 +385,6 @@ extension AudioInputView {
         let seconds = Int(time) % 60
         let miliseconds = Int((time - Double(Int(time))) * 100)
 
-        return String(format:"%02i:%02i:%02i", minutes, seconds, miliseconds)
+        return String(format: "%02i:%02i:%02i", minutes, seconds, miliseconds)
     }
 }

@@ -15,7 +15,7 @@ extension CoreData {
         if unread {
             message.channel.unreadCount += 1
         }
-        
+
         let messages = message.channel.mutableOrderedSetValue(forKey: Channel.MessagesKey)
         messages.add(message)
 
@@ -29,7 +29,7 @@ extension CoreData {
                                     state: .failed,
                                     date: date,
                                     isHidden: true)
-        
+
         let message = try TextMessage(body: "Message encrypted",
                                       baseParams: params,
                                       context: self.managedContext)
@@ -49,7 +49,7 @@ extension CoreData {
 
         return message
     }
-    
+
     @discardableResult
     func createPhotoMessage(with content: PhotoContent,
                             thumbnail: Data,
@@ -60,12 +60,12 @@ extension CoreData {
                                        url: content.url,
                                        baseParams: baseParams,
                                        context: self.managedContext)
-        
+
         try self.save(message, unread: unread)
 
         return message
     }
-    
+
     @discardableResult
     func createVoiceMessage(with content: VoiceContent,
                             unread: Bool = false,
@@ -80,16 +80,16 @@ extension CoreData {
 
         return message
     }
-    
+
     func storeMediaContent(_ data: Data, name: String, type: FileMediaStorage.MediaType) throws {
         let mediaStorage = try self.getMediaStorage()
-        
+
         let path = try mediaStorage.getPath(name: name, type: type)
-        
+
         if type == .photo, mediaStorage.exists(path: path) {
             return
         }
-        
+
         try self.getMediaStorage().store(data, name: name, type: type)
     }
 }

@@ -11,7 +11,7 @@ import UIKit
 class SwipeableNavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.setupFullWidthBackGesture()
     }
 
@@ -21,7 +21,7 @@ class SwipeableNavigationController: UINavigationController {
         // The trick here is to wire up our full-width `fullWidthBackGestureRecognizer` to execute the same handler as
         // the system `interactivePopGestureRecognizer`. That's done by assigning the same "targets" (effectively
         // object and selector) of the system one to our gesture recognizer.
-        
+
         guard
             let interactivePopGestureRecognizer = interactivePopGestureRecognizer,
             let targets = interactivePopGestureRecognizer.value(forKey: "targets")
@@ -40,7 +40,7 @@ extension SwipeableNavigationController: UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         let isSystemSwipeToBackEnabled = interactivePopGestureRecognizer?.isEnabled == true
         let isThereStackedViewControllers = viewControllers.count > 1
-        
+
         return isSystemSwipeToBackEnabled && isThereStackedViewControllers
     }
 }

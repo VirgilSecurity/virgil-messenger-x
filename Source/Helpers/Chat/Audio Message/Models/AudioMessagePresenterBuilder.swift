@@ -30,7 +30,7 @@ open class AudioMessagePresenterBuilder<ViewModelBuilderT, InteractionHandlerT>
     let layoutCache = NSCache<AnyObject, AnyObject>()
 
     lazy var sizingCell: AudioMessageCollectionViewCell = {
-        var cell: AudioMessageCollectionViewCell? = nil
+        var cell: AudioMessageCollectionViewCell?
         if Thread.isMainThread {
             cell = AudioMessageCollectionViewCell.sizingCell()
         } else {

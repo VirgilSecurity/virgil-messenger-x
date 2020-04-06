@@ -71,7 +71,7 @@ final class ChatItemsDemoDecorator: ChatItemsDecoratorProtocol {
                     decoratedChatItems.append(dateTimeStamp)
                 }
             }
-            
+
             let messageDecorationAttributes = BaseMessageDecorationAttributes(canShowFailedIcon: true,
                                                                               isShowingTail: showsTail,
                                                                               isShowingAvatar: showsTail,
