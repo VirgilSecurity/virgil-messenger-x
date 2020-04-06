@@ -180,7 +180,7 @@ class Ejabberd: NSObject {
     }
 
     public func sendGlobalReadResponse(to user: String) throws {
-        guard self.stream.isConnected else {
+        guard self.stream.isAuthenticated else {
             return
         }
 
