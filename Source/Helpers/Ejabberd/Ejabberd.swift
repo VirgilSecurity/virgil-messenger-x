@@ -180,6 +180,10 @@ class Ejabberd: NSObject {
     }
 
     public func sendGlobalReadResponse(to user: String) throws {
+        guard self.stream.isConnected else {
+            return
+        }
+
         let jid = try Ejabberd.setupJid(with: user)
 
         let message = XMPPMessage.generateReadReceipt(for: jid)

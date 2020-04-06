@@ -55,6 +55,8 @@ extension Ejabberd: XMPPStreamDelegate {
         self.set(status: .online)
 
         self.unlockMutex(self.initializeMutex)
+
+        Notifications.post(.ejabberdAuthorized)
     }
 
     func xmppStream(_ sender: XMPPStream, didNotAuthenticate error: DDXMLElement) {

@@ -15,7 +15,9 @@ public class Notifications {
 
     public enum EmptyNotification: String {
         case initializingSucceed = "Notifications.InitializingSucceed"
+        // FIXME: remove on connection rework
         case updatingSucceed = "Notifications.UpdatingSucceed"
+        case ejabberdAuthorized = "Notifications.EjabberdAuthorized"
 
         case chatListUpdated = "Notifications.ChatListUpdated"
         case currentChannelDeleted = "Notifications.CurrentChannelDeleted"

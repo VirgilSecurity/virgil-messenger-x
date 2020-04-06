@@ -78,6 +78,17 @@ class DataSource: ChatDataSourceProtocol {
             }
         }
 
+        let sendGlobalReadReceipt: Notifications.Block = { [weak self] _ in
+            guard let strongSelf = self else { return }
+
+            do {
+                try Ejabberd.shared.sendGlobalReadResponse(to: strongSelf.channel.name)
+            }
+            catch {
+                Log.error(error, message: "Sending global read response failed")
+            }
+        }
+
         let updateMessageState: Notifications.Block = { [weak self] notification in
             guard let strongSelf = self else { return }
 
@@ -113,6 +124,7 @@ class DataSource: ChatDataSourceProtocol {
         Notifications.observe(for: .messageAddedToCurrentChannel, block: process)
         Notifications.observe(for: .updatingSucceed, block: updateMessageList)
         Notifications.observe(for: .messageStatusUpdated, block: updateMessageState)
+        Notifications.observe(for: .ejabberdAuthorized, block: sendGlobalReadReceipt)
     }
 
     @objc private func process(message: Message) {
