@@ -593,6 +593,9 @@
 		F46EE197241FA09F00BE53AA /* Storage+CallMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE191241FA09F00BE53AA /* Storage+CallMessage.swift */; };
 		F46EE198241FA09F00BE53AA /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46EE192241FA09F00BE53AA /* Storage.swift */; };
 		F47DD29D240E9985006A0341 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47DD295240E9546006A0341 /* WebRTC.framework */; };
+		F47EF354243CA7950002AC9E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47EF353243CA7950002AC9E /* CallKit.framework */; };
+		F47EF355243CA7A70002AC9E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47EF353243CA7950002AC9E /* CallKit.framework */; };
+		F47EF356243CA7AE0002AC9E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47EF353243CA7950002AC9E /* CallKit.framework */; };
 		F481221B2424C2DF0003DD78 /* Call.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F481221A2424C2DF0003DD78 /* Call.storyboard */; };
 		F481221D2424CD360003DD78 /* Call.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481221C2424CD360003DD78 /* Call.swift */; };
 		F481221F24252FA80003DD78 /* IncomingCall.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F481221E24252FA80003DD78 /* IncomingCall.storyboard */; };
@@ -870,6 +873,7 @@
 		F46EE191241FA09F00BE53AA /* Storage+CallMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+CallMessage.swift"; sourceTree = "<group>"; };
 		F46EE192241FA09F00BE53AA /* Storage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		F47DD295240E9546006A0341 /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = Carthage/Build/iOS/WebRTC.framework; sourceTree = "<group>"; };
+		F47EF353243CA7950002AC9E /* CallKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CallKit.framework; path = System/Library/Frameworks/CallKit.framework; sourceTree = SDKROOT; };
 		F481221A2424C2DF0003DD78 /* Call.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Call.storyboard; sourceTree = "<group>"; };
 		F481221C2424CD360003DD78 /* Call.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Call.swift; sourceTree = "<group>"; };
 		F481221E24252FA80003DD78 /* IncomingCall.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = IncomingCall.storyboard; sourceTree = "<group>"; };
@@ -944,6 +948,7 @@
 				F47DD29D240E9985006A0341 /* WebRTC.framework in Frameworks */,
 				16D70732214C061C00452A16 /* SystemConfiguration.framework in Frameworks */,
 				16B4EC2023BE47B700E7E4DB /* CocoaAsyncSocket.framework in Frameworks */,
+				F47EF354243CA7950002AC9E /* CallKit.framework in Frameworks */,
 				16B4EC0923BE3BB300E7E4DB /* XMPPFrameworkSwift.framework in Frameworks */,
 				16D70730214C061400452A16 /* libc++.tbd in Frameworks */,
 				16D7072E214C060B00452A16 /* libz.tbd in Frameworks */,
@@ -993,6 +998,7 @@
 				F4241F2124348DAF00E839C3 /* FirebaseAnalytics.framework in Frameworks */,
 				F4241EC12433946C00E839C3 /* SystemConfiguration.framework in Frameworks */,
 				F4241EC22433946C00E839C3 /* libc++.tbd in Frameworks */,
+				F47EF355243CA7A70002AC9E /* CallKit.framework in Frameworks */,
 				F4241EC32433946C00E839C3 /* libz.tbd in Frameworks */,
 				F4241EC42433946C00E839C3 /* Security.framework in Frameworks */,
 				F4241EC52433946C00E839C3 /* PKHUD.framework in Frameworks */,
@@ -1061,6 +1067,7 @@
 				F4241EF72433964600E839C3 /* VSCRatchet.framework in Frameworks */,
 				F4241EF82433964600E839C3 /* SystemConfiguration.framework in Frameworks */,
 				F4241EF92433964600E839C3 /* libc++.tbd in Frameworks */,
+				F47EF356243CA7AE0002AC9E /* CallKit.framework in Frameworks */,
 				F4241EFA2433964600E839C3 /* libz.tbd in Frameworks */,
 				F4241EFB2433964600E839C3 /* Security.framework in Frameworks */,
 				F4241EFC2433964600E839C3 /* PKHUD.framework in Frameworks */,
@@ -1447,6 +1454,7 @@
 		429228C71F96287A00DCECDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F47EF353243CA7950002AC9E /* CallKit.framework */,
 				F4241F0C24339E1700E839C3 /* Fabric.framework */,
 				F47DD295240E9546006A0341 /* WebRTC.framework */,
 				97E7C5612403E73200D9CAAA /* FirebaseInstallations.framework */,
