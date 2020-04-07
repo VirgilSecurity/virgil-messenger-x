@@ -7,42 +7,53 @@
 //
 
 import VirgilCrypto
-import VirgilE3Kit
+import VirgilSDK
 
 public class VirgilAuthorizer {
+    public let crypto: VirgilCrypto
+    public let verifier: VirgilCardVerifier
     public let client: Client
 
+    public enum Error: Swift.Error {
+        case cardVerifierInitFailed
+    }
+
     public init() throws {
-        let crypto = try VirgilCrypto()
+        self.crypto = try VirgilCrypto()
         self.client = Client(crypto: crypto)
+
+        guard let verifier = VirgilCardVerifier(crypto: self.crypto) else {
+            throw Error.cardVerifierInitFailed
+        }
+
+        self.verifier = verifier
     }
 
     public func signIn(identity: String) throws {
-        try Virgil.initialize(identity: identity, client: self.client)
+        let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
 
-        guard try Virgil.ethree.localKeyStorage.exists() else {
+        guard try localKeyManager.exists() else {
             throw UserFriendlyError.noUserOnDevice
         }
+
+        try Virgil.initialize(identity: identity, client: self.client)
     }
 
     public func signUp(identity: String) throws {
-        do {
-            try Virgil.initialize(identity: identity, client: self.client)
+        let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
 
-            let publishCardCallback = self.client.makePublishCardCallback(verifier: Virgil.shared.verifier)
-
-            try Virgil.ethree.register(publishCardCallback: publishCardCallback)
-                .startSync()
-                .get()
-
-            Log.debug("Yo")
-        }
-        catch EThreeError.privateKeyExists {
+        guard try !localKeyManager.exists() else {
             throw UserFriendlyError.usernameAlreadyUsed
         }
-        catch {
-            throw error
-        }
+
+        let keyPair = try self.crypto.generateKeyPair()
+
+        let card = try self.client.signUp(identity: identity, keyPair: keyPair, verifier: self.verifier)
+
+        let user = UserData(keyPair: keyPair, card: card)
+        try localKeyManager.store(user)
+
+        try Virgil.initialize(identity: identity, client: self.client)
     }
 
     public func logOut() {

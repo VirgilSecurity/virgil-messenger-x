@@ -11,21 +11,17 @@ import VirgilCrypto
 
 extension Client {
     internal func makeAuthHeader(for identity: String) throws -> [String: String] {
-        // FIXME: Client class should be independent from ethree existance
-        let keyPair = try Virgil.ethree.localKeyStorage.retrieveKeyPair()
+        let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
 
-        // Will be sync ever
-        let card = try Virgil.ethree.findUser(with: identity)
-            .startSync()
-            .get()
+        let user = try localKeyManager.retrieveUserData()
 
-        let stringToSign = "\(card.identifier).\(Int(Date().timeIntervalSince1970))"
+        let stringToSign = "\(user.card.identifier).\(Int(Date().timeIntervalSince1970))"
 
         guard let dataToSign = stringToSign.data(using: .utf8) else {
             throw Error.stringToDataFailed
         }
 
-        let signature = try crypto.generateSignature(of: dataToSign, using: keyPair.privateKey)
+        let signature = try crypto.generateSignature(of: dataToSign, using: user.keyPair.privateKey)
 
         let authHeader = "Bearer " + stringToSign + "." + signature.base64EncodedString()
 
@@ -60,27 +56,35 @@ extension Client {
         return try self.parse(response, for: "token")
     }
 
-    public func signUp(with rawCard: RawSignedModel,
+    public func signUp(identity: String,
+                       keyPair: VirgilKeyPair,
                        verifier: VirgilCardVerifier) throws -> Card {
-        let exportedRawCard = try rawCard.exportAsJson()
 
-        let headers = ["Content-Type": "application/json"]
-        let params = ["raw_card": exportedRawCard]
-        let body = try JSONSerialization.data(withJSONObject: params, options: [])
+          let modelSigner = ModelSigner(crypto: self.crypto)
+          let rawCard = try CardManager.generateRawCard(crypto: self.crypto,
+                                                        modelSigner: modelSigner,
+                                                        privateKey: keyPair.privateKey,
+                                                        publicKey: keyPair.publicKey,
+                                                        identity: identity)
+          let exportedRawCard = try rawCard.exportAsJson()
 
-        let request = Request(url: URLConstants.signUpEndpoint,
-                              method: .post,
-                              headers: headers,
-                              body: body)
+          let headers = ["Content-Type": "application/json"]
+          let params = ["raw_card": exportedRawCard]
+          let body = try JSONSerialization.data(withJSONObject: params, options: [])
 
-        let response = try self.connection.send(request)
-            .startSync()
-            .get()
+          let request = Request(url: URLConstants.signUpEndpoint,
+                                method: .post,
+                                headers: headers,
+                                body: body)
 
-        let exportedCard: Any = try self.parse(response, for: "virgil_card")
+          let response = try self.connection.send(request)
+              .startSync()
+              .get()
 
-        return try CardManager.importCard(fromJson: exportedCard,
-                                          crypto: self.crypto,
-                                          cardVerifier: verifier)
-    }
+          let exportedCard: Any = try self.parse(response, for: "virgil_card")
+
+          return try CardManager.importCard(fromJson: exportedCard,
+                                            crypto: self.crypto,
+                                            cardVerifier: verifier)
+      }
 }

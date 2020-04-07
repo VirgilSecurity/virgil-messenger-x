@@ -38,18 +38,6 @@ public class Client {
             }
         }
     }
-    
-    public func makePublishCardCallback(verifier: VirgilCardVerifier) -> EThree.PublishCardCallback {
-        return { rawCard in
-            do {
-                return try self.signUp(with: rawCard, verifier: verifier)
-            }
-            catch {
-                Log.debug("asdasd")
-                throw error
-            }
-        }
-    }
 
     private func handleError(statusCode: Int, body: Data?) -> Swift.Error {
         if let body = body {

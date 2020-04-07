@@ -596,6 +596,12 @@
 		F47EF354243CA7950002AC9E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47EF353243CA7950002AC9E /* CallKit.framework */; };
 		F47EF355243CA7A70002AC9E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47EF353243CA7950002AC9E /* CallKit.framework */; };
 		F47EF356243CA7AE0002AC9E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47EF353243CA7950002AC9E /* CallKit.framework */; };
+		F47EF358243CBFCA0002AC9E /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
+		F47EF359243CBFCA0002AC9E /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
+		F47EF35A243CBFCA0002AC9E /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
+		F47EF35B243CBFD50002AC9E /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
+		F47EF35C243CBFD50002AC9E /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
+		F47EF35D243CBFD60002AC9E /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
 		F481221B2424C2DF0003DD78 /* Call.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F481221A2424C2DF0003DD78 /* Call.storyboard */; };
 		F481221D2424CD360003DD78 /* Call.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481221C2424CD360003DD78 /* Call.swift */; };
 		F481221F24252FA80003DD78 /* IncomingCall.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F481221E24252FA80003DD78 /* IncomingCall.storyboard */; };
@@ -874,6 +880,7 @@
 		F46EE192241FA09F00BE53AA /* Storage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		F47DD295240E9546006A0341 /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = Carthage/Build/iOS/WebRTC.framework; sourceTree = "<group>"; };
 		F47EF353243CA7950002AC9E /* CallKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CallKit.framework; path = System/Library/Frameworks/CallKit.framework; sourceTree = SDKROOT; };
+		F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalKeyManager.swift; sourceTree = "<group>"; };
 		F481221A2424C2DF0003DD78 /* Call.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Call.storyboard; sourceTree = "<group>"; };
 		F481221C2424CD360003DD78 /* Call.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Call.swift; sourceTree = "<group>"; };
 		F481221E24252FA80003DD78 /* IncomingCall.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = IncomingCall.storyboard; sourceTree = "<group>"; };
@@ -1387,6 +1394,7 @@
 		16FE75F1224A436C00B545AF /* Virgil */ = {
 			isa = PBXGroup;
 			children = (
+				F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */,
 				1693678F22490BA000EF9A42 /* VirgilAuthorizer.swift */,
 				167C68441FADDB7800E6E448 /* Virgil.swift */,
 			);
@@ -2132,6 +2140,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F47EF35B243CBFD50002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241D4A24337E9C00E839C3 /* EnvConstantProd.swift in Sources */,
 				9775CFD8242A2D3D009F1693 /* Virgil.swift in Sources */,
 				F4241E46243386AC00E839C3 /* UIColor+RGB.swift in Sources */,
@@ -2190,6 +2199,7 @@
 				427D1E551F965569002F2CF3 /* SlidingDatasSource.swift in Sources */,
 				F48122382425CC180003DD78 /* Storage+PhotoMessage.swift in Sources */,
 				4280C0E11F9734DD00075B3A /* TimeSeparatorCollectionViewCell.swift in Sources */,
+				F47EF358243CBFCA0002AC9E /* LocalKeyManager.swift in Sources */,
 				F481222A2425CBF60003DD78 /* NetworkMessage.swift in Sources */,
 				4280C0CE1F97340B00075B3A /* BaseMessageHandler.swift in Sources */,
 				F401CDCE241B944800C59572 /* NetworkMessage+WebRTC.swift in Sources */,
@@ -2311,6 +2321,7 @@
 				F4241D842433856000E839C3 /* NetworkUploadOperation.swift in Sources */,
 				F4241D6B2433852100E839C3 /* Storage+TextMessage.swift in Sources */,
 				F4241E4C243386BB00E839C3 /* UIViewController.swift in Sources */,
+				F47EF359243CBFCA0002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241DF02433863400E839C3 /* FileMediaStorage.swift in Sources */,
 				F4241E182433864F00E839C3 /* UsersListCell.swift in Sources */,
 				F4241D952433858D00E839C3 /* UITextMessageModel.swift in Sources */,
@@ -2393,6 +2404,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F47EF35C243CBFD50002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241D822433855700E839C3 /* EncryptedMessage.swift in Sources */,
 				F4241E47243386AD00E839C3 /* UIColor+RGB.swift in Sources */,
 				F4241D7E2433855000E839C3 /* UserFriendlyError.swift in Sources */,
@@ -2451,6 +2463,7 @@
 				F4241D852433856100E839C3 /* NetworkUploadOperation.swift in Sources */,
 				F4241D6D2433852400E839C3 /* Storage+TextMessage.swift in Sources */,
 				F4241E55243386BB00E839C3 /* UIViewController.swift in Sources */,
+				F47EF35A243CBFCA0002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241DF22433863400E839C3 /* FileMediaStorage.swift in Sources */,
 				F4241E1E2433864F00E839C3 /* UsersListCell.swift in Sources */,
 				F4241D962433858E00E839C3 /* UITextMessageModel.swift in Sources */,
@@ -2533,6 +2546,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F47EF35D243CBFD60002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241D832433855800E839C3 /* EncryptedMessage.swift in Sources */,
 				F4241E48243386AD00E839C3 /* UIColor+RGB.swift in Sources */,
 				F4241D7F2433855100E839C3 /* UserFriendlyError.swift in Sources */,
