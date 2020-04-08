@@ -187,8 +187,6 @@
 		F4241D59243383AB00E839C3 /* SwipeableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974E01A5242D5274008239B8 /* SwipeableNavigationController.swift */; };
 		F4241D5A2433850200E839C3 /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122472425D71B0003DD78 /* CallManager.swift */; };
 		F4241D5B2433850300E839C3 /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122472425D71B0003DD78 /* CallManager.swift */; };
-		F4241D5C2433850500E839C3 /* CallStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481224B24291CC70003DD78 /* CallStrings.swift */; };
-		F4241D5D2433850600E839C3 /* CallStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481224B24291CC70003DD78 /* CallStrings.swift */; };
 		F4241D5E2433850900E839C3 /* CoreData+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122392425D07B0003DD78 /* CoreData+Channel.swift */; };
 		F4241D602433850B00E839C3 /* CoreData+Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122392425D07B0003DD78 /* CoreData+Channel.swift */; };
 		F4241D612433850F00E839C3 /* CoreData+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481223A2425D07B0003DD78 /* CoreData+Messages.swift */; };
@@ -613,7 +611,6 @@
 		F481223C2425D07B0003DD78 /* CoreData+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481223A2425D07B0003DD78 /* CoreData+Messages.swift */; };
 		F48122452425D45F0003DD78 /* NetworkMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122282425CBF60003DD78 /* NetworkMessage.swift */; };
 		F48122482425D71B0003DD78 /* CallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122472425D71B0003DD78 /* CallManager.swift */; };
-		F481224C24291CC70003DD78 /* CallStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F481224B24291CC70003DD78 /* CallStrings.swift */; };
 		F492235E24376BD800A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
 		F492235F24376BD900A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
 		F492236024376C1100A07951 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
@@ -891,7 +888,6 @@
 		F48122392425D07B0003DD78 /* CoreData+Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreData+Channel.swift"; sourceTree = "<group>"; };
 		F481223A2425D07B0003DD78 /* CoreData+Messages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreData+Messages.swift"; sourceTree = "<group>"; };
 		F48122472425D71B0003DD78 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
-		F481224B24291CC70003DD78 /* CallStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallStrings.swift; sourceTree = "<group>"; };
 		F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+MessageUI.swift"; sourceTree = "<group>"; };
 		F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CallManager+WebRTC.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1608,7 +1604,6 @@
 			isa = PBXGroup;
 			children = (
 				F48122472425D71B0003DD78 /* CallManager.swift */,
-				F481224B24291CC70003DD78 /* CallStrings.swift */,
 				F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */,
 				F40BC400243B1E23009AB5DF /* CallMnager+CallKit.swift */,
 			);
@@ -2248,7 +2243,6 @@
 				166BFAA422687D4F00EF72AD /* GroupInfo.swift in Sources */,
 				4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */,
 				16FB2DD5204D87F200346FA0 /* UIColor+RGB.swift in Sources */,
-				F481224C24291CC70003DD78 /* CallStrings.swift in Sources */,
 				16B4EC2623BF610500E7E4DB /* XMPPMessage.swift in Sources */,
 				16936792224916D100EF9A42 /* UserFriendlyError.swift in Sources */,
 				16132FC22254C868008FD754 /* UIViewController.swift in Sources */,
@@ -2370,7 +2364,6 @@
 				F4241D642433851300E839C3 /* Storage.swift in Sources */,
 				F4DDCC512436350F001E63B1 /* Storage+MessageUI.swift in Sources */,
 				F4241DEC2433862D00E839C3 /* SharedDefaults.swift in Sources */,
-				F4241D5C2433850500E839C3 /* CallStrings.swift in Sources */,
 				F4241E162433864F00E839C3 /* ChatListCell.swift in Sources */,
 				F4241E5F243386CE00E839C3 /* UITextViewZeroPaddings.swift in Sources */,
 				F4241E282433865900E839C3 /* ChooseGroupMembers.swift in Sources */,
@@ -2512,7 +2505,6 @@
 				F4241D632433851200E839C3 /* Storage.swift in Sources */,
 				F4DDCC522436350F001E63B1 /* Storage+MessageUI.swift in Sources */,
 				F4241DED2433862D00E839C3 /* SharedDefaults.swift in Sources */,
-				F4241D5D2433850600E839C3 /* CallStrings.swift in Sources */,
 				F4241E1C2433864F00E839C3 /* ChatListCell.swift in Sources */,
 				F4241E63243386CF00E839C3 /* UITextViewZeroPaddings.swift in Sources */,
 				F4241E2C2433865B00E839C3 /* ChooseGroupMembers.swift in Sources */,
