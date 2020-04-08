@@ -618,6 +618,9 @@
 		F4DDCC5024363479001E63B1 /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
 		F4DDCC512436350F001E63B1 /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
 		F4DDCC522436350F001E63B1 /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
+		F4E8BCED243E5FBE003C1A28 /* Call.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E8BCEC243E5FBE003C1A28 /* Call.swift */; };
+		F4E8BCEE243E5FBE003C1A28 /* Call.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E8BCEC243E5FBE003C1A28 /* Call.swift */; };
+		F4E8BCEF243E5FBE003C1A28 /* Call.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E8BCEC243E5FBE003C1A28 /* Call.swift */; };
 		F4EF79152438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
 		F4EF79162438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
 		F4EF79172438BAF100F26291 /* CallManager+WebRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */; };
@@ -889,6 +892,7 @@
 		F481223A2425D07B0003DD78 /* CoreData+Messages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreData+Messages.swift"; sourceTree = "<group>"; };
 		F48122472425D71B0003DD78 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
 		F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+MessageUI.swift"; sourceTree = "<group>"; };
+		F4E8BCEC243E5FBE003C1A28 /* Call.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Call.swift; sourceTree = "<group>"; };
 		F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CallManager+WebRTC.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1603,6 +1607,7 @@
 		F48122462425D71B0003DD78 /* Call */ = {
 			isa = PBXGroup;
 			children = (
+				F4E8BCEC243E5FBE003C1A28 /* Call.swift */,
 				F48122472425D71B0003DD78 /* CallManager.swift */,
 				F4EF79142438BAF100F26291 /* CallManager+WebRTC.swift */,
 				F40BC400243B1E23009AB5DF /* CallMnager+CallKit.swift */,
@@ -2202,6 +2207,7 @@
 				971B42BC242CB6D500828761 /* UnreadManager.swift in Sources */,
 				429228DE1F9637A200DCECDF /* Log.swift in Sources */,
 				4280C0E01F9734DD00075B3A /* TimeSeparatorPresenter.swift in Sources */,
+				F4E8BCED243E5FBE003C1A28 /* Call.swift in Sources */,
 				427D1E571F9656BB002F2CF3 /* UITextMessageViewModel.swift in Sources */,
 				1696ADC720A0766600EF8C0D /* Collection+SafeSubscript.swift in Sources */,
 				1658BA181FD97497005EF9C1 /* Date.swift in Sources */,
@@ -2323,6 +2329,7 @@
 				F4241D722433852E00E839C3 /* Storage+CallMessage.swift in Sources */,
 				F4241E4A243386BB00E839C3 /* UIViewController+Reachability.swift in Sources */,
 				F4241E5E243386CE00E839C3 /* PushNotifications.swift in Sources */,
+				F4E8BCEE243E5FBE003C1A28 /* Call.swift in Sources */,
 				F4241E65243386D700E839C3 /* AppDelegate.swift in Sources */,
 				F4241E60243386CE00E839C3 /* Gradient.swift in Sources */,
 				F4241E322433866100E839C3 /* GroupInfo.swift in Sources */,
@@ -2464,6 +2471,7 @@
 				F4241D732433852E00E839C3 /* Storage+CallMessage.swift in Sources */,
 				F4241E53243386BB00E839C3 /* UIViewController+Reachability.swift in Sources */,
 				F4241E62243386CF00E839C3 /* PushNotifications.swift in Sources */,
+				F4E8BCEF243E5FBE003C1A28 /* Call.swift in Sources */,
 				F4241E68243386D800E839C3 /* AppDelegate.swift in Sources */,
 				F4241E64243386CF00E839C3 /* Gradient.swift in Sources */,
 				F4241E3B2433866200E839C3 /* GroupInfo.swift in Sources */,
