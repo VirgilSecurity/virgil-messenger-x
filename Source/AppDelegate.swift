@@ -13,11 +13,13 @@ import Firebase
 import CocoaLumberjackSwift
 import WebRTC
 import PushKit
+import CallKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var pushNotificationsDelegate = PushNotificationsDelegate()
+    weak var callProviderDelegate: CXProviderDelegate?
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -53,9 +55,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func registerVoip() {
+        self.callProviderDelegate = CallManager.shared
+
         let voipRegistry = PKPushRegistry(queue: DispatchQueue.main)
         voipRegistry.delegate = self
-        voipRegistry.desiredPushTypes = [PKPushType.voIP]
+        voipRegistry.desiredPushTypes = [.voIP]
     }
 
     private func cleanLocalStorage() {
@@ -163,8 +167,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: PKPushRegistryDelegate {
     func pushRegistry(_ registry: PKPushRegistry, didUpdate pushCredentials: PKPushCredentials, for type: PKPushType) {
-        // FIXME: implement
-        let token = pushCredentials.token
+        if type != .voIP {
+            return
+        }
+
+        let deviceToken = pushCredentials.token
+
+        do {
+            if Ejabberd.shared.state == .connected {
+                try Ejabberd.shared.registerForNotifications(voipDeviceToken: deviceToken)
+            }
+
+            Ejabberd.updatedVoipPushToken = deviceToken
+        } catch {
+            Log.error(error, message: "Registering for VoIP notifications failed")
+        }
     }
 
     func pushRegistry(_ registry: PKPushRegistry,
@@ -172,5 +189,8 @@ extension AppDelegate: PKPushRegistryDelegate {
                       for type: PKPushType,
                       completion: @escaping () -> Void) {
 
+        if type != .voIP {
+            return
+        }
     }
 }

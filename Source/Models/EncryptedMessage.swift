@@ -13,6 +13,11 @@ public enum EncryptedMessageVersion: String, Codable, CaseIterable {
     case v2
 }
 
+public enum PushType: String, Codable {
+    case alert
+    case voip
+}
+
 public enum EncryptedMessageError: Int, Error {
     case bodyIsNotBase64Encoded = 1
 }
@@ -26,13 +31,19 @@ public class EncryptedMessage: Codable {
         return self.version ?? .v1
     }
 
-    private let version: EncryptedMessageVersion?
+    var modelPushType: PushType {
+        return self.pushType ?? .alert
+    }
 
-    public init(ciphertext: Data, date: Date, additionalData: Data?) {
+    private let version: EncryptedMessageVersion?
+    private let pushType: PushType?
+
+    public init(pushType: PushType, ciphertext: Data, date: Date, additionalData: Data?) {
         self.ciphertext = ciphertext
         self.date = date
         self.additionalData = additionalData
         self.version = EncryptedMessageVersion.allCases.last
+        self.pushType = pushType
     }
 
     static func `import`(_ string: String) throws -> EncryptedMessage {

@@ -6,7 +6,7 @@ public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
     // Returns xmppId
-    private func send(message: NetworkMessage, additionalData: Data?, to channel: Storage.Channel, date: Date) throws -> String {
+    private func send(message: NetworkMessage, pushType: PushType, additionalData: Data?, to channel: Storage.Channel, date: Date) throws -> String {
         let exported = try message.exportAsJsonData()
 
         let card = try channel.getCard()
@@ -18,7 +18,7 @@ public class MessageSender {
             additionalData = try Virgil.ethree.authEncrypt(data: data, for: card)
         }
 
-        let encryptedMessage = EncryptedMessage(ciphertext: ciphertext, date: date, additionalData: additionalData)
+        let encryptedMessage = EncryptedMessage(pushType: pushType, ciphertext: ciphertext, date: date, additionalData: additionalData)
 
         return try Ejabberd.shared.send(encryptedMessage, to: channel.name)
     }
@@ -27,7 +27,7 @@ public class MessageSender {
         do {
             let message = NetworkMessage.text(text)
 
-            let xmppId = try self.send(message: message, additionalData: nil, to: channel, date: date)
+            let xmppId = try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date)
 
             _ = try Storage.shared.createTextMessage(text, xmppId: xmppId, in: channel, isIncoming: false, date: date)
 
@@ -42,7 +42,7 @@ public class MessageSender {
 
             let message = NetworkMessage.photo(photo)
 
-            let xmppId = try self.send(message: message, additionalData: thumbnail, to: channel, date: date)
+            let xmppId = try self.send(message: message, pushType: .alert, additionalData: thumbnail, to: channel, date: date)
 
             try Storage.shared.storeMediaContent(image, name: photo.identifier, type: .photo)
 
@@ -59,7 +59,7 @@ public class MessageSender {
 
             let message = NetworkMessage.voice(voice)
 
-            let xmppId = try self.send(message: message, additionalData: nil, to: channel, date: date)
+            let xmppId = try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date)
 
             _ = try Storage.shared.createVoiceMessage(voice, xmppId: xmppId, in: channel, isIncoming: false)
 
@@ -74,7 +74,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callOffer(callOffer)
 
-                let xmppId = try self.send(message: message, additionalData: nil, to: channel, date: date)
+                let xmppId = try self.send(message: message, pushType: .voip, additionalData: nil, to: channel, date: date)
 
                 let storageMessage = try Storage.shared.createCallMessage(xmppId: xmppId, in: channel, isIncoming: false, date: date)
 
@@ -92,7 +92,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callAcceptedAnswer(callAcceptedAnswer)
 
-                let xmppId = try self.send(message: message, additionalData: nil, to: channel, date: date)
+                _ = try self.send(message: message, pushType: .voip, additionalData: nil, to: channel, date: date)
 
                 completion(nil)
             } catch {
@@ -106,7 +106,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callRejectedAnswer(callRejectedAnswer)
 
-                let xmppId = try self.send(message: message, additionalData: nil, to: channel, date: date)
+                _ = try self.send(message: message, pushType: .voip, additionalData: nil, to: channel, date: date)
 
                 completion(nil)
             } catch {
@@ -120,7 +120,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.iceCandidate(iceCandidate)
 
-                let xmppId = try self.send(message: message, additionalData: nil, to: channel, date: date)
+                _ = try self.send(message: message, pushType: .voip, additionalData: nil, to: channel, date: date)
 
                 completion(nil)
             } catch {

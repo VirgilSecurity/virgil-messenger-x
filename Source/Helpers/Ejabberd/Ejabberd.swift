@@ -33,6 +33,7 @@ class Ejabberd: NSObject {
     private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
     static var updatedPushToken: Data?
+    static var updatedVoipPushToken: Data?
 
     internal let serviceErrorDomain: String = "EjabberdErrorDomain"
 
@@ -150,7 +151,7 @@ class Ejabberd: NSObject {
         let user = try Ejabberd.setupJid(with: user)
         let body = try message.export()
         let xmppId = UUID().uuidString
-        
+
         let message = XMPPMessage(messageType: .chat, to: user, elementID: xmppId)
         message.addBody(body)
 
@@ -159,7 +160,7 @@ class Ejabberd: NSObject {
         try self.sendMutex.lock()
 
         try self.checkError()
-        
+
         return xmppId
     }
 
@@ -193,22 +194,34 @@ class Ejabberd: NSObject {
 }
 
 extension Ejabberd {
-    func registerForNotifications(deviceToken: Data? = nil) throws {
-        guard let deviceToken = deviceToken ?? Ejabberd.updatedPushToken else {
+    func registerForNotifications(deviceToken: Data? = nil, voipDeviceToken: Data? = nil) throws {
+
+        var options: [String : String] = [:]
+
+        if let deviceToken = deviceToken ?? Ejabberd.updatedPushToken {
+            let deviceId = deviceToken.hexEncodedString()
+
+            options["device_id"] = deviceId
+        }
+
+        if let voipDeviceToken = voipDeviceToken ?? Ejabberd.updatedVoipPushToken {
+            let voipDeviceId = voipDeviceToken.hexEncodedString()
+
+            options["voip_device_id"] = voipDeviceId
+        }
+
+        if options.isEmpty {
             return
         }
+
+        options["service"] = "apns"
+        options["mutable_content"] = "true"
+        options["sound"] = "default"
+        options["topic"] = Constants.alertTopic
 
         guard let pushServerJID = XMPPJID(string: URLConstants.ejabberdPushHost) else {
             throw EjabberdError.jidFormingFailed
         }
-
-        let deviceId = deviceToken.hexEncodedString()
-
-        let options = ["device_id": deviceId,
-                       "service": "apns",
-                       "mutable_content": "true",
-                       "sound": "default",
-                       "topic": Constants.KeychainGroup]
 
         let element = XMPPIQ.enableNotificationsElement(with: pushServerJID,
                                                         node: Constants.pushesNode,

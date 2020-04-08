@@ -8,6 +8,7 @@
 
 import Foundation
 import WebRTC
+import CallKit
 
 private let kIceServers = ["stun:stun.l.google.com:19302",
                   "stun:stun1.l.google.com:19302",
@@ -81,6 +82,8 @@ public class CallManager: NSObject {
 
     // MARK: - Inner state
     private static let factory: RTCPeerConnectionFactory = RTCPeerConnectionFactory()
+
+    private static let callKitProvider: CXProvider = CallManager.createCallKitProvider()
 
     private let messageSender: MessageSender
 
