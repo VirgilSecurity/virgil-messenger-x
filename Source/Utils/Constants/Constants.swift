@@ -25,7 +25,7 @@ enum URLConstants {
     // Ejabberd
     static let ejabberdHost: String = "xmpp\(Constants.envPrefix.rawValue).virgilsecurity.com"
     static let ejabberdHostPort: UInt16 = 5222
-    static let ejabberdPushHost: String = "push-notifications-proxy"
+    static let ejabberdPushHost: String = "push-notifications-proxy\(Constants.envPrefix.rawValue)"
 
     // Backend
     static let serviceBaseURL: String = "https://messenger\(Constants.envPrefix.rawValue).virgilsecurity.com"
