@@ -11,8 +11,10 @@ import PKHUD
 
 class RegistrationViewController: ViewController, UITextViewDelegate {
     @IBOutlet weak var usernameTextField: UITextField!
-    @IBOutlet weak var privacyLabel: UITextView!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var ejabberdHostTextField: UITextField!
+    @IBOutlet weak var pushHostTextField: UITextField!
+    @IBOutlet weak var backendHostTextField: UITextField!
 
     private let userAuthorizer: UserAuthorizer = UserAuthorizer()
 
@@ -35,49 +37,7 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
                                                name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
 
-        self.setupUsernameTextField()
-        self.setupPrivacyLabel()
-    }
-
-    private func setupUsernameTextField() {
         self.usernameTextField.delegate = self
-
-        let placeholderColor = UIColor(rgb: 0x8E8F93)
-        let placeholderAttributes = [NSAttributedString.Key.foregroundColor: placeholderColor]
-        let placeholderString = NSAttributedString.init(string: "Your username",
-                                                        attributes: placeholderAttributes)
-        self.usernameTextField.attributedPlaceholder = placeholderString
-    }
-
-    private func setupPrivacyLabel() {
-        self.privacyLabel.delegate = self
-        self.privacyLabel.textContainerInset = UIEdgeInsets.zero
-        self.privacyLabel.linkTextAttributes = [.foregroundColor: UIColor(rgb: 0x9E3621)]
-
-        let text = self.privacyLabel.text!
-        let attriString = NSMutableAttributedString(string: text)
-        let nsText = text as NSString
-
-        let range = nsText.range(of: text)
-        attriString.addAttribute(.foregroundColor,
-                                 value: UIColor(rgb: 0x6B6B70),
-                                 range: range)
-
-        attriString.addAttribute(.font,
-                                 value: UIFont.systemFont(ofSize: 13, weight: .semibold),
-                                 range: range)
-
-        let range1 = nsText.range(of: "Terms of Service")
-        attriString.addAttribute(.link,
-                                 value: URLConstants.termsAndConditionsURL,
-                                 range: range1)
-
-        let range2 = nsText.range(of: "Privacy Policy")
-        attriString.addAttribute(.link,
-                                 value: URLConstants.privacyURL,
-                                 range: range2)
-
-        self.privacyLabel.attributedText = attriString
     }
 
     @objc func keyboardWillShow(notification: Notification) {
@@ -123,6 +83,22 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
             self.usernameTextField.becomeFirstResponder()
             return
         }
+
+        guard let ejabberdHost = self.ejabberdHostTextField.text?.lowercased(), !ejabberdHost.isEmpty else {
+            self.ejabberdHostTextField.becomeFirstResponder()
+            return
+        }
+
+        guard let pushHost = self.pushHostTextField.text?.lowercased(), !pushHost.isEmpty else {
+            self.pushHostTextField.becomeFirstResponder()
+            return
+        }
+
+        guard let backendHost = self.backendHostTextField.text?.lowercased(), !backendHost.isEmpty else {
+            self.backendHostTextField.becomeFirstResponder()
+            return
+        }
+
         self.view.endEditing(true)
 
         guard self.checkReachability() else {
@@ -131,7 +107,11 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
 
         HUD.show(.progress)
 
-        self.userAuthorizer.signUp(identity: username) { error in
+        self.userAuthorizer.signUp(identity: username,
+                                   ejabberdHost: ejabberdHost,
+                                   pushHost: pushHost,
+                                   backendHost: backendHost)
+        { error in
             DispatchQueue.main.async {
                 HUD.hide { _ in
                     if let error = error {
@@ -155,13 +135,5 @@ class RegistrationViewController: ViewController, UITextViewDelegate {
         if let url = NSURL(string: urlStr) {
             UIApplication.shared.open(url as URL, options: [:], completionHandler: nil)
         }
-    }
-}
-
-extension RegistrationViewController {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.signupButtonPressed(self)
-
-        return false
     }
 }

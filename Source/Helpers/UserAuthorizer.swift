@@ -41,7 +41,11 @@ public class UserAuthorizer {
         UnreadManager.shared.update()
     }
 
-   public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
+    public func signUp(identity: String,
+                       ejabberdHost: String,
+                       pushHost: String,
+                       backendHost: String,
+                       completion: @escaping (Error?) -> Void) {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
                 try self.virgilAuthorizer.signUp(identity: identity)
