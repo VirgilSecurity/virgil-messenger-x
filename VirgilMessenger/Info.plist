@@ -42,13 +42,11 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Take photo to send directly from app</string>
+	<string>We need this so that you can take and share photos</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Record voice messages</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Save photos form chats into photo library</string>
+	<string>We need this so that you can record and share voice messages</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Send photos</string>
+	<string>We need this so that you can share photos from your photo library</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
