@@ -50,7 +50,10 @@ public class UserAuthorizer {
             do {
                 try self.virgilAuthorizer.signUp(identity: identity)
 
-                try CoreData.shared.createAccount(withIdentity: identity)
+                try CoreData.shared.createAccount(withIdentity: identity,
+                                                  ejabberdHost: ejabberdHost,
+                                                  pushHost: pushHost,
+                                                  backendHost: backendHost)
 
                 SharedDefaults.shared.set(identity: identity)
 

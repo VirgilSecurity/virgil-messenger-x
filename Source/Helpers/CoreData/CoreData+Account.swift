@@ -10,8 +10,12 @@ import CoreData
 import VirgilSDK
 
 extension CoreData {
-    func createAccount(withIdentity identity: String) throws {
-        let account = try Account(identity: identity, managedContext: self.managedContext)
+    func createAccount(withIdentity identity: String, ejabberdHost: String, pushHost: String, backendHost: String) throws {
+        let account = try Account(identity: identity,
+                                  ejabberdHost: ejabberdHost,
+                                  pushHost: pushHost,
+                                  backendHost: backendHost,
+                                  managedContext: self.managedContext)
 
         self.append(account: account)
         self.setCurrent(account: account)

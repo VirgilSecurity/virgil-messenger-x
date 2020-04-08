@@ -14,6 +14,9 @@ import UIKit
 @objc(Account)
 public class Account: NSManagedObject {
     @NSManaged public var identity: String
+    @NSManaged public var ejabberdHost: String
+    @NSManaged public var pushHost: String
+    @NSManaged public var backendHost: String
 
     @NSManaged private var numColorPair: Int32
     @NSManaged private var orderedChannels: NSOrderedSet?
@@ -39,7 +42,7 @@ public class Account: NSManagedObject {
         }
     }
 
-    convenience init(identity: String, managedContext: NSManagedObjectContext) throws {
+    convenience init(identity: String, ejabberdHost: String, pushHost: String, backendHost: String, managedContext: NSManagedObjectContext) throws {
         guard let entity = NSEntityDescription.entity(forEntityName: Account.EntityName, in: managedContext) else {
             throw CoreData.Error.entityNotFound
         }
@@ -47,6 +50,9 @@ public class Account: NSManagedObject {
         self.init(entity: entity, insertInto: managedContext)
 
         self.identity = identity
+        self.ejabberdHost = ejabberdHost
+        self.pushHost = pushHost
+        self.backendHost = backendHost
         self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
     }
 
