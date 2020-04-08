@@ -550,12 +550,10 @@
 		976E360F24329A02002D1CF2 /* PhotoContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974215372419170100E2DF42 /* PhotoContent.swift */; };
 		976E361024329A02002D1CF2 /* TextContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975F486F2412A7DD00232361 /* TextContent.swift */; };
 		976E361124329A02002D1CF2 /* UserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16936791224916D100EF9A42 /* UserFriendlyError.swift */; };
-		976E361224329A02002D1CF2 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D8B0EE223A8FCF00D7FA67 /* Client.swift */; };
 		976E361324329A02002D1CF2 /* VoiceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9706713C241FB572000E29F8 /* VoiceContent.swift */; };
 		976E361424329A02002D1CF2 /* UIColor+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DD4204D87F200346FA0 /* UIColor+RGB.swift */; };
 		976E361624329A02002D1CF2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51051FC468370042AF9D /* Constants.swift */; };
 		976E361724329A02002D1CF2 /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
-		976E361824329A02002D1CF2 /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
 		976E361924329A02002D1CF2 /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C0D4502265FF75001F23ED /* MessageType.swift */; };
 		976E361A24329A02002D1CF2 /* SharedDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D4B8D723F5CE1700D17B90 /* SharedDefaults.swift */; };
 		976E361B24329A02002D1CF2 /* ColorPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168E54CB22395DDC00B6E822 /* ColorPair.swift */; };
@@ -574,6 +572,8 @@
 		976E362924329A02002D1CF2 /* VirgilSDKPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; };
 		976E363224329AA1002D1CF2 /* EnvConstantDev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976E3609243298D9002D1CF2 /* EnvConstantDev.swift */; };
 		976E363324329B2C002D1CF2 /* Notification Extension-dev.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 976E362E24329A02002D1CF2 /* Notification Extension-dev.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		977DE88B243E49CF0098E93A /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D8B0EE223A8FCF00D7FA67 /* Client.swift */; };
+		977DE88C243E49D10098E93A /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
 		97AF4D83241AEE2000ED9BD7 /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
 		97AF4D85241AEE8800ED9BD7 /* Client+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D84241AEE8800ED9BD7 /* Client+Files.swift */; };
 		97AF4D86241AEED000ED9BD7 /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
@@ -2456,15 +2456,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				976E360F24329A02002D1CF2 /* PhotoContent.swift in Sources */,
+				977DE88C243E49D10098E93A /* Client+Backend.swift in Sources */,
 				976E363224329AA1002D1CF2 /* EnvConstantDev.swift in Sources */,
 				976E361024329A02002D1CF2 /* TextContent.swift in Sources */,
 				976E361124329A02002D1CF2 /* UserFriendlyError.swift in Sources */,
-				976E361224329A02002D1CF2 /* Client.swift in Sources */,
 				976E361324329A02002D1CF2 /* VoiceContent.swift in Sources */,
 				976E361424329A02002D1CF2 /* UIColor+RGB.swift in Sources */,
 				976E361624329A02002D1CF2 /* Constants.swift in Sources */,
 				976E361724329A02002D1CF2 /* EncryptedMessage.swift in Sources */,
-				976E361824329A02002D1CF2 /* Client+Backend.swift in Sources */,
+				977DE88B243E49CF0098E93A /* Client.swift in Sources */,
 				976E361924329A02002D1CF2 /* MessageType.swift in Sources */,
 				976E361A24329A02002D1CF2 /* SharedDefaults.swift in Sources */,
 				976E361B24329A02002D1CF2 /* ColorPair.swift in Sources */,

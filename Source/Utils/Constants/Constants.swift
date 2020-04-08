@@ -23,16 +23,16 @@ enum Constants {
 
 enum URLConstants {
     // Ejabberd
-    static let ejabberdHost: String = "xmpp\(Constants.envPrefix.rawValue).virgilsecurity.com"
+//    static let ejabberdHost: String = "xmpp\(Constants.envPrefix.rawValue).virgilsecurity.com"
     static let ejabberdHostPort: UInt16 = 5222
-    static let ejabberdPushHost: String = "push-notifications-proxy\(Constants.envPrefix.rawValue)"
+//    static let ejabberdPushHost: String = "push-notifications-proxy\(Constants.envPrefix.rawValue)"
 
     // Backend
-    static let serviceBaseURL: String = "https://messenger\(Constants.envPrefix.rawValue).virgilsecurity.com"
+//    static let serviceBaseURL: String = "https://messenger\(Constants.envPrefix.rawValue).virgilsecurity.com"
 
-    static let virgilJwtEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/virgil-jwt/")!
-    static let ejabberdJwtEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/ejabberd-jwt/")!
-    static let signUpEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/signup/")!
+//    static let virgilJwtEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/virgil-jwt/")!
+//    static let ejabberdJwtEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/ejabberd-jwt/")!
+//    static let signUpEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/signup/")!
 
     // Other links
     static let termsAndConditionsURL = "https://virgilsecurity.com/terms-of-service"

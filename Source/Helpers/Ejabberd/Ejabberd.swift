@@ -37,7 +37,7 @@ class Ejabberd: NSObject {
     internal let deliveryReceipts = XMPPMessageDeliveryReceipts()
     internal let readReceipts = XMPPMessageReadReceipts()
 
-    private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
+//    private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
     static var updatedPushToken: Data?
 
@@ -57,7 +57,6 @@ class Ejabberd: NSObject {
     override init() {
         super.init()
 
-        self.stream.hostName = URLConstants.ejabberdHost
         self.stream.hostPort = URLConstants.ejabberdHostPort
         self.stream.startTLSPolicy = .allowed
         self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
@@ -76,8 +75,9 @@ class Ejabberd: NSObject {
         try? self.sendMutex.lock()
     }
 
-    public func initialize(identity: String) throws {
-        self.stream.myJID = try Ejabberd.setupJid(with: identity)
+    public func initialize(identity: String, host: String) throws {
+        self.stream.myJID = try Ejabberd.setupJid(with: identity, host: host)
+        self.stream.hostName = host
 
         try self.initialize()
     }
@@ -135,8 +135,8 @@ class Ejabberd: NSObject {
         }
     }
 
-    public static func setupJid(with username: String) throws -> XMPPJID {
-        let jidString = "\(username)@\(URLConstants.ejabberdHost)"
+    public static func setupJid(with username: String, host: String) throws -> XMPPJID {
+        let jidString = "\(username)@\(host)"
 
         guard let jid = XMPPJID(string: jidString) else {
             throw EjabberdError.jidFormingFailed
@@ -162,7 +162,12 @@ class Ejabberd: NSObject {
     public func send(_ message: EncryptedMessage, to user: String, xmppId: String) throws {
         Log.debug("Ejabberd: Sending message")
 
-        let user = try Ejabberd.setupJid(with: user)
+        guard let host = CoreData.shared.currentAccount?.ejabberdHost else {
+            throw NSError()
+        }
+
+        let user = try Ejabberd.setupJid(with: user, host: host)
+
         let body = try message.export()
 
         let message = XMPPMessage(messageType: .chat, to: user, elementID: xmppId)
@@ -184,7 +189,9 @@ class Ejabberd: NSObject {
             return
         }
 
-        let jid = try Ejabberd.setupJid(with: user)
+        let host = CoreData.shared.currentAccount!.ejabberdHost
+
+        let jid = try Ejabberd.setupJid(with: user, host: host)
 
         let message = XMPPMessage.generateReadReceipt(for: jid)
 
@@ -210,7 +217,11 @@ class Ejabberd: NSObject {
 
     public func requestMediaSlot(name: String, size: Int) throws -> CallbackOperation<XMPPSlot> {
         return CallbackOperation { _, completion in
-            self.upload.requestSlot(fromService: self.uploadJid,
+            let host = CoreData.shared.currentAccount!.ejabberdHost
+
+            let uploadJID = XMPPJID(string: "upload.\(host)")!
+
+            self.upload.requestSlot(fromService: uploadJID,
                                     filename: name,
                                     size: UInt(size),
                                     contentType: "image/png")
@@ -227,7 +238,9 @@ extension Ejabberd {
             return
         }
 
-        guard let pushServerJID = XMPPJID(string: URLConstants.ejabberdPushHost) else {
+        let pushHost = CoreData.shared.currentAccount!.pushHost
+
+        guard let pushServerJID = XMPPJID(string: pushHost) else {
             throw EjabberdError.jidFormingFailed
         }
 
@@ -247,7 +260,9 @@ extension Ejabberd {
     }
 
     func deregisterFromNotifications() throws {
-        guard let pushServerJID = XMPPJID(string: URLConstants.ejabberdPushHost) else {
+        let pushHost = CoreData.shared.currentAccount!.pushHost
+
+        guard let pushServerJID = XMPPJID(string: pushHost) else {
             throw EjabberdError.jidFormingFailed
         }
 

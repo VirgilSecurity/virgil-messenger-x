@@ -41,7 +41,7 @@ public class Configurator {
                 let account = try CoreData.shared.getCurrentAccount()
                 let identity = account.identity
 
-                try Ejabberd.shared.initialize(identity: identity)
+                try Ejabberd.shared.initialize(identity: identity, host: account.ejabberdHost)
 
                 self.isInitialized = true
 

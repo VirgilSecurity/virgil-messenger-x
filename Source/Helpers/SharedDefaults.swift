@@ -16,10 +16,16 @@ public class SharedDefaults {
     public enum Key: String, CaseIterable {
         case identity = "last_username"
         case unreadCount = "unread_count"
+        case ejabberdHost
+        case pushHost
+        case backendHost
     }
 
-    public func set(identity: String) {
+    public func set(identity: String, ejabberdHost: String, pushHost: String, backendHost: String) {
         self.defaults.set(identity, forKey: Key.identity.rawValue)
+        self.defaults.set(ejabberdHost, forKey: Key.ejabberdHost.rawValue)
+        self.defaults.set(pushHost, forKey: Key.pushHost.rawValue)
+        self.defaults.set(backendHost, forKey: Key.backendHost.rawValue)
     }
 
     public func set(unreadCount: Int) {
@@ -30,12 +36,12 @@ public class SharedDefaults {
         let result: Any?
 
         switch key {
-        case .identity:
-            guard let identity = self.defaults.string(forKey: key.rawValue), !identity.isEmpty else {
+        case .identity, .ejabberdHost, .pushHost, .backendHost:
+            guard let string = self.defaults.string(forKey: key.rawValue), !string.isEmpty else {
                 return nil
             }
 
-            result = identity
+            result = string
         case .unreadCount:
             result = self.defaults.integer(forKey: key.rawValue)
         }
@@ -45,5 +51,11 @@ public class SharedDefaults {
 
     public func reset(_ key: Key) {
         self.defaults.set(nil, forKey: key.rawValue)
+    }
+
+    public func reset() {
+        Key.allCases.forEach {
+            self.reset($0)
+        }
     }
 }

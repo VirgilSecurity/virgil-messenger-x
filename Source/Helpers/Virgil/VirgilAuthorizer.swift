@@ -39,7 +39,7 @@ public class VirgilAuthorizer {
         try Virgil.initialize(identity: identity, client: self.client)
     }
 
-    public func signUp(identity: String) throws {
+    public func signUp(identity: String, backendHost: String) throws {
         let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
 
         guard try !localKeyManager.exists() else {
@@ -48,7 +48,10 @@ public class VirgilAuthorizer {
 
         let keyPair = try self.crypto.generateKeyPair()
 
-        let card = try self.client.signUp(identity: identity, keyPair: keyPair, verifier: self.verifier)
+        let card = try self.client.signUp(identity: identity,
+                                          keyPair: keyPair,
+                                          verifier: self.verifier,
+                                          backendHost: backendHost)
 
         let user = UserData(keyPair: keyPair, card: card)
         try localKeyManager.store(user)

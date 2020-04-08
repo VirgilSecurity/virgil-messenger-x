@@ -36,7 +36,12 @@ public class UserAuthorizer {
 
         try self.virgilAuthorizer.signIn(identity: identity)
 
-        SharedDefaults.shared.set(identity: identity)
+        let account = CoreData.shared.currentAccount!
+
+        SharedDefaults.shared.set(identity: identity,
+                                  ejabberdHost: account.ejabberdHost,
+                                  pushHost: account.pushHost,
+                                  backendHost: account.backendHost)
 
         UnreadManager.shared.update()
     }
@@ -48,14 +53,17 @@ public class UserAuthorizer {
                        completion: @escaping (Error?) -> Void) {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
-                try self.virgilAuthorizer.signUp(identity: identity)
+                try self.virgilAuthorizer.signUp(identity: identity, backendHost: backendHost)
 
                 try CoreData.shared.createAccount(withIdentity: identity,
                                                   ejabberdHost: ejabberdHost,
                                                   pushHost: pushHost,
                                                   backendHost: backendHost)
 
-                SharedDefaults.shared.set(identity: identity)
+                SharedDefaults.shared.set(identity: identity,
+                                          ejabberdHost: ejabberdHost,
+                                          pushHost: pushHost,
+                                          backendHost: backendHost)
 
                 completion(nil)
             }
@@ -75,7 +83,7 @@ public class UserAuthorizer {
                 Configurator.reset()
                 CoreData.shared.resetState()
 
-                SharedDefaults.shared.reset(.identity)
+                SharedDefaults.shared.reset()
                 UnreadManager.shared.reset()
 
                 completion(nil)
@@ -87,7 +95,7 @@ public class UserAuthorizer {
     }
 
     public func deleteAccount() throws {
-        SharedDefaults.shared.reset(.identity)
+        SharedDefaults.shared.reset()
         UnreadManager.shared.reset()
 
         Configurator.reset()

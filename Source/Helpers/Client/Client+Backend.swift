@@ -31,7 +31,10 @@ extension Client {
     public func getEjabberdToken(identity: String) throws -> String {
         let header = try self.makeAuthHeader(for: identity)
 
-        let request = Request(url: URLConstants.ejabberdJwtEndpoint,
+        let backendHost: String = SharedDefaults.shared.get(.backendHost)!
+        let url = URL(string: "https://\(backendHost)/ejabberd-jwt/")!
+
+        let request = Request(url: url,
                               method: .get,
                               headers: header)
 
@@ -45,7 +48,10 @@ extension Client {
     public func getVirgilToken(identity: String) throws -> String {
         let header = try self.makeAuthHeader(for: identity)
 
-        let request = Request(url: URLConstants.virgilJwtEndpoint,
+        let backendHost: String = SharedDefaults.shared.get(.backendHost)!
+        let url = URL(string: "https://\(backendHost)/virgil-jwt/")!
+
+        let request = Request(url: url,
                               method: .get,
                               headers: header)
 
@@ -58,7 +64,8 @@ extension Client {
 
     public func signUp(identity: String,
                        keyPair: VirgilKeyPair,
-                       verifier: VirgilCardVerifier) throws -> Card {
+                       verifier: VirgilCardVerifier,
+                       backendHost: String) throws -> Card {
         let modelSigner = ModelSigner(crypto: self.crypto)
         let rawCard = try CardManager.generateRawCard(crypto: self.crypto,
                                                       modelSigner: modelSigner,
@@ -71,7 +78,7 @@ extension Client {
         let params = ["raw_card": exportedRawCard]
         let body = try JSONSerialization.data(withJSONObject: params, options: [])
 
-        let request = Request(url: URLConstants.signUpEndpoint,
+        let request = Request(url: URL(string: "https://\(backendHost)/signup/")!,
                               method: .post,
                               headers: headers,
                               body: body)
