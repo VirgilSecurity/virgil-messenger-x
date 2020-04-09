@@ -26,10 +26,10 @@ public enum ChatsManager {
                 }
 
                 startProgressBar()
-                
+
                 let card = try Virgil.ethree.findUser(with: identity).startSync().get()
 
-                _ = try CoreData.shared.createSingleChannel(initiator: Virgil.ethree.identity, card: card)
+                try CoreData.shared.createSingleChannel(initiator: Virgil.ethree.identity, card: card)
 
                 completion(nil)
             }

@@ -15,7 +15,7 @@ class CoreData {
     private(set) var currentAccount: Account?
 
     private let queue = DispatchQueue(label: "CoreData")
-    
+
     private var mediaStorage: FileMediaStorage?
 
     let managedContext: NSManagedObjectContext
@@ -36,7 +36,7 @@ class CoreData {
         return container
     }()
 
-    public enum Error: Int, Swift.Error, LocalizedError {
+    public enum Error: Int, LocalizedError {
         case nilCurrentAccount = 1
         case nilCurrentChannel = 2
         case entityNotFound = 3
@@ -47,6 +47,7 @@ class CoreData {
         case missingVirgilGroup = 8
         case exportBaseMessageForbidden = 9
         case nilMediaStorage = 10
+        case messageWithIdNotFound = 11
     }
 
     private init() {
@@ -85,23 +86,23 @@ class CoreData {
         }
 
         try self.saveContext()
-        
+
         try self.mediaStorage?.reset()
 
         try self.reloadData()
     }
-    
+
     internal func getMediaStorage() throws -> FileMediaStorage {
         guard let storage = self.mediaStorage else {
             throw Error.nilMediaStorage
         }
-        
+
         return storage
     }
 
     func setCurrent(account: Account) {
         self.currentAccount = account
-        
+
         self.mediaStorage = FileMediaStorage(identity: account.identity)
     }
 
@@ -114,9 +115,13 @@ class CoreData {
         self.accounts.append(account)
     }
 
-    func deselectChannel() {
-        Log.debug("Core Data channel deselected: \(String(describing: self.currentChannel?.name))")
-        self.currentChannel = nil
+    func deselectChannel(_ channel: Channel? = CoreData.shared.currentChannel) {
+        if self.currentChannel == channel {
+            self.currentChannel = nil
+            Log.debug("Core Data channel deselected: \(String(describing: self.currentChannel?.name))")
+        } else {
+            Log.debug("Core Data channel deselected failed: \(String(describing: self.currentChannel?.name)) is not the current channel")
+        }
     }
 
     func resetState() {

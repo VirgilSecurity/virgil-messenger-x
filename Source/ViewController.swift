@@ -14,7 +14,7 @@ class ViewController: UIViewController {
         let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
         let navBarHeight = self.navigationController?.navigationBar.frame.height ?? 0.0
         let offset = self.navigationController?.navigationBar.frame.origin.y ?? 0.0
-        
+
         return statusBarHeight + navBarHeight + offset
     }
 
@@ -22,24 +22,7 @@ class ViewController: UIViewController {
         return .lightContent
     }
 
-    var isRootViewController: Bool {
-        return self.navigationController?.viewControllers.count ?? 1 == 1
-    }
-
     deinit {
         Log.debug(self.description)
-    }
-
-    func switchNavigationStack(to name: String) {
-        let storyboard = UIStoryboard(name: name, bundle: Bundle.main)
-        let controller = storyboard.instantiateInitialViewController() as! UINavigationController
-
-        let window = UIApplication.shared.keyWindow!
-        window.rootViewController = controller
-
-        UIView.transition(with: window,
-                          duration: UIConstants.TransitionAnimationDuration,
-                          options: .transitionCrossDissolve,
-                          animations: nil)
     }
 }

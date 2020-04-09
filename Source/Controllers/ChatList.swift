@@ -18,7 +18,7 @@ class ChatListViewController: ViewController {
 
     static let name = "ChatList"
 
-    private var channels: [Channel] = []
+    var channels: [Channel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,7 +59,7 @@ class ChatListViewController: ViewController {
         let initFailed: Notifications.Block = { [weak self] notification in
             do {
                 let error: Error = try Notifications.parse(notification, for: .error)
-                
+
                 DispatchQueue.main.async {
                     self?.alert(error) { _ in
                         UserAuthorizer().logOut { error in
@@ -170,7 +170,7 @@ class ChatListViewController: ViewController {
 
     private func goToLogin() {
         DispatchQueue.main.async {
-            self.switchNavigationStack(to: AuthenticationViewController.name)
+            self.switchNavigationStack(to: .authentication)
         }
     }
 }
@@ -204,9 +204,7 @@ extension ChatListViewController: CellTapDelegate {
             return
         }
 
-        CoreData.shared.setCurrent(channel: selectedChannel)
-
-        self.performSegue(withIdentifier: "goToChat", sender: self)
+        self.moveToChannel(selectedChannel)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -216,5 +214,12 @@ extension ChatListViewController: CellTapDelegate {
         }
 
         super.prepare(for: segue, sender: sender)
+    }
+}
+
+extension ChatListViewController {
+    func moveToChannel(_ channel: Channel) {
+        CoreData.shared.setCurrent(channel: channel)
+        self.performSegue(withIdentifier: "goToChat", sender: self)
     }
 }

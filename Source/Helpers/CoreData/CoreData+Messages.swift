@@ -15,7 +15,7 @@ extension CoreData {
         if unread {
             message.channel.unreadCount += 1
         }
-        
+
         let messages = message.channel.mutableOrderedSetValue(forKey: Channel.MessagesKey)
         messages.add(message)
 
@@ -23,79 +23,73 @@ extension CoreData {
     }
 
     func createEncryptedMessage(in channel: Channel, isIncoming: Bool, date: Date) throws {
+        let params = Message.Params(xmppId: UUID().uuidString,
+                                    isIncoming: isIncoming,
+                                    channel: channel,
+                                    state: .failed,
+                                    date: date,
+                                    isHidden: true)
+
         let message = try TextMessage(body: "Message encrypted",
-                                      isIncoming: isIncoming,
-                                      date: date,
-                                      channel: channel,
-                                      isHidden: true,
-                                      managedContext: self.managedContext)
+                                      baseParams: params,
+                                      context: self.managedContext)
 
         try self.save(message, unread: false)
     }
 
+    @discardableResult
     func createTextMessage(with content: TextContent,
                            unread: Bool = false,
-                           in channel: Channel,
-                           isIncoming: Bool,
-                           date: Date = Date()) throws -> Message {
-
+                           baseParams: Message.Params) throws -> Message {
         let message = try TextMessage(body: content.body,
-                                      isIncoming: isIncoming,
-                                      date: date,
-                                      channel: channel,
-                                      managedContext: self.managedContext)
+                                      baseParams: baseParams,
+                                      context: self.managedContext)
 
         try self.save(message, unread: unread)
 
         return message
     }
-    
+
+    @discardableResult
     func createPhotoMessage(with content: PhotoContent,
                             thumbnail: Data,
                             unread: Bool = false,
-                            in channel: Channel,
-                            isIncoming: Bool,
-                            date: Date = Date()) throws -> Message {
+                            baseParams: Message.Params) throws -> Message {
         let message = try PhotoMessage(identifier: content.identifier,
                                        thumbnail: thumbnail,
                                        url: content.url,
-                                       isIncoming: isIncoming,
-                                       date: date,
-                                       channel: channel,
-                                       managedContext: self.managedContext)
-        
+                                       baseParams: baseParams,
+                                       context: self.managedContext)
+
         try self.save(message, unread: unread)
 
         return message
     }
-    
+
+    @discardableResult
     func createVoiceMessage(with content: VoiceContent,
                             unread: Bool = false,
-                            in channel: Channel,
-                            isIncoming: Bool,
-                            date: Date = Date()) throws -> Message {
+                            baseParams: Message.Params) throws -> Message {
         let message = try VoiceMessage(identifier: content.identifier,
                                        duration: content.duration,
                                        url: content.url,
-                                       isIncoming: isIncoming,
-                                       date: date,
-                                       channel: channel,
-                                       managedContext: self.managedContext)
+                                       baseParams: baseParams,
+                                       context: self.managedContext)
 
         try self.save(message, unread: unread)
 
         return message
     }
-    
+
     func storeMediaContent(_ data: Data, name: String, type: FileMediaStorage.MediaType) throws {
         let mediaStorage = try self.getMediaStorage()
-        
+
         let path = try mediaStorage.getPath(name: name, type: type)
-        
+
         if type == .photo, mediaStorage.exists(path: path) {
             return
         }
-        
+
         try self.getMediaStorage().store(data, name: name, type: type)
     }
 }

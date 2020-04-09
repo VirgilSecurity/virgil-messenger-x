@@ -15,7 +15,9 @@ public class Notifications {
 
     public enum EmptyNotification: String {
         case initializingSucceed = "Notifications.InitializingSucceed"
+        // FIXME: remove on connection rework
         case updatingSucceed = "Notifications.UpdatingSucceed"
+        case ejabberdAuthorized = "Notifications.EjabberdAuthorized"
 
         case chatListUpdated = "Notifications.ChatListUpdated"
         case currentChannelDeleted = "Notifications.CurrentChannelDeleted"
@@ -25,14 +27,16 @@ public class Notifications {
         case connectionStateUpdated = "Notifications.ConnectionStateUpdated"
         case errored = "Notifications.Errored"
         case messageAddedToCurrentChannel = "Notifications.MessageAddedToCurrentChannel"
+        case messageStatusUpdated = "Notifications.MessageStatusUpdated"
     }
 
     public enum NotificationKeys: String {
         case newState = "NotificationKeys.NewState"
+        case messageIds = "NotificationKeys.MessageIds"
         case message = "NotificationKeys.Message"
         case error = "NotificationKeys.Error"
     }
-    
+
     public enum NotificationError: Int, Swift.Error {
         case parsingFailed = 1
     }
@@ -71,6 +75,14 @@ extension Notifications {
     public static func post(message: Message) {
         let notification = self.notification(.messageAddedToCurrentChannel)
         let userInfo = [NotificationKeys.message.rawValue: message]
+
+        self.center.post(name: notification, object: self, userInfo: userInfo)
+    }
+
+    public static func post(newState: Message.State, messageIds: [String]) {
+        let notification = self.notification(.messageStatusUpdated)
+        let userInfo: [String: Any] = [NotificationKeys.newState.rawValue: newState,
+                                       NotificationKeys.messageIds.rawValue: messageIds]
 
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }

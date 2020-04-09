@@ -15,10 +15,11 @@ import CocoaLumberjackSwift
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
+    var pushNotificationsDelegate = PushNotificationsDelegate()
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+
         FirebaseApp.configure()
 
         // Defining start controller
@@ -67,6 +68,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func registerRemoteNotifications(for app: UIApplication) {
         let center = UNUserNotificationCenter.current()
 
+        center.delegate = pushNotificationsDelegate
+
         center.getNotificationSettings { settings in
 
             if settings.authorizationStatus == .notDetermined {
@@ -79,6 +82,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             app.registerForRemoteNotifications()
                         }
                     }
+
+                    if let error = error {
+                        Log.error(error, message: "Granting notifications permissions failed")
+                    }
                 }
 
             }
@@ -89,14 +96,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-    
+
     private func cleanNotifications() {
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        PushNotifications.cleanNotifications()
     }
 
     func application(_ application: UIApplication,
-                     didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         Log.debug("Received notification")
     }
@@ -104,7 +110,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         do {
             try CoreData.shared.saveContext()
-            
+
             UnreadManager.shared.update()
         }
         catch {
@@ -114,12 +120,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Log.debug("Received device token: \(deviceToken.hexEncodedString())")
-        
+
         do {
             if Ejabberd.shared.state == .connected {
                 try Ejabberd.shared.registerForNotifications(deviceToken: deviceToken)
             }
-            
+
             Ejabberd.updatedPushToken = deviceToken
         }
         catch {
@@ -135,14 +141,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         Ejabberd.shared.set(status: .online)
-        
+
         self.cleanNotifications()
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         Ejabberd.shared.set(status: .unavailable)
     }
-    
+
     func applicationWillResignActive(_ application: UIApplication) {
         UnreadManager.shared.update()
     }

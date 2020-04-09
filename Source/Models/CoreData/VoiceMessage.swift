@@ -16,41 +16,31 @@ public class VoiceMessage: Message {
     @NSManaged public var identifier: String
     @NSManaged public var url: URL
     @NSManaged public var duration: Double
-    
+
     private static let EntityName = "VoiceMessage"
-    
+
     convenience init(identifier: String,
                      duration: Double,
                      url: URL,
-                     isIncoming: Bool,
-                     date: Date,
-                     channel: Channel,
-                     isHidden: Bool = false,
-                     managedContext: NSManagedObjectContext) throws {
-        guard let entity = NSEntityDescription.entity(forEntityName: VoiceMessage.EntityName,
-                                                      in: managedContext) else {
-            throw CoreData.Error.entityNotFound
-        }
-
-        self.init(entity: entity, insertInto: managedContext)
+                     baseParams: Message.Params,
+                     context: NSManagedObjectContext) throws {
+        try self.init(entityName: VoiceMessage.EntityName, context: context, params: baseParams)
 
         self.identifier = identifier
         self.duration = duration
         self.url = url
-        self.isIncoming = isIncoming
-        self.date = date
-        self.channel = channel
-        self.isHidden = isHidden
     }
-    
-    public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
+
+    public override func exportAsUIModel() -> UIMessageModelProtocol {
+        let status = self.state.exportAsMessageStatus()
+
         do {
             let mediaStorage = try CoreData.shared.getMediaStorage()
-            
+
             let audioUrl = try mediaStorage.getURL(name: self.identifier, type: .voice)
             let state: MediaMessageState = mediaStorage.exists(path: audioUrl.path) ? .normal : .downloading
-            
-            let uiModel = UIAudioMessageModel(uid: id,
+
+            let uiModel = UIAudioMessageModel(uid: self.xmppId,
                                               audioUrl: audioUrl,
                                               duration: TimeInterval(self.duration),
                                               isIncoming: self.isIncoming,
@@ -74,13 +64,13 @@ public class VoiceMessage: Message {
                     try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: self.channel.getCard())
                 }
             }
-            
+
             return uiModel
         }
         catch {
             Log.error(error, message: "Exporting AudioMessage to UI model failed")
-            
-            return UITextMessageModel.corruptedModel(uid: id,
+
+            return UITextMessageModel.corruptedModel(uid: self.xmppId,
                                                      isIncoming: self.isIncoming,
                                                      date: self.date)
         }    }

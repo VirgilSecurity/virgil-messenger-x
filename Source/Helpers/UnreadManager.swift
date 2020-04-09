@@ -11,20 +11,20 @@ import UIKit
 // TODO: Think of how to avoid another shared manager
 public class UnreadManager {
     public static let shared = UnreadManager()
-    
+
     public func reset() {
         SharedDefaults.shared.reset(.unreadCount)
-        
+
         DispatchQueue.main.async {
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
     }
-    
+
     public func update() {
         let totalUnreadCount = CoreData.shared.currentAccount?.totalUnreadCount() ?? 0
-        
+
         SharedDefaults.shared.set(unreadCount: totalUnreadCount)
-        
+
         DispatchQueue.main.async {
             UIApplication.shared.applicationIconBadgeNumber = totalUnreadCount
         }

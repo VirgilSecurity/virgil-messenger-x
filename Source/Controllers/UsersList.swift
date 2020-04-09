@@ -14,7 +14,7 @@ protocol DeleteItemDelegate: class {
 }
 
 class UsersListViewController: UITableViewController {
-    public var admin: String? = nil
+    public var admin: String?
     public var users: [Card] = []
 
     public weak var cellTapDelegate: CellTapDelegate?
@@ -22,7 +22,7 @@ class UsersListViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.tableView.rowHeight = 60
         self.tableView.tableFooterView = UIView(frame: .zero)
         self.tableView.dataSource = self

@@ -14,7 +14,7 @@ class ChooseMembersViewController: ViewController {
     @IBOutlet weak var noContactsView: UIView!
 
     private let channels = CoreData.shared.getSingleChannels()
-    
+
     private var members: [Channel] = [] {
         didSet {
             self.nextButton.isEnabled = !self.members.isEmpty

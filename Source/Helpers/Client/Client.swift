@@ -19,6 +19,7 @@ public class Client {
         case noBody
         case invalidServerResponse
         case inputStreamFromDownloadedFailed
+        case inconsistencyState
     }
 
     private let serviceErrorDomain: String = "ClientErrorDomain"
@@ -46,7 +47,7 @@ public class Client {
                 if rawServiceError.code == 40001 || rawServiceError.code == 40002 {
                     return UserFriendlyError.usernameAlreadyUsed
                 }
-                
+
                 return ServiceError(httpStatusCode: statusCode,
                                     rawServiceError: rawServiceError,
                                     errorDomain: self.serviceErrorDomain)

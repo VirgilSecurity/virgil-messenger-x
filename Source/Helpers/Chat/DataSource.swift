@@ -29,10 +29,13 @@ import VirgilSDK
 
 class DataSource: ChatDataSourceProtocol {
     public let channel: Channel
-    public var nextMessageId: Int = 0
 
     private let preferredMaxWindowSize = 500
     private var slidingWindow: SlidingDataSource<ChatItemProtocol>!
+
+    public enum Error: Int, Swift.Error, LocalizedError {
+        case chatItemIsNotUIMessageModel = 1
+    }
 
     private var count: Int {
         return self.channel.visibleMessages.count
@@ -42,15 +45,12 @@ class DataSource: ChatDataSourceProtocol {
         self.channel = channel
 
         self.slidingWindow = SlidingDataSource(count: count) { [weak self] (messageNumber, messages) -> ChatItemProtocol in
-            self?.nextMessageId += 1
-            let id = self?.nextMessageId ?? 0
-
             guard self != nil,
                 let message = messages[safe: messageNumber] else {
-                    return UITextMessageModel.corruptedModel(uid: id)
+                    return UITextMessageModel.corruptedModel(uid: UUID().uuidString)
             }
 
-            return message.exportAsUIModel(withId: id)
+            return message.exportAsUIModel()
         }
 
         self.delegate?.chatDataSourceDidUpdate(self)
@@ -60,7 +60,7 @@ class DataSource: ChatDataSourceProtocol {
         let process: Notifications.Block = { [weak self] notification in
             do {
                 let message: Message = try Notifications.parse(notification, for: .message)
-                
+
                 self?.process(message: message)
             }
             catch {
@@ -78,14 +78,58 @@ class DataSource: ChatDataSourceProtocol {
             }
         }
 
+        let sendGlobalReadReceipt: Notifications.Block = { [weak self] _ in
+            guard let strongSelf = self else { return }
+
+            do {
+                try Ejabberd.shared.sendGlobalReadResponse(to: strongSelf.channel.name)
+            }
+            catch {
+                Log.error(error, message: "Sending global read response failed")
+            }
+        }
+
+        let updateMessageState: Notifications.Block = { [weak self] notification in
+            guard let strongSelf = self else { return }
+
+            do {
+                let messageIds: [String] = try Notifications.parse(notification, for: .messageIds)
+                let newState: Message.State = try Notifications.parse(notification, for: .newState)
+
+                let selectPredicate = { (item: ChatItemProtocol) -> Bool in
+                    messageIds.contains(item.uid)
+                }
+
+                let changePredicate = { (item: ChatItemProtocol) throws -> ChatItemProtocol in
+                    guard let item = item as? UIMessageModelProtocol else {
+                        throw Error.chatItemIsNotUIMessageModel
+                    }
+
+                    item.status = newState.exportAsMessageStatus()
+
+                    return item
+                }
+
+                try strongSelf.slidingWindow.updateItems(where: selectPredicate, changePredicate: changePredicate)
+            }
+            catch {
+                Log.error(error, message: "NewState notification processing failed")
+            }
+
+            DispatchQueue.main.async {
+                strongSelf.delegate?.chatDataSourceDidUpdate(strongSelf)
+            }
+        }
+
         Notifications.observe(for: .messageAddedToCurrentChannel, block: process)
         Notifications.observe(for: .updatingSucceed, block: updateMessageList)
+        Notifications.observe(for: .messageStatusUpdated, block: updateMessageState)
+        Notifications.observe(for: .ejabberdAuthorized, block: sendGlobalReadReceipt)
     }
 
     @objc private func process(message: Message) {
-        self.nextMessageId += 1
-        let uiModel = message.exportAsUIModel(withId: self.nextMessageId)
-        
+        let uiModel = message.exportAsUIModel()
+
         DispatchQueue.main.async {
             self.slidingWindow.insertItem(uiModel, position: .bottom)
             self.delegate?.chatDataSourceDidUpdate(self)
@@ -128,10 +172,9 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addTextMessage(_ text: String) {
-        self.nextMessageId += 1
-        let id = self.nextMessageId
+        let messageId = UUID().uuidString
 
-        let uiModel = UITextMessageModel(uid: id,
+        let uiModel = UITextMessageModel(uid: messageId,
                                          text: text,
                                          isIncoming: false,
                                          status: .sending,
@@ -144,41 +187,39 @@ class DataSource: ChatDataSourceProtocol {
     }
 
     func addPhotoMessage(_ image: UIImage) {
-        self.nextMessageId += 1
-        let id = self.nextMessageId
-        
-        let uiModel = UIPhotoMessageModel(uid: id,
+        let messageId = UUID().uuidString
+
+        let uiModel = UIPhotoMessageModel(uid: messageId,
                                           image: image,
                                           isIncoming: false,
-                                          status: .success,
+                                          status: .sending,
                                           state: .uploading,
                                           date: Date())
-        
+
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
-        
+
         self.messageSender.send(uiModel: uiModel, channel: self.channel)
     }
 
     func addVoiceMessage(_ audioUrl: URL, duration: TimeInterval) {
-        self.nextMessageId += 1
-        let id = self.nextMessageId
+        let messageId = UUID().uuidString
 
-        let uiModel = UIAudioMessageModel(uid: id,
+        let uiModel = UIAudioMessageModel(uid: messageId,
                                           audioUrl: audioUrl,
                                           duration: duration,
                                           isIncoming: false,
-                                          status: .success,
+                                          status: .sending,
                                           state: .uploading,
                                           date: Date())
-        
+
         self.slidingWindow.insertItem(uiModel, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self)
-        
+
         self.messageSender.send(uiModel: uiModel, channel: self.channel)
     }
 
-    func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> ()) {
+    func adjustNumberOfMessages(preferredMaxCount: Int?, focusPosition: Double, completion:(_ didAdjust: Bool) -> Void) {
         let didAdjust = self.slidingWindow.adjustWindow(focusPosition: focusPosition,
                                                         maxWindowSize: preferredMaxCount ?? self.preferredMaxWindowSize)
         completion(didAdjust)

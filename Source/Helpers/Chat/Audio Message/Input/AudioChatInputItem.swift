@@ -88,4 +88,3 @@ extension AudioChatInputItem: AudioInputViewDelegate {
         self.microphonePermissionHandler?()
     }
 }
-

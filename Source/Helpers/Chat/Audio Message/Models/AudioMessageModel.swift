@@ -18,15 +18,15 @@ open class AudioMessageModel<MessageModelT: MessageModelProtocol>: AudioMessageM
 
     public let audioUrl: URL
     public let duration: TimeInterval
-    
+
     public var identifier: String {
         return self.audioUrl.lastPathComponent
     }
-    
+
     public var messageModel: MessageModelProtocol {
         return self._messageModel
     }
-    
+
     public init(messageModel: MessageModelT, audioUrl: URL, duration: TimeInterval) {
         self._messageModel = messageModel
         self.audioUrl = audioUrl

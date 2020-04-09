@@ -66,7 +66,7 @@ open class NetworkUploadOperation: GenericOperation<Response> {
         }
 
         self.task = task
-        
+
         task.resume()
     }
 

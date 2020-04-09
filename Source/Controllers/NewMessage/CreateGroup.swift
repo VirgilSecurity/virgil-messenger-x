@@ -100,7 +100,7 @@ class CreateGroupViewController: ViewController {
 
         // TODO: Error handling/logging
         if let userList = segue.destination as? UsersListViewController,
-            let cards = try? self.members.map { try $0.getCard() }  {
+            let cards = try? self.members.map { try $0.getCard() } {
 
             userList.users = cards
 

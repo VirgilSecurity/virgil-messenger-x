@@ -59,7 +59,7 @@ open class AudioMessagePresenter<ViewModelBuilderT, InteractionHandlerT>
         viewModel.transferDirection.observe(self, closure: updateClosure)
         viewModel.transferProgress.observe(self, closure: updateClosure)
         viewModel.transferStatus.observe(self, closure: updateClosure)
-        
+
         return viewModel
     }
 

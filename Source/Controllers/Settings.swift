@@ -48,7 +48,7 @@ class SettingsViewController: ViewController {
                     $0.textLabel?.text = "Logout"
                     $0.textLabel?.textColor = .dangerTextColor
                 }
-            ),
+            )
         ],
         [
             Cell(
@@ -91,13 +91,13 @@ class SettingsViewController: ViewController {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         let logoutAction = UIAlertAction(title: "Logout", style: .destructive) { _ in
-            UserAuthorizer().logOut() { error in
+            UserAuthorizer().logOut { error in
                 if let error = error {
                     self.alert(error)
                 }
 
                 DispatchQueue.main.async {
-                    self.switchNavigationStack(to: AuthenticationViewController.name)
+                    self.switchNavigationStack(to: .authentication)
                 }
             }
         }
@@ -114,7 +114,7 @@ class SettingsViewController: ViewController {
         guard Configurator.isUpdated else {
             return
         }
-        
+
         let alertController = UIAlertController(title: "Delete account",
                                                 message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.",
                                                 preferredStyle: .alert)
@@ -123,7 +123,7 @@ class SettingsViewController: ViewController {
             do {
                 try UserAuthorizer().deleteAccount()
 
-                self.switchNavigationStack(to: AuthenticationViewController.name)
+                self.switchNavigationStack(to: .authentication)
             }
             catch {
                 self.alert(error)
