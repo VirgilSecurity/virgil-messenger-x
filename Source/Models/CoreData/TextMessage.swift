@@ -16,28 +16,17 @@ public class TextMessage: Message {
     @NSManaged public var body: String
 
     private static let EntityName = "TextMessage"
-    
-    convenience init(body: String,
-                     isIncoming: Bool,
-                     date: Date,
-                     channel: Channel,
-                     isHidden: Bool = false,
-                     managedContext: NSManagedObjectContext) throws {
-        guard let entity = NSEntityDescription.entity(forEntityName: TextMessage.EntityName, in: managedContext) else {
-            throw CoreData.Error.entityNotFound
-        }
 
-        self.init(entity: entity, insertInto: managedContext)
+    convenience init(body: String, baseParams: Message.Params, context: NSManagedObjectContext) throws {
+        try self.init(entityName: TextMessage.EntityName, context: context, params: baseParams)
 
         self.body = body
-        self.isIncoming = isIncoming
-        self.date = date
-        self.channel = channel
-        self.isHidden = isHidden
     }
-    
-    public override func exportAsUIModel(withId id: Int, status: MessageStatus = .success) -> UIMessageModelProtocol {
-        return UITextMessageModel(uid: id,
+
+    public override func exportAsUIModel() -> UIMessageModelProtocol {
+        let status = self.state.exportAsMessageStatus()
+
+        return UITextMessageModel(uid: self.xmppId,
                                   text: self.body,
                                   isIncoming: self.isIncoming,
                                   status: status,

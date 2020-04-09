@@ -71,7 +71,7 @@ final class ChatItemsDemoDecorator: ChatItemsDecoratorProtocol {
                     decoratedChatItems.append(dateTimeStamp)
                 }
             }
-            
+
             let messageDecorationAttributes = BaseMessageDecorationAttributes(canShowFailedIcon: true,
                                                                               isShowingTail: showsTail,
                                                                               isShowingAvatar: showsTail,
@@ -109,6 +109,6 @@ final class ChatItemsDemoDecorator: ChatItemsDecoratorProtocol {
     }
 
     func showsStatusForMessage(_ message: MessageModelProtocol) -> Bool {
-        return message.status == .failed || message.status == .sending
+        return !message.isIncoming
     }
 }

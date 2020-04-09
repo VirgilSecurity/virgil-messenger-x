@@ -14,7 +14,7 @@ class ViewController: UIViewController {
         let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
         let navBarHeight = self.navigationController?.navigationBar.frame.height ?? 0.0
         let offset = self.navigationController?.navigationBar.frame.origin.y ?? 0.0
-        
+
         return statusBarHeight + navBarHeight + offset
     }
 

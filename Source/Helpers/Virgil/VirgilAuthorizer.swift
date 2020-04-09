@@ -57,6 +57,6 @@ public class VirgilAuthorizer {
     }
 
     public func logOut() {
-        try? Virgil.ethree.cleanUp() 
+        try? Virgil.ethree.cleanUp()
     }
 }

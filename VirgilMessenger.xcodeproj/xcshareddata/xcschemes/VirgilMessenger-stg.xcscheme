@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "976E346124323ABD002D1CF2"
-               BuildableName = "VirgilMessenger-stg.app"
+               BuildableName = "Virgil STG.app"
                BlueprintName = "VirgilMessenger-stg"
                ReferencedContainer = "container:VirgilMessenger.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "976E346124323ABD002D1CF2"
-            BuildableName = "VirgilMessenger-stg.app"
+            BuildableName = "Virgil STG.app"
             BlueprintName = "VirgilMessenger-stg"
             ReferencedContainer = "container:VirgilMessenger.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "976E346124323ABD002D1CF2"
-            BuildableName = "VirgilMessenger-stg.app"
+            BuildableName = "Virgil STG.app"
             BlueprintName = "VirgilMessenger-stg"
             ReferencedContainer = "container:VirgilMessenger.xcodeproj">
          </BuildableReference>

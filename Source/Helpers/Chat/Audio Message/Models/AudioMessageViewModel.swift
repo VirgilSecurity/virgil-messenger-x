@@ -36,7 +36,7 @@ open class AudioMessageViewModel<AudioMessageModelT: AudioMessageModelProtocol>:
 
     public var state: Observable<PlayingState> = Observable(.stopped)
     public var messageViewModel: MessageViewModelProtocol
-    
+
     public var transferStatus: Observable<TransferStatus> = Observable(.idle)
     public var transferProgress: Observable<Double> = Observable(0)
     public var transferDirection: Observable<TransferDirection> = Observable(.download)

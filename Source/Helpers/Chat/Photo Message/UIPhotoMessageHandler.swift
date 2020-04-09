@@ -53,7 +53,7 @@ class UIPhotoMessageHandler: NSObject, BaseMessageInteractionHandlerProtocol {
 
     func userDidTapOnBubble(viewModel: UIPhotoMessageViewModel) {
         self.baseHandler.userDidTapOnBubble(viewModel: viewModel)
-        
+
         if let image = viewModel.image.value {
             self.photoObserverController.showImage(image)
         }
@@ -61,7 +61,7 @@ class UIPhotoMessageHandler: NSObject, BaseMessageInteractionHandlerProtocol {
 
     func userDidBeginLongPressOnBubble(viewModel: UIPhotoMessageViewModel) {
         self.baseHandler.userDidBeginLongPressOnBubble(viewModel: viewModel)
-        
+
         if let image = viewModel.image.value {
             self.photoObserverController.showSaveImageAlert(image)
         }

@@ -21,11 +21,11 @@ public class EncryptedMessage: Codable {
     let ciphertext: Data
     let additionalData: Data?
     let date: Date
-    
+
     var modelVersion: EncryptedMessageVersion {
         return self.version ?? .v1
     }
-    
+
     private let version: EncryptedMessageVersion?
 
     public init(ciphertext: Data, date: Date, additionalData: Data?) {
@@ -34,7 +34,7 @@ public class EncryptedMessage: Codable {
         self.additionalData = additionalData
         self.version = EncryptedMessageVersion.allCases.last
     }
-    
+
     static func `import`(_ string: String) throws -> EncryptedMessage {
         guard let data = Data(base64Encoded: string) else {
             throw EncryptedMessageError.bodyIsNotBase64Encoded

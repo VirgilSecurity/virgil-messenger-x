@@ -14,7 +14,7 @@ import UIKit
 @objc(Account)
 public class Account: NSManagedObject {
     @NSManaged public var identity: String
-    
+
     @NSManaged private var numColorPair: Int32
     @NSManaged private var orderedChannels: NSOrderedSet?
 
@@ -49,16 +49,16 @@ public class Account: NSManagedObject {
         self.identity = identity
         self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
     }
-    
+
     func totalUnreadCount() -> Int {
         // FIXME: in swift 5.2
         // let totalUnreadCount = self.channels.map(\.unreadCount).reduce(0, +)
-        
+
         var totalUnreadCount: Int16 = 0
         self.channels.forEach {
             totalUnreadCount += $0.unreadCount
         }
-        
+
         return Int(totalUnreadCount)
     }
 }

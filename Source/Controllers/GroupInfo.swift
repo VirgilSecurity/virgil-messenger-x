@@ -17,7 +17,7 @@ class GroupInfoViewController: ViewController {
     @IBOutlet weak var usersListHeight: NSLayoutConstraint!
     @IBOutlet weak var addButton: UIBarButtonItem!
     @IBOutlet weak var scrollView: UIScrollView!
-    
+
     public var channel: Channel!
     public var dataSource: DataSource!
 
@@ -78,7 +78,6 @@ class GroupInfoViewController: ViewController {
         self.scrollView.contentSize = CGSize(width: bounds.width, height: height)
     }
 
-
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
@@ -114,7 +113,7 @@ extension GroupInfoViewController: DeleteItemDelegate {
         guard self.checkReachability(), Configurator.isUpdated else {
             return
         }
-        
+
 //        HUD.show(.progress)
 //
 //        ChatsManager.removeMember(user.identity, dataSource: self.dataSource).start { _, error in

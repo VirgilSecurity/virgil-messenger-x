@@ -19,9 +19,10 @@ extension CoreData {
     }
 
     func createGroupChannel(name: String, sid: String, initiator: String, cards: [Card]) throws -> Channel {
-        return try self.createChannel(type: .group, sid: sid, name: name, initiator: initiator, cards: cards)
+        try self.createChannel(type: .group, sid: sid, name: name, initiator: initiator, cards: cards)
     }
 
+    @discardableResult
     func createSingleChannel(initiator: String, card: Card) throws -> Channel {
         // TODO: remove sid on channel migration
         let sid = UUID().uuidString
@@ -30,14 +31,54 @@ extension CoreData {
             throw UserFriendlyError.createSelfChatForbidded
         }
 
-        if let channel = self.getChannel(withName: card.identifier) {
+        if let channel = self.getChannel(withName: card.identity) {
             return channel
         }
 
         return try self.createChannel(type: .single, sid: sid, name: card.identity, initiator: initiator, cards: [card])
     }
 
-    private func createChannel(type: ChannelType, sid: String, name: String, initiator: String, cards: [Card]) throws -> Channel {
+    // Returns changed messages ids
+    public func markDeliveredMessagesAsRead(in channel: Channel) throws -> [String] {
+        var changedMessagesIds: [String] = []
+
+        channel.allMessages.forEach { message in
+            switch message.state {
+            case .delivered:
+                changedMessagesIds.append(message.xmppId)
+                message.state = .read
+            case .failed, .received, .sent, .read:
+                break
+            }
+        }
+
+        try self.saveContext()
+
+        return changedMessagesIds
+    }
+
+    public func updateMessageState(to state: Message.State, withId receiptId: String, from channel: Channel) throws -> Message.State {
+        guard let message = channel.allMessages.first(where: { $0.xmppId == receiptId }) else {
+            throw Error.messageWithIdNotFound
+        }
+
+        switch message.state {
+        case .sent, .delivered, .failed:
+            message.state = state
+        case .received, .read:
+            break
+        }
+
+        try self.saveContext()
+
+        return message.state
+    }
+
+    private func createChannel(type: ChannelType,
+                               sid: String,
+                               name: String,
+                               initiator: String,
+                               cards: [Card]) throws -> Channel {
         let cards = cards.filter { $0.identity != Virgil.ethree.identity }
         let account = try self.getCurrentAccount()
 
@@ -56,7 +97,7 @@ extension CoreData {
 
     func updateCards(with cards: [Card], for channel: Channel) throws {
         let cards = cards.filter { $0.identity != self.currentAccount?.identity }
-        
+
         channel.cards = cards
 
         try self.saveContext()
@@ -121,12 +162,10 @@ extension CoreData {
 
         return cards
     }
-    
+
     func resetUnreadCount(for channel: Channel) throws {
-        UIApplication.shared.applicationIconBadgeNumber -= Int(channel.unreadCount)
-        
         channel.unreadCount = 0
-        
+
         try self.saveContext()
     }
 }

@@ -59,7 +59,7 @@ class ChatListViewController: ViewController {
         let initFailed: Notifications.Block = { [weak self] notification in
             do {
                 let error: Error = try Notifications.parse(notification, for: .error)
-                
+
                 DispatchQueue.main.async {
                     self?.alert(error) { _ in
                         UserAuthorizer().logOut { error in
