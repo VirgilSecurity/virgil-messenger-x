@@ -102,14 +102,17 @@ extension Ejabberd {
         guard
             let author = try? message.getAuthor(),
             author != Virgil.ethree.identity,
-            let body = try? message.getBody(),
-            let xmppId = message.elementID
+            let body = try? message.getBody()
         else {
             return
         }
 
         do {
-            try self.sendReceipt(to: message)
+            if message.elementID != nil {
+                try self.sendReceipt(to: message)
+            }
+
+            let xmppId = message.elementID ?? UUID().uuidString
 
             let encryptedMessage = try EncryptedMessage.import(body)
 
