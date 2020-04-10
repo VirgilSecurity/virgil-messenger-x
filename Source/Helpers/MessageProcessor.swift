@@ -36,6 +36,29 @@ class MessageProcessor {
                          date: encryptedMessage.date)
     }
 
+    static func process(call encryptedMessage: EncryptedMessage, from caller: String) throws {
+        let channel = try self.setupCoreChannel(name: caller)
+
+        let decrypted = try self.decrypt(encryptedMessage, from: channel)
+
+        let message = try self.migrationSafeContentImport(from: decrypted,
+                                                       version: encryptedMessage.modelVersion)
+
+        switch message {
+        case .callOffer(let callOffer):
+            let xmppId = callOffer.callUUID.uuidString
+            try self.process(message,
+                             additionalData: nil,
+                             xmppId: xmppId,
+                             channel: channel,
+                             author: caller,
+                             date: encryptedMessage.date)
+
+        default:
+            break
+        }
+    }
+
     private static func process(_ message: NetworkMessage,
                                 additionalData: Data?,
                                 xmppId: String,
@@ -87,7 +110,7 @@ class MessageProcessor {
                                                                   isIncoming: true,
                                                                   date: date)
 
-        case .callAcceptedAnswer, .callRejectedAnswer, .iceCandidate:
+        case .callAnswer, .callUpdate, .iceCandidate:
             //  FIXME: Unify the handling approach for '.text' as well.
             Notifications.post(message: message)
         }

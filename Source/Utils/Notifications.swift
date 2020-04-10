@@ -31,8 +31,8 @@ public class Notifications {
         case errored = "Notifications.Errored"
         case messageAddedToCurrentChannel = "Notifications.MessageAddedToCurrentChannel"
         case callOfferReceived = "Notifications.IncommingCall"
-        case callIsAccepted = "Notifications.CallIsAccepted" // TODO: Rename to callAcceptedAnswerReceived
-        case callIsRejected = "Notifications.CallIsRejected" // TODO: Rename to callRejectedAnswerReceived
+        case callAnswerReceived = "Notifications.CallAnswerReceived"
+        case callUpdateReceived = "Notifications.CallUpdateReceived"
         case iceCandidateReceived = "Notifications.IceCandidateReceived"
     }
 
@@ -96,14 +96,14 @@ extension Notifications {
             let userInfo = [NotificationKeys.message.rawValue: callOffer]
             self.center.post(name: notification, object: self, userInfo: userInfo)
 
-        case .callAcceptedAnswer(let callAcceptedAnswer):
-            let notification = self.notification(Notifications.callIsAccepted)
-            let userInfo = [NotificationKeys.message.rawValue: callAcceptedAnswer]
+        case .callAnswer(let callAnswer):
+            let notification = self.notification(Notifications.callAnswerReceived)
+            let userInfo = [NotificationKeys.message.rawValue: callAnswer]
             self.center.post(name: notification, object: self, userInfo: userInfo)
 
-        case .callRejectedAnswer(let callRejectedAnswer):
-            let notification = self.notification(Notifications.callIsRejected)
-            let userInfo = [NotificationKeys.message.rawValue: callRejectedAnswer]
+        case .callUpdate(let callUpdate):
+            let notification = self.notification(Notifications.callUpdateReceived)
+            let userInfo = [NotificationKeys.message.rawValue: callUpdate]
             self.center.post(name: notification, object: self, userInfo: userInfo)
 
         case .iceCandidate(let iceCandidate):

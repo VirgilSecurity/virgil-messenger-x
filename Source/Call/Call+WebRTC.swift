@@ -9,6 +9,12 @@
 import Foundation
 import WebRTC
 
+fileprivate let kIceServers = ["stun:stun.l.google.com:19302",
+                               "stun:stun1.l.google.com:19302",
+                               "stun:stun2.l.google.com:19302",
+                               "stun:stun3.l.google.com:19302",
+                               "stun:stun4.l.google.com:19302"]
+
 extension RTCIceConnectionState: CustomStringConvertible {
     public var description: String {
         switch self {
@@ -62,7 +68,42 @@ extension RTCDataChannelState: CustomStringConvertible {
     }
 }
 
-extension CallManager: RTCPeerConnectionDelegate {
+// MARK: - RTCPeerConnection
+extension Call {
+    private static let peerConnectionFactory: RTCPeerConnectionFactory = RTCPeerConnectionFactory()
+
+    static func createPeerConnection(delegate: RTCPeerConnectionDelegate? = nil) throws -> RTCPeerConnection {
+        // Basic configuration
+        let rtcConfig = RTCConfiguration()
+
+        let rtcIceServer = RTCIceServer(urlStrings: kIceServers)
+        rtcConfig.iceServers = [rtcIceServer]
+        rtcConfig.sdpSemantics = .unifiedPlan
+        rtcConfig.continualGatheringPolicy = .gatherContinually
+
+        let rtcConstraints = RTCMediaConstraints(mandatoryConstraints: nil,
+                                              optionalConstraints: ["DtlsSrtpKeyAgreement": kRTCMediaConstraintsValueTrue])
+
+        let peerConnection = self.peerConnectionFactory.peerConnection(with: rtcConfig, constraints: rtcConstraints, delegate: delegate)
+
+        // Audio
+        let audioConstrains = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
+        let audioSource = Self.peerConnectionFactory.audioSource(with: audioConstrains)
+        let audioTrack = Self.peerConnectionFactory.audioTrack(with: audioSource, trackId: "audio0")
+        peerConnection.add(audioTrack, streamIds: ["stream"])
+
+        // Audio session
+        RTCAudioSession.sharedInstance().lockForConfiguration()
+        try RTCAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playAndRecord.rawValue)
+        try RTCAudioSession.sharedInstance().setMode(AVAudioSession.Mode.voiceChat.rawValue)
+        RTCAudioSession.sharedInstance().unlockForConfiguration()
+
+        return peerConnection
+    }
+}
+
+// MARK: - RTCPeerConnectionDelegate
+extension Call: RTCPeerConnectionDelegate {
     public func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
         Log.debug("WebRTC: peerConnection new signaling state: \(stateChanged)")
     }
@@ -77,8 +118,6 @@ extension CallManager: RTCPeerConnectionDelegate {
 
     public func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {
         Log.debug("WebRTC: peerConnection should negotiate")
-        
-        self.connectionStatus = .negotiating
     }
 
     public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
@@ -98,7 +137,7 @@ extension CallManager: RTCPeerConnectionDelegate {
             self.connectionStatus = .disconnected
 
         case .failed:
-            self.connectionStatus = .failed(CallManagerError.connectionFailed)
+            self.connectionStatus = .failed
 
         case .closed:
             self.connectionStatus = .closed
@@ -118,11 +157,9 @@ extension CallManager: RTCPeerConnectionDelegate {
     public func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
         Log.debug("WebRTC: did discover local candidate:\n    sdp = \(candidate.sdp)")
 
-        self.sendSignalingMessage(candidate: candidate) { error in
-            if let error = error {
-                self.connectionStatus = .failed(error)
-            }
-        }
+        let iceCandidate = NetworkMessage.IceCandidate(from: candidate, withId: self.uuid)
+
+        self.signalingDelegate?.call(self, didCreateIceCandidate: iceCandidate)
     }
 
     public func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {

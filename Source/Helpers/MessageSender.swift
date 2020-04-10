@@ -87,12 +87,12 @@ public class MessageSender {
         }
     }
 
-    public func send(callAcceptedAnswer: NetworkMessage.CallAcceptedAnswer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(callAnswer: NetworkMessage.CallAnswer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                let message = NetworkMessage.callAcceptedAnswer(callAcceptedAnswer)
+                let message = NetworkMessage.callAnswer(callAnswer)
 
-                _ = try self.send(message: message, pushType: .voip, additionalData: nil, to: channel, date: date)
+                _ = try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date)
 
                 completion(nil)
             } catch {
@@ -101,12 +101,12 @@ public class MessageSender {
         }
     }
 
-    public func send(callRejectedAnswer: NetworkMessage.CallRejectedAnswer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(callUpdate: NetworkMessage.CallUpdate, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                let message = NetworkMessage.callRejectedAnswer(callRejectedAnswer)
+                let message = NetworkMessage.callUpdate(callUpdate)
 
-                _ = try self.send(message: message, pushType: .voip, additionalData: nil, to: channel, date: date)
+                _ = try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date)
 
                 completion(nil)
             } catch {
@@ -120,7 +120,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.iceCandidate(iceCandidate)
 
-                _ = try self.send(message: message, pushType: .voip, additionalData: nil, to: channel, date: date)
+                _ = try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date)
 
                 completion(nil)
             } catch {

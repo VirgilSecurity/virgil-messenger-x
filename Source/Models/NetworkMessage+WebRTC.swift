@@ -13,6 +13,7 @@ extension NetworkMessage.CallOffer {
     init(from rtcSessionDescription: RTCSessionDescription, caller: String) {
         assert(rtcSessionDescription.type == RTCSdpType.offer)
 
+        self.callUUID = UUID()
         self.caller = caller
         self.sdp = rtcSessionDescription.sdp
     }
@@ -22,9 +23,10 @@ extension NetworkMessage.CallOffer {
     }
 }
 
-extension NetworkMessage.CallAcceptedAnswer {
-    init(from rtcSessionDescription: RTCSessionDescription) {
+extension NetworkMessage.CallAnswer {
+    init(from rtcSessionDescription: RTCSessionDescription, withId callUUID: UUID) {
         assert(rtcSessionDescription.type == RTCSdpType.answer)
+        self.callUUID = callUUID
         self.sdp = rtcSessionDescription.sdp
     }
 
@@ -34,7 +36,8 @@ extension NetworkMessage.CallAcceptedAnswer {
 }
 
 extension NetworkMessage.IceCandidate {
-    init(from iceCandidate: RTCIceCandidate) {
+    init(from iceCandidate: RTCIceCandidate, withId callUUID: UUID) {
+        self.callUUID = callUUID
         self.sdpMLineIndex = iceCandidate.sdpMLineIndex
         self.sdpMid = iceCandidate.sdpMid
         self.sdp = iceCandidate.sdp

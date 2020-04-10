@@ -14,6 +14,7 @@ public enum EncryptedMessageVersion: String, Codable, CaseIterable {
 }
 
 public enum PushType: String, Codable {
+    case none
     case alert
     case voip
 }

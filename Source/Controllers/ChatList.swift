@@ -14,7 +14,7 @@ class ChatListViewController: ViewController {
     @IBOutlet weak var tableView: UITableView!
 
     weak var incomingCallViewController: UIViewController?
-    weak var callViewController: UIViewController?
+    weak var callViewController: CallViewController?
 
     private let indicator = UIActivityIndicatorView()
     private let indicatorLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
@@ -80,6 +80,10 @@ class ChatListViewController: ViewController {
         }
 
         let callOfferReceived: Notifications.Block = { [weak self] notification in
+            if self == nil {
+                return
+            }
+
             let callOffer: NetworkMessage.CallOffer
             do {
                 callOffer = try Notifications.parse(notification, for: .message)
@@ -88,14 +92,7 @@ class ChatListViewController: ViewController {
                 return
             }
 
-            guard let callChannel = self?.channels.first(where: { $0.name == callOffer.caller }) else {
-                // FIXME:
-                Log.error(UserFriendlyError.userNotFound, message: "Caller is unknown")
-                return
-            }
-
-            CallManager.shared.startIncommingCall(callOffer: callOffer, in: callChannel)
-            Notifications.post(Notifications.EmptyNotification.startIncommingCall)
+            CallManager.shared.startIncommingCall(from: callOffer)
         }
 
         let iceCandidateReceived: Notifications.Block = { [weak self] notification in
@@ -111,101 +108,42 @@ class ChatListViewController: ViewController {
                 return
             }
 
-            CallManager.shared.addIceCandidate(iceCandidate)
+            CallManager.shared.processIceCandidate(iceCandidate)
         }
 
-        let callIsAccepted: Notifications.Block = { [weak self] notification in
+        let callAnswerReceived: Notifications.Block = { [weak self] notification in
             if self == nil {
                 return
             }
 
-            let callAceptedAnswer: NetworkMessage.CallAcceptedAnswer
+            let callAnswer: NetworkMessage.CallAnswer
             do {
-                callAceptedAnswer = try Notifications.parse(notification, for: .message)
+                callAnswer = try Notifications.parse(notification, for: .message)
             } catch {
                 Log.error(error, message: "Invalid call accepted answer notification")
                 return
             }
 
-            CallManager.shared.processCallAcceptedAnswer(callAceptedAnswer)
-            Notifications.post(Notifications.EmptyNotification.acceptCall)
+            CallManager.shared.processCallAnswer(callAnswer)
         }
 
-        let callIsRejected: Notifications.Block = { [weak self] notification in
+        let callUpdateReceived: Notifications.Block = { [weak self] notification in
             if self == nil {
                 return
             }
 
-            let callRejectedAnswer: NetworkMessage.CallRejectedAnswer
+            let callUpdate: NetworkMessage.CallUpdate
             do {
-                callRejectedAnswer = try Notifications.parse(notification, for: .message)
+                callUpdate = try Notifications.parse(notification, for: .message)
             } catch {
-                Log.error(error, message: "Invalid call rejected answer notification")
+                Log.error(error, message: "Invalid call update notification")
                 return
             }
 
-            CallManager.shared.processCallRejectedAnswer(callRejectedAnswer)
-            Notifications.post(Notifications.EmptyNotification.rejectCall)
+            CallManager.shared.processCallUpdate(callUpdate)
         }
 
-        let startIncommingCall: Notifications.Block = { [weak self] _ in
-            guard let sSelf = self else {
-                return
-            }
-
-            DispatchQueue.main.async {
-                let storyboard = UIStoryboard(name: "IncomingCall", bundle: nil)
-                let incomingCallViewController = storyboard.instantiateViewController(withIdentifier: "IncomingCall")
-
-                incomingCallViewController.modalPresentationStyle = .fullScreen
-                incomingCallViewController.modalTransitionStyle = .crossDissolve
-
-                sSelf.incomingCallViewController = incomingCallViewController
-
-                sSelf.present(incomingCallViewController, animated: true, completion: nil)
-            }
-        }
-
-        let startOugoingCall: Notifications.Block = { [weak self] _ in
-            guard let sSelf = self else {
-                return
-            }
-
-            DispatchQueue.main.async {
-                let storyboard = UIStoryboard(name: "Call", bundle: nil)
-                let callViewController = storyboard.instantiateViewController(withIdentifier: "Call")
-
-                callViewController.modalPresentationStyle = .fullScreen
-                callViewController.modalTransitionStyle = .crossDissolve
-
-                sSelf.callViewController = callViewController
-
-                sSelf.present(callViewController, animated: true, completion: nil)
-            }
-        }
-
-        let acceptCall: Notifications.Block = { [weak self] _ in
-            guard let sSelf = self else {
-                return
-            }
-
-            DispatchQueue.main.async {
-                let storyboard = UIStoryboard(name: "Call", bundle: nil)
-                let callViewController = storyboard.instantiateViewController(withIdentifier: "Call")
-
-                callViewController.modalPresentationStyle = .fullScreen
-                callViewController.modalTransitionStyle = .crossDissolve
-
-                sSelf.callViewController = callViewController
-
-                sSelf.incomingCallViewController?.dismiss(animated: false, completion: nil)
-                sSelf.present(callViewController, animated: true, completion: nil)
-            }
-        }
-
-        let rejectCall: Notifications.Block = { _ in
-            // TODO: Show "Recall" view controller instead
-        }
+        CallManager.shared.delegate = self
 
         Notifications.observe(for: .errored, block: initFailed)
         Notifications.observe(for: .initializingSucceed, block: initialized)
@@ -213,12 +151,8 @@ class ChatListViewController: ViewController {
         Notifications.observe(for: [.chatListUpdated], block: reloadTableView)
         Notifications.observe(for: .callOfferReceived, block: callOfferReceived)
         Notifications.observe(for: .iceCandidateReceived, block: iceCandidateReceived)
-        Notifications.observe(for: .callIsAccepted, block: callIsAccepted)
-        Notifications.observe(for: .callIsRejected, block: callIsRejected)
-        Notifications.observe(for: .startIncommingCall, block: startIncommingCall)
-        Notifications.observe(for: .startOugoingCall, block: startOugoingCall)
-        Notifications.observe(for: .acceptCall, block: acceptCall)
-        Notifications.observe(for: .rejectCall, block: rejectCall)
+        Notifications.observe(for: .callAnswerReceived, block: callAnswerReceived)
+        Notifications.observe(for: .callUpdateReceived, block: callUpdateReceived)
     }
 
     private func setupTableView() {
@@ -357,5 +291,43 @@ extension ChatListViewController {
     func moveToChannel(_ channel: Storage.Channel) {
         Storage.shared.setCurrent(channel: channel)
         self.performSegue(withIdentifier: "goToChat", sender: self)
+    }
+}
+
+extension ChatListViewController: CallManagerDelegate {
+    func callManager(_ callManager: CallManager, didAddCall call: Call) {
+        if self.callViewController != nil {
+            Log.debug("Group calls are not supported yet.")
+            return
+        }
+
+        DispatchQueue.main.async {
+            let storyboard = UIStoryboard(name: "Call", bundle: nil)
+            let viewController = storyboard.instantiateViewController(withIdentifier: "Call")
+
+            viewController.modalPresentationStyle = .fullScreen
+            viewController.modalTransitionStyle = .crossDissolve
+
+            guard let callViewController = viewController as? CallViewController else {
+                fatalError("ViewController with identifier 'Call' is not of type CallViewController")
+            }
+
+            self.callViewController = callViewController
+            self.callViewController?.call = call
+
+            self.present(callViewController, animated: true, completion: nil)
+        }
+    }
+
+    func callManager(_ callManager: CallManager, didRemoveCall call: Call) {
+        self.callViewController?.close()
+        self.callViewController = nil
+    }
+
+    func callManager(_ callManager: CallManager, didFail error: Error) {
+        self.alert(error)
+    }
+
+    func callManager(_ callManager: CallManager, didFailCall call: Call, error: Error) {
     }
 }

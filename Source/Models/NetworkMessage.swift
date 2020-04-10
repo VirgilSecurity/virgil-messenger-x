@@ -8,6 +8,11 @@
 
 import Foundation
 
+public enum CallUpdateAction: String, Codable {
+    case received
+    case end
+}
+
 public enum NetworkMessage {
 
     public struct Text: Codable {
@@ -26,18 +31,23 @@ public enum NetworkMessage {
     }
 
     public struct CallOffer: Codable {
+        let callUUID: UUID
         let caller: String
         let sdp: String
     }
 
-    public struct CallAcceptedAnswer: Codable {
+    public struct CallAnswer: Codable {
+        let callUUID: UUID
         let sdp: String
     }
 
-    public struct CallRejectedAnswer: Codable {
+    public struct CallUpdate: Codable {
+        let callUUID: UUID
+        let action: CallUpdateAction
     }
 
     public struct IceCandidate: Codable {
+        let callUUID: UUID
         let sdp: String
         let sdpMLineIndex: Int32
         let sdpMid: String?
@@ -47,8 +57,8 @@ public enum NetworkMessage {
     case photo(Photo)
     case voice(Voice)
     case callOffer(CallOffer)
-    case callAcceptedAnswer(CallAcceptedAnswer)
-    case callRejectedAnswer(CallRejectedAnswer)
+    case callAnswer(CallAnswer)
+    case callUpdate(CallUpdate)
     case iceCandidate(IceCandidate)
 }
 
@@ -58,8 +68,8 @@ extension NetworkMessage: Codable {
         case photo
         case voice
         case callOffer = "call_offer"
-        case callAcceptedAnswer = "call_accepted_answer"
-        case callRejectedAnswer = "call_rejected_answer"
+        case callAnswer = "call_answer"
+        case callUpdate = "call_update"
         case iceCandidate = "ice_candidate"
     }
 
@@ -89,13 +99,13 @@ extension NetworkMessage: Codable {
             let callOffer = try container.decode(CallOffer.self, forKey: .payload)
             self = .callOffer(callOffer)
 
-        case .callAcceptedAnswer:
-            let callAcceptedAnswer = try container.decode(CallAcceptedAnswer.self, forKey: .payload)
-            self = .callAcceptedAnswer(callAcceptedAnswer)
+        case .callAnswer:
+            let callAcceptedAnswer = try container.decode(CallAnswer.self, forKey: .payload)
+            self = .callAnswer(callAcceptedAnswer)
 
-        case .callRejectedAnswer:
-            let callRejectedAnswer = try container.decode(CallRejectedAnswer.self, forKey: .payload)
-            self = .callRejectedAnswer(callRejectedAnswer)
+        case .callUpdate:
+            let callRejectedAnswer = try container.decode(CallUpdate.self, forKey: .payload)
+            self = .callUpdate(callRejectedAnswer)
 
         case .iceCandidate:
             let iceCandidate = try container.decode(IceCandidate.self, forKey: .payload)
@@ -127,13 +137,13 @@ extension NetworkMessage: Codable {
             try container.encode(type, forKey: .type)
             try container.encode(callOffer, forKey: .payload)
 
-        case .callAcceptedAnswer(let callAnswer):
-            let type = TypeCodingKeys.callAcceptedAnswer
+        case .callAnswer(let callAnswer):
+            let type = TypeCodingKeys.callAnswer
             try container.encode(type, forKey: .type)
             try container.encode(callAnswer, forKey: .payload)
 
-        case .callRejectedAnswer(let callRejectedAnswer):
-            let type = TypeCodingKeys.callRejectedAnswer
+        case .callUpdate(let callRejectedAnswer):
+            let type = TypeCodingKeys.callUpdate
             try container.encode(type, forKey: .type)
             try container.encode(callRejectedAnswer, forKey: .payload)
 
@@ -166,7 +176,7 @@ extension NetworkMessage {
         case .callOffer:
             // FIXME:  Add caller name
             return "Incomming call"
-        case .callAcceptedAnswer, .callRejectedAnswer, .iceCandidate:
+        case .callAnswer, .callUpdate, .iceCandidate:
             // FIXME:  Hide this message
             return "Service message"
         }

@@ -34,6 +34,9 @@ cyclomatic_complexity:
   warning: 15
   error: 25
 
+identifier_name:
+  min_length: 2
+
 force_cast: warning
 force_try: warning
 

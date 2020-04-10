@@ -192,5 +192,25 @@ extension AppDelegate: PKPushRegistryDelegate {
         if type != .voIP {
             return
         }
+
+        guard
+            let aps = payload.dictionaryPayload["aps"] as? NSDictionary,
+            let alert = aps["alert"] as? NSDictionary,
+            let caller = alert["title"] as? String,
+            let body = alert["body"] as? String
+        else {
+            return
+        }
+
+        do {
+            let encryptedMessage = try EncryptedMessage.import(body)
+
+            try MessageProcessor.process(call: encryptedMessage, from: caller)
+        }
+        catch {
+            Log.error(error, message: "Incomming call processing failed")
+        }
+
+        completion()
     }
 }

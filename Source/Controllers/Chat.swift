@@ -151,8 +151,7 @@ class ChatViewController: BaseChatViewController {
     }
 
     @IBAction func showChatDetails(_ sender: Any) {
-        CallManager.shared.startOutgoingCall(in: self.channel)
-        Notifications.post(Notifications.EmptyNotification.startOugoingCall)
+        CallManager.shared.startOutgoingCall(to: self.channel.name)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
