@@ -129,3 +129,13 @@ extension Ejabberd {
         self.unlockMutex(self.initializeMutex, with: error)
     }
 }
+
+extension Ejabberd: XMPPReconnectDelegate {
+    func xmppReconnect(_ sender: XMPPReconnect, didDetectAccidentalDisconnect connectionFlags: SCNetworkConnectionFlags) {
+        Log.debug("Ejabberd accidentally disconnected")
+    }
+
+    func xmppReconnect(_ sender: XMPPReconnect, shouldAttemptAutoReconnect connectionFlags: SCNetworkConnectionFlags) -> Bool {
+        return true
+    }
+}

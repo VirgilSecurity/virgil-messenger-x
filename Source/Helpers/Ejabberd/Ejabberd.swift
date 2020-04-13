@@ -16,14 +16,17 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
 
     internal let stream: XMPPStream = XMPPStream()
     internal var error: Error?
+
     internal let initializeMutex: Mutex = Mutex()
     internal let sendMutex: Mutex = Mutex()
+
     internal var state: State = .disconnected
     internal var shouldRetry: Bool = true
 
-    internal let upload = XMPPHTTPFileUpload()
-    internal let deliveryReceipts = XMPPMessageDeliveryReceipts()
-    internal let readReceipts = XMPPMessageReadReceipts()
+    private let upload = XMPPHTTPFileUpload()
+    private let deliveryReceipts = XMPPMessageDeliveryReceipts()
+    private let readReceipts = XMPPMessageReadReceipts()
+    private let reconnect = XMPPReconnect()
 
     private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
@@ -34,20 +37,28 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
     override init() {
         super.init()
 
+        // Stream
         self.stream.hostName = URLConstants.ejabberdHost
         self.stream.hostPort = URLConstants.ejabberdHostPort
         self.stream.startTLSPolicy = .allowed
         self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
 
+        // Upload
         self.upload.activate(self.stream)
 
+        // Delivery Receipts
         self.deliveryReceipts.activate(self.stream)
         self.deliveryReceipts.autoSendMessageDeliveryRequests = true
         self.deliveryReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
 
+        // Read Receipts
         self.readReceipts.activate(self.stream)
         self.readReceipts.autoSendMessageReadRequests = true
         self.readReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
+
+        // Reconnect
+        self.reconnect.activate(self.stream)
+        self.reconnect.addDelegate(self, delegateQueue: self.delegateQueue)
 
         try? self.initializeMutex.lock()
         try? self.sendMutex.lock()
