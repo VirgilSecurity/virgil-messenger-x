@@ -81,7 +81,7 @@ class ChatViewController: BaseChatViewController {
 
         do {
             if self.channel.unreadCount > 0 {
-                try Ejabberd.shared.sendGlobalReadResponse(to: self.channel.name)
+                try Ejabberd.shared.sendGlobalReadReceipt(to: self.channel.name)
             }
 
             try CoreData.shared.resetUnreadCount(for: self.channel)

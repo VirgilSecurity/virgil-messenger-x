@@ -6,7 +6,7 @@
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
+import XMPPFrameworkSwift
 
 extension Ejabberd {
     public func initialize(identity: String) throws {
@@ -64,5 +64,68 @@ extension Ejabberd {
         try self.initializeMutex.lock()
 
         try self.checkError()
+    }
+}
+
+extension Ejabberd {
+    func xmppStreamWillConnect(_ sender: XMPPStream) {
+        Log.debug("Ejabberd: Connecting...")
+    }
+
+    func xmppStreamDidConnect(_ stream: XMPPStream) {
+        Log.debug("Ejabberd: Connected")
+
+        self.state = .connected
+        self.shouldRetry = true
+        self.unlockMutex(self.initializeMutex)
+    }
+
+    func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
+        self.state = .disconnected
+
+        Log.error(EjabberdError.connectionTimeout, message: "Ejabberd connection reached timeout")
+
+        self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
+    }
+
+    func xmppStreamDidDisconnect(_ sender: XMPPStream, withError error: Error?) {
+        let erroredUnlock = self.state == .connecting
+        self.state = .disconnected
+
+        if let error = error {
+            Log.error(error, message: "Ejabberd disconnected")
+
+            if erroredUnlock {
+                self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
+            }
+            else {
+                self.retryInitialize(error: error)
+            }
+        }
+        else {
+            Log.debug("Ejabberd disconnected")
+            self.unlockMutex(self.initializeMutex)
+        }
+    }
+
+    func xmppStreamDidAuthenticate(_ sender: XMPPStream) {
+        Log.debug("Ejabberd: Authenticated")
+        self.set(status: .online)
+
+        self.unlockMutex(self.initializeMutex)
+
+        Notifications.post(.ejabberdAuthorized)
+    }
+
+    func xmppStream(_ sender: XMPPStream, didNotAuthenticate error: DDXMLElement) {
+        Log.debug("Ejabberd: Authentication failed \(error)")
+
+        let description = error.stringValue ?? "Authentication unknown error"
+
+        let error = NSError(domain: self.serviceErrorDomain,
+                            code: -1,
+                            userInfo: [NSLocalizedDescriptionKey: description])
+
+        self.unlockMutex(self.initializeMutex, with: error)
     }
 }

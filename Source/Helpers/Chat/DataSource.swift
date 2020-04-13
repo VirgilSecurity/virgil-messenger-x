@@ -82,7 +82,7 @@ class DataSource: ChatDataSourceProtocol {
             guard let strongSelf = self else { return }
 
             do {
-                try Ejabberd.shared.sendGlobalReadResponse(to: strongSelf.channel.name)
+                try Ejabberd.shared.sendGlobalReadReceipt(to: strongSelf.channel.name)
             }
             catch {
                 Log.error(error, message: "Sending global read response failed")
