@@ -1,7 +1,12 @@
 language: swift
 osx_image: xcode11.3
 
+before_install:
+  - openssl aes-256-cbc -K $encrypted_12524d8e76a5_key -iv $encrypted_12524d8e76a5_iv -in GoogleService-Info.plist.enc -out GoogleService-Info.plist -d
+
 script:
+  - mv GoogleService-Info.plist VirgilMessenger/GoogleService-Info.plist
+
   - carthage version
   - carthage bootstrap --platform iOS
 
@@ -11,5 +16,5 @@ script:
   - SDK="iphonesimulator13.2"
   
   - |
-    # Build Framework
+    # Build project
     xcodebuild -verbose -project "$PROJECT" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Release clean build | xcpretty;
