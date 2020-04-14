@@ -107,6 +107,14 @@ extension CallManager: CallSignalingDelegate {
         }
     }
 
+    public func call(_ call: Call, didCreateUpdate update: NetworkMessage.CallUpdate) {
+        self.sendSignalingMessage(callUpdate: update, to: call) { error in
+            if let error = error {
+                self.didFail(error)
+            }
+        }
+    }
+
     public func call(_ call: Call, didFail error: Error) {
         let callUpdate = NetworkMessage.CallUpdate(callUUID: call.uuid, action: .end)
 

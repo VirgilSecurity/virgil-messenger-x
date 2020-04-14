@@ -43,6 +43,7 @@ public protocol CallDelegate: class {
 public protocol CallSignalingDelegate: class {
     func call(_ call: Call, didCreateOffer offer: NetworkMessage.CallOffer)
     func call(_ call: Call, didCreateAnswer answer: NetworkMessage.CallAnswer)
+    func call(_ call: Call, didCreateUpdate update: NetworkMessage.CallUpdate)
     func call(_ call: Call, didCreateIceCandidate iceCandidate: NetworkMessage.IceCandidate)
     func call(_ call: Call, didFail error: Error)
 }
@@ -121,16 +122,6 @@ public class Call: NSObject {
         Log.debug("WebRTC: did add remote candidate:\n    sdp = \(candidate.sdp)")
     }
 
-    // MARK: Call state management
-    func update(with action: CallUpdateAction) {
-        switch action {
-        case .received:
-            self.state = .ringing
-        case .end:
-            self.end()
-        }
-    }
-
     // MARK: Events
     func didCreateOffer(_ callOffer: NetworkMessage.CallOffer) {
         self.signalingDelegate?.call(self, didCreateOffer: callOffer)
@@ -149,4 +140,3 @@ public class Call: NSObject {
         self.signalingDelegate?.call(self, didFail: error)
     }
 }
-

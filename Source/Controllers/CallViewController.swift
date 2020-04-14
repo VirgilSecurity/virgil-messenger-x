@@ -17,10 +17,14 @@ class CallViewController: UIViewController {
 
     // MARK: State
     weak var call: Call?
+    var callDuration: TimeInterval = 0.0
+    var callDurationTimer: Timer!
 
     // MARK: UI handlers
 
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
         guard let call = self.call else {
             return
         }
@@ -29,11 +33,19 @@ class CallViewController: UIViewController {
         self.callStatusLabel.text = call.state.rawValue
         self.connectionStatusLabel.text = call.connectionStatus.rawValue
 
+        self.callDurationTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (_) in
+            self.callDuration += 1.0
+            self.updateCallStatus()
+        }
+
         call.delegate = self
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
         self.call?.delegate = nil
+        self.callDurationTimer.invalidate()
     }
 
     @IBAction func endCall(_ sender: Any?) {
@@ -41,6 +53,33 @@ class CallViewController: UIViewController {
             CallManager.shared.endCall(call)
         } else {
             self.close()
+        }
+    }}
+
+// MARK: - UI helpers
+extension CallViewController {
+    private static var dateFormatter: DateComponentsFormatter {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .positional
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.zeroFormattingBehavior = [.pad]
+        return formatter
+    }
+
+    private func updateCallStatus() {
+        guard let call = self.call else {
+            return
+        }
+
+        let callStatusString: String
+        if call.connectionStatus == .connected {
+            callStatusString = Self.dateFormatter.string(from: self.callDuration)!
+        } else {
+            callStatusString = call.state.rawValue
+        }
+
+        DispatchQueue.main.async {
+            self.callStatusLabel.text = callStatusString
         }
     }
 }

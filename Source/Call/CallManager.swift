@@ -96,6 +96,8 @@ public class CallManager: NSObject {
 
                 call.start()
 
+                self.updateRemoteCall(call, withAction: .received)
+
                 return
             }
 
@@ -109,6 +111,8 @@ public class CallManager: NSObject {
                 self.didFailCall(call, error)
             }
         }
+
+        self.updateRemoteCall(call, withAction: .end)
     }
 
     func endAllCalls() {
@@ -150,7 +154,19 @@ public class CallManager: NSObject {
         }
 
         let action = callUpdate.action
-        call.update(with: action)
+        switch action {
+        case .end:
+            self.requestSystemEndCall(call) { error in
+                if let error = error {
+                    self.didFailCall(call, error)
+                }
+            }
+
+        case .received:
+            if let outgoingCall = call as? OutgoingCall {
+                outgoingCall.remoteDidAcceptCall()
+            }
+        }
     }
 
     func addCall(_ call: Call) {
@@ -179,5 +195,11 @@ public class CallManager: NSObject {
         Log.error(error, message: "CallManager met error with a call \(call)")
 
         self.delegate?.callManager(self, didFailCall: call, error: error)
+    }
+
+    // MARK: Notifications to the remote call
+    private func updateRemoteCall(_ call: Call, withAction action: CallUpdateAction) {
+        let callUpdate = NetworkMessage.CallUpdate(callUUID: call.uuid, action: action)
+        self.call(call, didCreateUpdate: callUpdate)
     }
 }

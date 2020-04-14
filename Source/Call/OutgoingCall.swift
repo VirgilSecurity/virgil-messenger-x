@@ -81,4 +81,8 @@ public class OutgoingCall: Call {
             self.didFail(CallError.configurationFailed)
         }
     }
+
+    public func remoteDidAcceptCall() {
+        self.state = .ringing
+    }
 }
