@@ -17,6 +17,10 @@ class MessageProcessor {
     static func process(_ encryptedMessage: EncryptedMessage, from author: String, xmppId: String) throws {
         let channel = try self.setupCoreChannel(name: author)
 
+        if channel.allMessages.contains(where: { $0.xmppId == xmppId }) {
+            return
+        }
+
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
 
         var decryptedAdditional: Data?
@@ -26,7 +30,7 @@ class MessageProcessor {
         }
 
         let message = try self.migrationSafeContentImport(from: decrypted,
-                                                                 version: encryptedMessage.modelVersion)
+                                                          version: encryptedMessage.modelVersion)
 
         try self.process(message,
                          additionalData: decryptedAdditional,
@@ -47,6 +51,11 @@ class MessageProcessor {
         switch message {
         case .callOffer(let callOffer):
             let xmppId = callOffer.callUUID.uuidString
+
+            if channel.allMessages.contains(where: { $0.xmppId == xmppId }) {
+                return
+            }
+
             try self.process(message,
                              additionalData: nil,
                              xmppId: xmppId,

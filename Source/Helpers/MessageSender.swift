@@ -6,7 +6,7 @@ public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
     // Returns xmppId
-    private func send(message: NetworkMessage, pushType: PushType, additionalData: Data?, to channel: Storage.Channel, date: Date) throws -> String {
+    private func send(message: NetworkMessage, pushType: PushType, additionalData: Data?, to channel: Storage.Channel, date: Date, xmppId: String? = nil) throws -> String {
         let exported = try message.exportAsJsonData()
 
         let card = try channel.getCard()
@@ -20,7 +20,7 @@ public class MessageSender {
 
         let encryptedMessage = EncryptedMessage(pushType: pushType, ciphertext: ciphertext, date: date, additionalData: additionalData)
 
-        return try Ejabberd.shared.send(encryptedMessage, to: channel.name)
+        return try Ejabberd.shared.send(encryptedMessage, to: channel.name, xmppId: xmppId)
     }
 
     public func send(text: NetworkMessage.Text, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
@@ -74,7 +74,12 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callOffer(callOffer)
 
-                let xmppId = try self.send(message: message, pushType: .voip, additionalData: nil, to: channel, date: date)
+                let xmppId = try self.send(message: message,
+                                           pushType: .voip,
+                                           additionalData: nil,
+                                           to: channel,
+                                           date: date,
+                                           xmppId: callOffer.callUUID.uuidString)
 
                 let storageMessage = try Storage.shared.createCallMessage(xmppId: xmppId, in: channel, isIncoming: false, date: date)
 

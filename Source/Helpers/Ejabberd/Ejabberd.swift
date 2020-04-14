@@ -145,12 +145,12 @@ class Ejabberd: NSObject {
     }
 
     // Returns xmppId
-    public func send(_ message: EncryptedMessage, to user: String) throws -> String {
+    public func send(_ message: EncryptedMessage, to user: String, xmppId: String? = nil) throws -> String {
         Log.debug("Ejabberd: Sending message")
 
         let user = try Ejabberd.setupJid(with: user)
         let body = try message.export()
-        let xmppId = UUID().uuidString
+        let xmppId = xmppId ?? UUID().uuidString
 
         let message = XMPPMessage(messageType: .chat, to: user, elementID: xmppId)
         message.addBody(body)
