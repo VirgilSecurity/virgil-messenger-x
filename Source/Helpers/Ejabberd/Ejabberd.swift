@@ -27,9 +27,9 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
 
     private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
-    static var updatedPushToken: Data?
-
     internal let serviceErrorDomain: String = "EjabberdErrorDomain"
+
+    static var updatedPushToken: Data?
 
     override init() {
         super.init()

@@ -44,15 +44,12 @@ class CollectionViewController: UICollectionViewController {
 
 extension CollectionViewController {
     private func signIn(username: String) {
-        guard self.checkReachability() else {
-            return
-        }
-
         do {
             try self.userAuthorizer.signIn(identity: username)
 
             self.goToChatList()
-        } catch {
+        }
+        catch {
             self.alert(error)
         }
     }

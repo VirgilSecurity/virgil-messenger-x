@@ -51,6 +51,7 @@ extension Ejabberd {
         Log.debug("Ejabberd: Disconnecting")
 
         guard self.stream.isConnected else {
+            self.stream.abortConnecting()
             return
         }
 
@@ -79,8 +80,6 @@ extension Ejabberd {
         catch {
             Log.error(error, message: "Authenticating stream failed")
         }
-
-//        Notifications.post(.connectionStateChanged)
     }
 
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {

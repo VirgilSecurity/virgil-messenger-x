@@ -28,7 +28,6 @@ class ChatListViewController: ViewController {
         self.setupTableView()
         self.setupObservers()
 
-        // FIXME: move to previous controller ?
         Ejabberd.shared.startInitializing(identity: Virgil.ethree.identity)
     }
 
