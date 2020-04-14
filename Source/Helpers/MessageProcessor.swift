@@ -14,6 +14,26 @@ class MessageProcessor {
         case dataToStrFailed
     }
 
+    static func processGlobalReadState(from author: String) throws {
+        let channel = try self.setupChannel(name: author)
+
+        let messagesToUpdateIds = try Storage.shared.markDeliveredMessagesAsRead(in: channel)
+
+        if let channel = Storage.shared.currentChannel, channel.name == author {
+            Notifications.post(newState: .read, messageIds: messagesToUpdateIds)
+        }
+    }
+
+    static func processNewMessageState(_ state: Storage.Message.State, withId receiptId: String, from author: String) throws {
+        let channel = try self.setupChannel(name: author)
+
+        let newState = try Storage.shared.updateMessageState(to: state, withId: receiptId, from: channel)
+
+        if let channel = Storage.shared.currentChannel, channel.name == author {
+            Notifications.post(newState: newState, messageIds: [receiptId])
+        }
+    }
+
     static func process(_ encryptedMessage: EncryptedMessage, from author: String, xmppId: String) throws {
         let channel = try self.setupCoreChannel(name: author)
 
@@ -80,44 +100,35 @@ class MessageProcessor {
             unread = false
         }
 
+        let baseParams = Storage.Message.Params(xmppId: xmppId, isIncoming: true, channel: channel, state: .received, date: date)
+
         var storageMessage: Storage.Message?
 
         switch message {
         case .text(let text):
-            storageMessage = try Storage.shared.createTextMessage(text,
+            storageMessage = try Storage.shared.createTextMessage(with: text,
                                                                   unread: unread,
-                                                                  xmppId: xmppId,
-                                                                  in: channel,
-                                                                  isIncoming: true,
-                                                                  date: date)
+                                                                  baseParams: baseParams)
 
         case .photo(let photo):
             guard let thumbnail = additionalData else {
                 throw Error.missingThumbnail
             }
 
-            storageMessage = try Storage.shared.createPhotoMessage(photo,
+            storageMessage = try Storage.shared.createPhotoMessage(with: photo,
                                                                    thumbnail: thumbnail,
                                                                    unread: unread,
-                                                                   xmppId: xmppId,
-                                                                   in: channel,
-                                                                   isIncoming: true,
-                                                                   date: date)
+                                                                   baseParams: baseParams)
         case .voice(let voice):
-            storageMessage = try Storage.shared.createVoiceMessage(voice,
+            storageMessage = try Storage.shared.createVoiceMessage(with: voice,
                                                                    unread: unread,
-                                                                   xmppId: xmppId,
-                                                                   in: channel,
-                                                                   isIncoming: true,
-                                                                   date: date)
+                                                                   baseParams: baseParams)
 
         case .callOffer:
             Notifications.post(message: message)
 
-            storageMessage = try Storage.shared.createCallMessage(xmppId: xmppId,
-                                                                  in: channel,
-                                                                  isIncoming: true,
-                                                                  date: date)
+            storageMessage = try Storage.shared.createCallMessage(unread: unread,
+                                                                  baseParams: baseParams)
 
         case .callAnswer, .callUpdate, .iceCandidate:
             //  FIXME: Unify the handling approach for '.text' as well.
@@ -203,13 +214,13 @@ class MessageProcessor {
 
         if let coreChannel = Storage.shared.getChannel(withName: name) {
             channel = coreChannel
-        } else {
+        }
+        else {
             let card = try Virgil.ethree.findUser(with: name)
                 .startSync()
                 .get()
 
-            channel = try Storage.shared.getChannel(withName: name)
-                ?? Storage.shared.createSingleChannel(initiator: name, card: card)
+            channel = try Storage.shared.createSingleChannel(initiator: name, card: card)
         }
 
         return channel

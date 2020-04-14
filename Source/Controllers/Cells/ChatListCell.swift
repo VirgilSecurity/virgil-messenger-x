@@ -21,7 +21,7 @@ class ChatListCell: UITableViewCell {
     @IBOutlet weak var unreadCountLabel: UILabel!
     @IBOutlet weak var unreadCountView: UIView!
     @IBOutlet weak var unreadCountViewWidth: NSLayoutConstraint!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -47,11 +47,11 @@ class ChatListCell: UITableViewCell {
 
         self.configureUnreadLabel(with: channel.unreadCount)
     }
-    
+
     private func configureUnreadLabel(with unreadCount: Int16) {
         if unreadCount > 0 {
             let text = unreadCount > 999 ? "999" : String(unreadCount)
-                        
+
             self.unreadCountLabel.text = text
             self.unreadCountViewWidth.constant = CGFloat(15 + 7 * text.count)
             self.unreadCountView.isHidden = false

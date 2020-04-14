@@ -15,8 +15,12 @@ public enum EjabberdError: Int, Error {
     case missingAuthor = 3
     case jidFormingFailed = 4
     case missingStreamJID = 5
+    case missingElementId = 6
+    case generatingReadResponseFailed = 7
+    case generatingDeliveryResponseFailed = 8
 }
 
+// TODO: Split file
 class Ejabberd: NSObject {
     private(set) static var shared: Ejabberd = Ejabberd()
 
@@ -29,7 +33,10 @@ class Ejabberd: NSObject {
     internal var state: State = .disconnected
     internal var shouldRetry: Bool = true
 
-    internal let upload: XMPPHTTPFileUpload = XMPPHTTPFileUpload()
+    internal let upload = XMPPHTTPFileUpload()
+    internal let deliveryReceipts = XMPPMessageDeliveryReceipts()
+    internal let readReceipts = XMPPMessageReadReceipts()
+
     private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
     static var updatedPushToken: Data?
@@ -57,6 +64,14 @@ class Ejabberd: NSObject {
         self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
 
         self.upload.activate(self.stream)
+
+        self.deliveryReceipts.activate(self.stream)
+        self.deliveryReceipts.autoSendMessageDeliveryRequests = true
+        self.deliveryReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
+
+        self.readReceipts.activate(self.stream)
+        self.readReceipts.autoSendMessageReadRequests = true
+        self.readReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
 
         try? self.initializeMutex.lock()
         try? self.sendMutex.lock()
@@ -144,24 +159,36 @@ class Ejabberd: NSObject {
         try self.checkError()
     }
 
-    // Returns xmppId
-    public func send(_ message: EncryptedMessage, to user: String, xmppId: String? = nil) throws -> String {
+    public func send(_ message: EncryptedMessage, to user: String, xmppId: String) throws {
         Log.debug("Ejabberd: Sending message")
 
         let user = try Ejabberd.setupJid(with: user)
         let body = try message.export()
-        let xmppId = xmppId ?? UUID().uuidString
 
         let message = XMPPMessage(messageType: .chat, to: user, elementID: xmppId)
         message.addBody(body)
 
+        try self.send(message: message, to: user)
+    }
+
+    internal func send(message: XMPPMessage, to user: XMPPJID) throws {
         self.stream.send(message)
 
         try self.sendMutex.lock()
 
         try self.checkError()
+    }
 
-        return xmppId
+    public func sendGlobalReadResponse(to user: String) throws {
+        guard self.stream.isAuthenticated else {
+            return
+        }
+
+        let jid = try Ejabberd.setupJid(with: user)
+
+        let message = XMPPMessage.generateReadReceipt(for: jid)
+
+        self.stream.send(message)
     }
 
     public func set(status: Status) {
@@ -186,7 +213,8 @@ class Ejabberd: NSObject {
             self.upload.requestSlot(fromService: self.uploadJid,
                                     filename: name,
                                     size: UInt(size),
-                                    contentType: "image/png") { (slot, _, error) in
+                                    contentType: "image/png")
+            { (slot, iq, error) in
                 completion(slot, error)
             }
         }

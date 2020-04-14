@@ -92,7 +92,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             if settings.authorizationStatus == .notDetermined {
 
-                center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, _) in
+                center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
                     Log.debug("User allowed notifications: \(granted)")
 
                     if granted {
@@ -100,9 +100,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             app.registerForRemoteNotifications()
                         }
                     }
+
+                    if let error = error {
+                        Log.error(error, message: "Granting notifications permissions failed")
+                    }
                 }
 
-            } else if settings.authorizationStatus == .authorized {
+            }
+            else if settings.authorizationStatus == .authorized {
                 DispatchQueue.main.async {
                     app.registerForRemoteNotifications()
                 }
@@ -124,6 +129,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         RTCCleanupSSL()
         do {
             try Storage.shared.saveContext()
+
+            UnreadManager.shared.update()
         }
         catch {
             Log.error(error, message: "Saving Core Data context on app termination failed")

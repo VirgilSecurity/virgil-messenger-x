@@ -18,24 +18,9 @@ extension Storage {
 
         private static let EntityName = "CallMessage"
 
-        convenience init(xmppId: String,
-                         isIncoming: Bool,
-                         date: Date,
-                         channel: Channel,
-                         isHidden: Bool = false,
-                         managedContext: NSManagedObjectContext) throws {
-            guard let entity = NSEntityDescription.entity(forEntityName: CallMessage.EntityName, in: managedContext) else {
-                throw Storage.Error.entityNotFound
-            }
-
-            self.init(entity: entity, insertInto: managedContext)
-
-            self.channelName = channel.name
-            self.xmppId = xmppId
-            self.isIncoming = isIncoming
-            self.date = date
-            self.channel = channel
-            self.isHidden = isHidden
+        convenience init(baseParams: Message.Params,
+                         context: NSManagedObjectContext) throws {
+            try self.init(entityName: CallMessage.EntityName, context: context, params: baseParams)
         }
     }
 }

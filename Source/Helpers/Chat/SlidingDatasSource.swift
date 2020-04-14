@@ -94,6 +94,12 @@ public class SlidingDataSource<Element> {
         }
     }
 
+    public func updateItems(where selectPredicate: (Element) -> Bool, changePredicate: (Element) throws -> Element) throws {
+        self.items = try self.items.map {
+            try selectPredicate($0) ? changePredicate($0) : $0
+        }
+    }
+
     public func insertItem(_ item: Element, position: InsertPosition) {
         if position == .top {
             self.items.insert(item, at: 0)

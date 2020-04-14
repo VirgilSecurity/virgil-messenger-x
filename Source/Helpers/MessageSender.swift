@@ -6,7 +6,7 @@ public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
     // Returns xmppId
-    private func send(message: NetworkMessage, pushType: PushType, additionalData: Data?, to channel: Storage.Channel, date: Date, xmppId: String? = nil) throws -> String {
+    private func send(message: NetworkMessage, pushType: PushType, additionalData: Data?, to channel: Storage.Channel, date: Date, messageId: String) throws {
         let exported = try message.exportAsJsonData()
 
         let card = try channel.getCard()
@@ -20,52 +20,62 @@ public class MessageSender {
 
         let encryptedMessage = EncryptedMessage(pushType: pushType, ciphertext: ciphertext, date: date, additionalData: additionalData)
 
-        return try Ejabberd.shared.send(encryptedMessage, to: channel.name, xmppId: xmppId)
+        try Ejabberd.shared.send(encryptedMessage, to: channel.name, xmppId: messageId)
     }
 
-    public func send(text: NetworkMessage.Text, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
-        do {
-            let message = NetworkMessage.text(text)
+    public func send(text: NetworkMessage.Text, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
+        self.queue.async {
+            do {
+                let message = NetworkMessage.text(text)
 
-            let xmppId = try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date)
+                try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date, messageId: messageId)
 
-            _ = try Storage.shared.createTextMessage(text, xmppId: xmppId, in: channel, isIncoming: false, date: date)
+                let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
 
-            completion(nil)
-        } catch {
-            completion(error)
+                try Storage.shared.createTextMessage(with: text, baseParams: baseParams)
+
+                completion(nil)
+            } catch {
+                completion(error)
+            }
         }
     }
 
-    public func send(photo: NetworkMessage.Photo, image: Data, thumbnail: Data, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
-        do {
+    public func send(photo: NetworkMessage.Photo, image: Data, thumbnail: Data, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
+        self.queue.async {
+            do {
 
-            let message = NetworkMessage.photo(photo)
+                let message = NetworkMessage.photo(photo)
 
-            let xmppId = try self.send(message: message, pushType: .alert, additionalData: thumbnail, to: channel, date: date)
+                try self.send(message: message, pushType: .alert, additionalData: thumbnail, to: channel, date: date, messageId: messageId)
 
-            try Storage.shared.storeMediaContent(image, name: photo.identifier, type: .photo)
+                let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
 
-            _ = try Storage.shared.createPhotoMessage(photo, thumbnail: thumbnail, xmppId: xmppId, in: channel, isIncoming: false)
+                try Storage.shared.createPhotoMessage(with: photo, thumbnail: thumbnail, baseParams: baseParams)
 
-            completion(nil)
-        } catch {
-            completion(error)
+                completion(nil)
+            } catch {
+                completion(error)
+            }
         }
     }
 
-    public func send(voice: NetworkMessage.Voice, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
-        do {
+    public func send(voice: NetworkMessage.Voice, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
+        self.queue.async {
+            do {
 
-            let message = NetworkMessage.voice(voice)
+                let message = NetworkMessage.voice(voice)
 
-            let xmppId = try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date)
+                try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date, messageId: messageId)
 
-            _ = try Storage.shared.createVoiceMessage(voice, xmppId: xmppId, in: channel, isIncoming: false)
+                let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
 
-            completion(nil)
-        } catch {
-            completion(error)
+                try Storage.shared.createVoiceMessage(with: voice, baseParams: baseParams)
+
+                completion(nil)
+            } catch {
+                completion(error)
+            }
         }
     }
 
@@ -74,14 +84,13 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callOffer(callOffer)
 
-                let xmppId = try self.send(message: message,
-                                           pushType: .voip,
-                                           additionalData: nil,
-                                           to: channel,
-                                           date: date,
-                                           xmppId: callOffer.callUUID.uuidString)
+                let messageId = callOffer.callUUID.uuidString
 
-                let storageMessage = try Storage.shared.createCallMessage(xmppId: xmppId, in: channel, isIncoming: false, date: date)
+                try self.send(message: message, pushType: .voip, additionalData: nil, to: channel, date: date, messageId: messageId)
+
+                let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
+
+                let storageMessage = try Storage.shared.createCallMessage(baseParams: baseParams)
 
                 Notifications.post(message: storageMessage)
 
@@ -97,7 +106,9 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callAnswer(callAnswer)
 
-                _ = try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date)
+                let messageId = callAnswer.callUUID.uuidString
+
+                try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
             } catch {
@@ -111,7 +122,9 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callUpdate(callUpdate)
 
-                _ = try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date)
+                let messageId = callUpdate.callUUID.uuidString
+
+                try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
             } catch {
@@ -125,7 +138,9 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.iceCandidate(iceCandidate)
 
-                _ = try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date)
+                let messageId = iceCandidate.callUUID.uuidString
+
+                try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
             } catch {
@@ -134,26 +149,80 @@ public class MessageSender {
         }
     }
 
-    public func upload(data: Data, identifier: String, channel: Storage.Channel, loadDelegate: LoadDelegate, completion: @escaping (URL?, Error?) -> Void) {
+    public func uploadAndSend(image: UIImage, date: Date, channel: Storage.Channel, messageId: String, loadDelegate: LoadDelegate, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                // encrypt data
-                let encryptedData = try Virgil.ethree.authEncrypt(data: data, for: channel.getCard())
+                guard
+                    let imageData = image.jpegData(compressionQuality: 0.0),
+                    let thumbnail = image.resized(to: 10)?.jpegData(compressionQuality: 1.0)
+                else {
+                    completion(UserFriendlyError.imageCompressionFailed)
+                    return
+                }
 
-                // request ejabberd slot
-                let slot = try Ejabberd.shared.requestMediaSlot(name: identifier, size: encryptedData.count)
-                    .startSync()
-                    .get()
+                let hashString = Virgil.shared.crypto.computeHash(for: imageData)
+                    .subdata(in: 0..<32)
+                    .hexEncodedString()
 
-                // upload data
-                try Virgil.shared.client.upload(data: encryptedData, with: slot.putRequest, loadDelegate: loadDelegate, dataHash: identifier)
-                    .startSync()
-                    .get()
+                try Storage.shared.storeMediaContent(imageData, name: hashString, type: .photo)
 
-                completion(slot.getURL, nil)
+                let url = try self.upload(data: imageData, identifier: hashString, channel: channel, loadDelegate: loadDelegate)
+
+                let photo = NetworkMessage.Photo(identifier: hashString, url: url)
+                let message = NetworkMessage.photo(photo)
+
+                try self.send(message: message, pushType: .alert, additionalData: thumbnail, to: channel, date: date, messageId: messageId)
+
+                let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
+
+                try Storage.shared.createPhotoMessage(with: photo, thumbnail: thumbnail, baseParams: baseParams)
+
+                completion(nil)
             } catch {
-                completion(nil, error)
+                completion(error)
             }
         }
+    }
+
+    public func uploadAndSend(voice voiceURL: URL, identifier: String, duration: TimeInterval, date: Date, channel: Storage.Channel, messageId: String, loadDelegate: LoadDelegate, completion: @escaping (Error?) -> Void) {
+        self.queue.async {
+            do {
+                // TODO: optimize. Do not fetch data to memrory, use streams
+                let voiceData: Data = try Data(contentsOf: voiceURL)
+
+                let url = try self.upload(data: voiceData, identifier: identifier, channel: channel, loadDelegate: loadDelegate)
+
+                let voice = NetworkMessage.Voice(identifier: identifier, duration: duration, url: url)
+
+                let message = NetworkMessage.voice(voice)
+
+                try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date, messageId: messageId)
+
+                let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
+
+                try Storage.shared.createVoiceMessage(with: voice, baseParams: baseParams)
+
+                completion(nil)
+            } catch {
+                completion(error)
+            }
+        }
+    }
+
+    private func upload(data: Data, identifier: String, channel: Storage.Channel, loadDelegate: LoadDelegate) throws -> URL {
+        // encrypt data
+        let encryptedData = try Virgil.ethree.authEncrypt(data: data, for: channel.getCard())
+
+        // request ejabberd slot
+        let slot = try Ejabberd.shared.requestMediaSlot(name: identifier, size: encryptedData.count)
+            .startSync()
+            .get()
+
+        // upload data
+        try Virgil.shared.client.upload(data: encryptedData, with: slot.putRequest, loadDelegate: loadDelegate, dataHash: identifier)
+            .startSync()
+            .get()
+
+        return slot.getURL
     }
 }

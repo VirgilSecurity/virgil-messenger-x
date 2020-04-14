@@ -36,7 +36,7 @@ public class Storage {
         return container
     }()
 
-    public enum Error: Int, Swift.Error, LocalizedError {
+    public enum Error: Int, LocalizedError {
         case nilCurrentAccount = 1
         case nilCurrentChannel = 2
         case entityNotFound = 3
@@ -47,6 +47,7 @@ public class Storage {
         case missingVirgilGroup = 8
         case exportBaseMessageForbidden = 9
         case nilMediaStorage = 10
+        case messageWithIdNotFound = 11
     }
 
     private init() {

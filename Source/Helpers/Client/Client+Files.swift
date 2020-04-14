@@ -30,7 +30,8 @@ extension Client {
                 loadDelegate.completed(dataHash: dataHash)
 
                 completion((), nil)
-            } catch {
+            }
+            catch {
                 Log.error(error, message: "Uploading data failed")
 
                 loadDelegate.failed(with: error)
@@ -52,14 +53,17 @@ extension Client {
             do {
                 if let error = error {
                     throw error
-                } else if let response = response {
+                }
+                else if let response = response {
                     try self.validateResponse(response)
 
                     loadDelegate.completed(dataHash: dataHash)
-                } else {
-                    throw NSError()
                 }
-            } catch {
+                else {
+                    throw Error.inconsistencyState
+                }
+            }
+            catch {
                 loadDelegate.failed(with: error)
             }
         }

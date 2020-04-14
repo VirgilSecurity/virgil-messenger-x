@@ -23,91 +23,71 @@ extension Storage {
     }
 
     func createEncryptedMessage(in channel: Storage.Channel, isIncoming: Bool, date: Date) throws {
+        let params = Message.Params(xmppId: UUID().uuidString,
+                                    isIncoming: isIncoming,
+                                    channel: channel,
+                                    state: .failed,
+                                    date: date,
+                                    isHidden: true)
+
         let message = try TextMessage(body: "Message encrypted",
-                                      xmppId: UUID().uuidString,
-                                      isIncoming: isIncoming,
-                                      date: date,
-                                      channel: channel,
-                                      isHidden: true,
-                                      managedContext: self.managedContext)
+                                      baseParams: params,
+                                      context: self.managedContext)
 
         try self.save(message, unread: false)
     }
 
-    func createTextMessage(_ content: NetworkMessage.Text,
+    @discardableResult
+    func createTextMessage(with text: NetworkMessage.Text,
                            unread: Bool = false,
-                           xmppId: String,
-                           in channel: Storage.Channel,
-                           isIncoming: Bool,
-                           date: Date = Date()) throws -> Message {
-
-        let message = try TextMessage(body: content.body,
-                                      xmppId: xmppId,
-                                      isIncoming: isIncoming,
-                                      date: date,
-                                      channel: channel,
-                                      managedContext: self.managedContext)
+                           baseParams: Message.Params) throws -> Message {
+        let message = try Storage.TextMessage(body: text.body,
+                                              baseParams: baseParams,
+                                              context: self.managedContext)
 
         try self.save(message, unread: unread)
 
         return message
     }
 
-    func createPhotoMessage(_ content: NetworkMessage.Photo,
+    @discardableResult
+    func createPhotoMessage(with photo: NetworkMessage.Photo,
                             thumbnail: Data,
                             unread: Bool = false,
-                            xmppId: String,
-                            in channel: Storage.Channel,
-                            isIncoming: Bool,
-                            date: Date = Date()) throws -> Message {
-
-        let message = try PhotoMessage(identifier: content.identifier,
-                                       thumbnail: thumbnail,
-                                       url: content.url,
-                                       xmppId: xmppId,
-                                       isIncoming: isIncoming,
-                                       date: date,
-                                       channel: channel,
-                                       managedContext: self.managedContext)
+                            baseParams: Message.Params) throws -> Message {
+        let message = try Storage.PhotoMessage(identifier: photo.identifier,
+                                               thumbnail: thumbnail,
+                                               url: photo.url,
+                                               baseParams: baseParams,
+                                               context: self.managedContext)
 
         try self.save(message, unread: unread)
 
         return message
     }
 
-    func createVoiceMessage(_ content: NetworkMessage.Voice,
+    @discardableResult
+    func createVoiceMessage(with voice: NetworkMessage.Voice,
                             unread: Bool = false,
-                            xmppId: String,
-                            in channel: Storage.Channel,
-                            isIncoming: Bool,
-                            date: Date = Date()) throws -> Message {
-
-        let message = try VoiceMessage(identifier: content.identifier,
-                                       duration: content.duration,
-                                       url: content.url,
-                                       xmppId: xmppId,
-                                       isIncoming: isIncoming,
-                                       date: date,
-                                       channel: channel,
-                                       managedContext: self.managedContext)
+                            baseParams: Message.Params) throws -> Message {
+        let message = try Storage.VoiceMessage(identifier: voice.identifier,
+                                               duration: voice.duration,
+                                               url: voice.url,
+                                               baseParams: baseParams,
+                                               context: self.managedContext)
 
         try self.save(message, unread: unread)
 
         return message
     }
 
-    func createCallMessage(xmppId: String,
-                           in channel: Storage.Channel,
-                           isIncoming: Bool,
-                           date: Date = Date()) throws -> Storage.Message {
+    func createCallMessage(unread: Bool = false, baseParams: Message.Params) throws -> Message {
 
-        let message = try Storage.CallMessage(xmppId: xmppId,
-                                              isIncoming: isIncoming,
-                                              date: date,
-                                              channel: channel,
-                                      managedContext: self.managedContext)
+        let message = try Storage.CallMessage(baseParams: baseParams,
+                                              context: self.managedContext)
 
-        try self.save(message, unread: false)
+
+        try self.save(message, unread: unread)
 
         return message
     }

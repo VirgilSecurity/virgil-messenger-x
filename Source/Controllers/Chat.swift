@@ -80,10 +80,14 @@ class ChatViewController: BaseChatViewController {
         self.dataSource.setupObservers()
 
         do {
+            if self.channel.unreadCount > 0 {
+                try Ejabberd.shared.sendGlobalReadResponse(to: self.channel.name)
+            }
+
             try Storage.shared.resetUnreadCount(for: self.channel)
         }
         catch {
-            Log.error(error, message: "Reseting unread count for channel failed")
+            Log.error(error, message: "Chat viewDidLoad failed")
         }
     }
 
@@ -152,15 +156,6 @@ class ChatViewController: BaseChatViewController {
 
     @IBAction func showChatDetails(_ sender: Any) {
         CallManager.shared.startOutgoingCall(to: self.channel.name)
-    }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let groupInfo = segue.destination as? GroupInfoViewController {
-            groupInfo.channel = channel
-            groupInfo.dataSource = self.dataSource
-        }
-
-        super.prepare(for: segue, sender: sender)
     }
 
     var chatInputPresenter: BasicChatInputBarPresenter!

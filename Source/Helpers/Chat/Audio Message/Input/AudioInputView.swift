@@ -385,6 +385,6 @@ extension AudioInputView {
         let seconds = Int(time) % 60
         let miliseconds = Int((time - Double(Int(time))) * 100)
 
-        return String(format:"%02i:%02i:%02i", minutes, seconds, miliseconds)
+        return String(format: "%02i:%02i:%02i", minutes, seconds, miliseconds)
     }
 }

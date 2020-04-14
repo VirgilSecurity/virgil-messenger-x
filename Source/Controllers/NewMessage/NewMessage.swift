@@ -37,7 +37,7 @@ class NewMessageViewController: ViewController {
 
 extension NewMessageViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
-        if let _ = cell as? UsersListCell {
+        if cell is UsersListCell {
             guard let user = self.users[safe: cell.tag] else {
                 return
             }

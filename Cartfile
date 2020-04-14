@@ -1,8 +1,7 @@
-github "VirgilSecurity/virgil-e3kit-x" "develop-strings"
-github "robbiehanson/XMPPFramework" ~> 4.0
-github "Ogerets/Chatto" "messenger-stable"
-github "pkluz/PKHUD"
-github "Boris-Em/BEMCheckBox" ~> 1.4.1
+github "VirgilSecurity/virgil-e3kit-x" ~> 2.1.0
+github "Ogerets/XMPPFramework" ~> 4.0.1
+github "Ogerets/Chatto" ~> 3.2.2
+github "Ogerets/PKHUD" ~> 5.3.1
 github "VirgilSecurity/virgil-crypto-x" ~> 5.2.0
 github "VirgilSecurity/virgil-sdk-x" "develop-messenger"
 github "sendbird/sendbird-webrtc-ios" ~> 1.1.1

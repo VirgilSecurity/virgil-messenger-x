@@ -96,7 +96,7 @@ open class AudioMessageCollectionViewCellDefaultStyle: AudioBubbleViewStyleProto
         var color = isIncoming ? self.baseStyle.baseColorIncoming : self.baseStyle.baseColorOutgoing
 
         switch status {
-        case .success:
+        case .sent, .delivered, .read:
             break
         case .failed, .sending:
             color = color.bma_blendWithColor(UIColor.white.withAlphaComponent(0.70))

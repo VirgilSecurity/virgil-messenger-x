@@ -39,10 +39,12 @@ extension Ejabberd: XMPPStreamDelegate {
 
             if erroredUnlock {
                 self.unlockMutex(self.initializeMutex, with: UserFriendlyError.connectionIssue)
-            } else {
+            }
+            else {
                 self.retryInitialize(error: error)
             }
-        } else {
+        }
+        else {
             Log.debug("Ejabberd disconnected")
             self.unlockMutex(self.initializeMutex)
         }
@@ -53,6 +55,8 @@ extension Ejabberd: XMPPStreamDelegate {
         self.set(status: .online)
 
         self.unlockMutex(self.initializeMutex)
+
+        Notifications.post(.ejabberdAuthorized)
     }
 
     func xmppStream(_ sender: XMPPStream, didNotAuthenticate error: DDXMLElement) {
@@ -72,11 +76,20 @@ extension Ejabberd {
     func xmppStream(_ sender: XMPPStream, didSend message: XMPPMessage) {
         Log.debug("Ejabberd: Message sent")
 
+        guard !message.hasReadReceiptResponse, !message.hasDeliveryReceiptResponse else {
+            return
+        }
+
         self.unlockMutex(self.sendMutex)
     }
 
     func xmppStream(_ sender: XMPPStream, didFailToSend message: XMPPMessage, error: Error) {
         Log.error(error, message: "Ejabberd: message failed to send")
+
+        guard !message.hasReadReceiptResponse, !message.hasDeliveryReceiptResponse else {
+            Log.error(error, message: "Sending receipt failed")
+            return
+        }
 
         self.unlockMutex(self.sendMutex, with: error)
     }
@@ -85,7 +98,7 @@ extension Ejabberd {
         Log.debug("Ejabberd: Message received")
 
         // TODO: Add error message handling
-        
+
         guard
             let author = try? message.getAuthor(),
             author != Virgil.ethree.identity,
@@ -94,14 +107,69 @@ extension Ejabberd {
         else {
             return
         }
-        
+
         do {
+            try self.sendReceipt(to: message)
+
             let encryptedMessage = try EncryptedMessage.import(body)
 
             try MessageProcessor.process(encryptedMessage, from: author, xmppId: xmppId)
         }
         catch {
             Log.error(error, message: "Message processing failed")
+        }
+    }
+
+    private func sendReceipt(to message: XMPPMessage) throws {
+        let author = try message.getAuthor()
+
+        if message.hasReadReceiptRequest,
+            let channel = Storage.shared.currentChannel,
+            channel.name == author
+        {
+            let readReceiptResponse = try message.generateReadReceiptResponse()
+
+            self.stream.send(readReceiptResponse)
+        }
+        else if message.hasDeliveryReceiptRequest {
+            let deliveryReceiptResponse = try message.generateDeliveryReceiptResponse()
+
+            self.stream.send(deliveryReceiptResponse)
+        }
+    }
+}
+
+extension Ejabberd: XMPPMessageDeliveryReceiptsDelegate, XMPPMessageReadReceiptsDelegate {
+    func xmppMessageDeliveryReceipts(_ xmppMessageDeliveryReceipts: XMPPMessageDeliveryReceipts,
+                                     didReceiveReceiptResponseMessage message: XMPPMessage) {
+        Log.debug("Delivery receipt received")
+
+        do {
+            let author = try message.getAuthor()
+            let receiptId = try message.getDeliveryReceiptId()
+
+            try MessageProcessor.processNewMessageState(.delivered, withId: receiptId, from: author)
+        }
+        catch {
+            Log.error(error, message: "Delivery receipt processing failed")
+        }
+    }
+
+    func xmppMessageReadReceipts(_ xmppMessageReadReceipts: XMPPMessageReadReceipts, didReceiveReadReceiptResponseMessage message: XMPPMessage) {
+        Log.debug("Read receipt received")
+
+        do {
+            let author = try message.getAuthor()
+
+            if let receiptId = message.readReceiptResponseID {
+                try MessageProcessor.processNewMessageState(.read, withId: receiptId, from: author)
+            }
+            else {
+                try MessageProcessor.processGlobalReadState(from: author)
+            }
+        }
+        catch {
+            Log.error(error, message: "Read receipt processing failed")
         }
     }
 }

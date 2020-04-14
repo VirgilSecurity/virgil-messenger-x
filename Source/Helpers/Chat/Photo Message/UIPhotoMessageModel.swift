@@ -28,8 +28,8 @@ import ChattoAdditions
 public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageModelProtocol {
     public private(set) var state: MediaMessageState
     public private(set) weak var loadDelegate: LoadDelegate?
-    
-    public required init(uid: Int,
+
+    public required init(uid: String,
                          image: UIImage,
                          isIncoming: Bool,
                          status: MessageStatus,
@@ -37,7 +37,7 @@ public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageMode
                          date: Date) {
         let senderId = isIncoming ? "1" : "2"
 
-        let messageModel = MessageModel(uid: String(uid),
+        let messageModel = MessageModel(uid: uid,
                                         senderId: senderId,
                                         type: PhotoMessageModel<MessageModel>.chatItemType,
                                         isIncoming: isIncoming,
@@ -45,7 +45,7 @@ public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageMode
                                         status: status)
 
         self.state = state
-        
+
         super.init(messageModel: messageModel, imageSize: image.size, image: image)
     }
 
@@ -57,7 +57,7 @@ public class UIPhotoMessageModel: PhotoMessageModel<MessageModel>, UIMessageMode
             self._messageModel.status = newValue
         }
     }
-    
+
     public func set(loadDelegate: LoadDelegate) {
         self.loadDelegate = loadDelegate
     }
@@ -67,11 +67,11 @@ extension UIPhotoMessageModel: LoadDelegate {
     public func progressChanged(to percent: Double) {
         self.loadDelegate?.progressChanged(to: percent)
     }
-    
+
     public func failed(with error: Error) {
         self.loadDelegate?.failed(with: error)
     }
-    
+
     public func completed(dataHash: String) {
         self.loadDelegate?.completed(dataHash: dataHash)
     }
