@@ -111,8 +111,6 @@ public class CallManager: NSObject {
                 self.didFailCall(call, error)
             }
         }
-
-        self.updateRemoteCall(call, withAction: .end)
     }
 
     func endAllCalls() {
@@ -198,7 +196,7 @@ public class CallManager: NSObject {
     }
 
     // MARK: Notifications to the remote call
-    private func updateRemoteCall(_ call: Call, withAction action: CallUpdateAction) {
+    func updateRemoteCall(_ call: Call, withAction action: CallUpdateAction) {
         let callUpdate = NetworkMessage.CallUpdate(callUUID: call.uuid, action: action)
         self.call(call, didCreateUpdate: callUpdate)
     }

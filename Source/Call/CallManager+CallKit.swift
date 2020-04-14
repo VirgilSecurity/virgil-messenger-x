@@ -130,8 +130,12 @@ extension CallManager: CXProviderDelegate {
             return
         }
 
+        self.updateRemoteCall(call, withAction: .end)
+
         call.end()
+
         self.removeCall(call)
+
         action.fulfill()
     }
 }
