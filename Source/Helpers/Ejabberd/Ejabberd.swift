@@ -55,6 +55,9 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
 
         // Reconnect
         self.reconnect.activate(self.stream)
+        self.reconnect.autoReconnect = true
+        self.reconnect.reconnectDelay = 1.0
+        self.reconnect.reconnectTimerInterval = 2.0
         self.reconnect.addDelegate(self, delegateQueue: self.delegateQueue)
 
         try? self.sendMutex.lock()
