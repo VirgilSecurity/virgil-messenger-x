@@ -62,10 +62,8 @@ public class UserAuthorizer {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
                 try Ejabberd.shared.deregisterFromNotifications()
-
                 try Ejabberd.shared.disconect()
 
-                Configurator.reset()
                 CoreData.shared.resetState()
 
                 SharedDefaults.shared.reset(.identity)
@@ -82,8 +80,6 @@ public class UserAuthorizer {
     public func deleteAccount() throws {
         SharedDefaults.shared.reset(.identity)
         UnreadManager.shared.reset()
-
-        Configurator.reset()
 
         try CoreData.shared.deleteAccount()
         CoreData.shared.resetState()

@@ -84,9 +84,7 @@ class SettingsViewController: ViewController {
     }
 
     private func logOut() {
-        guard Configurator.isUpdated else {
-            return
-        }
+        // FIXME: add connecting interruption
 
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
@@ -111,9 +109,7 @@ class SettingsViewController: ViewController {
     }
 
     private func deleteAccount() {
-        guard Configurator.isUpdated else {
-            return
-        }
+        // FIXME: add connecting interruption
 
         let alertController = UIAlertController(title: "Delete account",
                                                 message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.",

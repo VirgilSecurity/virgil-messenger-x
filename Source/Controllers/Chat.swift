@@ -73,12 +73,20 @@ class ChatViewController: BaseChatViewController {
         self.avatarView.gradientLayer.colors = self.channel.colors
         self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
 
-        self.setupTitle()
+        self.setupIndicator()
+        self.updateTitle()
 
         self.setupObservers()
-
         self.dataSource.setupObservers()
 
+        self.updateUnreadState()
+    }
+
+    deinit {
+        CoreData.shared.deselectChannel(channel)
+    }
+
+    private func updateUnreadState() {
         do {
             if self.channel.unreadCount > 0 {
                 try Ejabberd.shared.sendGlobalReadReceipt(to: self.channel.name)
@@ -91,10 +99,6 @@ class ChatViewController: BaseChatViewController {
         }
     }
 
-    deinit {
-        CoreData.shared.deselectChannel(channel)
-    }
-
     private func setupObservers() {
         let popToRoot: Notifications.Block = { [weak self] _ in
             DispatchQueue.main.async {
@@ -104,11 +108,11 @@ class ChatViewController: BaseChatViewController {
 
         let updateTitle: Notifications.Block = { [weak self] _ in
             DispatchQueue.main.async {
-                self?.setupTitle()
+                self?.updateTitle()
             }
         }
 
-        Notifications.observe(for: [.initializingSucceed, .updatingSucceed], block: updateTitle)
+        Notifications.observe(for: .connectionStateChanged, block: updateTitle)
         Notifications.observe(for: .currentChannelDeleted, block: popToRoot)
     }
 
@@ -120,38 +124,38 @@ class ChatViewController: BaseChatViewController {
         }
     }
 
-    private func setupTitle() {
-        if let state = Configurator.state {
-            self.setupIndicatorTitle(state)
-        }
-        else {
-            self.setupRegularTitle()
-        }
+    private func setupIndicator() {
+        self.indicator.hidesWhenStopped = false
+        self.indicatorLabel.textColor = .white
+        self.indicatorLabel.text = "Connecting"
     }
 
-    private func setupIndicatorTitle(_ state: String) {
-        self.indicator.hidesWhenStopped = false
-        self.indicator.startAnimating()
+    private func updateTitle() {
+        let titleView: UIView
 
-        self.indicatorLabel.textColor = .white
-        self.indicatorLabel.text = state
-        let titleView = UIStackView(arrangedSubviews: [self.indicator, self.indicatorLabel])
-        titleView.spacing = 5
+        switch Ejabberd.shared.state {
+        case .connected:
+            let titleButton = UIButton(type: .custom)
+            titleButton.frame = CGRect(x: 0, y: 0, width: 200, height: 21)
+            titleButton.tintColor = .white
+            titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
+            titleButton.setTitle(self.channel.name, for: .normal)
+
+            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(showChatDetails(_:)))
+            titleButton.addGestureRecognizer(tapRecognizer)
+
+            titleView = titleButton
+
+        case .connecting, .disconnected:
+            self.indicator.startAnimating()
+
+            let progressView = UIStackView(arrangedSubviews: [self.indicator, self.indicatorLabel])
+            progressView.spacing = 5
+
+            titleView = progressView
+        }
 
         self.navigationItem.titleView = titleView
-    }
-
-    private func setupRegularTitle() {
-        let titleButton = UIButton(type: .custom)
-        titleButton.frame = CGRect(x: 0, y: 0, width: 200, height: 21)
-        titleButton.tintColor = .white
-        titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
-        titleButton.setTitle(self.channel.name, for: .normal)
-
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(showChatDetails(_:)))
-        titleButton.addGestureRecognizer(tapRecognizer)
-
-        self.navigationItem.titleView = titleButton
     }
 
     @IBAction @objc func showChatDetails(_ sender: Any) {
@@ -286,9 +290,11 @@ extension ChatViewController {
         let item = TextChatInputItem()
 
         item.textInputHandler = { [weak self] text in
-            if self?.checkReachability() ?? false,
-                Configurator.isUpdated,
-                !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            if
+                self?.checkReachability() ?? false,
+                Ejabberd.shared.state == .connected,
+                !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            {
                     self?.dataSource.addTextMessage(text)
             }
         }
@@ -305,7 +311,7 @@ extension ChatViewController {
                                          inputViewAppearance: photosAppearence)
 
         item.photoInputHandler = { [weak self] image in
-            if self?.checkReachability() ?? false, Configurator.isUpdated {
+            if self?.checkReachability() ?? false, Ejabberd.shared.state == .connected {
                 self?.dataSource.addPhotoMessage(image)
             }
         }
@@ -316,7 +322,7 @@ extension ChatViewController {
         let item = AudioChatInputItem(presentingController: self)
 
         item.audioInputHandler = { [weak self] audioUrl, duration in
-            if self?.checkReachability() ?? false, Configurator.isUpdated {
+            if self?.checkReachability() ?? false, Ejabberd.shared.state == .connected {
                 self?.dataSource.addVoiceMessage(audioUrl, duration: duration)
             }
         }

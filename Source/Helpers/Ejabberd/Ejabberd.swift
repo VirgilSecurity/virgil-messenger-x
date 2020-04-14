@@ -12,21 +12,18 @@ import XMPPFrameworkSwift
 class Ejabberd: NSObject, XMPPStreamDelegate {
     private(set) static var shared: Ejabberd = Ejabberd()
 
+    internal let initQueue = DispatchQueue(label: "Ejabberd")
     private let delegateQueue = DispatchQueue(label: "EjabberdDelegate")
 
     internal let stream: XMPPStream = XMPPStream()
     internal var error: Error?
 
-    internal let initializeMutex: Mutex = Mutex()
     internal let sendMutex: Mutex = Mutex()
-
-    internal var state: State = .disconnected
-    internal var shouldRetry: Bool = true
 
     private let upload = XMPPHTTPFileUpload()
     private let deliveryReceipts = XMPPMessageDeliveryReceipts()
     private let readReceipts = XMPPMessageReadReceipts()
-    private let reconnect = XMPPReconnect()
+    internal let reconnect = XMPPReconnect()
 
     private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
@@ -60,7 +57,6 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
         self.reconnect.activate(self.stream)
         self.reconnect.addDelegate(self, delegateQueue: self.delegateQueue)
 
-        try? self.initializeMutex.lock()
         try? self.sendMutex.lock()
     }
 
