@@ -29,7 +29,7 @@ class CallViewController: UIViewController {
             return
         }
 
-        self.calleeLabel.text = call.opponent
+        self.calleeLabel.text = call.otherName
         self.callStatusLabel.text = call.state.rawValue
         self.connectionStatusLabel.text = call.connectionStatus.rawValue
 

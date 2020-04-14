@@ -52,8 +52,8 @@ public protocol CallSignalingDelegate: class {
 public class Call: NSObject {
     // MARK: Info properties
     public let uuid: UUID
-    public let caller: String
-    public let callee: String
+    public let myName: String
+    public let otherName: String
 
     // MARK: Delegates
     public weak var delegate: CallDelegate?
@@ -63,10 +63,10 @@ public class Call: NSObject {
     private(set) var peerConnection: RTCPeerConnection?
 
     // MARK: Init / Reset
-    init(withId uuid: UUID, caller: String, callee: String, signalingTo signalingDelegate: CallSignalingDelegate? = nil) {
+    init(withId uuid: UUID, myName: String, otherName: String, signalingTo signalingDelegate: CallSignalingDelegate? = nil) {
         self.uuid = uuid
-        self.caller = caller
-        self.callee = callee
+        self.myName = myName
+        self.otherName = otherName
         self.signalingDelegate = signalingDelegate
         self.state = .new
         self.connectionStatus = .none
@@ -88,10 +88,6 @@ public class Call: NSObject {
     }
 
     var isOutgoing: Bool {
-        preconditionFailure("This property must be overridden")
-    }
-
-    var opponent: String {
         preconditionFailure("This property must be overridden")
     }
 

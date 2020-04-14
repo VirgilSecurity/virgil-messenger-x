@@ -91,7 +91,7 @@ extension CallManager: CXProviderDelegate {
             return
         }
 
-        let call = OutgoingCall(withId: callUUID, to: callee, from: account.identity, signalingTo: self)
+        let call = OutgoingCall(withId: callUUID, from: account.identity, to: callee, signalingTo: self)
 
         self.addCall(call)
         call.start()

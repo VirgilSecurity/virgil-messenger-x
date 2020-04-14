@@ -13,18 +13,14 @@ public class IncomingCall: Call {
 
     private let sessionDescription: RTCSessionDescription
 
-    public init(from: NetworkMessage.CallOffer, to: String, signalingTo signalingDelegate: CallSignalingDelegate? = nil) {
+    public init(from: NetworkMessage.CallOffer, to myName: String, signalingTo signalingDelegate: CallSignalingDelegate? = nil) {
         self.sessionDescription = from.rtcSessionDescription
 
-        super.init(withId: from.callUUID, caller: from.caller, callee: to, signalingTo: signalingDelegate)
+        super.init(withId: from.callUUID, myName: myName, otherName: from.caller, signalingTo: signalingDelegate)
     }
 
     override var isOutgoing: Bool {
         return false
-    }
-
-    override var opponent: String {
-        return self.caller
     }
 
     public func start() {

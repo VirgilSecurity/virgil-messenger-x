@@ -12,17 +12,13 @@ import WebRTC
 public class OutgoingCall: Call {
 
     // MARK: Init
-    public init(withId uuid: UUID, to: String, from: String, signalingTo signalingDelegate: CallSignalingDelegate? = nil) {
-        super.init(withId: uuid, caller: from, callee: to, signalingTo: signalingDelegate)
+    public init(withId uuid: UUID, from myName: String, to otherName: String, signalingTo signalingDelegate: CallSignalingDelegate? = nil) {
+        super.init(withId: uuid, myName: myName, otherName: otherName, signalingTo: signalingDelegate)
     }
 
     // MARK: Info
     override var isOutgoing: Bool {
         return true
-    }
-
-    override var opponent: String {
-        return self.callee
     }
 
     // MARK: Call management
@@ -48,7 +44,7 @@ public class OutgoingCall: Call {
 
             peerConnection.setLocalDescription(sdp) { error in
                 guard let error = error else {
-                    let callOffer = NetworkMessage.CallOffer(callUUID: self.uuid, caller: self.caller, sdp: sdp.sdp)
+                    let callOffer = NetworkMessage.CallOffer(callUUID: self.uuid, caller: self.myName, sdp: sdp.sdp)
 
                     self.didCreateOffer(callOffer)
                     return

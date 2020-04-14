@@ -10,7 +10,7 @@ import Foundation
 
 extension CallManager {
     func sendSignalingMessage(callOffer: NetworkMessage.CallOffer, to call: Call, completion: @escaping (_ error: Error?) -> Void) {
-        let opponent = call.opponent
+        let opponent = call.otherName
         guard let opponentChannel = Storage.shared.getSingleChannel(with: opponent) else {
             completion(CallManagerContractError.noChannel)
             return
@@ -28,7 +28,7 @@ extension CallManager {
     }
 
     func sendSignalingMessage(callAnswer: NetworkMessage.CallAnswer, to call: Call, completion: @escaping (_ error: Error?) -> Void) {
-        let opponent = call.opponent
+        let opponent = call.otherName
         guard let opponentChannel = Storage.shared.getSingleChannel(with: opponent) else {
             completion(CallManagerContractError.noChannel)
             return
@@ -46,7 +46,7 @@ extension CallManager {
     }
 
     func sendSignalingMessage(callUpdate: NetworkMessage.CallUpdate, to call: Call, completion: @escaping (_ error: Error?) -> Void) {
-        let opponent = call.opponent
+        let opponent = call.otherName
         guard let opponentChannel = Storage.shared.getSingleChannel(with: opponent) else {
             completion(CallManagerContractError.noChannel)
             return
@@ -64,7 +64,7 @@ extension CallManager {
     }
 
     func sendSignalingMessage(iceCandidate: NetworkMessage.IceCandidate, to call: Call, completion: @escaping (_ error: Error?) -> Void) {
-        let opponent = call.opponent
+        let opponent = call.otherName
 
         guard let opponentChannel = Storage.shared.getSingleChannel(with: opponent) else {
             return
