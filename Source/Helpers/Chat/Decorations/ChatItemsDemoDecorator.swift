@@ -124,6 +124,14 @@ final class ChatItemsDemoDecorator: ChatItemsDecoratorProtocol {
     }
 
     func showsStatusForMessage(current: MessageModelProtocol, next: MessageModelProtocol?) -> Bool {
-        next?.status != current.status && !current.isIncoming
+        var repeatingFactor: Bool = true
+
+        if let next = next, next.status == current.status, !next.isIncoming {
+            repeatingFactor = false
+        }
+
+        let incomingFactor = !current.isIncoming
+
+        return repeatingFactor && incomingFactor
     }
 }
