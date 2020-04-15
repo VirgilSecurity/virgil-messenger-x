@@ -17,13 +17,13 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
 
     internal let stream: XMPPStream = XMPPStream()
     internal var error: Error?
+    internal var shouldRetry: Bool = true
 
     internal let sendMutex: Mutex = Mutex()
 
     private let upload = XMPPHTTPFileUpload()
     private let deliveryReceipts = XMPPMessageDeliveryReceipts()
     private let readReceipts = XMPPMessageReadReceipts()
-    internal let reconnect = XMPPReconnect()
 
     private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
@@ -52,13 +52,6 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
         self.readReceipts.activate(self.stream)
         self.readReceipts.autoSendMessageReadRequests = true
         self.readReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
-
-        // Reconnect
-        self.reconnect.activate(self.stream)
-        self.reconnect.autoReconnect = true
-        self.reconnect.reconnectDelay = 1.0
-        self.reconnect.reconnectTimerInterval = 2.0
-        self.reconnect.addDelegate(self, delegateQueue: self.delegateQueue)
 
         try? self.sendMutex.lock()
     }

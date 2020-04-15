@@ -32,10 +32,20 @@ extension Ejabberd {
     }
     
     public func startInitializing(identity: String) {
-        self.initQueue.async {
-            do {
-                self.stream.myJID = try Ejabberd.setupJid(with: identity)
+        do {
+            self.stream.myJID = try Ejabberd.setupJid(with: identity)
 
+            self.initialize()
+        }
+        catch {
+            Log.error(error, message: "Jid forming failed")
+            Notifications.post(error: error)
+        }
+    }
+
+    private func initialize(after: TimeInterval = 0) {
+        self.initQueue.asyncAfter(deadline: .now() + after) {
+            do {
                 if !self.stream.isConnected {
                     try self.stream.connect(withTimeout: 20)
                 }
@@ -47,6 +57,15 @@ extension Ejabberd {
         }
     }
 
+    private func setupRetry() {
+        if self.shouldRetry {
+            self.initialize(after: 1)
+        }
+        else {
+            self.shouldRetry = true
+        }
+    }
+
     public func disconect() throws {
         Log.debug("Ejabberd: Disconnecting")
 
@@ -54,6 +73,8 @@ extension Ejabberd {
             self.stream.abortConnecting()
             return
         }
+
+        self.shouldRetry = false
 
         self.stream.disconnect()
     }
@@ -85,7 +106,7 @@ extension Ejabberd {
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
         Log.error(EjabberdError.connectionTimeout, message: "Ejabberd connection reached timeout")
 
-        self.reconnect.manualStart()
+        self.setupRetry()
     }
 
     func xmppStreamDidDisconnect(_ sender: XMPPStream, withError error: Error?) {
@@ -97,6 +118,8 @@ extension Ejabberd {
         }
 
         Notifications.post(.connectionStateChanged)
+
+        self.setupRetry()
     }
 
     func xmppStreamDidAuthenticate(_ sender: XMPPStream) {
@@ -124,15 +147,5 @@ extension Ejabberd {
         Log.error(error, message: "Ejabberd authentication failed")
 
         Notifications.post(.connectionStateChanged)
-    }
-}
-
-extension Ejabberd: XMPPReconnectDelegate {
-    func xmppReconnect(_ sender: XMPPReconnect, didDetectAccidentalDisconnect connectionFlags: SCNetworkConnectionFlags) {
-        Log.debug("Ejabberd accidentally disconnected")
-    }
-
-    func xmppReconnect(_ sender: XMPPReconnect, shouldAttemptAutoReconnect connectionFlags: SCNetworkConnectionFlags) -> Bool {
-        return true
     }
 }
