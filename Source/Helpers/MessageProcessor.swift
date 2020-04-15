@@ -37,10 +37,6 @@ class MessageProcessor {
     static func process(_ encryptedMessage: EncryptedMessage, from author: String, xmppId: String) throws {
         let channel = try self.setupCoreChannel(name: author)
 
-        if channel.allMessages.contains(where: { $0.xmppId == xmppId }) {
-            return
-        }
-
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
 
         var decryptedAdditional: Data?
@@ -72,7 +68,8 @@ class MessageProcessor {
         case .callOffer(let callOffer):
             let xmppId = callOffer.callUUID.uuidString
 
-            if channel.allMessages.contains(where: { $0.xmppId == xmppId }) {
+            if channel.containsCallMessage(with: callOffer.callUUID) {
+                Log.debug("CallOffer was already processed (callUUID = \(callOffer.callUUID))")
                 return
             }
 
@@ -124,14 +121,21 @@ class MessageProcessor {
                                                                    unread: unread,
                                                                    baseParams: baseParams)
 
-        case .callOffer:
+        case .callOffer(let callOffer):
+
+            if channel.containsCallMessage(with: callOffer.callUUID) {
+                Log.debug("CallOffer was already processed (callUUID = \(callOffer.callUUID))")
+                return
+            }
+
             Notifications.post(message: message)
 
-            storageMessage = try Storage.shared.createCallMessage(unread: unread,
+            storageMessage = try Storage.shared.createCallMessage(with: callOffer,
+                                                                  unread: unread,
                                                                   baseParams: baseParams)
 
         case .callAnswer, .callUpdate, .iceCandidate:
-            //  FIXME: Unify the handling approach for '.text' as well.
+            //  TODO: Unify the handling approach for '.text' as well.
             Notifications.post(message: message)
         }
 

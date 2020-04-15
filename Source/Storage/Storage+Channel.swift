@@ -95,7 +95,7 @@ extension Storage {
                 return "Voice Message"
 
             case let callMessage as CallMessage:
-                return callMessage.isIncoming ? "Call from \(callMessage.channelName)" : "Call to \(callMessage.channelName)"
+                return callMessage.isIncoming ? "Incomming call" : "Outgoing call"
 
             default:
                 return ""
@@ -158,6 +158,16 @@ extension Storage {
 
         public func set(group: Group) {
             self.group = group
+        }
+
+        public func containsCallMessage(with callUUID: UUID) -> Bool {
+            return self.allMessages.contains {
+                guard let callMessage = $0 as? CallMessage else {
+                    return false
+                }
+
+                return callMessage.callUUID == callUUID
+            }
         }
     }
 }

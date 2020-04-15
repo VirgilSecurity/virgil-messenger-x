@@ -7,6 +7,7 @@ public class MessageSender {
 
     // Returns xmppId
     private func send(message: NetworkMessage, pushType: PushType, additionalData: Data?, to channel: Storage.Channel, date: Date, messageId: String) throws {
+
         let exported = try message.exportAsJsonData()
 
         let card = try channel.getCard()
@@ -79,18 +80,16 @@ public class MessageSender {
         }
     }
 
-    public func send(callOffer: NetworkMessage.CallOffer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(callOffer: NetworkMessage.CallOffer, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.callOffer(callOffer)
-
-                let messageId = callOffer.callUUID.uuidString
 
                 try self.send(message: message, pushType: .voip, additionalData: nil, to: channel, date: date, messageId: messageId)
 
                 let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
 
-                let storageMessage = try Storage.shared.createCallMessage(baseParams: baseParams)
+                let storageMessage = try Storage.shared.createCallMessage(with: callOffer, baseParams: baseParams)
 
                 Notifications.post(message: storageMessage)
 
@@ -101,13 +100,11 @@ public class MessageSender {
         }
     }
 
-    public func send(callAnswer: NetworkMessage.CallAnswer, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(callAnswer: NetworkMessage.CallAnswer, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.callAnswer(callAnswer)
 
-                let messageId = callAnswer.callUUID.uuidString
-
                 try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
@@ -117,13 +114,11 @@ public class MessageSender {
         }
     }
 
-    public func send(callUpdate: NetworkMessage.CallUpdate, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(callUpdate: NetworkMessage.CallUpdate, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.callUpdate(callUpdate)
 
-                let messageId = callUpdate.callUUID.uuidString
-
                 try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
@@ -133,12 +128,10 @@ public class MessageSender {
         }
     }
 
-    public func send(iceCandidate: NetworkMessage.IceCandidate, date: Date, channel: Storage.Channel, completion: @escaping (Error?) -> Void) {
+    public func send(iceCandidate: NetworkMessage.IceCandidate, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.iceCandidate(iceCandidate)
-
-                let messageId = iceCandidate.callUUID.uuidString
 
                 try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
 

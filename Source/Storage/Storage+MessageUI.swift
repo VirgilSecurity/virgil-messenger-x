@@ -151,7 +151,8 @@ extension Storage {
     }
 
     public static func exportAsUIModel(message: Storage.CallMessage) -> UIMessageModelProtocol {
-        let text = message.isIncoming ? "Incomming call from \(message.channelName)" : "Outgoing call to \(message.channelName)"
+
+        let text = message.isIncoming ? "Incomming call" : "Outgoing call"
 
         let status = message.state.exportAsMessageStatus()
 

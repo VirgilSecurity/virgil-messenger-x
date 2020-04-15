@@ -325,7 +325,9 @@ extension ChatListViewController: CallManagerDelegate {
     }
 
     func callManager(_ callManager: CallManager, didFail error: Error) {
-        self.alert(error)
+        DispatchQueue.main.async {
+            self.alert(error)
+        }
     }
 
     func callManager(_ callManager: CallManager, didFailCall call: Call, error: Error) {

@@ -13,14 +13,19 @@ import ChattoAdditions
 extension Storage {
     @objc(CallMessage)
     public class CallMessage: Message {
-        @NSManaged public var channelName: String
+        @NSManaged public var callUUID: UUID
         @NSManaged public var duration: TimeInterval
 
         private static let EntityName = "CallMessage"
 
-        convenience init(baseParams: Message.Params,
+        convenience init(callUUID: UUID,
+                         duration: TimeInterval = 0.0,
+                         baseParams: Message.Params,
                          context: NSManagedObjectContext) throws {
             try self.init(entityName: CallMessage.EntityName, context: context, params: baseParams)
+
+            self.callUUID = callUUID
+            self.duration = duration
         }
     }
 }

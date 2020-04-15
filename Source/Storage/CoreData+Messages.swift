@@ -81,9 +81,10 @@ extension Storage {
         return message
     }
 
-    func createCallMessage(unread: Bool = false, baseParams: Message.Params) throws -> Message {
+    func createCallMessage(with callOffer: NetworkMessage.CallOffer, unread: Bool = false, baseParams: Message.Params) throws -> Message {
 
-        let message = try Storage.CallMessage(baseParams: baseParams,
+        let message = try Storage.CallMessage(callUUID: callOffer.callUUID,
+                                              baseParams: baseParams,
                                               context: self.managedContext)
 
 

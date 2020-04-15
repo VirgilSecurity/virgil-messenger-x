@@ -16,7 +16,9 @@ extension CallManager {
             return
         }
 
-        self.messageSender.send(callOffer: callOffer, date: Date(), channel: opponentChannel) { (error) in
+        let messageId = UUID().uuidString
+
+        self.messageSender.send(callOffer: callOffer, date: Date(), channel: opponentChannel, messageId: messageId) { (error) in
             guard let error = error else {
                 completion(nil)
                 return
@@ -34,7 +36,9 @@ extension CallManager {
             return
         }
 
-        self.messageSender.send(callAnswer: callAnswer, date: Date(), channel: opponentChannel) { (error) in
+        let messageId = UUID().uuidString
+
+        self.messageSender.send(callAnswer: callAnswer, date: Date(), channel: opponentChannel, messageId: messageId) { error in
             guard let error = error else {
                 completion(nil)
                 return
@@ -52,7 +56,9 @@ extension CallManager {
             return
         }
 
-        self.messageSender.send(callUpdate: callUpdate, date: Date(), channel: opponentChannel) { (error) in
+        let messageId = UUID().uuidString
+
+        self.messageSender.send(callUpdate: callUpdate, date: Date(), channel: opponentChannel, messageId: messageId) { error in
             guard let error = error else {
                 completion(nil)
                 return
@@ -70,7 +76,9 @@ extension CallManager {
             return
         }
 
-        self.messageSender.send(iceCandidate: iceCandidate, date: Date(), channel: opponentChannel) { (error) in
+        let messageId = UUID().uuidString
+
+        self.messageSender.send(iceCandidate: iceCandidate, date: Date(), channel: opponentChannel, messageId: messageId) { error in
             guard let error = error else {
                 completion(nil)
                 return
