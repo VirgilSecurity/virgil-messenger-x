@@ -30,10 +30,23 @@ extension Ejabberd {
 
         return result
     }
-    
+
+    internal struct RetryConfig {
+        var shouldRetry: Bool = true
+        var reconnectDelay: ReconnectDelay = .noDelay
+
+        enum ReconnectDelay: TimeInterval {
+            case noDelay = 0
+            case shortDelay = 1
+        }
+    }
+}
+
+extension Ejabberd {
     public func startInitializing(identity: String) {
         do {
             self.stream.myJID = try Ejabberd.setupJid(with: identity)
+            self.retryConfig = RetryConfig()
 
             self.initialize()
         }
@@ -47,7 +60,7 @@ extension Ejabberd {
         self.initQueue.asyncAfter(deadline: .now() + after) {
             do {
                 if !self.stream.isConnected {
-                    try self.stream.connect(withTimeout: 20)
+                    try self.stream.connect(withTimeout: 10)
                 }
             }
             catch {
@@ -58,11 +71,12 @@ extension Ejabberd {
     }
 
     private func setupRetry() {
-        if self.shouldRetry {
-            self.initialize(after: 1)
+        if self.retryConfig.shouldRetry {
+            self.initialize(after: self.retryConfig.reconnectDelay.rawValue)
+            self.retryConfig.reconnectDelay = .shortDelay
         }
         else {
-            self.shouldRetry = true
+            self.retryConfig.shouldRetry = true
         }
     }
 
@@ -73,7 +87,7 @@ extension Ejabberd {
             self.stream.abortConnecting()
         }
 
-        self.shouldRetry = false
+        self.retryConfig.shouldRetry = false
 
         self.stream.disconnect()
     }
@@ -132,6 +146,8 @@ extension Ejabberd {
         catch {
             Log.error(error, message: "Registering for notifications failed")
         }
+
+        self.retryConfig.reconnectDelay = .noDelay
 
         Notifications.post(.connectionStateChanged)
     }
