@@ -69,9 +69,8 @@ extension Ejabberd {
     public func disconect() throws {
         Log.debug("Ejabberd: Disconnecting")
 
-        guard self.stream.isConnected else {
+        if !self.stream.isConnected {
             self.stream.abortConnecting()
-            return
         }
 
         self.shouldRetry = false
