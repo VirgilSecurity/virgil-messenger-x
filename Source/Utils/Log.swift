@@ -40,7 +40,6 @@ public enum Log {
                              file: String = #file,
                              line: UInt = #line) {
         let info = ["message": closure(),
-                    "localizedDescription": error.localizedDescription,
                     "functionName": String(functionName),
                     "file": String(file),
                     "line": String(line)]
