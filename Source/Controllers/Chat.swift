@@ -65,9 +65,9 @@ class ChatViewController: BaseChatViewController {
 
         super.chatItemsDecorator = ChatItemsDemoDecorator()
 
-        super.inputContainer.backgroundColor = UIColor(rgb: 0x20232B)
-        super.bottomSpaceView.backgroundColor = UIColor(rgb: 0x20232B)
-        super.collectionView?.backgroundColor = UIColor(rgb: 0x2B303B)
+        super.inputContainer.backgroundColor = .appThemeBackgroundColor
+        super.bottomSpaceView.backgroundColor = .appThemeBackgroundColor
+        super.collectionView?.backgroundColor = .appThemeForegroundColor
 
         self.letterLabel.text = self.channel.letter
         self.avatarView.gradientLayer.colors = self.channel.colors
@@ -192,7 +192,7 @@ class ChatViewController: BaseChatViewController {
 
     override func createPresenterBuilders() -> [ChatItemType: [ChatItemPresenterBuilderProtocol]] {
         let chatColor = BaseMessageCollectionViewCellDefaultStyle.Colors(
-            incoming: UIColor(rgb: 0x20232B), // background
+            incoming: .appThemeBackgroundColor, // background
             outgoing: UIColor(rgb: 0x4A4E58)
         )
 
@@ -297,7 +297,7 @@ extension ChatViewController {
 
     private func createPhotoInputItem() -> UIPhotosChatInputItem {
         var liveCamaraAppearence = LiveCameraCellAppearance.createDefaultAppearance()
-        liveCamaraAppearence.backgroundColor = UIColor(rgb: 0x2B303B)
+        liveCamaraAppearence.backgroundColor = .appThemeForegroundColor
         let photosAppearence = PhotosInputViewAppearance(liveCameraCellAppearence: liveCamaraAppearence)
         let item = UIPhotosChatInputItem(presentingController: self,
                                          tabInputButtonAppearance: PhotosChatInputItem.createDefaultButtonAppearance(),

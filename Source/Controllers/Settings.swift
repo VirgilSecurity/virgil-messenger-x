@@ -189,10 +189,10 @@ extension SettingsViewController {
             )
 
             cell.accessoryType = .none
-            cell.backgroundColor = .backgroundColor
+            cell.backgroundColor = .appThemeBackgroundColor
 
             let colorView = UIView()
-            colorView.backgroundColor = .selectedBackgroundColor
+            colorView.backgroundColor = .appThemeForegroundColor
             cell.selectedBackgroundView = colorView
 
             configure(cell)

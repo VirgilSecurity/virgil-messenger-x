@@ -9,8 +9,8 @@
 import UIKit
 
 extension UIColor {
-    static let backgroundColor         = UIColor(rgb: 0x20232B)
-    static let selectedBackgroundColor = UIColor(rgb: 0x2B303B)
+    static let appThemeBackgroundColor = UIColor(rgb: 0x20232B)
+    static let appThemeForegroundColor = UIColor(rgb: 0x2B303B)
 
     static let textColor               = UIColor(rgb: 0xFFFFFF)
     static let mutedTextColor          = UIColor(rgb: 0x6B6B70)

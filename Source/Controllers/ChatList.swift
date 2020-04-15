@@ -201,7 +201,7 @@ extension ChatListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.backgroundColor = UIColor(rgb: 0x2B303B)
+        cell.backgroundColor = .appThemeForegroundColor
     }
 }
 
