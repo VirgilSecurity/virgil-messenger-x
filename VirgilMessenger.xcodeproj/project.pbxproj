@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		160093CC22B93AD10045D43F /* BEMCheckBox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 160093CB22B93AD10045D43F /* BEMCheckBox.framework */; };
 		16013C7920B214460043EA29 /* AudioBubleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C7820B214460043EA29 /* AudioBubleView.swift */; };
 		16013C7B20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C7A20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift */; };
 		16013C7D20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16013C7C20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift */; };
@@ -20,8 +19,6 @@
 		1621B8491FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1621B8471FB333B100D1ABC1 /* VirgilMessenger-5.xcdatamodeld */; };
 		162E22E7225F76BF00AAE7C4 /* NewMessageTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22E6225F76BF00AAE7C4 /* NewMessageTable.swift */; };
 		162E22E9225F7E4E00AAE7C4 /* NewGroup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 162E22E8225F7E4E00AAE7C4 /* NewGroup.storyboard */; };
-		162E22EB225F8F6000AAE7C4 /* ChooseGroupMembers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EA225F8F6000AAE7C4 /* ChooseGroupMembers.swift */; };
-		162E22ED225F953D00AAE7C4 /* ChooseMembersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EC225F953D00AAE7C4 /* ChooseMembersCell.swift */; };
 		162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */; };
 		16317B9922C506A200A3144A /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16317B9822C506A200A3144A /* Notifications.swift */; };
 		163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C9EB32109FE320096A751 /* UITextViewZeroPaddings.swift */; };
@@ -37,9 +34,7 @@
 		1658BA181FD97497005EF9C1 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1658BA171FD97497005EF9C1 /* Date.swift */; };
 		1658BA1D1FD9A8BC005EF9C1 /* InputBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1658BA1C1FD9A8BC005EF9C1 /* InputBar.swift */; };
 		1658BA211FD9B08F005EF9C1 /* InputBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1658BA201FD9B08F005EF9C1 /* InputBar.xib */; };
-		165900222280382E00063EC9 /* AddMembers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165900212280382E00063EC9 /* AddMembers.swift */; };
 		166BFAA222676C7D00EF72AD /* GroupInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 166BFAA122676C7D00EF72AD /* GroupInfo.storyboard */; };
-		166BFAA422687D4F00EF72AD /* GroupInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BFAA322687D4F00EF72AD /* GroupInfo.swift */; };
 		167C68451FADDB7800E6E448 /* Virgil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167C68441FADDB7800E6E448 /* Virgil.swift */; };
 		168E54CC22395DDC00B6E822 /* ColorPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168E54CB22395DDC00B6E822 /* ColorPair.swift */; };
 		169367812248FA0800EF9A42 /* VirgilCryptoFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */; };
@@ -96,15 +91,12 @@
 		16F30D4F1FDAE91D006C3DEB /* SignInCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4E1FDAE91D006C3DEB /* SignInCollectionCell.swift */; };
 		16F6FC721FAA235400158615 /* Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F6FC711FAA235300158615 /* Registration.swift */; };
 		16F8F3B5226484C500143FB7 /* UsersList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16F8F3B4226484C500143FB7 /* UsersList.storyboard */; };
-		16F8F3B72264875F00143FB7 /* UsersList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3B62264875F00143FB7 /* UsersList.swift */; };
 		16F8F3B9226487BE00143FB7 /* UsersListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3B8226487BE00143FB7 /* UsersListCell.swift */; };
-		16F8F3BB22649A7F00143FB7 /* NewMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3BA22649A7F00143FB7 /* NewMessage.swift */; };
 		16FA91051FFC55A400FE98C7 /* UIViewController+Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FA91041FFC55A400FE98C7 /* UIViewController+Reachability.swift */; };
 		16FB2DCC204D806E00346FA0 /* UIPhotoMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DCB204D806E00346FA0 /* UIPhotoMessageViewModel.swift */; };
 		16FB2DD3204D875400346FA0 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DD2204D875400346FA0 /* UIView.swift */; };
 		16FB2DD5204D87F200346FA0 /* UIColor+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DD4204D87F200346FA0 /* UIColor+RGB.swift */; };
 		16FC6798226090860044CC70 /* ChooseMembersCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 16FC6797226090860044CC70 /* ChooseMembersCell.xib */; };
-		16FC679B2260D7860044CC70 /* CreateGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FC679A2260D7860044CC70 /* CreateGroup.swift */; };
 		16FC7BDE238D688100F7ACE7 /* VirgilE3Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */; };
 		16FC7BE4238D691600F7ACE7 /* VirgilSDKPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; };
 		16FC7BE6238D691600F7ACE7 /* VSCPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */; };
@@ -364,13 +356,11 @@
 		F4241E142433864F00E839C3 /* CellTapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */; };
 		F4241E152433864F00E839C3 /* SignInCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4E1FDAE91D006C3DEB /* SignInCollectionCell.swift */; };
 		F4241E162433864F00E839C3 /* ChatListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA7D1F97602F00C3EE9B /* ChatListCell.swift */; };
-		F4241E172433864F00E839C3 /* ChooseMembersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EC225F953D00AAE7C4 /* ChooseMembersCell.swift */; };
 		F4241E182433864F00E839C3 /* UsersListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3B8226487BE00143FB7 /* UsersListCell.swift */; };
 		F4241E192433864F00E839C3 /* DetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AC600B2400225100F6A73C /* DetailTableViewCell.swift */; };
 		F4241E1A2433864F00E839C3 /* CellTapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */; };
 		F4241E1B2433864F00E839C3 /* SignInCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4E1FDAE91D006C3DEB /* SignInCollectionCell.swift */; };
 		F4241E1C2433864F00E839C3 /* ChatListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA7D1F97602F00C3EE9B /* ChatListCell.swift */; };
-		F4241E1D2433864F00E839C3 /* ChooseMembersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EC225F953D00AAE7C4 /* ChooseMembersCell.swift */; };
 		F4241E1E2433864F00E839C3 /* UsersListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3B8226487BE00143FB7 /* UsersListCell.swift */; };
 		F4241E1F2433864F00E839C3 /* DetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AC600B2400225100F6A73C /* DetailTableViewCell.swift */; };
 		F4241E202433865300E839C3 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4A1FDAE190006C3DEB /* Authentication.swift */; };
@@ -379,28 +369,16 @@
 		F4241E232433865300E839C3 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4A1FDAE190006C3DEB /* Authentication.swift */; };
 		F4241E242433865300E839C3 /* Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F6FC711FAA235300158615 /* Registration.swift */; };
 		F4241E252433865300E839C3 /* SignInCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F30D4C1FDAE6E6006C3DEB /* SignInCollection.swift */; };
-		F4241E262433865900E839C3 /* NewMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3BA22649A7F00143FB7 /* NewMessage.swift */; };
 		F4241E272433865900E839C3 /* NewMessageTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22E6225F76BF00AAE7C4 /* NewMessageTable.swift */; };
-		F4241E282433865900E839C3 /* ChooseGroupMembers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EA225F8F6000AAE7C4 /* ChooseGroupMembers.swift */; };
-		F4241E292433865900E839C3 /* CreateGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FC679A2260D7860044CC70 /* CreateGroup.swift */; };
-		F4241E2A2433865B00E839C3 /* NewMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3BA22649A7F00143FB7 /* NewMessage.swift */; };
 		F4241E2B2433865B00E839C3 /* NewMessageTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22E6225F76BF00AAE7C4 /* NewMessageTable.swift */; };
-		F4241E2C2433865B00E839C3 /* ChooseGroupMembers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EA225F8F6000AAE7C4 /* ChooseGroupMembers.swift */; };
-		F4241E2D2433865B00E839C3 /* CreateGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FC679A2260D7860044CC70 /* CreateGroup.swift */; };
 		F4241E2E2433866100E839C3 /* Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51011FC45E9A0042AF9D /* Start.swift */; };
 		F4241E2F2433866100E839C3 /* ChatList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA7B1F97601700C3EE9B /* ChatList.swift */; };
 		F4241E302433866100E839C3 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0E21F97364F00075B3A /* Chat.swift */; };
-		F4241E312433866100E839C3 /* AddMembers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165900212280382E00063EC9 /* AddMembers.swift */; };
-		F4241E322433866100E839C3 /* GroupInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BFAA322687D4F00EF72AD /* GroupInfo.swift */; };
 		F4241E332433866100E839C3 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51121FC5DA3B0042AF9D /* Settings.swift */; };
-		F4241E342433866200E839C3 /* UsersList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3B62264875F00143FB7 /* UsersList.swift */; };
 		F4241E372433866200E839C3 /* Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51011FC45E9A0042AF9D /* Start.swift */; };
 		F4241E382433866200E839C3 /* ChatList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423BDA7B1F97601700C3EE9B /* ChatList.swift */; };
 		F4241E392433866200E839C3 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280C0E21F97364F00075B3A /* Chat.swift */; };
-		F4241E3A2433866200E839C3 /* AddMembers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165900212280382E00063EC9 /* AddMembers.swift */; };
-		F4241E3B2433866200E839C3 /* GroupInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BFAA322687D4F00EF72AD /* GroupInfo.swift */; };
 		F4241E3C2433866200E839C3 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51121FC5DA3B0042AF9D /* Settings.swift */; };
-		F4241E3D2433866200E839C3 /* UsersList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F8F3B62264875F00143FB7 /* UsersList.swift */; };
 		F4241E402433869100E839C3 /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */; };
 		F4241E412433869100E839C3 /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */; };
 		F4241E422433869400E839C3 /* UIColor+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FB2DD4204D87F200346FA0 /* UIColor+RGB.swift */; };
@@ -469,7 +447,6 @@
 		F4241EB72433946C00E839C3 /* VirgilSDKPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; };
 		F4241EB82433946C00E839C3 /* VSCPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */; };
 		F4241EB92433946C00E839C3 /* VirgilE3Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */; };
-		F4241EBA2433946C00E839C3 /* BEMCheckBox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 160093CB22B93AD10045D43F /* BEMCheckBox.framework */; };
 		F4241EBB2433946C00E839C3 /* VirgilCryptoFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */; };
 		F4241EBC2433946C00E839C3 /* VirgilCryptoRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */; };
 		F4241EBD2433946C00E839C3 /* VirgilSDKRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */; };
@@ -514,7 +491,6 @@
 		F4241EEE2433964600E839C3 /* VirgilSDKPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */; };
 		F4241EEF2433964600E839C3 /* VSCPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */; };
 		F4241EF02433964600E839C3 /* VirgilE3Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */; };
-		F4241EF12433964600E839C3 /* BEMCheckBox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 160093CB22B93AD10045D43F /* BEMCheckBox.framework */; };
 		F4241EF22433964600E839C3 /* VirgilCryptoFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */; };
 		F4241EF32433964600E839C3 /* VirgilCryptoRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */; };
 		F4241EF42433964600E839C3 /* VirgilSDKRatchet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */; };
@@ -691,7 +667,6 @@
 
 /* Begin PBXFileReference section */
 		160093CA22B9315C0045D43F /* VirgilMessenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VirgilMessenger.entitlements; sourceTree = "<group>"; };
-		160093CB22B93AD10045D43F /* BEMCheckBox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BEMCheckBox.framework; path = Carthage/Build/iOS/BEMCheckBox.framework; sourceTree = "<group>"; };
 		16013C7820B214460043EA29 /* AudioBubleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBubleView.swift; sourceTree = "<group>"; };
 		16013C7A20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageCollectionViewCellDefaultStyle.swift; sourceTree = "<group>"; };
 		16013C7C20B2C8110043EA29 /* AudioMessageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMessageCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -925,7 +900,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4241F0D24339E1700E839C3 /* Fabric.framework in Frameworks */,
-				160093CC22B93AD10045D43F /* BEMCheckBox.framework in Frameworks */,
 				97E7C55E2403E6FF00D9CAAA /* GoogleDataTransport.framework in Frameworks */,
 				16FC7BE6238D691600F7ACE7 /* VSCPythia.framework in Frameworks */,
 				97E7C49824030D4800D9CAAA /* GoogleAppMeasurement.framework in Frameworks */,
@@ -999,7 +973,6 @@
 				F4241EB72433946C00E839C3 /* VirgilSDKPythia.framework in Frameworks */,
 				F4241EB82433946C00E839C3 /* VSCPythia.framework in Frameworks */,
 				F4241EB92433946C00E839C3 /* VirgilE3Kit.framework in Frameworks */,
-				F4241EBA2433946C00E839C3 /* BEMCheckBox.framework in Frameworks */,
 				F4241EBB2433946C00E839C3 /* VirgilCryptoFoundation.framework in Frameworks */,
 				F4241EBC2433946C00E839C3 /* VirgilCryptoRatchet.framework in Frameworks */,
 				F4241EBD2433946C00E839C3 /* VirgilSDKRatchet.framework in Frameworks */,
@@ -1069,7 +1042,6 @@
 				F4241EEE2433964600E839C3 /* VirgilSDKPythia.framework in Frameworks */,
 				F4241EEF2433964600E839C3 /* VSCPythia.framework in Frameworks */,
 				F4241EF02433964600E839C3 /* VirgilE3Kit.framework in Frameworks */,
-				F4241EF12433964600E839C3 /* BEMCheckBox.framework in Frameworks */,
 				F4241EF22433964600E839C3 /* VirgilCryptoFoundation.framework in Frameworks */,
 				F4241EF32433964600E839C3 /* VirgilCryptoRatchet.framework in Frameworks */,
 				F4241EF42433964600E839C3 /* VirgilSDKRatchet.framework in Frameworks */,
@@ -1492,7 +1464,6 @@
 				16FC7BE1238D691600F7ACE7 /* VirgilSDKPythia.framework */,
 				16FC7BE2238D691600F7ACE7 /* VSCPythia.framework */,
 				16FC7BDD238D688100F7ACE7 /* VirgilE3Kit.framework */,
-				160093CB22B93AD10045D43F /* BEMCheckBox.framework */,
 				1698B29822392339003B8CBA /* VirgilCryptoFoundation.framework */,
 				1698B29722392339003B8CBA /* VirgilCryptoRatchet.framework */,
 				1698B29322392339003B8CBA /* VirgilSDKRatchet.framework */,
@@ -1942,7 +1913,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoFoundation.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoRatchet.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilSDKRatchet.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BEMCheckBox.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilE3Kit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VSCPythia.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoPythia.framework",
@@ -1984,7 +1954,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoFoundation.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoRatchet.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilSDKRatchet.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BEMCheckBox.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilE3Kit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VSCPythia.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoPythia.framework",
@@ -2058,7 +2027,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoFoundation.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoRatchet.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilSDKRatchet.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BEMCheckBox.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilE3Kit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VSCPythia.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/VirgilCryptoPythia.framework",
@@ -2163,7 +2131,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				805F59BC242E690B003421EB /* UIViewController+Navigation.swift in Sources */,
-				16F8F3B72264875F00143FB7 /* UsersList.swift in Sources */,
 				16FE75F7224A5CC400B545AF /* ChatsManager+Start.swift in Sources */,
 				164E172E20AAEE3700AB1AAD /* AudioMessageModel.swift in Sources */,
 				80AC600E240023EA00F6A73C /* UIColor+Constants.swift in Sources */,
@@ -2180,7 +2147,6 @@
 				97CE26F52418231300903116 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
 				F40BC401243B1E23009AB5DF /* CallManager+CallKit.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
-				16FC679B2260D7860044CC70 /* CreateGroup.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
 				16013C8120B2CA760043EA29 /* AudioMessagePresenterBuilder.swift in Sources */,
 				164E173220AAEF1900AB1AAD /* UIAudioMessageHandler.swift in Sources */,
@@ -2192,7 +2158,6 @@
 				F46EE196241FA09F00BE53AA /* Storage+Channel.swift in Sources */,
 				16F30D4F1FDAE91D006C3DEB /* SignInCollectionCell.swift in Sources */,
 				16CA51061FC468370042AF9D /* Constants.swift in Sources */,
-				162E22EB225F8F6000AAE7C4 /* ChooseGroupMembers.swift in Sources */,
 				423BDA7C1F97601700C3EE9B /* ChatList.swift in Sources */,
 				167C68451FADDB7800E6E448 /* Virgil.swift in Sources */,
 				16D8B0EA223A6FD200D7FA67 /* UserAuthorizer.swift in Sources */,
@@ -2239,9 +2204,7 @@
 				97AF4D85241AEE8800ED9BD7 /* Client+Files.swift in Sources */,
 				162E22E7225F76BF00AAE7C4 /* NewMessageTable.swift in Sources */,
 				16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */,
-				165900222280382E00063EC9 /* AddMembers.swift in Sources */,
 				16CA51021FC45E9A0042AF9D /* Start.swift in Sources */,
-				162E22ED225F953D00AAE7C4 /* ChooseMembersCell.swift in Sources */,
 				F46EE194241FA09F00BE53AA /* Storage+Message.swift in Sources */,
 				1693679022490BA000EF9A42 /* VirgilAuthorizer.swift in Sources */,
 				F478ABD8243FA95300802051 /* CallViewController.swift in Sources */,
@@ -2250,7 +2213,6 @@
 				F4DDCC5024363479001E63B1 /* Storage+MessageUI.swift in Sources */,
 				1644C07B20B85AC500073D99 /* UIPhotosChatInputItem.swift in Sources */,
 				16B4EC2823BF63BA00E7E4DB /* EncryptedMessage.swift in Sources */,
-				166BFAA422687D4F00EF72AD /* GroupInfo.swift in Sources */,
 				4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */,
 				16FB2DD5204D87F200346FA0 /* UIColor+RGB.swift in Sources */,
 				16B4EC2623BF610500E7E4DB /* XMPPMessage.swift in Sources */,
@@ -2265,7 +2227,6 @@
 				1658BA1D1FD9A8BC005EF9C1 /* InputBar.swift in Sources */,
 				F4241D4724337E3800E839C3 /* EnvConstantProd.swift in Sources */,
 				16132FC6225514D0008FD754 /* MessageProcessor.swift in Sources */,
-				16F8F3BB22649A7F00143FB7 /* NewMessage.swift in Sources */,
 				F48122482425D71B0003DD78 /* CallManager.swift in Sources */,
 				16AE1D7A2044315B005DF777 /* UIPhotoMessageModel.swift in Sources */,
 				1612BC4623B658C000107C7A /* Ejabberd.swift in Sources */,
@@ -2297,9 +2258,7 @@
 				F4241E5D243386CE00E839C3 /* Notifications.swift in Sources */,
 				F4241E51243386BB00E839C3 /* Log.swift in Sources */,
 				F4241D8F2433857D00E839C3 /* Client+Backend.swift in Sources */,
-				F4241E172433864F00E839C3 /* ChooseMembersCell.swift in Sources */,
 				F4241DDA243385FD00E839C3 /* Virgil.swift in Sources */,
-				F4241E262433865900E839C3 /* NewMessage.swift in Sources */,
 				F4241D942433858300E839C3 /* Client+Files.swift in Sources */,
 				F4241D612433850F00E839C3 /* CoreData+Messages.swift in Sources */,
 				F40BC402243B1E39009AB5DF /* CallManager+CallKit.swift in Sources */,
@@ -2308,7 +2267,6 @@
 				F4241E202433865300E839C3 /* Authentication.swift in Sources */,
 				F4241DA5243385B700E839C3 /* AudioMessagePresenter.swift in Sources */,
 				F4241E152433864F00E839C3 /* SignInCollectionCell.swift in Sources */,
-				F4241E342433866200E839C3 /* UsersList.swift in Sources */,
 				F4241DC9243385EF00E839C3 /* BaseMessageHandler.swift in Sources */,
 				F4241D5224337F3400E839C3 /* ColorPair.swift in Sources */,
 				F4241D8B2433856B00E839C3 /* Client.swift in Sources */,
@@ -2335,7 +2293,6 @@
 				F4E8BCEE243E5FBE003C1A28 /* Call.swift in Sources */,
 				F4241E65243386D700E839C3 /* AppDelegate.swift in Sources */,
 				F4241E60243386CE00E839C3 /* Gradient.swift in Sources */,
-				F4241E322433866100E839C3 /* GroupInfo.swift in Sources */,
 				F4241D6E2433852700E839C3 /* Storage+VoiceMessage.swift in Sources */,
 				F4241D652433851600E839C3 /* Storage+Account.swift in Sources */,
 				F4241D58243383AB00E839C3 /* SwipeableNavigationController.swift in Sources */,
@@ -2351,7 +2308,6 @@
 				F4241D692433851E00E839C3 /* Storage+Message.swift in Sources */,
 				F4241DA7243385B700E839C3 /* AudioMessageViewModel.swift in Sources */,
 				F492235E24376BD800A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */,
-				F4241E312433866100E839C3 /* AddMembers.swift in Sources */,
 				F4241E66243386D700E839C3 /* PushNotificationsDelegate.swift in Sources */,
 				F4241DA4243385B700E839C3 /* AudioMessageModel.swift in Sources */,
 				F4241DE22433862500E839C3 /* ChatsManager+Start.swift in Sources */,
@@ -2379,7 +2335,6 @@
 				F4241E162433864F00E839C3 /* ChatListCell.swift in Sources */,
 				F4241E5F243386CE00E839C3 /* UITextViewZeroPaddings.swift in Sources */,
 				F4E8BCF6243E7F3E003C1A28 /* IncomingCall.swift in Sources */,
-				F4241E282433865900E839C3 /* ChooseGroupMembers.swift in Sources */,
 				F4241E4E243386BB00E839C3 /* UIView.swift in Sources */,
 				F4241DE52433862500E839C3 /* MessageSender.swift in Sources */,
 				F4241DA6243385B700E839C3 /* AudioMessagePresenterBuilder.swift in Sources */,
@@ -2398,7 +2353,6 @@
 				F4241DC8243385EF00E839C3 /* ChatItemsDemoDecorator.swift in Sources */,
 				F4241E4D243386BB00E839C3 /* UIViewController+Navigation.swift in Sources */,
 				F4241D672433851B00E839C3 /* Storage+Channel.swift in Sources */,
-				F4241E292433865900E839C3 /* CreateGroup.swift in Sources */,
 				F4241E50243386BB00E839C3 /* Date.swift in Sources */,
 				F4241E402433869100E839C3 /* UIImage+Resize.swift in Sources */,
 				F4241DCA243385EF00E839C3 /* DataSource.swift in Sources */,
@@ -2441,9 +2395,7 @@
 				F4241E61243386CF00E839C3 /* Notifications.swift in Sources */,
 				F4241E5A243386BB00E839C3 /* Log.swift in Sources */,
 				F4241D902433857D00E839C3 /* Client+Backend.swift in Sources */,
-				F4241E1D2433864F00E839C3 /* ChooseMembersCell.swift in Sources */,
 				F4241DDB243385FE00E839C3 /* Virgil.swift in Sources */,
-				F4241E2A2433865B00E839C3 /* NewMessage.swift in Sources */,
 				F4241D932433858200E839C3 /* Client+Files.swift in Sources */,
 				F4241D622433850F00E839C3 /* CoreData+Messages.swift in Sources */,
 				F40BC403243B1E39009AB5DF /* CallManager+CallKit.swift in Sources */,
@@ -2452,7 +2404,6 @@
 				F4241E232433865300E839C3 /* Authentication.swift in Sources */,
 				F4241DA9243385B800E839C3 /* AudioMessagePresenter.swift in Sources */,
 				F4241E1B2433864F00E839C3 /* SignInCollectionCell.swift in Sources */,
-				F4241E3D2433866200E839C3 /* UsersList.swift in Sources */,
 				F4241DD4243385F000E839C3 /* BaseMessageHandler.swift in Sources */,
 				F4241D5324337F3500E839C3 /* ColorPair.swift in Sources */,
 				F4241D8C2433856C00E839C3 /* Client.swift in Sources */,
@@ -2479,7 +2430,6 @@
 				F4E8BCEF243E5FBE003C1A28 /* Call.swift in Sources */,
 				F4241E68243386D800E839C3 /* AppDelegate.swift in Sources */,
 				F4241E64243386CF00E839C3 /* Gradient.swift in Sources */,
-				F4241E3B2433866200E839C3 /* GroupInfo.swift in Sources */,
 				F4241D6F2433852700E839C3 /* Storage+VoiceMessage.swift in Sources */,
 				F4241D662433851700E839C3 /* Storage+Account.swift in Sources */,
 				F4241D59243383AB00E839C3 /* SwipeableNavigationController.swift in Sources */,
@@ -2495,7 +2445,6 @@
 				F4241D6A2433851F00E839C3 /* Storage+Message.swift in Sources */,
 				F4241DAB243385B800E839C3 /* AudioMessageViewModel.swift in Sources */,
 				F492235F24376BD900A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */,
-				F4241E3A2433866200E839C3 /* AddMembers.swift in Sources */,
 				F4241E69243386D800E839C3 /* PushNotificationsDelegate.swift in Sources */,
 				F4241DA8243385B800E839C3 /* AudioMessageModel.swift in Sources */,
 				F4241DE72433862500E839C3 /* ChatsManager+Start.swift in Sources */,
@@ -2523,7 +2472,6 @@
 				F4241E1C2433864F00E839C3 /* ChatListCell.swift in Sources */,
 				F4241E63243386CF00E839C3 /* UITextViewZeroPaddings.swift in Sources */,
 				F4E8BCF7243E7F3E003C1A28 /* IncomingCall.swift in Sources */,
-				F4241E2C2433865B00E839C3 /* ChooseGroupMembers.swift in Sources */,
 				F4241E57243386BB00E839C3 /* UIView.swift in Sources */,
 				F4241DEA2433862500E839C3 /* MessageSender.swift in Sources */,
 				F4241DAA243385B800E839C3 /* AudioMessagePresenterBuilder.swift in Sources */,
@@ -2542,7 +2490,6 @@
 				F4241DD3243385F000E839C3 /* ChatItemsDemoDecorator.swift in Sources */,
 				F4241E56243386BB00E839C3 /* UIViewController+Navigation.swift in Sources */,
 				F4241D682433851C00E839C3 /* Storage+Channel.swift in Sources */,
-				F4241E2D2433865B00E839C3 /* CreateGroup.swift in Sources */,
 				F4241E59243386BB00E839C3 /* Date.swift in Sources */,
 				F4241E412433869100E839C3 /* UIImage+Resize.swift in Sources */,
 				F4241DD5243385F000E839C3 /* DataSource.swift in Sources */,
