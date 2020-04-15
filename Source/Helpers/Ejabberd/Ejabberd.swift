@@ -17,7 +17,7 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
 
     internal let stream: XMPPStream = XMPPStream()
     internal var error: Error?
-    internal var shouldRetry: Bool = true
+    internal var retryConfig: RetryConfig = RetryConfig()
 
     internal let sendMutex: Mutex = Mutex()
 
