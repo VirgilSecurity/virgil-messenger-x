@@ -131,10 +131,10 @@ class ChatViewController: BaseChatViewController {
     }
 
     private func updateTitle() {
-        let titleView: UIView
-
         switch Ejabberd.shared.state {
         case .connected:
+            self.indicator.stopAnimating()
+
             let titleButton = UIButton(type: .custom)
             titleButton.frame = CGRect(x: 0, y: 0, width: 200, height: 21)
             titleButton.tintColor = .white
@@ -144,18 +144,20 @@ class ChatViewController: BaseChatViewController {
             let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(showChatDetails(_:)))
             titleButton.addGestureRecognizer(tapRecognizer)
 
-            titleView = titleButton
+            self.navigationItem.titleView = titleButton
 
         case .connecting, .disconnected:
+            guard !self.indicator.isAnimating else {
+                return
+            }
+
             self.indicator.startAnimating()
 
             let progressView = UIStackView(arrangedSubviews: [self.indicator, self.indicatorLabel])
             progressView.spacing = 5
 
-            titleView = progressView
+            self.navigationItem.titleView = progressView
         }
-
-        self.navigationItem.titleView = titleView
     }
 
     @IBAction @objc func showChatDetails(_ sender: Any) {

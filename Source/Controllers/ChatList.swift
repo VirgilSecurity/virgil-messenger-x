@@ -100,6 +100,10 @@ class ChatListViewController: ViewController {
             self.indicator.stopAnimating()
 
         case .connecting, .disconnected:
+            guard !self.indicator.isAnimating else {
+                return
+            }
+            
             self.indicator.startAnimating()
 
             let titleView = UIStackView(arrangedSubviews: [self.indicator, self.indicatorLabel])
