@@ -47,6 +47,7 @@ extension Ejabberd {
                            "service": "apns",
                            "mutable_content": "true",
                            "sound": "default",
+                           "push_mode": Constants.pushMode,
                            "topic": Constants.KeychainGroup]
 
             let element = XMPPIQ.enableNotificationsElement(with: pushServerJID,
