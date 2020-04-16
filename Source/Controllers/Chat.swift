@@ -283,12 +283,15 @@ extension ChatViewController {
         let item = TextChatInputItem()
 
         item.textInputHandler = { [weak self] text in
-            if
+            guard
                 self?.checkReachability() ?? false,
-                Ejabberd.shared.state == .connected,
-                !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            {
-                    self?.dataSource.addTextMessage(text)
+                Ejabberd.shared.state == .connected
+            else {
+                throw NSError()
+            }
+
+            if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                self?.dataSource.addTextMessage(text)
             }
         }
 
