@@ -104,14 +104,16 @@ extension Ejabberd {
         Log.debug("Ejabberd: Connected")
 
         do {
-            if !self.stream.isAuthenticated {
-                guard let identity = self.stream.myJID?.user else {
-                    throw EjabberdError.missingStreamJID
-                }
-
-                let token = try Virgil.shared.client.getEjabberdToken(identity: identity)
-                try self.stream.authenticate(withPassword: token)
+            guard !self.stream.isAuthenticating, !self.stream.isAuthenticated else {
+                return
             }
+
+            guard let identity = self.stream.myJID?.user else {
+                throw EjabberdError.missingStreamJID
+            }
+
+            let token = try Virgil.shared.client.getEjabberdToken(identity: identity)
+            try self.stream.authenticate(withPassword: token)
         }
         catch {
             Log.error(error, message: "Authenticating stream failed")
@@ -119,7 +121,7 @@ extension Ejabberd {
     }
 
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
-        Log.error(EjabberdError.connectionTimeout, message: "Ejabberd connection reached timeout")
+        Log.debug("Ejabberd connecting reached timeout")
     }
 
     func xmppStreamDidDisconnect(_ sender: XMPPStream, withError error: Error?) {
@@ -140,12 +142,7 @@ extension Ejabberd {
 
         self.set(status: .online)
 
-        do {
-            try self.registerForNotifications()
-        }
-        catch {
-            Log.error(error, message: "Registering for notifications failed")
-        }
+        self.registerForNotifications()
 
         self.retryConfig.reconnectDelay = .noDelay
 

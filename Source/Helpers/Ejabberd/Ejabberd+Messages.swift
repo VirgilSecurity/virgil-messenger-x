@@ -55,7 +55,11 @@ extension Ejabberd {
     func xmppStream(_ sender: XMPPStream, didReceive message: XMPPMessage) {
         Log.debug("Ejabberd: Message received")
 
-        // TODO: Add error message handling
+        guard !message.isErrorMessage else {
+            let error = NSError(domain: self.serviceErrorDomain, code: -1, userInfo: [NSLocalizedDescriptionKey: message])
+            Log.error(error, message: "Got an error message from Ejabberd")
+            return
+        }
 
         guard
             let author = try? message.getAuthor(),
