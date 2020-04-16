@@ -14,6 +14,7 @@ import UIKit
 @objc(Account)
 public class Account: NSManagedObject {
     @NSManaged public var identity: String
+    @NSManaged public var sendReadReceipts: Bool
 
     @NSManaged private var numColorPair: Int32
     @NSManaged private var orderedChannels: NSOrderedSet?

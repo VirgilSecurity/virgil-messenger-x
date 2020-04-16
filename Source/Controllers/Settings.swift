@@ -13,6 +13,7 @@ class SettingsViewController: ViewController {
     @IBOutlet weak var letterLabel: UILabel!
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
+    let readReceiptsSwitch: UISwitch = UISwitch(frame: .zero)
 
     private lazy var cells = [
         [
@@ -22,6 +23,16 @@ class SettingsViewController: ViewController {
                 configure: {
                     $0.textLabel?.text = "Notifications"
                     $0.textLabel?.textColor = .textColor
+                }
+            ),
+            Cell(
+                identifier: .regular,
+                action: nil,
+                configure: {
+                    $0.textLabel?.text = "Send Read Receipts"
+                    $0.textLabel?.textColor = .textColor
+                    $0.selectionStyle = .none
+                    $0.accessoryView = self.readReceiptsSwitch
                 }
             ),
             Cell(
@@ -65,6 +76,10 @@ class SettingsViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let sendReadReceipts = CoreData.shared.currentAccount?.sendReadReceipts ?? true
+        self.readReceiptsSwitch.setOn(sendReadReceipts, animated: false)
+        self.readReceiptsSwitch.addTarget(self, action: #selector(self.readReceiptsSwitchChanged), for: .valueChanged)
+
         Cell.registerCells(in: self.tableView)
 
         self.tableView.tableFooterView = UIView(frame: .zero)
@@ -77,6 +92,15 @@ class SettingsViewController: ViewController {
         self.letterLabel.text = String(describing: account.letter)
 
         self.avatarView.draw(with: account.colors)
+    }
+
+    @objc private func readReceiptsSwitchChanged(_ sender: Any) {
+        do {
+            try CoreData.shared.setSendReadReceipts(to: self.readReceiptsSwitch.isOn)
+        }
+        catch {
+            Log.error(error, message: "Changing sendReadReceipt option failed")
+        }
     }
 
     private func openNotificationSettings() {

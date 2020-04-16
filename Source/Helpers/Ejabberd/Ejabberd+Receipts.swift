@@ -14,7 +14,8 @@ extension Ejabberd {
 
         if message.hasReadReceiptRequest,
             let channel = CoreData.shared.currentChannel,
-            channel.name == author
+            channel.name == author,
+            CoreData.shared.currentAccount?.sendReadReceipts ?? false
         {
             let readReceiptResponse = try message.generateReadReceiptResponse()
 
@@ -28,7 +29,10 @@ extension Ejabberd {
     }
 
     public func sendGlobalReadReceipt(to user: String) throws {
-        guard self.stream.isAuthenticated else {
+        guard
+            self.state == .connected,
+            CoreData.shared.currentAccount?.sendReadReceipts ?? false
+        else {
             return
         }
 
