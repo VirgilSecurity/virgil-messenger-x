@@ -54,9 +54,6 @@ extension Ejabberd {
                                                             options: options)
 
             self.stream.send(element)
-
-            // In order to avoid multiple registrations
-            Ejabberd.updatedPushToken = nil
         }
         catch {
             Log.error(error, message: "Registering for notifications failed")
