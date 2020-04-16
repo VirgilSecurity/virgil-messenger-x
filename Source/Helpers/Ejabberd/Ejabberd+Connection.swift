@@ -56,12 +56,14 @@ extension Ejabberd {
         }
     }
 
-    private func initialize(after: TimeInterval = 0) {
+    private func initialize(after: TimeInterval = RetryConfig.ReconnectDelay.noDelay.rawValue) {
         self.initQueue.asyncAfter(deadline: .now() + after) {
             do {
-                if !self.stream.isConnected {
-                    try self.stream.connect(withTimeout: 10)
+                guard self.state != .connecting else {
+                    return
                 }
+
+                try self.stream.connect(withTimeout: 10)
             }
             catch {
                 Log.error(error, message: "Ejabberd initialize failed")
@@ -118,8 +120,6 @@ extension Ejabberd {
 
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream) {
         Log.error(EjabberdError.connectionTimeout, message: "Ejabberd connection reached timeout")
-
-        self.setupRetry()
     }
 
     func xmppStreamDidDisconnect(_ sender: XMPPStream, withError error: Error?) {
