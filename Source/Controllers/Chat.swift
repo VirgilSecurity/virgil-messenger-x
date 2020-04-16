@@ -287,7 +287,7 @@ extension ChatViewController {
                 self?.checkReachability() ?? false,
                 Ejabberd.shared.state == .connected
             else {
-                throw NSError()
+                throw NSError(domain: "ChatViewDomain", code: -1, userInfo: [NSLocalizedDescriptionKey: "No connection"])
             }
 
             if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
