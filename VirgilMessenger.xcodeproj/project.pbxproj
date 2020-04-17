@@ -431,8 +431,6 @@
 		F4241E6A243386D800E839C3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228B71F96261000DCECDF /* ViewController.swift */; };
 		F4241E6B243386E500E839C3 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D4B8B023F5BCA400D17B90 /* NotificationService.swift */; };
 		F4241E6C243386E500E839C3 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D4B8B023F5BCA400D17B90 /* NotificationService.swift */; };
-		F4241E6E2433887E00E839C3 /* Notification Extension-stg.appex in Resources */ = {isa = PBXBuildFile; fileRef = 976E353A24323F03002D1CF2 /* Notification Extension-stg.appex */; };
-		F4241E6F2433888700E839C3 /* Notification Extension-dev.appex in Resources */ = {isa = PBXBuildFile; fileRef = 976E362E24329A02002D1CF2 /* Notification Extension-dev.appex */; };
 		F4241E9E2433946C00E839C3 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47DD295240E9546006A0341 /* WebRTC.framework */; };
 		F4241EA02433946C00E839C3 /* GoogleDataTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C55D2403E6FF00D9CAAA /* GoogleDataTransport.framework */; };
 		F4241EA12433946C00E839C3 /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97E7C5592403E57100D9CAAA /* PromisesObjC.framework */; };
@@ -810,8 +808,6 @@
 		80AC600B2400225100F6A73C /* DetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailTableViewCell.swift; sourceTree = "<group>"; };
 		80AC600D240023EA00F6A73C /* UIColor+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Constants.swift"; sourceTree = "<group>"; };
 		80AC600F24008EA900F6A73C /* Array+IndexPathSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+IndexPathSubscript.swift"; sourceTree = "<group>"; };
-		97067138241FB39B000E29F8 /* VoiceMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMessage.swift; sourceTree = "<group>"; };
-		9706713C241FB572000E29F8 /* VoiceContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceContent.swift; sourceTree = "<group>"; };
 		9713269D2424CF7E0061A4CF /* UIMediaMessageState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMediaMessageState.swift; sourceTree = "<group>"; };
 		971B42BB242CB6D500828761 /* UnreadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnreadManager.swift; sourceTree = "<group>"; };
 		9720EA952449B7BA004BA39F /* Ejabberd+Messages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Ejabberd+Messages.swift"; sourceTree = "<group>"; };
@@ -819,12 +815,8 @@
 		9720EA972449B7BA004BA39F /* Ejabberd+Receipts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Ejabberd+Receipts.swift"; sourceTree = "<group>"; };
 		9720EA982449B7BA004BA39F /* Ejabberd+Pushes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Ejabberd+Pushes.swift"; sourceTree = "<group>"; };
 		9720EAA52449B8C5004BA39F /* EjabberdError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EjabberdError.swift; sourceTree = "<group>"; };
-		97421533241914E600E2DF42 /* PhotoMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMessage.swift; sourceTree = "<group>"; };
-		974215372419170100E2DF42 /* PhotoContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoContent.swift; sourceTree = "<group>"; };
 		974CC5462417DD1400FC7554 /* VirgilMessenger-v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VirgilMessenger-v2.xcdatamodel"; sourceTree = "<group>"; };
-		974CC5472417DDD800FC7554 /* TextMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextMessage.swift; sourceTree = "<group>"; };
 		974E01A5242D5274008239B8 /* SwipeableNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeableNavigationController.swift; sourceTree = "<group>"; };
-		975F486F2412A7DD00232361 /* TextContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextContent.swift; sourceTree = "<group>"; };
 		976E351724323ABD002D1CF2 /* Virgil STG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Virgil STG.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		976E351924323DE6002D1CF2 /* VirgilMessenger-stg.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "VirgilMessenger-stg.entitlements"; sourceTree = "<group>"; };
 		976E353A24323F03002D1CF2 /* Notification Extension-stg.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Notification Extension-stg.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -859,7 +851,6 @@
 		97E7C5612403E73200D9CAAA /* FirebaseInstallations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstallations.framework; path = Carthage/Build/iOS/FirebaseInstallations.framework; sourceTree = "<group>"; };
 		97F83C89240D130A003F7451 /* FileMediaStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileMediaStorage.swift; sourceTree = "<group>"; };
 		F401CDCD241B944800C59572 /* NetworkMessage+WebRTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkMessage+WebRTC.swift"; sourceTree = "<group>"; };
-		F401CDD8241B96E300C59572 /* CallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallManager.swift; sourceTree = "<group>"; };
 		F40BC400243B1E23009AB5DF /* CallManager+CallKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CallManager+CallKit.swift"; sourceTree = "<group>"; };
 		F4241F0C24339E1700E839C3 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Carthage/Build/iOS/Fabric.framework; sourceTree = "<group>"; };
 		F46EE18D241FA09F00BE53AA /* Storage+Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Storage+Account.swift"; sourceTree = "<group>"; };
@@ -1581,13 +1572,6 @@
 		F48122272425CB6B0003DD78 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
-				97067138241FB39B000E29F8 /* VoiceMessage.swift */,
-				975F486F2412A7DD00232361 /* TextContent.swift */,
-				97421533241914E600E2DF42 /* PhotoMessage.swift */,
-				F401CDD8241B96E300C59572 /* CallManager.swift */,
-				9706713C241FB572000E29F8 /* VoiceContent.swift */,
-				974CC5472417DDD800FC7554 /* TextMessage.swift */,
-				974215372419170100E2DF42 /* PhotoContent.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1845,7 +1829,6 @@
 				F4241DFE2433864100E839C3 /* NewGroup.storyboard in Resources */,
 				F4241DF62433864100E839C3 /* ChooseMembersCell.xib in Resources */,
 				F4241F162433A01D00E839C3 /* GoogleService-Info.plist in Resources */,
-				F4241E6E2433887E00E839C3 /* Notification Extension-stg.appex in Resources */,
 				F4241DB2243385CD00E839C3 /* View.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1868,7 +1851,6 @@
 				F4241ED42433960000E839C3 /* Assets.xcassets in Resources */,
 				F4241E0F2433864200E839C3 /* Chat.storyboard in Resources */,
 				F4241E102433864200E839C3 /* GroupInfo.storyboard in Resources */,
-				F4241E6F2433888700E839C3 /* Notification Extension-dev.appex in Resources */,
 				F4241E092433864200E839C3 /* Registration.storyboard in Resources */,
 				F4241DD2243385F000E839C3 /* SendingStatusCollectionViewCell.xib in Resources */,
 				F478ABDE243FA99900802051 /* Call.storyboard in Resources */,
@@ -2583,7 +2565,7 @@
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessengerVoice.Notification-Extension-Prod";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger.Notification-Extension-Prod";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -2611,7 +2593,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessengerVoice.Notification-Extension-Prod";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.virgil.VirgilMessenger.Notification-Extension-Prod";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -2755,7 +2737,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessengerVoice;
+				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2788,7 +2770,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessengerVoice;
+				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
