@@ -87,7 +87,6 @@ extension Storage {
                                               baseParams: baseParams,
                                               context: self.managedContext)
 
-
         try self.save(message, unread: unread)
 
         return message
