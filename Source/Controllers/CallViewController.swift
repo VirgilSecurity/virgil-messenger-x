@@ -1,5 +1,5 @@
 //
-//  Call.swift
+//  CallViewController.swift
 //  VirgilMessenger
 //
 //  Created by Sergey Seroshtan on 20.03.2020.
@@ -51,7 +51,8 @@ class CallViewController: UIViewController {
     @IBAction func endCall(_ sender: Any?) {
         if let call = self.call {
             CallManager.shared.endCall(call)
-        } else {
+        }
+        else {
             self.close()
         }
     }}
@@ -74,7 +75,8 @@ extension CallViewController {
         let callStatusString: String
         if call.connectionStatus == .connected {
             callStatusString = Self.dateFormatter.string(from: self.callDuration)!
-        } else {
+        }
+        else {
             callStatusString = call.state.rawValue
         }
 
@@ -102,7 +104,8 @@ extension CallViewController: CallDelegate {
             self.alert(error) { _ in
                 self.close()
             }
-        } else {
+        }
+        else {
             self.close()
         }
     }

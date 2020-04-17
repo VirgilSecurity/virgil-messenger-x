@@ -19,7 +19,6 @@ import CallKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var pushNotificationsDelegate = PushNotificationsDelegate()
-    weak var callProviderDelegate: CXProviderDelegate?
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -55,8 +54,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func registerVoip() {
-        self.callProviderDelegate = CallManager.shared
-
         let voipRegistry = PKPushRegistry(queue: DispatchQueue.main)
         voipRegistry.delegate = self
         voipRegistry.desiredPushTypes = [.voIP]
@@ -78,7 +75,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 UserDefaults.standard.set("initialized", forKey: key)
                 UserDefaults.standard.synchronize()
             }
-        } catch {
+        }
+        catch {
             Log.error(error, message: "Clean Local Storage on startup failed")
         }
     }

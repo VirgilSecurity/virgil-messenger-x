@@ -29,7 +29,8 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
             if self.viewContext == .sizing {
                 self.textView.dataDetectorTypes = UIDataDetectorTypes()
                 self.textView.isSelectable = false
-            } else {
+            }
+            else {
                 self.textView.dataDetectorTypes = .all
                 self.textView.isSelectable = true
             }
@@ -238,7 +239,8 @@ public final class AudioBubbleView: UIView, MaximumLayoutWidthSpecificable, Back
             UIView.animate(withDuration: self.animationDuration, animations: updateAndRefreshViews, completion: { (_) -> Void in
                 completion?()
             })
-        } else {
+        }
+        else {
             updateAndRefreshViews()
         }
     }

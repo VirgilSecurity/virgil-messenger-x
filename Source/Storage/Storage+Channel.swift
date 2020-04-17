@@ -1,5 +1,5 @@
 //
-//  Storage+Storage.Channel.swift
+//  Storage+Channel.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 2/20/18.

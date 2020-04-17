@@ -67,7 +67,8 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
         do {
             self.error = error
             try mutex.unlock()
-        } catch {
+        }
+        catch {
             Log.error(error, message: "Unlocking mutex failed")
         }
     }

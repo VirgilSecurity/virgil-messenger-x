@@ -84,7 +84,8 @@ class GroupInfoViewController: ViewController {
         if let userList = segue.destination as? UsersListViewController {
             self.usersListController = userList
             self.updateUserList()
-        } else if let addMembers = segue.destination as? AddMembersViewController {
+        }
+        else if let addMembers = segue.destination as? AddMembersViewController {
             addMembers.dataSource = self.dataSource
         }
     }
@@ -112,19 +113,5 @@ extension GroupInfoViewController: DeleteItemDelegate {
         guard self.checkReachability(), Configurator.isUpdated else {
             return
         }
-
-//        HUD.show(.progress)
-//
-//        ChatsManager.removeMember(user.identity, dataSource: self.dataSource).start { _, error in
-//            DispatchQueue.main.async {
-//                if let error = error {
-//                    HUD.hide()
-//                    self.alert(error)
-//                } else {
-//                    HUD.flash(.success)
-//                    self.updateUserList()
-//                }
-//            }
-//        }
     }
 }

@@ -32,9 +32,11 @@ public enum ChatsManager {
                 _ = try Storage.shared.createSingleChannel(initiator: Virgil.ethree.identity, card: card)
 
                 completion(nil)
-            } catch FindUsersError.cardWasNotFound {
+            }
+            catch FindUsersError.cardWasNotFound {
                 completion(UserFriendlyError.userNotFound)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }

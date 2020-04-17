@@ -175,7 +175,8 @@ class MessageProcessor {
 
         if let coreChannel = Storage.shared.getChannel(withName: name) {
             channel = coreChannel
-        } else {
+        }
+        else {
             let card = try Virgil.ethree.findUser(with: name).startSync().get()
 
             channel = try Storage.shared.getChannel(withName: name)
@@ -190,7 +191,8 @@ class MessageProcessor {
 
         do {
             decrypted = try Virgil.ethree.authDecrypt(data: message.ciphertext, from: channel.getCard())
-        } catch {
+        }
+        catch {
             // TODO: check if needed
             try Storage.shared.createEncryptedMessage(in: channel, isIncoming: true, date: message.date)
 

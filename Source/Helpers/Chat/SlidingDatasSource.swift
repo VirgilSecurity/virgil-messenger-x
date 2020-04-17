@@ -109,7 +109,8 @@ public class SlidingDataSource<Element> {
                 self.windowOffset -= 1
                 self.windowCount += 1
             }
-        } else {
+        }
+        else {
             let shouldExpandWindow = self.allItemsCount == self.windowOffset + self.windowCount
             if shouldExpandWindow {
                 self.windowCount += 1

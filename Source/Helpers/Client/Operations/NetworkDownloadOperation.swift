@@ -62,7 +62,8 @@ open class NetworkDownloadOperation: GenericOperation<Response> {
                 try self.saveFileCallback(tempFileUrl)
 
                 self.result = .success(result)
-            } catch {
+            }
+            catch {
                 self.result = .failure(error)
             }
         }

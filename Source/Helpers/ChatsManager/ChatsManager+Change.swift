@@ -20,7 +20,7 @@ extension ChatsManager {
                 let text = "added \(newMembers.joined(separator: ", "))"
                 try dataSource.addChangeMembers(message: text)
 
-                // Invite members to Twilio Storage.Channel
+                // Invite members to Channel
                 try Twilio.shared.add(members: newMembers).startSync().get()
 
                 // Adding cards to Core Data
@@ -29,7 +29,8 @@ extension ChatsManager {
                 try Storage.shared.updateCards(with: cards, for: dataSource.channel)
 
                 completion((), nil)
-            } catch {
+            }
+            catch {
                 completion(nil, error)
             }
         }
@@ -54,7 +55,8 @@ extension ChatsManager {
                 try Storage.shared.updateCards(with: cards, for: dataSource.channel)
 
                 completion((), nil)
-            } catch {
+            }
+            catch {
                 completion(nil, error)
             }
         }

@@ -57,7 +57,8 @@ public class UserAuthorizer {
                 CallManager.shared.set(account: account)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
@@ -77,7 +78,8 @@ public class UserAuthorizer {
                 CallManager.shared.resetAccount()
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }

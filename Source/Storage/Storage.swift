@@ -119,7 +119,8 @@ public class Storage {
         if self.currentChannel == channel {
             self.currentChannel = nil
             Log.debug("Core Data channel deselected: \(String(describing: self.currentChannel?.name))")
-        } else {
+        }
+        else {
             Log.debug("Core Data channel deselected failed: \(String(describing: self.currentChannel?.name)) is not the current channel")
         }
     }

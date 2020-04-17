@@ -1,5 +1,5 @@
 //
-//  WebRTCChannel.swift
+//  CallManager.swift
 //  VirgilMessenger
 //
 //  Created by Sergey Seroshtan on 04.03.2020.

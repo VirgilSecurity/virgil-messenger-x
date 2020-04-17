@@ -71,7 +71,8 @@ extension ChooseMembersViewController: CellTapDelegate {
 
             if cell.isMember {
                 self.members.append(channel)
-            } else {
+            }
+            else {
                 self.members = self.members.filter { $0 != channel }
             }
         }

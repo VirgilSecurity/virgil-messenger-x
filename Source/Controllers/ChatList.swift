@@ -13,7 +13,6 @@ class ChatListViewController: ViewController {
     @IBOutlet weak var noChatsView: UIView!
     @IBOutlet weak var tableView: UITableView!
 
-    weak var incomingCallViewController: UIViewController?
     weak var callViewController: CallViewController?
 
     private let indicator = UIActivityIndicatorView()
@@ -62,13 +61,15 @@ class ChatListViewController: ViewController {
                         UserAuthorizer().logOut { error in
                             if let error = error {
                                 self?.alert(error)
-                            } else {
+                            }
+                            else {
                                 self?.goToLogin()
                             }
                         }
                     }
                 }
-            } catch {
+            }
+            catch {
                 Log.error(error, message: "Parsing Error notification failed")
             }
         }
@@ -81,7 +82,8 @@ class ChatListViewController: ViewController {
             let callOffer: NetworkMessage.CallOffer
             do {
                 callOffer = try Notifications.parse(notification, for: .message)
-            } catch {
+            }
+            catch {
                 Log.error(error, message: "Invalid call offer notification")
                 return
             }
@@ -97,7 +99,8 @@ class ChatListViewController: ViewController {
             let iceCandidate: NetworkMessage.IceCandidate
             do {
                 iceCandidate = try Notifications.parse(notification, for: .message)
-            } catch {
+            }
+            catch {
                 Log.error(error, message: "Invalid ice cadidate notification")
                 return
             }
@@ -113,7 +116,8 @@ class ChatListViewController: ViewController {
             let callAnswer: NetworkMessage.CallAnswer
             do {
                 callAnswer = try Notifications.parse(notification, for: .message)
-            } catch {
+            }
+            catch {
                 Log.error(error, message: "Invalid call accepted answer notification")
                 return
             }
@@ -129,7 +133,8 @@ class ChatListViewController: ViewController {
             let callUpdate: NetworkMessage.CallUpdate
             do {
                 callUpdate = try Notifications.parse(notification, for: .message)
-            } catch {
+            }
+            catch {
                 Log.error(error, message: "Invalid call update notification")
                 return
             }
@@ -174,7 +179,7 @@ class ChatListViewController: ViewController {
             guard !self.indicator.isAnimating else {
                 return
             }
-            
+
             self.indicator.startAnimating()
 
             let titleView = UIStackView(arrangedSubviews: [self.indicator, self.indicatorLabel])
@@ -231,7 +236,8 @@ class ChatListViewController: ViewController {
                     if let error = error {
                         HUD.hide()
                         self.alert(error)
-                    } else {
+                    }
+                    else {
                         HUD.flash(.success)
                         self.reloadTableView()
                     }
@@ -279,7 +285,7 @@ extension ChatListViewController: CellTapDelegate {
     func didTapOn(_ cell: UITableViewCell) {
         guard let selectedChannel = self.channels[safe: cell.tag] else {
             Log.error(UserFriendlyError.unknownError,
-                      message: "Tried to tap on Storage.Channel, which is out of range")
+                      message: "Tried to tap on Channel, which is out of range")
             return
         }
 

@@ -82,20 +82,6 @@ class AddMembersViewController: ViewController {
         else {
             return
         }
-
-//        HUD.show(.progress)
-
-//        ChatsManager.addMembers(add, dataSource: self.dataSource).start { _, error in
-//            DispatchQueue.main.async {
-//                if let error = error {
-//                    HUD.hide()
-//                    self.alert(error)
-//                } else {
-//                    HUD.flash(.success)
-//                    self.navigationController?.popViewController(animated: true)
-//                }
-//            }
-//        }
     }
 }
 
@@ -123,7 +109,8 @@ extension AddMembersViewController: CellTapDelegate {
 
             if cell.isMember {
                 self.selected.append(channel)
-            } else {
+            }
+            else {
                 self.selected = self.selected.filter { $0 != channel }
             }
         }

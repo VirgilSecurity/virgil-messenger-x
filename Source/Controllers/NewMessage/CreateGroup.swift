@@ -49,42 +49,14 @@ class CreateGroupViewController: ViewController {
     }
 
     @IBAction func createTapped(_ sender: Any) {
-//        guard let name = nameTextField.text else {
-//            return
-//        }
-//
-//        self.view.endEditing(true)
-//
-//        guard self.checkReachability(), Configurator.isUpdated else {
-//            return
-//        }
-//
-//        let hudShow = {
-//            DispatchQueue.main.async {
-//                HUD.show(.progress)
-//            }
-//        }
-//
-//        ChatsManager.startGroup(with: self.members,
-//                                name: name,
-//                                startProgressBar: hudShow) { error in
-//            DispatchQueue.main.async {
-//                if let error = error {
-//                    HUD.hide()
-//                    self.alert(error)
-//                } else {
-//                    HUD.flash(.success)
-//                    self.popToRoot()
-//                }
-//            }
-//        }
     }
 
     @IBAction func nameChanged(_ sender: Any) {
         if let name = nameTextField.text, let letter = name.uppercased().first {
             letterLabel.text = String(letter)
             createButton.isEnabled = true
-        } else {
+        }
+        else {
             letterLabel.text = ""
             createButton.isEnabled = false
         }

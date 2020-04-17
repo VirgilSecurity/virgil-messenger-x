@@ -79,7 +79,8 @@ open class AudioMessageCollectionViewCellDefaultStyle: AudioBubbleViewStyleProto
 
         if let image = self.images[key] {
             return image
-        } else {
+        }
+        else {
             let templateKey = ImageKey.template(isIncoming: viewModel.isIncoming, showsTail: viewModel.decorationAttributes.isShowingTail)
             if let image = self.images[templateKey] {
                 let image = self.createImage(templateImage: image, isIncoming: viewModel.isIncoming, status: viewModel.status, isSelected: isSelected)

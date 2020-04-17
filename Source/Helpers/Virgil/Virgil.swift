@@ -17,7 +17,7 @@ public class Virgil {
     private(set) static var shared: Virgil!
     private(set) static var ethree: EThree!
 
-    internal let verifier: VirgilCardVerifier
+    private let verifier: VirgilCardVerifier
     internal let client: Client
 
     internal var crypto: VirgilCrypto {

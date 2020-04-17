@@ -67,7 +67,8 @@ open class AudioMessagePresenter<ViewModelBuilderT, InteractionHandlerT>
         if let cell = self.cell {
             if let textCell = cell as? AudioMessageCollectionViewCell {
                 return textCell
-            } else {
+            }
+else {
                 assert(false, "Invalid cell was given to presenter!")
             }
         }

@@ -21,7 +21,8 @@ class StartViewController: ViewController {
             try self.userAuthorizer.signIn()
 
             self.goToChatList()
-        } catch {
+        }
+        catch {
             self.goToLogin()
         }
     }

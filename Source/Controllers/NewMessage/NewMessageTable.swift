@@ -19,7 +19,8 @@ class NewMessageTableViewController: UITableViewController {
 
         if indexPath.row == 0 {
             self.performSegue(withIdentifier: "goToNewGroup", sender: self)
-        } else if indexPath.row == 1 {
+        }
+        else if indexPath.row == 1 {
             self.addContact()
         }
     }
@@ -53,7 +54,8 @@ class NewMessageTableViewController: UITableViewController {
                     if let error = error {
                         HUD.hide()
                         self.alert(error)
-                    } else {
+                    }
+                    else {
                         HUD.flash(.success)
                         self.navigationController?.popViewController(animated: true)
                     }

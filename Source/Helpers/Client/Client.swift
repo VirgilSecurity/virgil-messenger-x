@@ -34,7 +34,8 @@ public class Client {
                 let token = try self.getVirgilToken(identity: identity)
 
                 completion(token, nil)
-            } catch {
+            }
+            catch {
                 completion(nil, error)
             }
         }
@@ -50,7 +51,8 @@ public class Client {
                 return ServiceError(httpStatusCode: statusCode,
                                     rawServiceError: rawServiceError,
                                     errorDomain: self.serviceErrorDomain)
-            } else if let string = String(data: body, encoding: .utf8) {
+            }
+            else if let string = String(data: body, encoding: .utf8) {
                 return NSError(domain: self.serviceErrorDomain,
                                code: statusCode,
                                userInfo: [NSLocalizedDescriptionKey: string])

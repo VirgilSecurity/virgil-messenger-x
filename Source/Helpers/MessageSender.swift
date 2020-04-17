@@ -36,7 +36,8 @@ public class MessageSender {
                 try Storage.shared.createTextMessage(with: text, baseParams: baseParams)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
@@ -55,7 +56,8 @@ public class MessageSender {
                 try Storage.shared.createPhotoMessage(with: photo, thumbnail: thumbnail, baseParams: baseParams)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
@@ -74,7 +76,8 @@ public class MessageSender {
                 try Storage.shared.createVoiceMessage(with: voice, baseParams: baseParams)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
@@ -94,7 +97,8 @@ public class MessageSender {
                 Notifications.post(message: storageMessage)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
@@ -108,7 +112,8 @@ public class MessageSender {
                 try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
@@ -122,7 +127,8 @@ public class MessageSender {
                 try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
@@ -136,7 +142,8 @@ public class MessageSender {
                 try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
@@ -171,7 +178,8 @@ public class MessageSender {
                 try Storage.shared.createPhotoMessage(with: photo, thumbnail: thumbnail, baseParams: baseParams)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }
@@ -196,7 +204,8 @@ public class MessageSender {
                 try Storage.shared.createVoiceMessage(with: voice, baseParams: baseParams)
 
                 completion(nil)
-            } catch {
+            }
+            catch {
                 completion(error)
             }
         }

@@ -40,7 +40,8 @@ extension UIImage {
         if self.size.height < self.size.width {
             width = maxDimention
             height = CGFloat(ceil((width * self.size.height) / self.size.width))
-        } else {
+        }
+        else {
             height = maxDimention
             width = CGFloat(ceil((height * self.size.width) / self.size.height))
         }

@@ -64,7 +64,8 @@ class NotificationService: UNNotificationServiceExtension {
             contentHandler(bestAttemptContent)
 
             // Note: We got body from userInfo, not from bestAttemptContent.body directly in a reason of 1000 symbol restriction
-        } catch {
+        }
+        catch {
             // FIXME: add Logs
             contentHandler(bestAttemptContent)
 

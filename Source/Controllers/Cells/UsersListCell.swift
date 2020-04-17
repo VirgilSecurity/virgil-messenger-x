@@ -43,7 +43,8 @@ class UsersListCell: UITableViewCell {
         if let channel = Storage.shared.getSingleChannel(with: name) {
             self.letterLabel.text = channel.letter
             self.avatarView.draw(with: channel.colors)
-        } else {
+        }
+        else {
             self.letterLabel.text = String(describing: name.uppercased().first!)
 
             let numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))

@@ -33,7 +33,8 @@ open class AudioMessagePresenterBuilder<ViewModelBuilderT, InteractionHandlerT>
         var cell: AudioMessageCollectionViewCell?
         if Thread.isMainThread {
             cell = AudioMessageCollectionViewCell.sizingCell()
-        } else {
+        }
+        else {
             DispatchQueue.main.sync(execute: {
                 cell =  AudioMessageCollectionViewCell.sizingCell()
             })

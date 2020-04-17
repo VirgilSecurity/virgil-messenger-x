@@ -343,7 +343,8 @@ extension ChatViewController: AudioPlayableProtocol {
                 audioModel.state.value = .stopped
             }
             self.cachedAudioModel = model
-        } catch {
+        }
+        catch {
             Log.error(error, message: "AVAudioPlayer playing error")
             self.alert(UserFriendlyError.playingError)
         }
@@ -412,7 +413,8 @@ extension ChatViewController: PhotoObserverProtocol {
             ac.addAction(UIAlertAction(title: "OK", style: .default))
 
             self.present(ac, animated: true)
-        } else {
+        }
+        else {
             HUD.flash(.success)
         }
     }

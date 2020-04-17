@@ -173,12 +173,9 @@ extension NetworkMessage {
             return "📷 Photo"
         case .voice:
             return "🎤 Voice Message"
-        case .callOffer:
-            // FIXME:  Add caller name
-            return "Incomming call"
-        case .callAnswer, .callUpdate, .iceCandidate:
-            // FIXME:  Hide this message
-            return "Service message"
+        case .callOffer, .callAnswer, .callUpdate, .iceCandidate:
+            // For this messages notifications are not produced
+            return ""
         }
     }
 }
