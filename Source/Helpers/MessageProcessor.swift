@@ -68,11 +68,6 @@ class MessageProcessor {
         case .callOffer(let callOffer):
             let xmppId = callOffer.callUUID.uuidString
 
-            if channel.containsCallMessage(with: callOffer.callUUID) {
-                Log.debug("CallOffer was already processed (callUUID = \(callOffer.callUUID))")
-                return
-            }
-
             try self.process(message,
                              additionalData: nil,
                              xmppId: xmppId,
