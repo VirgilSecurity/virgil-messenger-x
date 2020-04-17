@@ -52,11 +52,12 @@ extension UIViewController {
     }
 
     internal func checkReachability() -> Bool {
-        guard self.reachabilityStatus != .notReachable else {
+        let reachable = self.reachabilityStatus != .notReachable
+
+        if !reachable {
             self.alert(UserFriendlyError.noConnection)
-            return false
         }
 
-        return true
+        return reachable
     }
 }

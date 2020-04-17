@@ -26,7 +26,9 @@ class PushNotificationsDelegate: NSObject, UNUserNotificationCenterDelegate {
         let chatList = swipeableController?.viewControllers.first as? ChatListViewController
 
         let title = response.notification.request.content.title
-        if let channel = chatList?.channels.first(where: { $0.name == title }) {
+        if let channel = chatList?.channels.first(where: { $0.name == title }),
+            Storage.shared.currentChannel != channel
+        {
             chatList?.moveToChannel(channel)
         }
 

@@ -68,21 +68,21 @@ class DataSource: ChatDataSourceProtocol {
             }
         }
 
-        let updateMessageList: Notifications.Block = { [weak self] _ in
+        let connectionStateChanged: Notifications.Block = { [weak self] _ in
             guard let strongSelf = self else { return }
 
-            strongSelf.slidingWindow.updateMessageList()
-
-            DispatchQueue.main.async {
-                strongSelf.delegate?.chatDataSourceDidUpdate(strongSelf, updateType: .messageCountReduction)
+            guard Ejabberd.shared.state == .connected else {
+                return
             }
-        }
-
-        let sendGlobalReadReceipt: Notifications.Block = { [weak self] _ in
-            guard let strongSelf = self else { return }
 
             do {
-                try Ejabberd.shared.sendGlobalReadResponse(to: strongSelf.channel.name)
+                try Ejabberd.shared.sendGlobalReadReceipt(to: strongSelf.channel.name)
+
+                strongSelf.slidingWindow.updateMessageList()
+
+                DispatchQueue.main.async {
+                    strongSelf.delegate?.chatDataSourceDidUpdate(strongSelf, updateType: .messageCountReduction)
+                }
             }
             catch {
                 Log.error(error, message: "Sending global read response failed")
@@ -122,9 +122,8 @@ class DataSource: ChatDataSourceProtocol {
         }
 
         Notifications.observe(for: .messageAddedToCurrentChannel, block: process)
-        Notifications.observe(for: .updatingSucceed, block: updateMessageList)
         Notifications.observe(for: .messageStatusUpdated, block: updateMessageState)
-        Notifications.observe(for: .ejabberdAuthorized, block: sendGlobalReadReceipt)
+        Notifications.observe(for: .connectionStateChanged, block: connectionStateChanged)
     }
 
     @objc private func process(message: Storage.Message) {

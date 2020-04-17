@@ -15,6 +15,7 @@ extension Storage {
     @objc(Account)
     public class Account: NSManagedObject {
         @NSManaged public var identity: String
+        @NSManaged public var sendReadReceipts: Bool
 
         @NSManaged private var numColorPair: Int32
         @NSManaged private var orderedChannels: NSOrderedSet?
@@ -94,6 +95,14 @@ extension Storage {
         }
 
         return account
+    }
+
+    func setSendReadReceipts(to newValue: Bool) throws {
+        let account = try self.getCurrentAccount()
+
+        account.sendReadReceipts = newValue
+
+        try self.saveContext()
     }
 
     func deleteAccount() throws {

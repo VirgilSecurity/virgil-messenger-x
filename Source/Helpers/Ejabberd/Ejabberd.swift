@@ -9,33 +9,21 @@
 import VirgilSDK
 import XMPPFrameworkSwift
 
-public enum EjabberdError: Int, Error {
-    case connectionTimeout = 1
-    case missingBody = 2
-    case missingAuthor = 3
-    case jidFormingFailed = 4
-    case missingStreamJID = 5
-    case missingElementId = 6
-    case generatingReadResponseFailed = 7
-    case generatingDeliveryResponseFailed = 8
-}
-
-// TODO: Split file
-class Ejabberd: NSObject {
+class Ejabberd: NSObject, XMPPStreamDelegate {
     private(set) static var shared: Ejabberd = Ejabberd()
 
+    internal let initQueue = DispatchQueue(label: "Ejabberd")
     private let delegateQueue = DispatchQueue(label: "EjabberdDelegate")
 
     internal let stream: XMPPStream = XMPPStream()
     internal var error: Error?
-    internal let initializeMutex: Mutex = Mutex()
-    internal let sendMutex: Mutex = Mutex()
-    internal var state: State = .disconnected
-    internal var shouldRetry: Bool = true
+    internal var retryConfig: RetryConfig = RetryConfig()
 
-    internal let upload = XMPPHTTPFileUpload()
-    internal let deliveryReceipts = XMPPMessageDeliveryReceipts()
-    internal let readReceipts = XMPPMessageReadReceipts()
+    internal let sendMutex: Mutex = Mutex()
+
+    private let upload = XMPPHTTPFileUpload()
+    private let deliveryReceipts = XMPPMessageDeliveryReceipts()
+    private let readReceipts = XMPPMessageReadReceipts()
 
     private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
@@ -44,83 +32,32 @@ class Ejabberd: NSObject {
 
     internal let serviceErrorDomain: String = "EjabberdErrorDomain"
 
-    internal enum State {
-        case connected
-        case connecting
-        case disconnected
-    }
-
-    enum Status {
-        case online
-        case unavailable
-    }
-
     override init() {
         super.init()
 
+        // Stream
         self.stream.hostName = URLConstants.ejabberdHost
         self.stream.hostPort = URLConstants.ejabberdHostPort
         self.stream.startTLSPolicy = .allowed
         self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
 
+        // Upload
         self.upload.activate(self.stream)
 
+        // Delivery Receipts
         self.deliveryReceipts.activate(self.stream)
         self.deliveryReceipts.autoSendMessageDeliveryRequests = true
         self.deliveryReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
 
+        // Read Receipts
         self.readReceipts.activate(self.stream)
         self.readReceipts.autoSendMessageReadRequests = true
         self.readReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
 
-        try? self.initializeMutex.lock()
         try? self.sendMutex.lock()
     }
 
-    public func initialize(identity: String) throws {
-        self.stream.myJID = try Ejabberd.setupJid(with: identity)
-
-        try self.initialize()
-    }
-
-    internal func initialize() throws {
-        guard let identity = self.stream.myJID?.user else {
-            throw EjabberdError.missingStreamJID
-        }
-
-        if !self.stream.isConnected {
-            self.state = .connecting
-            try self.stream.connect(withTimeout: 20)
-            try self.initializeMutex.lock()
-
-            try self.checkError()
-        }
-
-        if !self.stream.isAuthenticated {
-            let token = try Virgil.shared.client.getEjabberdToken(identity: identity)
-            try self.stream.authenticate(withPassword: token)
-            try self.initializeMutex.lock()
-
-            try self.checkError()
-        }
-
-        try self.registerForNotifications()
-    }
-
-    internal func retryInitialize(error: Error) {
-        guard self.shouldRetry else {
-            Notifications.post(error: error)
-            return
-        }
-
-        self.shouldRetry = false
-
-        DispatchQueue.main.async {
-            Configurator.configure()
-        }
-    }
-
-    private func checkError() throws {
+    internal func checkError() throws {
         if let error = self.error {
             throw error
         }
@@ -145,69 +82,6 @@ class Ejabberd: NSObject {
         return jid
     }
 
-    public func disconect() throws {
-        Log.debug("Ejabberd: Disconnecting")
-
-        guard self.stream.isConnected else {
-            return
-        }
-
-        self.stream.disconnect()
-
-        try self.initializeMutex.lock()
-
-        try self.checkError()
-    }
-
-    public func send(_ message: EncryptedMessage, to user: String, xmppId: String) throws {
-        Log.debug("Ejabberd: Sending message")
-
-        let user = try Ejabberd.setupJid(with: user)
-        let body = try message.export()
-
-        let message = XMPPMessage(messageType: .chat, to: user, elementID: xmppId)
-        message.addBody(body)
-
-        try self.send(message: message, to: user)
-    }
-
-    internal func send(message: XMPPMessage, to user: XMPPJID) throws {
-        self.stream.send(message)
-
-        try self.sendMutex.lock()
-
-        try self.checkError()
-    }
-
-    public func sendGlobalReadResponse(to user: String) throws {
-        guard self.stream.isAuthenticated else {
-            return
-        }
-
-        let jid = try Ejabberd.setupJid(with: user)
-
-        let message = XMPPMessage.generateReadReceipt(for: jid)
-
-        self.stream.send(message)
-    }
-
-    public func set(status: Status) {
-        let presence: XMPPPresence
-
-        switch status {
-        case .online:
-            presence = XMPPPresence()
-        case .unavailable:
-            presence = XMPPPresence(type: .unavailable,
-                                    show: nil,
-                                    status: nil,
-                                    idle: nil,
-                                    to: nil)
-        }
-
-        self.stream.send(presence)
-    }
-
     public func requestMediaSlot(name: String, size: Int) throws -> CallbackOperation<XMPPSlot> {
         return CallbackOperation { _, completion in
             self.upload.requestSlot(fromService: self.uploadJid,
@@ -218,53 +92,5 @@ class Ejabberd: NSObject {
                 completion(slot, error)
             }
         }
-    }
-}
-
-extension Ejabberd {
-    func registerForNotifications(deviceToken: Data? = nil, voipDeviceToken: Data? = nil) throws {
-
-        var options: [String : String] = [:]
-
-        if let deviceToken = deviceToken ?? Ejabberd.updatedPushToken {
-            let deviceId = deviceToken.hexEncodedString()
-
-            options["device_id"] = deviceId
-        }
-
-        if let voipDeviceToken = voipDeviceToken ?? Ejabberd.updatedVoipPushToken {
-            let voipDeviceId = voipDeviceToken.hexEncodedString()
-
-            options["voip_device_id"] = voipDeviceId
-        }
-
-        if options.isEmpty {
-            return
-        }
-
-        options["service"] = "apns"
-        options["mutable_content"] = "true"
-        options["sound"] = "default"
-        options["topic"] = Constants.alertTopic
-
-        guard let pushServerJID = XMPPJID(string: URLConstants.ejabberdPushHost) else {
-            throw EjabberdError.jidFormingFailed
-        }
-
-        let element = XMPPIQ.enableNotificationsElement(with: pushServerJID,
-                                                        node: Constants.pushesNode,
-                                                        options: options)
-
-        self.stream.send(element)
-    }
-
-    func deregisterFromNotifications() throws {
-        guard let pushServerJID = XMPPJID(string: URLConstants.ejabberdPushHost) else {
-            throw EjabberdError.jidFormingFailed
-        }
-
-        let element = XMPPIQ.disableNotificationsElement(with: pushServerJID, node: Constants.pushesNode)
-
-        self.stream.send(element)
     }
 }

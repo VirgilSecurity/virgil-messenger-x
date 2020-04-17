@@ -20,13 +20,19 @@ enum Constants {
     static let alertTopic: String = KeychainGroup
     static let appGroup: String = "group.virgil.notification\(Constants.envPrefix.rawValue)"
     static let pushesNode: String = "node"
+
+#if DEBUG
+    static let pushMode: String = "dev"
+#else
+    static let pushMode: String = "prod"
+#endif
 }
 
 enum URLConstants {
     // Ejabberd
     static let ejabberdHost: String = "xmpp\(Constants.envPrefix.rawValue).virgilsecurity.com"
     static let ejabberdHostPort: UInt16 = 5222
-    static let ejabberdPushHost: String = "push-notifications-proxy\(Constants.envPrefix.rawValue)"
+    static let ejabberdPushHost: String = "push-notifications-proxy"
 
     // Backend
     static let serviceBaseURL: String = "https://messenger\(Constants.envPrefix.rawValue).virgilsecurity.com"

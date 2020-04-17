@@ -67,10 +67,8 @@ public class UserAuthorizer {
         DispatchQueue(label: "UserAuthorizer").async {
             do {
                 try Ejabberd.shared.deregisterFromNotifications()
-
                 try Ejabberd.shared.disconect()
 
-                Configurator.reset()
                 Storage.shared.resetState()
 
                 SharedDefaults.shared.reset(.identity)
@@ -89,10 +87,9 @@ public class UserAuthorizer {
         SharedDefaults.shared.reset(.identity)
         UnreadManager.shared.reset()
 
-        Configurator.reset()
-
         try Storage.shared.deleteAccount()
         Storage.shared.resetState()
+
         try Ejabberd.shared.disconect()
 
         self.virgilAuthorizer.logOut()

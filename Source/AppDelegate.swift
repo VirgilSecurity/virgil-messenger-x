@@ -140,15 +140,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Log.debug("Received device token: \(deviceToken.hexEncodedString())")
 
-        do {
-            if Ejabberd.shared.state == .connected {
-                try Ejabberd.shared.registerForNotifications(deviceToken: deviceToken)
-            }
-
-            Ejabberd.updatedPushToken = deviceToken
-        } catch {
-            Log.error(error, message: "Registering for notification failed")
+        if Ejabberd.shared.state == .connected {
+            Ejabberd.shared.registerForNotifications(deviceToken: deviceToken)
         }
+
+        Ejabberd.updatedPushToken = deviceToken
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -180,15 +176,11 @@ extension AppDelegate: PKPushRegistryDelegate {
 
         let deviceToken = pushCredentials.token
 
-        do {
-            if Ejabberd.shared.state == .connected {
-                try Ejabberd.shared.registerForNotifications(voipDeviceToken: deviceToken)
-            }
-
-            Ejabberd.updatedVoipPushToken = deviceToken
-        } catch {
-            Log.error(error, message: "Registering for VoIP notifications failed")
+        if Ejabberd.shared.state == .connected {
+            Ejabberd.shared.registerForNotifications(voipDeviceToken: deviceToken)
         }
+
+        Ejabberd.updatedVoipPushToken = deviceToken
     }
 
     func pushRegistry(_ registry: PKPushRegistry,
