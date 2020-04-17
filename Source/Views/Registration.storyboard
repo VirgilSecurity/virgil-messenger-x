@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="sma-Ja-Wb3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="sma-Ja-Wb3">
     <device id="retina5_9" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -12,10 +12,6 @@
         <scene sceneID="EHn-vS-SCs">
             <objects>
                 <viewController id="sma-Ja-Wb3" customClass="RegistrationViewController" customModule="VirgilMessenger" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="fSF-MJ-8Gh"/>
-                        <viewControllerLayoutGuide type="bottom" id="wVW-8S-dgI"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="ZGa-g3-ZXf">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -143,13 +139,13 @@
                         <color key="backgroundColor" red="0.16862745098039217" green="0.18823529411764706" blue="0.23137254901960785" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstItem="FLU-BW-xdr" firstAttribute="leading" secondItem="ZGa-g3-ZXf" secondAttribute="leading" id="1GA-xm-Y4J"/>
-                            <constraint firstItem="FLU-BW-xdr" firstAttribute="centerX" secondItem="ZGa-g3-ZXf" secondAttribute="centerX" id="Qlv-48-q7n"/>
-                            <constraint firstAttribute="trailing" secondItem="FLU-BW-xdr" secondAttribute="trailing" id="TI4-4y-ziu"/>
+                            <constraint firstItem="FLU-BW-xdr" firstAttribute="leading" secondItem="B27-bI-J12" secondAttribute="leading" id="1GA-xm-Y4J"/>
+                            <constraint firstItem="FLU-BW-xdr" firstAttribute="centerX" secondItem="B27-bI-J12" secondAttribute="centerX" id="Qlv-48-q7n"/>
+                            <constraint firstItem="B27-bI-J12" firstAttribute="trailing" secondItem="FLU-BW-xdr" secondAttribute="trailing" id="TI4-4y-ziu"/>
                             <constraint firstItem="FLU-BW-xdr" firstAttribute="top" secondItem="ZGa-g3-ZXf" secondAttribute="top" id="hib-OK-h7y"/>
-                            <constraint firstItem="wVW-8S-dgI" firstAttribute="top" secondItem="FLU-BW-xdr" secondAttribute="bottom" id="qBx-Vs-SCc"/>
+                            <constraint firstItem="B27-bI-J12" firstAttribute="bottom" secondItem="FLU-BW-xdr" secondAttribute="bottom" id="qBx-Vs-SCc"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="uSd-7y-J5Y"/>
+                        <viewLayoutGuide key="safeArea" id="B27-bI-J12"/>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="224-sp-zzc" appends="YES" id="X08-C0-WD5"/>
                         </connections>

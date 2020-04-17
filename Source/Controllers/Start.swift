@@ -17,13 +17,6 @@ class StartViewController: ViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        guard self.checkReachability() else {
-            SharedDefaults.shared.reset(.identity)
-            UnreadManager.shared.reset()
-            self.goToLogin()
-            return
-        }
-
         do {
             try self.userAuthorizer.signIn()
 

@@ -1,9 +1,8 @@
-github "VirgilSecurity/virgil-e3kit-x" "develop-strings"
-github "Ogerets/XMPPFramework" "develop-read-receipts"
-github "Ogerets/Chatto" "messenger-message-states"
-github "pkluz/PKHUD"
-github "Boris-Em/BEMCheckBox" ~> 1.4.1
+github "VirgilSecurity/virgil-e3kit-x" ~> 2.1.0
+github "Ogerets/XMPPFramework" ~> 4.0.1
+github "Ogerets/Chatto" ~> 3.3.3
+github "Ogerets/PKHUD" ~> 5.3.1
 github "VirgilSecurity/virgil-crypto-x" ~> 5.2.0
-github "VirgilSecurity/virgil-sdk-x" "develop-messenger"
+github "VirgilSecurity/virgil-sdk-x" "develop"
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json"
 binary "Crashlytics.json"

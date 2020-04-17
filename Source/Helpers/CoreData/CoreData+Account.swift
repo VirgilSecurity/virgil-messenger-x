@@ -35,6 +35,14 @@ extension CoreData {
         return account
     }
 
+    func setSendReadReceipts(to newValue: Bool) throws {
+        let account = try self.getCurrentAccount()
+
+        account.sendReadReceipts = newValue
+
+        try self.saveContext()
+    }
+
     func deleteAccount() throws {
         let account = try self.getCurrentAccount()
 

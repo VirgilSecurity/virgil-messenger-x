@@ -13,6 +13,7 @@ class SettingsViewController: ViewController {
     @IBOutlet weak var letterLabel: UILabel!
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
+    let readReceiptsSwitch: UISwitch = UISwitch(frame: .zero)
 
     private lazy var cells = [
         [
@@ -22,6 +23,16 @@ class SettingsViewController: ViewController {
                 configure: {
                     $0.textLabel?.text = "Notifications"
                     $0.textLabel?.textColor = .textColor
+                }
+            ),
+            Cell(
+                identifier: .regular,
+                action: nil,
+                configure: {
+                    $0.textLabel?.text = "Send Read Receipts"
+                    $0.textLabel?.textColor = .textColor
+                    $0.selectionStyle = .none
+                    $0.accessoryView = self.readReceiptsSwitch
                 }
             ),
             Cell(
@@ -65,6 +76,10 @@ class SettingsViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let sendReadReceipts = CoreData.shared.currentAccount?.sendReadReceipts ?? true
+        self.readReceiptsSwitch.setOn(sendReadReceipts, animated: false)
+        self.readReceiptsSwitch.addTarget(self, action: #selector(self.readReceiptsSwitchChanged), for: .valueChanged)
+
         Cell.registerCells(in: self.tableView)
 
         self.tableView.tableFooterView = UIView(frame: .zero)
@@ -79,15 +94,20 @@ class SettingsViewController: ViewController {
         self.avatarView.draw(with: account.colors)
     }
 
+    @objc private func readReceiptsSwitchChanged(_ sender: Any) {
+        do {
+            try CoreData.shared.setSendReadReceipts(to: self.readReceiptsSwitch.isOn)
+        }
+        catch {
+            Log.error(error, message: "Changing sendReadReceipt option failed")
+        }
+    }
+
     private func openNotificationSettings() {
         UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
     }
 
     private func logOut() {
-        guard Configurator.isUpdated else {
-            return
-        }
-
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         let logoutAction = UIAlertAction(title: "Logout", style: .destructive) { _ in
@@ -111,10 +131,6 @@ class SettingsViewController: ViewController {
     }
 
     private func deleteAccount() {
-        guard Configurator.isUpdated else {
-            return
-        }
-
         let alertController = UIAlertController(title: "Delete account",
                                                 message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.",
                                                 preferredStyle: .alert)
@@ -197,10 +213,10 @@ extension SettingsViewController {
             )
 
             cell.accessoryType = .none
-            cell.backgroundColor = .backgroundColor
+            cell.backgroundColor = .appThemeBackgroundColor
 
             let colorView = UIView()
-            colorView.backgroundColor = .selectedBackgroundColor
+            colorView.backgroundColor = .appThemeForegroundColor
             cell.selectedBackgroundView = colorView
 
             configure(cell)

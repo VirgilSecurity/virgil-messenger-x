@@ -1,0 +1,21 @@
+language: swift
+osx_image: xcode11.3
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_12524d8e76a5_key -iv $encrypted_12524d8e76a5_iv -in GoogleService-Info.plist.enc -out GoogleService-Info.plist -d
+  - set -o pipefail
+
+script:
+  - mv GoogleService-Info.plist VirgilMessenger/GoogleService-Info.plist
+
+  - carthage version
+  - carthage bootstrap --platform iOS
+
+  - SCHEME="VirgilMessenger"
+  - PROJECT="VirgilMessenger.xcodeproj"
+  - DESTINATION="OS=13.3,name=iPhone 8"
+  - SDK="iphonesimulator13.2"
+  
+  - |
+    # Build project
+    xcodebuild -verbose -project "$PROJECT" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Release clean build | xcpretty;

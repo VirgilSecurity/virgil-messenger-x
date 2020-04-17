@@ -121,16 +121,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Log.debug("Received device token: \(deviceToken.hexEncodedString())")
 
-        do {
-            if Ejabberd.shared.state == .connected {
-                try Ejabberd.shared.registerForNotifications(deviceToken: deviceToken)
-            }
+        if Ejabberd.shared.state == .connected {
+            Ejabberd.shared.registerForNotifications(deviceToken: deviceToken)
+        }
 
-            Ejabberd.updatedPushToken = deviceToken
-        }
-        catch {
-            Log.error(error, message: "Registering for notification failed")
-        }
+        Ejabberd.updatedPushToken = deviceToken
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
