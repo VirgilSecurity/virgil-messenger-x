@@ -14,17 +14,12 @@ public class Notifications {
     public typealias Block = (Notification) -> Void
 
     public enum EmptyNotification: String {
-        case initializingSucceed = "Notifications.InitializingSucceed"
-        // FIXME: remove on connection rework
-        case updatingSucceed = "Notifications.UpdatingSucceed"
-        case ejabberdAuthorized = "Notifications.EjabberdAuthorized"
-
+        case connectionStateChanged = "Notifications.ConnectionStateChanged"
         case chatListUpdated = "Notifications.ChatListUpdated"
         case currentChannelDeleted = "Notifications.CurrentChannelDeleted"
     }
 
     public enum Notifications: String {
-        case connectionStateUpdated = "Notifications.ConnectionStateUpdated"
         case errored = "Notifications.Errored"
         case messageAddedToCurrentChannel = "Notifications.MessageAddedToCurrentChannel"
         case messageStatusUpdated = "Notifications.MessageStatusUpdated"

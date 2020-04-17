@@ -23,11 +23,12 @@ class ChatListViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.setupTitleView()
+        self.setupIndicator()
+        self.updateTitleView()
         self.setupTableView()
         self.setupObservers()
 
-        Configurator.configure()
+        Ejabberd.shared.startInitializing(identity: Virgil.ethree.identity)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -37,18 +38,11 @@ class ChatListViewController: ViewController {
     }
 
     private func setupObservers() {
-        let initialized: Notifications.Block = { [weak self] _ in
-            DispatchQueue.main.async {
-                self?.indicatorLabel.text = Configurator.state
-            }
-        }
+        let connectionStateChanged: Notifications.Block = { [weak self] _ in
+            guard let strongSelf = self else { return }
 
-        let updated: Notifications.Block = { [weak self] _ in
             DispatchQueue.main.async {
-                self?.reloadTableView()
-                self?.navigationItem.titleView = nil
-                self?.title = "Chats"
-                self?.indicator.stopAnimating()
+                strongSelf.updateTitleView()
             }
         }
 
@@ -56,7 +50,7 @@ class ChatListViewController: ViewController {
             self?.reloadTableView()
         }
 
-        let initFailed: Notifications.Block = { [weak self] notification in
+        let errored: Notifications.Block = { [weak self] notification in
             do {
                 let error: Error = try Notifications.parse(notification, for: .error)
 
@@ -78,9 +72,8 @@ class ChatListViewController: ViewController {
             }
         }
 
-        Notifications.observe(for: .errored, block: initFailed)
-        Notifications.observe(for: .initializingSucceed, block: initialized)
-        Notifications.observe(for: .updatingSucceed, block: updated)
+        Notifications.observe(for: .errored, block: errored)
+        Notifications.observe(for: .connectionStateChanged, block: connectionStateChanged)
         Notifications.observe(for: [.chatListUpdated], block: reloadTableView)
     }
 
@@ -92,16 +85,32 @@ class ChatListViewController: ViewController {
         self.tableView.dataSource = self
     }
 
-    private func setupTitleView() {
+    private func setupIndicator() {
         self.indicator.hidesWhenStopped = false
-        self.indicator.startAnimating()
-
         self.indicatorLabel.textColor = .white
-        self.indicatorLabel.text = Configurator.state
-        let titleView = UIStackView(arrangedSubviews: [self.indicator, self.indicatorLabel])
-        titleView.spacing = 5
+        self.indicatorLabel.text = "Connecting..."
+    }
 
-        self.navigationItem.titleView = titleView
+    private func updateTitleView() {
+        switch Ejabberd.shared.state {
+        case .connected:
+            self.reloadTableView()
+            self.navigationItem.titleView = nil
+            self.title = "Chats"
+            self.indicator.stopAnimating()
+
+        case .connecting, .disconnected:
+            guard !self.indicator.isAnimating else {
+                return
+            }
+            
+            self.indicator.startAnimating()
+
+            let titleView = UIStackView(arrangedSubviews: [self.indicator, self.indicatorLabel])
+            titleView.spacing = 5
+
+            self.navigationItem.titleView = titleView
+        }
     }
 
     @objc private func reloadTableView() {
@@ -192,7 +201,7 @@ extension ChatListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.backgroundColor = UIColor(rgb: 0x2B303B)
+        cell.backgroundColor = .appThemeForegroundColor
     }
 }
 

@@ -12,7 +12,7 @@ class UIPhotosChatInputItem: PhotosChatInputItem {
     override var inputView: UIView? {
         if let subviews = super.inputView?.subviews {
             for subview in subviews {
-                subview.backgroundColor = UIColor(rgb: 0x20232B)
+                subview.backgroundColor = .appThemeBackgroundColor
             }
         }
         return super.inputView
