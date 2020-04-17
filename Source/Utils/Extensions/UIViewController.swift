@@ -14,6 +14,8 @@ extension UIViewController {
         let error = UserFriendlyError(from: anyError)
 
         if error == .unknownError {
+            Log.error(anyError, message: "Alert user with an unfriendly error")
+
             Crashlytics.sharedInstance().recordError(anyError)
         }
 
