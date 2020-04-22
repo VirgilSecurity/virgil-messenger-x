@@ -13,7 +13,6 @@ import Firebase
 import CocoaLumberjackSwift
 import WebRTC
 import PushKit
-import CallKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -68,7 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 try? Storage.shared.clearStorage()
 
                 // Clean keychain
-                let params = try KeychainStorageParams.makeKeychainStorageParams()
+                let params = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.KeychainGroup)
                 let keychain = KeychainStorage(storageParams: params)
 
                 try keychain.deleteAllEntries()
