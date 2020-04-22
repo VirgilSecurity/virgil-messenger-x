@@ -8,9 +8,6 @@
 
 import VirgilSDK
 import VirgilCrypto
-import VirgilSDKRatchet
-import VirgilCryptoRatchet
-
 import VirgilE3Kit
 
 public class Virgil {

@@ -161,6 +161,7 @@ class ChatViewController: BaseChatViewController {
     }
 
     @IBAction func showChatDetails(_ sender: Any) {
+        // FIXME
         CallManager.shared.startOutgoingCall(to: self.channel.name)
     }
 
@@ -266,9 +267,10 @@ extension ChatViewController {
             textStyle: audioTextStyle,
             baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
 
-        let audioMessagePresenter = AudioMessagePresenterBuilder(
-                viewModelBuilder: UIAudioMessageViewModelBuilder(),
-                interactionHandler: UIAudioMessageHandler(baseHandler: self.baseMessageHandler, playableController: self))
+        let interactionHandler = UIAudioMessageHandler(baseHandler: self.baseMessageHandler, playableController: self)
+
+        let audioMessagePresenter = AudioMessagePresenterBuilder(viewModelBuilder: UIAudioMessageViewModelBuilder(),
+                                                                 interactionHandler: interactionHandler)
 
         audioMessagePresenter.baseMessageStyle = baseMessageStyle
         audioMessagePresenter.textCellStyle = audioTextCellStyle

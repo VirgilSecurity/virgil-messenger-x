@@ -6,7 +6,7 @@
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
 //
 
-import VirgilSDK
+import Foundation
 import VirgilE3Kit
 
 public enum ChatsManager {

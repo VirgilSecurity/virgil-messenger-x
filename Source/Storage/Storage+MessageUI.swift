@@ -15,19 +15,19 @@ public protocol UIMessageModelProtocol: MessageModelProtocol {
 }
 
 extension Storage {
-    public static func exportAsUIModel(message: Storage.Message) -> UIMessageModelProtocol {
+    public static func exportAsUIModel(message: Message) -> UIMessageModelProtocol {
 
         switch message {
-        case let textMessage as Storage.TextMessage:
+        case let textMessage as TextMessage:
             return Self.exportAsUIModel(message: textMessage)
 
-        case let photoMessage as Storage.PhotoMessage:
+        case let photoMessage as PhotoMessage:
             return Self.exportAsUIModel(message: photoMessage)
 
-        case let voiceMessage as Storage.VoiceMessage:
+        case let voiceMessage as VoiceMessage:
             return Self.exportAsUIModel(message: voiceMessage)
 
-        case let callMessage as Storage.CallMessage:
+        case let callMessage as CallMessage:
             return Self.exportAsUIModel(message: callMessage)
 
         default:
@@ -41,7 +41,7 @@ extension Storage {
 
     }
 
-    public static func exportAsUIModel(message: Storage.TextMessage) -> UIMessageModelProtocol {
+    public static func exportAsUIModel(message: TextMessage) -> UIMessageModelProtocol {
         let status = message.state.exportAsMessageStatus()
 
         return UITextMessageModel(uid: message.xmppId,
@@ -51,7 +51,7 @@ extension Storage {
                                   date: message.date)
     }
 
-    public static func exportAsUIModel(message: Storage.PhotoMessage) -> UIMessageModelProtocol {
+    public static func exportAsUIModel(message: PhotoMessage) -> UIMessageModelProtocol {
         let status = message.state.exportAsMessageStatus()
 
         do {
@@ -105,7 +105,7 @@ extension Storage {
         }
     }
 
-    public static func exportAsUIModel(message: Storage.VoiceMessage) -> UIMessageModelProtocol {
+    public static func exportAsUIModel(message: VoiceMessage) -> UIMessageModelProtocol {
         let status = message.state.exportAsMessageStatus()
 
         do {
@@ -150,7 +150,7 @@ extension Storage {
         }
     }
 
-    public static func exportAsUIModel(message: Storage.CallMessage) -> UIMessageModelProtocol {
+    public static func exportAsUIModel(message: CallMessage) -> UIMessageModelProtocol {
 
         let text = message.isIncoming ? "Incomming call" : "Outgoing call"
 

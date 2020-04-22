@@ -1,67 +1,12 @@
 //
-//  NetworkMessage.swift
+//  File.swift
 //  VirgilMessenger
 //
-//  Created by Yevhen Pyvovarov on 3/6/20.
+//  Created by Yevhen Pyvovarov on 4/22/20.
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
 import Foundation
-
-public enum CallUpdateAction: String, Codable {
-    case received
-    case end
-}
-
-public enum NetworkMessage {
-
-    public struct Text: Codable {
-        let body: String
-    }
-
-    public struct Photo: Codable {
-        let identifier: String
-        let url: URL
-    }
-
-    public struct Voice: Codable {
-        let identifier: String
-        let duration: TimeInterval
-        let url: URL
-    }
-
-    public struct CallOffer: Codable {
-        let callUUID: UUID
-        let date: Date
-        let caller: String
-        let sdp: String
-    }
-
-    public struct CallAnswer: Codable {
-        let callUUID: UUID
-        let sdp: String
-    }
-
-    public struct CallUpdate: Codable {
-        let callUUID: UUID
-        let action: CallUpdateAction
-    }
-
-    public struct IceCandidate: Codable {
-        let callUUID: UUID
-        let sdp: String
-        let sdpMLineIndex: Int32
-        let sdpMid: String?
-    }
-
-    case text(Text)
-    case photo(Photo)
-    case voice(Voice)
-    case callOffer(CallOffer)
-    case callAnswer(CallAnswer)
-    case callUpdate(CallUpdate)
-    case iceCandidate(IceCandidate)
-}
 
 extension NetworkMessage: Codable {
     enum TypeCodingKeys: String, Codable {
@@ -162,21 +107,5 @@ extension NetworkMessage: Codable {
     func exportAsJsonData() throws -> Data {
         let data = try JSONEncoder().encode(self)
         return data
-    }
-}
-
-extension NetworkMessage {
-    var notificationBody: String {
-        switch self {
-        case .text(let text):
-            return text.body
-        case .photo:
-            return "📷 Photo"
-        case .voice:
-            return "🎤 Voice Message"
-        case .callOffer, .callAnswer, .callUpdate, .iceCandidate:
-            // For this messages notifications are not produced
-            return ""
-        }
     }
 }

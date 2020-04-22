@@ -21,7 +21,6 @@ class CallViewController: UIViewController {
     var callDurationTimer: Timer!
 
     // MARK: UI handlers
-
     override func viewDidLoad() {
         super.viewDidLoad()
 

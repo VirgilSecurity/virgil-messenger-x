@@ -1,5 +1,5 @@
 //
-//  Storage+Channel.swift
+//  CoreData+Channel.swift
 //  VirgilMessenger
 //
 //  Created by Eugen Pivovarov on 2/20/18.
@@ -8,166 +8,164 @@
 
 import CoreData
 import VirgilSDK
-import VirgilE3Kit
-import CoreGraphics
+import UIKit
 
 extension Storage {
-    public enum ChannelType: String, Codable {
-        case single
-        case group
+    private func save(_ channel: Channel) throws {
+        let channels = channel.account.mutableOrderedSetValue(forKey: Account.ChannelsKey)
+        channels.add(channel)
+
+        try self.saveContext()
     }
 
-    @objc(Channel)
-    public class Channel: NSManagedObject {
-        @NSManaged public var sid: String
-        @NSManaged public var name: String
-        @NSManaged public var account: Account
-        @NSManaged public var createdAt: Date
-        @NSManaged public var initiator: String
-        @NSManaged public var unreadCount: Int16
+    func createGroupChannel(name: String, sid: String, initiator: String, cards: [Card]) throws -> Channel {
+        try self.createChannel(type: .group, sid: sid, name: name, initiator: initiator, cards: cards)
+    }
 
-        @NSManaged private var rawType: String
-        @NSManaged private var numColorPair: Int32
-        @NSManaged private var orderedMessages: NSOrderedSet?
-        @NSManaged private var rawCards: [String]
+    @discardableResult
+    func createSingleChannel(initiator: String, card: Card) throws -> Channel {
+        // TODO: remove sid on channel migration
+        let sid = UUID().uuidString
 
-        private(set) var group: Group?
-
-        public static let MessagesKey = "orderedMessages"
-
-        private static let EntityName = "Channel"
-
-        public var visibleMessages: [Message] {
-            guard let messages = self.orderedMessages?.array as? [Message] else {
-                return []
-            }
-
-            return messages.filter { !$0.isHidden }
+        guard card.identity != Virgil.ethree.identity else {
+            throw UserFriendlyError.createSelfChatForbidded
         }
 
-        public var allMessages: [Message] {
-            return self.orderedMessages?.array as? [Message] ?? []
+        if let channel = self.getChannel(withName: card.identity) {
+            return channel
         }
 
-        public var cards: [Card] {
-            get {
-                let cards: [Card] = self.rawCards.map {
-                    try! Virgil.shared.importCard(fromBase64Encoded: $0)
-                }
+        return try self.createChannel(type: .single, sid: sid, name: card.identity, initiator: initiator, cards: [card])
+    }
 
-                return cards
-            }
+    // Returns changed messages ids
+    public func markDeliveredMessagesAsRead(in channel: Channel) throws -> [String] {
+        var changedMessagesIds: [String] = []
 
-            set {
-                self.rawCards = newValue.map { try! $0.getRawCard().exportAsBase64EncodedString() }
+        channel.allMessages.forEach { message in
+            switch message.state {
+            case .delivered:
+                changedMessagesIds.append(message.xmppId)
+                message.state = .read
+            case .failed, .received, .sent, .read:
+                break
             }
         }
 
-        public var type: ChannelType {
-            get {
-                return ChannelType(rawValue: self.rawType) ?? .single
-            }
+        try self.saveContext()
 
-            set {
-                self.rawType = newValue.rawValue
-            }
+        return changedMessagesIds
+    }
+
+    public func updateMessageState(to state: Message.State, withId receiptId: String, from channel: Channel) throws -> Message.State {
+        guard let message = channel.allMessages.first(where: { $0.xmppId == receiptId }) else {
+            throw Error.messageWithIdNotFound
         }
 
-        public var colors: [CGColor] {
-            let colorPair = UIConstants.colorPairs[Int(self.numColorPair)]
-
-            return [colorPair.first, colorPair.second]
+        switch message.state {
+        case .sent, .delivered, .failed:
+            message.state = state
+        case .received, .read:
+            break
         }
 
-        public var lastMessagesBody: String {
-            guard let message = self.visibleMessages.last else {
-                return ""
-            }
+        try self.saveContext()
 
-            switch message {
-            case let textMessage as TextMessage:
-                return textMessage.body
+        return message.state
+    }
 
-            case is PhotoMessage:
-                return "Photo"
+    private func createChannel(type: ChannelType,
+                               sid: String,
+                               name: String,
+                               initiator: String,
+                               cards: [Card]) throws -> Channel {
+        let cards = cards.filter { $0.identity != Virgil.ethree.identity }
+        let account = try self.getCurrentAccount()
 
-            case is VoiceMessage:
-                return "Voice Message"
+        let channel = try Channel(sid: sid,
+                                  name: name,
+                                  initiator: initiator,
+                                  type: type,
+                                  account: account,
+                                  cards: cards,
+                                  managedContext: self.managedContext)
 
-            case let callMessage as CallMessage:
-                return callMessage.isIncoming ? "Incomming call" : "Outgoing call"
+        try self.save(channel)
 
-            default:
-                return ""
-            }
+        return channel
+    }
+
+    func updateCards(with cards: [Card], for channel: Channel) throws {
+        let cards = cards.filter { $0.identity != self.currentAccount?.identity }
+
+        channel.cards = cards
+
+        try self.saveContext()
+    }
+
+    func delete(channel: Channel) throws {
+        channel.allMessages.forEach { self.managedContext.delete($0) }
+
+        self.managedContext.delete(channel)
+
+        try self.saveContext()
+    }
+
+    func existsSingleChannel(with identity: String) -> Bool {
+        return self.getSingleChannels().contains { $0.name == identity }
+    }
+
+    func existsChannel(sid: String) -> Bool {
+        return self.getChannels().contains { $0.sid == sid }
+    }
+
+    func getChannel(withName name: String) -> Channel? {
+        return self.getChannels().first { $0.name == name }
+    }
+
+    func getChannels() -> [Channel] {
+        return self.currentAccount!.channels
+    }
+
+    func getSingleChannel(with identity: String) -> Channel? {
+        return self.getSingleChannels().first { $0.name == identity }
+    }
+
+    func getSingleChannels() -> [Channel] {
+        return self.getChannels().filter { $0.type == .single }
+    }
+
+    func getGroupChannels() -> [Channel] {
+        return self.getChannels().filter { $0.type == .group }
+    }
+
+    func getCurrentChannel() throws -> Channel {
+        guard let channel = self.currentChannel else {
+            throw Error.nilCurrentChannel
         }
 
-        public var lastMessagesDate: Date? {
-            guard let message = self.visibleMessages.last else {
-                return nil
+        return channel
+    }
+
+    func getSingleChannelsCards(users: [String]) throws -> [Card] {
+        let cards: [Card] = try users.map {
+            guard let channel = self.getSingleChannel(with: $0) else {
+                throw Error.channelNotFound
             }
 
-            return message.date
-        }
-
-        public var letter: String {
-            get {
-                return String(describing: self.name.uppercased().first!)
-            }
-        }
-
-        convenience init(sid: String,
-                         name: String,
-                         initiator: String,
-                         type: ChannelType,
-                         account: Account,
-                         cards: [Card],
-                         managedContext: NSManagedObjectContext) throws {
-            guard let entity = NSEntityDescription.entity(forEntityName: Channel.EntityName, in: managedContext) else {
-                throw Storage.Error.entityNotFound
-            }
-
-            self.init(entity: entity, insertInto: managedContext)
-
-            self.sid = sid
-            self.name = name
-            self.initiator = initiator
-            self.account = account
-            self.type = type
-            self.cards = cards
-            self.createdAt = Date()
-            self.unreadCount = 0
-            self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))
-        }
-
-        public func getCard() throws -> Card {
-            guard self.type == .single, let card = self.cards.first else {
-                throw Storage.Error.invalidChannel
+            guard let card = channel.cards.first else {
+                throw Error.invalidChannel
             }
 
             return card
         }
 
-        public func getGroup() throws -> Group {
-            guard self.type == .group, let group = self.group else {
-                throw Storage.Error.missingVirgilGroup
-            }
+        return cards
+    }
 
-            return group
-        }
+    func resetUnreadCount(for channel: Channel) throws {
+        channel.unreadCount = 0
 
-        public func set(group: Group) {
-            self.group = group
-        }
-
-        public func containsCallMessage(with callUUID: UUID) -> Bool {
-            return self.allMessages.contains {
-                guard let callMessage = $0 as? CallMessage else {
-                    return false
-                }
-
-                return callMessage.callUUID == callUUID
-            }
-        }
+        try self.saveContext()
     }
 }

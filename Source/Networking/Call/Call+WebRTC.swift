@@ -6,7 +6,6 @@
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import WebRTC
 
 fileprivate let kIceServers = ["stun:stun.l.google.com:19302",
@@ -82,7 +81,7 @@ extension Call {
         rtcConfig.continualGatheringPolicy = .gatherContinually
 
         let rtcConstraints = RTCMediaConstraints(mandatoryConstraints: nil,
-                                              optionalConstraints: ["DtlsSrtpKeyAgreement": kRTCMediaConstraintsValueTrue])
+                                                 optionalConstraints: ["DtlsSrtpKeyAgreement": kRTCMediaConstraintsValueTrue])
 
         let peerConnection = self.peerConnectionFactory.peerConnection(with: rtcConfig, constraints: rtcConstraints, delegate: delegate)
 

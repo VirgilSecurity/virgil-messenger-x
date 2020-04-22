@@ -6,7 +6,7 @@
 //  Copyright © 2019 VirgilSecurity. All rights reserved.
 //
 
-import VirgilSDK
+import Foundation
 
 enum UserAuthorizerError: String, Error {
     case noIdentityAtDefaults

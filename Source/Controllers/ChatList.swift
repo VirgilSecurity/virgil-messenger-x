@@ -74,6 +74,7 @@ class ChatListViewController: ViewController {
             }
         }
 
+        // TODO: Move to separate class
         let callOfferReceived: Notifications.Block = { [weak self] notification in
             if self == nil {
                 return
