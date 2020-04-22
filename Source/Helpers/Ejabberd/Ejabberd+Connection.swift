@@ -92,6 +92,8 @@ extension Ejabberd {
         self.retryConfig.shouldRetry = false
 
         self.stream.disconnect()
+
+        self.messageQueue.cancelAllOperations()
     }
 }
 

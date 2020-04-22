@@ -18,40 +18,16 @@ extension Ejabberd {
         let message = XMPPMessage(messageType: .chat, to: user, elementID: xmppId)
         message.addBody(body)
 
-        try self.send(message: message, to: user)
+        try self.send(message: message)
     }
 
-    internal func send(message: XMPPMessage, to user: XMPPJID) throws {
-        self.stream.send(message)
-
-        try self.sendMutex.lock()
-
-        try self.checkError()
+    internal func send(message: XMPPMessage) throws {
+        let messageOperation = EjabberdOperation(message: message, stream: self.stream)
+        self.messageQueue.addOperation(messageOperation)
     }
 }
 
 extension Ejabberd {
-    func xmppStream(_ sender: XMPPStream, didSend message: XMPPMessage) {
-        Log.debug("Ejabberd: Message sent")
-
-        guard !message.hasReadReceiptResponse, !message.hasDeliveryReceiptResponse else {
-            return
-        }
-
-        self.unlockMutex(self.sendMutex)
-    }
-
-    func xmppStream(_ sender: XMPPStream, didFailToSend message: XMPPMessage, error: Error) {
-        Log.error(error, message: "Ejabberd: message failed to send")
-
-        guard !message.hasReadReceiptResponse, !message.hasDeliveryReceiptResponse else {
-            Log.error(error, message: "Sending receipt failed")
-            return
-        }
-
-        self.unlockMutex(self.sendMutex, with: error)
-    }
-
     func xmppStream(_ sender: XMPPStream, didReceive message: XMPPMessage) {
         Log.debug("Ejabberd: Message received")
 

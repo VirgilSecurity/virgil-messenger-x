@@ -19,7 +19,7 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
     internal var error: Error?
     internal var retryConfig: RetryConfig = RetryConfig()
 
-    internal let sendMutex: Mutex = Mutex()
+    internal var messageQueue = OperationQueue()
 
     private let upload = XMPPHTTPFileUpload()
     private let deliveryReceipts = XMPPMessageDeliveryReceipts()
@@ -53,8 +53,6 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
         self.readReceipts.activate(self.stream)
         self.readReceipts.autoSendMessageReadRequests = true
         self.readReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
-
-        try? self.sendMutex.lock()
     }
 
     internal func checkError() throws {

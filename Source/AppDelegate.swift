@@ -190,6 +190,7 @@ extension AppDelegate: PKPushRegistryDelegate {
             return
         }
 
+        // FIXME: Minimize payload
         guard
             let aps = payload.dictionaryPayload["aps"] as? NSDictionary,
             let alert = aps["alert"] as? NSDictionary,
@@ -198,6 +199,9 @@ extension AppDelegate: PKPushRegistryDelegate {
         else {
             return
         }
+
+        // FIXME: Replace with appropriate call that awakes ejabberd connection
+        Ejabberd.shared.startInitializing(identity: Virgil.ethree.identity)
 
         do {
             let encryptedMessage = try EncryptedMessage.import(body)
