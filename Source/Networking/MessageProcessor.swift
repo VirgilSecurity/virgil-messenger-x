@@ -35,7 +35,7 @@ class MessageProcessor {
     }
 
     static func process(_ encryptedMessage: EncryptedMessage, from author: String, xmppId: String) throws {
-        let channel = try self.setupCoreChannel(name: author)
+        let channel = try self.setupChannel(name: author)
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
 
@@ -57,7 +57,7 @@ class MessageProcessor {
     }
 
     static func process(call encryptedMessage: EncryptedMessage, from caller: String) throws {
-        let channel = try self.setupCoreChannel(name: caller)
+        let channel = try self.setupChannel(name: caller)
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
 
@@ -163,22 +163,6 @@ class MessageProcessor {
         }
 
         return message
-    }
-
-    private static func setupCoreChannel(name: String) throws -> Storage.Channel {
-        let channel: Storage.Channel
-
-        if let coreChannel = Storage.shared.getChannel(withName: name) {
-            channel = coreChannel
-        }
-        else {
-            let card = try Virgil.ethree.findUser(with: name).startSync().get()
-
-            channel = try Storage.shared.getChannel(withName: name)
-                ?? Storage.shared.createSingleChannel(initiator: name, card: card)
-        }
-
-        return channel
     }
 
     private static func decrypt(_ message: EncryptedMessage, from channel: Storage.Channel) throws -> Data {

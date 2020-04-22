@@ -6,7 +6,12 @@ public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
     // Returns xmppId
-    private func send(message: NetworkMessage, pushType: PushType, additionalData: Data?, to channel: Storage.Channel, date: Date, messageId: String) throws {
+    private func send(message: NetworkMessage,
+                      pushType: PushType,
+                      additionalData: Data?,
+                      to channel: Storage.Channel,
+                      date: Date,
+                      messageId: String) throws {
 
         let exported = try message.exportAsJsonData()
 
@@ -24,7 +29,11 @@ public class MessageSender {
         try Ejabberd.shared.send(encryptedMessage, to: channel.name, xmppId: messageId)
     }
 
-    public func send(text: NetworkMessage.Text, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
+    public func send(text: NetworkMessage.Text,
+                     date: Date,
+                     channel: Storage.Channel,
+                     messageId: String,
+                     completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.text(text)
@@ -43,7 +52,13 @@ public class MessageSender {
         }
     }
 
-    public func send(photo: NetworkMessage.Photo, image: Data, thumbnail: Data, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
+    public func send(photo: NetworkMessage.Photo,
+                     image: Data,
+                     thumbnail: Data,
+                     date: Date,
+                     channel: Storage.Channel,
+                     messageId: String,
+                     completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
 
@@ -63,7 +78,11 @@ public class MessageSender {
         }
     }
 
-    public func send(voice: NetworkMessage.Voice, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
+    public func send(voice: NetworkMessage.Voice,
+                     date: Date,
+                     channel: Storage.Channel,
+                     messageId: String,
+                     completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
 
@@ -83,7 +102,11 @@ public class MessageSender {
         }
     }
 
-    public func send(callOffer: NetworkMessage.CallOffer, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
+    public func send(callOffer: NetworkMessage.CallOffer,
+                     date: Date,
+                     channel: Storage.Channel,
+                     messageId: String,
+                     completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.callOffer(callOffer)
@@ -104,7 +127,11 @@ public class MessageSender {
         }
     }
 
-    public func send(callAnswer: NetworkMessage.CallAnswer, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
+    public func send(callAnswer: NetworkMessage.CallAnswer,
+                     date: Date,
+                     channel: Storage.Channel,
+                     messageId: String,
+                     completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.callAnswer(callAnswer)
@@ -119,7 +146,11 @@ public class MessageSender {
         }
     }
 
-    public func send(callUpdate: NetworkMessage.CallUpdate, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
+    public func send(callUpdate: NetworkMessage.CallUpdate,
+                     date: Date,
+                     channel: Storage.Channel,
+                     messageId: String,
+                     completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.callUpdate(callUpdate)
@@ -134,7 +165,11 @@ public class MessageSender {
         }
     }
 
-    public func send(iceCandidate: NetworkMessage.IceCandidate, date: Date, channel: Storage.Channel, messageId: String, completion: @escaping (Error?) -> Void) {
+    public func send(iceCandidate: NetworkMessage.IceCandidate,
+                     date: Date,
+                     channel: Storage.Channel,
+                     messageId: String,
+                     completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.iceCandidate(iceCandidate)
@@ -149,7 +184,12 @@ public class MessageSender {
         }
     }
 
-    public func uploadAndSend(image: UIImage, date: Date, channel: Storage.Channel, messageId: String, loadDelegate: LoadDelegate, completion: @escaping (Error?) -> Void) {
+    public func uploadAndSend(image: UIImage,
+                              date: Date,
+                              channel: Storage.Channel,
+                              messageId: String,
+                              loadDelegate: LoadDelegate,
+                              completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
                 guard
@@ -174,7 +214,6 @@ public class MessageSender {
                 try self.send(message: message, pushType: .alert, additionalData: thumbnail, to: channel, date: date, messageId: messageId)
 
                 let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
-
                 try Storage.shared.createPhotoMessage(with: photo, thumbnail: thumbnail, baseParams: baseParams)
 
                 completion(nil)
@@ -185,14 +224,19 @@ public class MessageSender {
         }
     }
 
-    public func uploadAndSend(voice voiceURL: URL, identifier: String, duration: TimeInterval, date: Date, channel: Storage.Channel, messageId: String, loadDelegate: LoadDelegate, completion: @escaping (Error?) -> Void) {
+    public func uploadAndSend(voice voiceURL: URL,
+                              identifier: String,
+                              duration: TimeInterval,
+                              date: Date,
+                              channel: Storage.Channel,
+                              messageId: String,
+                              loadDelegate: LoadDelegate,
+                              completion: @escaping (Error?) -> Void) {
         self.queue.async {
             do {
-                // TODO: optimize. Do not fetch data to memrory, use streams
+                // TODO: optimize. Do not fetch data to memory, use streams
                 let voiceData: Data = try Data(contentsOf: voiceURL)
-
                 let url = try self.upload(data: voiceData, identifier: identifier, channel: channel, loadDelegate: loadDelegate)
-
                 let voice = NetworkMessage.Voice(identifier: identifier, duration: duration, url: url)
 
                 let message = NetworkMessage.voice(voice)
@@ -200,7 +244,6 @@ public class MessageSender {
                 try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date, messageId: messageId)
 
                 let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
-
                 try Storage.shared.createVoiceMessage(with: voice, baseParams: baseParams)
 
                 completion(nil)
