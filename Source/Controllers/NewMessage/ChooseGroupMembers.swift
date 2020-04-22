@@ -13,9 +13,9 @@ class ChooseMembersViewController: ViewController {
     @IBOutlet weak var nextButton: UIBarButtonItem!
     @IBOutlet weak var noContactsView: UIView!
 
-    private let channels = CoreData.shared.getSingleChannels()
+    private let channels = Storage.shared.getSingleChannels()
 
-    private var members: [Channel] = [] {
+    private var members: [Storage.Channel] = [] {
         didSet {
             self.nextButton.isEnabled = !self.members.isEmpty
         }
@@ -71,7 +71,8 @@ extension ChooseMembersViewController: CellTapDelegate {
 
             if cell.isMember {
                 self.members.append(channel)
-            } else {
+            }
+            else {
                 self.members = self.members.filter { $0 != channel }
             }
         }

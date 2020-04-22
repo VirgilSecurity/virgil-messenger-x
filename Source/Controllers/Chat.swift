@@ -35,7 +35,7 @@ class ChatViewController: BaseChatViewController {
     private let indicator = UIActivityIndicatorView()
     private let indicatorLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
 
-    public var channel: Channel!
+    public var channel: Storage.Channel!
 
     private var soundPlayer: AVAudioPlayer?
     weak private var cachedAudioModel: UIAudioMessageViewModel?
@@ -83,7 +83,7 @@ class ChatViewController: BaseChatViewController {
     }
 
     deinit {
-        CoreData.shared.deselectChannel(channel)
+        Storage.shared.deselectChannel(self.channel)
     }
 
     private func updateUnreadState() {
@@ -92,7 +92,7 @@ class ChatViewController: BaseChatViewController {
                 try Ejabberd.shared.sendGlobalReadReceipt(to: self.channel.name)
             }
 
-            try CoreData.shared.resetUnreadCount(for: self.channel)
+            try Storage.shared.resetUnreadCount(for: self.channel)
         }
         catch {
             Log.error(error, message: "Chat viewDidLoad failed")
@@ -160,10 +160,9 @@ class ChatViewController: BaseChatViewController {
         }
     }
 
-    @IBAction @objc func showChatDetails(_ sender: Any) {
-        if self.channel.type == .group {
-            self.performSegue(withIdentifier: "goToGroupInfo", sender: self)
-        }
+    @IBAction func showChatDetails(_ sender: Any) {
+        // FIXME
+        CallManager.shared.startOutgoingCall(to: self.channel.name)
     }
 
     var chatInputPresenter: BasicChatInputBarPresenter!
@@ -268,8 +267,11 @@ extension ChatViewController {
             textStyle: audioTextStyle,
             baseStyle: baseMessageStyle) // without baseStyle, you won't have the right background
 
+        let interactionHandler = UIAudioMessageHandler(baseHandler: self.baseMessageHandler, playableController: self)
+
         let audioMessagePresenter = AudioMessagePresenterBuilder(viewModelBuilder: UIAudioMessageViewModelBuilder(),
-                                                                 interactionHandler: UIAudioMessageHandler(baseHandler: self.baseMessageHandler, playableController: self))
+                                                                 interactionHandler: interactionHandler)
+
         audioMessagePresenter.baseMessageStyle = baseMessageStyle
         audioMessagePresenter.textCellStyle = audioTextCellStyle
 
@@ -413,7 +415,8 @@ extension ChatViewController: PhotoObserverProtocol {
             ac.addAction(UIAlertAction(title: "OK", style: .default))
 
             self.present(ac, animated: true)
-        } else {
+        }
+        else {
             HUD.flash(.success)
         }
     }

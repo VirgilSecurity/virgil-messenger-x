@@ -76,7 +76,7 @@ class SettingsViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let sendReadReceipts = CoreData.shared.currentAccount?.sendReadReceipts ?? true
+        let sendReadReceipts = Storage.shared.currentAccount?.sendReadReceipts ?? true
         self.readReceiptsSwitch.setOn(sendReadReceipts, animated: false)
         self.readReceiptsSwitch.addTarget(self, action: #selector(self.readReceiptsSwitchChanged), for: .valueChanged)
 
@@ -86,7 +86,7 @@ class SettingsViewController: ViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
 
-        let account = try! CoreData.shared.getCurrentAccount()
+        let account = try! Storage.shared.getCurrentAccount()
         self.usernameLabel.text = account.identity
 
         self.letterLabel.text = String(describing: account.letter)
@@ -96,7 +96,7 @@ class SettingsViewController: ViewController {
 
     @objc private func readReceiptsSwitchChanged(_ sender: Any) {
         do {
-            try CoreData.shared.setSendReadReceipts(to: self.readReceiptsSwitch.isOn)
+            try Storage.shared.setSendReadReceipts(to: self.readReceiptsSwitch.isOn)
         }
         catch {
             Log.error(error, message: "Changing sendReadReceipt option failed")
@@ -132,7 +132,9 @@ class SettingsViewController: ViewController {
 
     private func deleteAccount() {
         let alertController = UIAlertController(title: "Delete account",
-                                                message: "Account data will be removed from this device. People still will be able to write to you. This nickname cannot be used for registration again.",
+                                                message: "Account data will be removed from this device. " +
+                                                         "People still will be able to write to you. " +
+                                                         "This nickname cannot be used for registration again.",
                                                 preferredStyle: .alert)
 
         let okAction = UIAlertAction(title: "OK", style: .default) { _ in

@@ -18,7 +18,7 @@ class GroupInfoViewController: ViewController {
     @IBOutlet weak var addButton: UIBarButtonItem!
     @IBOutlet weak var scrollView: UIScrollView!
 
-    public var channel: Channel!
+    public var channel: Storage.Channel!
     public var dataSource: DataSource!
 
     private var usersListController: UsersListViewController?
@@ -113,19 +113,5 @@ extension GroupInfoViewController: DeleteItemDelegate {
         guard self.checkReachability(), Configurator.isUpdated else {
             return
         }
-
-//        HUD.show(.progress)
-//
-//        ChatsManager.removeMember(user.identity, dataSource: self.dataSource).start { _, error in
-//            DispatchQueue.main.async {
-//                if let error = error {
-//                    HUD.hide()
-//                    self.alert(error)
-//                } else {
-//                    HUD.flash(.success)
-//                    self.updateUserList()
-//                }
-//            }
-//        }
     }
 }

@@ -33,7 +33,7 @@ class ChatListCell: UITableViewCell {
         self.delegate?.didTapOn(self)
     }
 
-    public func configure(with channels: [Channel]) {
+    public func configure(with channels: [Storage.Channel]) {
         guard let channel = channels[safe: self.tag] else {
             return
         }

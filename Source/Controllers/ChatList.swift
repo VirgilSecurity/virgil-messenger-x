@@ -13,12 +13,14 @@ class ChatListViewController: ViewController {
     @IBOutlet weak var noChatsView: UIView!
     @IBOutlet weak var tableView: UITableView!
 
+    weak var callViewController: CallViewController?
+
     private let indicator = UIActivityIndicatorView()
     private let indicatorLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
 
     static let name = "ChatList"
 
-    var channels: [Channel] = []
+    var channels: [Storage.Channel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,9 +74,90 @@ class ChatListViewController: ViewController {
             }
         }
 
+        // TODO: Move to separate class
+        let callOfferReceived: Notifications.Block = { [weak self] notification in
+            if self == nil {
+                return
+            }
+
+            let callOffer: NetworkMessage.CallOffer
+            do {
+                callOffer = try Notifications.parse(notification, for: .message)
+            }
+            catch {
+                Log.error(error, message: "Invalid call offer notification")
+                return
+            }
+
+            let callDelay = -callOffer.date.timeIntervalSinceNow
+
+            if callDelay < 5.0 {
+                CallManager.shared.startIncommingCall(from: callOffer)
+            } else {
+                Log.debug("Detected stale call offer with id: \(callOffer.callUUID)")
+            }
+        }
+
+        let iceCandidateReceived: Notifications.Block = { [weak self] notification in
+            if self == nil {
+                return
+            }
+
+            let iceCandidate: NetworkMessage.IceCandidate
+            do {
+                iceCandidate = try Notifications.parse(notification, for: .message)
+            }
+            catch {
+                Log.error(error, message: "Invalid ice cadidate notification")
+                return
+            }
+
+            CallManager.shared.processIceCandidate(iceCandidate)
+        }
+
+        let callAnswerReceived: Notifications.Block = { [weak self] notification in
+            if self == nil {
+                return
+            }
+
+            let callAnswer: NetworkMessage.CallAnswer
+            do {
+                callAnswer = try Notifications.parse(notification, for: .message)
+            }
+            catch {
+                Log.error(error, message: "Invalid call accepted answer notification")
+                return
+            }
+
+            CallManager.shared.processCallAnswer(callAnswer)
+        }
+
+        let callUpdateReceived: Notifications.Block = { [weak self] notification in
+            if self == nil {
+                return
+            }
+
+            let callUpdate: NetworkMessage.CallUpdate
+            do {
+                callUpdate = try Notifications.parse(notification, for: .message)
+            }
+            catch {
+                Log.error(error, message: "Invalid call update notification")
+                return
+            }
+
+            CallManager.shared.processCallUpdate(callUpdate)
+        }
+
+        CallManager.shared.delegate = self
+
         Notifications.observe(for: .errored, block: errored)
         Notifications.observe(for: .connectionStateChanged, block: connectionStateChanged)
         Notifications.observe(for: [.chatListUpdated], block: reloadTableView)
+        Notifications.observe(for: .callOfferReceived, block: callOfferReceived)
+        Notifications.observe(for: .iceCandidateReceived, block: iceCandidateReceived)
+        Notifications.observe(for: .callAnswerReceived, block: callAnswerReceived)
+        Notifications.observe(for: .callUpdateReceived, block: callUpdateReceived)
     }
 
     private func setupTableView() {
@@ -103,7 +186,7 @@ class ChatListViewController: ViewController {
             guard !self.indicator.isAnimating else {
                 return
             }
-            
+
             self.indicator.startAnimating()
 
             let titleView = UIStackView(arrangedSubviews: [self.indicator, self.indicatorLabel])
@@ -114,7 +197,7 @@ class ChatListViewController: ViewController {
     }
 
     @objc private func reloadTableView() {
-        self.channels = CoreData.shared.getChannels()
+        self.channels = Storage.shared.getChannels()
 
         self.channels.sort { first, second in
             let firstDate = first.lastMessagesDate ?? first.createdAt
@@ -218,7 +301,7 @@ extension ChatListViewController: CellTapDelegate {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let chatController = segue.destination as? ChatViewController,
-            let channel = CoreData.shared.currentChannel {
+            let channel = Storage.shared.currentChannel {
                 chatController.channel = channel
         }
 
@@ -227,8 +310,48 @@ extension ChatListViewController: CellTapDelegate {
 }
 
 extension ChatListViewController {
-    func moveToChannel(_ channel: Channel) {
-        CoreData.shared.setCurrent(channel: channel)
+    func moveToChannel(_ channel: Storage.Channel) {
+        Storage.shared.setCurrent(channel: channel)
         self.performSegue(withIdentifier: "goToChat", sender: self)
+    }
+}
+
+extension ChatListViewController: CallManagerDelegate {
+    func callManager(_ callManager: CallManager, didAddCall call: Call) {
+        if self.callViewController != nil {
+            Log.debug("Group calls are not supported yet.")
+            return
+        }
+
+        DispatchQueue.main.async {
+            let storyboard = UIStoryboard(name: "Call", bundle: nil)
+            let viewController = storyboard.instantiateViewController(withIdentifier: "Call")
+
+            viewController.modalPresentationStyle = .fullScreen
+            viewController.modalTransitionStyle = .crossDissolve
+
+            guard let callViewController = viewController as? CallViewController else {
+                fatalError("ViewController with identifier 'Call' is not of type CallViewController")
+            }
+
+            self.callViewController = callViewController
+            self.callViewController?.call = call
+
+            self.present(callViewController, animated: true, completion: nil)
+        }
+    }
+
+    func callManager(_ callManager: CallManager, didRemoveCall call: Call) {
+        self.callViewController?.close()
+        self.callViewController = nil
+    }
+
+    func callManager(_ callManager: CallManager, didFail error: Error) {
+        DispatchQueue.main.async {
+            self.alert(error)
+        }
+    }
+
+    func callManager(_ callManager: CallManager, didFailCall call: Call, error: Error) {
     }
 }

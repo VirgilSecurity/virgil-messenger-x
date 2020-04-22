@@ -17,12 +17,21 @@ public class Notifications {
         case connectionStateChanged = "Notifications.ConnectionStateChanged"
         case chatListUpdated = "Notifications.ChatListUpdated"
         case currentChannelDeleted = "Notifications.CurrentChannelDeleted"
+
+        case startOugoingCall = "Notifications.StartOugoingCall"
+        case startIncommingCall = "Notifications.StartIncommingCall"
+        case acceptCall = "Notifications.AcceptCall"
+        case rejectCall = "Notifications.RejectCall"
     }
 
     public enum Notifications: String {
         case errored = "Notifications.Errored"
         case messageAddedToCurrentChannel = "Notifications.MessageAddedToCurrentChannel"
         case messageStatusUpdated = "Notifications.MessageStatusUpdated"
+        case callOfferReceived = "Notifications.IncommingCall"
+        case callAnswerReceived = "Notifications.CallAnswerReceived"
+        case callUpdateReceived = "Notifications.CallUpdateReceived"
+        case iceCandidateReceived = "Notifications.IceCandidateReceived"
     }
 
     public enum NotificationKeys: String {
@@ -67,19 +76,48 @@ extension Notifications {
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }
 
-    public static func post(message: Message) {
+    public static func post(message: Storage.Message) {
         let notification = self.notification(.messageAddedToCurrentChannel)
         let userInfo = [NotificationKeys.message.rawValue: message]
 
         self.center.post(name: notification, object: self, userInfo: userInfo)
     }
 
-    public static func post(newState: Message.State, messageIds: [String]) {
+    public static func post(newState: Storage.Message.State, messageIds: [String]) {
         let notification = self.notification(.messageStatusUpdated)
         let userInfo: [String: Any] = [NotificationKeys.newState.rawValue: newState,
                                        NotificationKeys.messageIds.rawValue: messageIds]
 
         self.center.post(name: notification, object: self, userInfo: userInfo)
+    }
+
+    public static func post(message: NetworkMessage) {
+        switch message {
+        case .text, .photo, .voice:
+            // Is handled via post(message)
+            // FIXME: Merge message processing aproach
+            break
+
+        case .callOffer(let callOffer):
+            let notification = self.notification(Notifications.callOfferReceived)
+            let userInfo = [NotificationKeys.message.rawValue: callOffer]
+            self.center.post(name: notification, object: self, userInfo: userInfo)
+
+        case .callAnswer(let callAnswer):
+            let notification = self.notification(Notifications.callAnswerReceived)
+            let userInfo = [NotificationKeys.message.rawValue: callAnswer]
+            self.center.post(name: notification, object: self, userInfo: userInfo)
+
+        case .callUpdate(let callUpdate):
+            let notification = self.notification(Notifications.callUpdateReceived)
+            let userInfo = [NotificationKeys.message.rawValue: callUpdate]
+            self.center.post(name: notification, object: self, userInfo: userInfo)
+
+        case .iceCandidate(let iceCandidate):
+            let notification = self.notification(Notifications.iceCandidateReceived)
+            let userInfo = [NotificationKeys.message.rawValue: iceCandidate]
+            self.center.post(name: notification, object: self, userInfo: userInfo)
+        }
     }
 
     public static func post(_ notification: EmptyNotification) {
@@ -90,17 +128,17 @@ extension Notifications {
 }
 
 extension Notifications {
-    public static func observe(for notification: EmptyNotification, block: @escaping Block)  {
+    public static func observe(for notification: EmptyNotification, block: @escaping Block) {
         self.observe(for: [notification], block: block)
     }
 
-    public static func observe(for notification: Notifications, block: @escaping Block)  {
+    public static func observe(for notification: Notifications, block: @escaping Block) {
         let notification = self.notification(notification)
 
         self.center.addObserver(forName: notification, object: nil, queue: nil, using: block)
     }
 
-    public static func observe(for notifications: [EmptyNotification], block: @escaping Block)  {
+    public static func observe(for notifications: [EmptyNotification], block: @escaping Block) {
         notifications.forEach {
             let notification = self.notification($0)
 

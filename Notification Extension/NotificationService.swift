@@ -126,7 +126,7 @@ class NotificationService: UNNotificationServiceExtension {
     }
 
     private func process(decrypted: Data, version: EncryptedMessageVersion) throws -> String {
-        let message: String
+        let messageString: String
 
         switch version {
         case .v1:
@@ -134,13 +134,13 @@ class NotificationService: UNNotificationServiceExtension {
                 throw NotificationServiceError.dataToStrFailed
             }
 
-            message = string
+            messageString = string
         case .v2:
-            let content = try MessageContent.import(from: decrypted)
+            let message = try NetworkMessage.import(from: decrypted)
 
-            message = content.notificationBody
+            messageString = message.notificationBody
         }
 
-        return message
+        return messageString
     }
 }

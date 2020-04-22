@@ -14,9 +14,9 @@ class AddMembersViewController: ViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var addButton: UIBarButtonItem!
 
-    private var channels: [Channel] = []
+    private var channels: [Storage.Channel] = []
 
-    private var selected: [Channel] = [] {
+    private var selected: [Storage.Channel] = [] {
         didSet {
             self.addButton.isEnabled = !self.selected.isEmpty
         }
@@ -58,11 +58,11 @@ class AddMembersViewController: ViewController {
     }
 
     @objc private func reloadTableView() {
-        self.channels = CoreData.shared.getSingleChannels()
+        self.channels = Storage.shared.getSingleChannels()
 
         self.channels = self.channels.filter { channel in
             // FIXME
-            !CoreData.shared.currentChannel!.cards.contains { card in
+            !Storage.shared.currentChannel!.cards.contains { card in
                 channel.cards.first?.identity == card.identity
             }
         }
@@ -82,20 +82,6 @@ class AddMembersViewController: ViewController {
         else {
             return
         }
-
-//        HUD.show(.progress)
-
-//        ChatsManager.addMembers(add, dataSource: self.dataSource).start { _, error in
-//            DispatchQueue.main.async {
-//                if let error = error {
-//                    HUD.hide()
-//                    self.alert(error)
-//                } else {
-//                    HUD.flash(.success)
-//                    self.navigationController?.popViewController(animated: true)
-//                }
-//            }
-//        }
     }
 }
 
@@ -123,7 +109,8 @@ extension AddMembersViewController: CellTapDelegate {
 
             if cell.isMember {
                 self.selected.append(channel)
-            } else {
+            }
+            else {
                 self.selected = self.selected.filter { $0 != channel }
             }
         }
