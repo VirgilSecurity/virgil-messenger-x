@@ -88,7 +88,13 @@ class ChatListViewController: ViewController {
                 return
             }
 
-            CallManager.shared.startIncommingCall(from: callOffer)
+            let callDelay = -callOffer.date.timeIntervalSinceNow
+
+            if callDelay < 5.0 {
+                CallManager.shared.startIncommingCall(from: callOffer)
+            } else {
+                Log.debug("Detected stale call offer with id: \(callOffer.callUUID)")
+            }
         }
 
         let iceCandidateReceived: Notifications.Block = { [weak self] notification in

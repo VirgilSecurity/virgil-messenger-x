@@ -32,6 +32,7 @@ public enum NetworkMessage {
 
     public struct CallOffer: Codable {
         let callUUID: UUID
+        let date: Date
         let caller: String
         let sdp: String
     }

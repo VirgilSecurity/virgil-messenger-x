@@ -44,7 +44,7 @@ public class OutgoingCall: Call {
 
             peerConnection.setLocalDescription(sdp) { error in
                 guard let error = error else {
-                    let callOffer = NetworkMessage.CallOffer(callUUID: self.uuid, caller: self.myName, sdp: sdp.sdp)
+                    let callOffer = NetworkMessage.CallOffer(callUUID: self.uuid, date: Date(), caller: self.myName, sdp: sdp.sdp)
 
                     self.didCreateOffer(callOffer)
                     return

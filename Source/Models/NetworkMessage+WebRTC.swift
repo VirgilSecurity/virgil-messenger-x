@@ -10,26 +10,12 @@ import Foundation
 import WebRTC
 
 extension NetworkMessage.CallOffer {
-    init(from rtcSessionDescription: RTCSessionDescription, caller: String) {
-        assert(rtcSessionDescription.type == RTCSdpType.offer)
-
-        self.callUUID = UUID()
-        self.caller = caller
-        self.sdp = rtcSessionDescription.sdp
-    }
-
     var rtcSessionDescription: RTCSessionDescription {
         return RTCSessionDescription(type: RTCSdpType.offer, sdp: self.sdp)
     }
 }
 
 extension NetworkMessage.CallAnswer {
-    init(from rtcSessionDescription: RTCSessionDescription, withId callUUID: UUID) {
-        assert(rtcSessionDescription.type == RTCSdpType.answer)
-        self.callUUID = callUUID
-        self.sdp = rtcSessionDescription.sdp
-    }
-
     var rtcSessionDescription: RTCSessionDescription {
         return RTCSessionDescription(type: RTCSdpType.answer, sdp: self.sdp)
     }
