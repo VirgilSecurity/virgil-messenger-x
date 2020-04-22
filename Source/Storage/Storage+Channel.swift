@@ -8,7 +8,6 @@
 
 import CoreData
 import VirgilSDK
-import UIKit
 
 extension Storage {
     private func save(_ channel: Channel) throws {

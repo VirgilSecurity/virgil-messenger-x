@@ -6,7 +6,6 @@
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import Chatto
 import ChattoAdditions
 

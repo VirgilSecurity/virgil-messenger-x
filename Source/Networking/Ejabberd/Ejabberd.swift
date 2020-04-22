@@ -16,7 +16,6 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
     private let delegateQueue = DispatchQueue(label: "EjabberdDelegate")
 
     internal let stream: XMPPStream = XMPPStream()
-    internal var error: Error?
     internal var retryConfig: RetryConfig = RetryConfig()
 
     internal var messageQueue = OperationQueue()
@@ -53,22 +52,6 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
         self.readReceipts.activate(self.stream)
         self.readReceipts.autoSendMessageReadRequests = true
         self.readReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
-    }
-
-    internal func checkError() throws {
-        if let error = self.error {
-            throw error
-        }
-    }
-
-    internal func unlockMutex(_ mutex: Mutex, with error: Error? = nil) {
-        do {
-            self.error = error
-            try mutex.unlock()
-        }
-        catch {
-            Log.error(error, message: "Unlocking mutex failed")
-        }
     }
 
     public static func setupJid(with username: String) throws -> XMPPJID {

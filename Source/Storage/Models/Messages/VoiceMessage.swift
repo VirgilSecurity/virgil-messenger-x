@@ -7,9 +7,7 @@
 //
 //
 
-import Foundation
 import CoreData
-import ChattoAdditions
 
 extension Storage {
     @objc(VoiceMessage)

@@ -7,8 +7,6 @@
 //
 
 import CoreData
-import VirgilCryptoRatchet
-import VirgilSDK
 import ChattoAdditions
 
 extension Storage {

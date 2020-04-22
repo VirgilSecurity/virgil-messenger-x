@@ -7,7 +7,6 @@
 //
 
 import CoreData
-import VirgilCryptoRatchet
 import VirgilSDK
 
 extension Storage {

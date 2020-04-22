@@ -6,9 +6,7 @@
 //  Copyright © 2020 VirgilSecurity. All rights reserved.
 //
 
-import Foundation
 import CoreData
-import ChattoAdditions
 
 extension Storage {
     @objc(TextMessage)

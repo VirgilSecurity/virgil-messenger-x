@@ -7,9 +7,8 @@
 //
 //
 
-import Foundation
 import CoreData
-import ChattoAdditions
+import UIKit
 
 extension Storage {
     @objc(PhotoMessage)

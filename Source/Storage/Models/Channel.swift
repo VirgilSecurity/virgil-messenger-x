@@ -8,7 +8,6 @@
 
 import CoreData
 import VirgilSDK
-import VirgilE3Kit
 import CoreGraphics
 
 extension Storage {
@@ -30,8 +29,6 @@ extension Storage {
         @NSManaged private var numColorPair: Int32
         @NSManaged private var orderedMessages: NSOrderedSet?
         @NSManaged private var rawCards: [String]
-
-        private(set) var group: Group?
 
         public static let MessagesKey = "orderedMessages"
 
@@ -146,18 +143,6 @@ extension Storage {
             }
 
             return card
-        }
-
-        public func getGroup() throws -> Group {
-            guard self.type == .group, let group = self.group else {
-                throw Storage.Error.missingVirgilGroup
-            }
-
-            return group
-        }
-
-        public func set(group: Group) {
-            self.group = group
         }
 
         public func containsCallMessage(with callUUID: UUID) -> Bool {

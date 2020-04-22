@@ -1167,8 +1167,8 @@
 		16961B50203ADFBA0084086E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				97698D5824507DAB005C087D /* UI */,
 				976E353F24324047002D1CF2 /* Constants */,
+				97698D5824507DAB005C087D /* UI */,
 				16CC9B8021553E7100935AEC /* Extensions */,
 				429228DD1F9637A200DCECDF /* Log.swift */,
 				16317B9822C506A200A3144A /* Notifications.swift */,
