@@ -149,6 +149,9 @@
 		9720EAA72449B8C5004BA39F /* EjabberdError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9720EAA52449B8C5004BA39F /* EjabberdError.swift */; };
 		9720EAA82449B8C5004BA39F /* EjabberdError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9720EAA52449B8C5004BA39F /* EjabberdError.swift */; };
 		9735083F23FAAA810017340B /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
+		97698C8524504051005C087D /* PushRegistryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97698C8424504051005C087D /* PushRegistryDelegate.swift */; };
+		97698C8624504051005C087D /* PushRegistryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97698C8424504051005C087D /* PushRegistryDelegate.swift */; };
+		97698C8724504051005C087D /* PushRegistryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97698C8424504051005C087D /* PushRegistryDelegate.swift */; };
 		9775CFD8242A2D3D009F1693 /* Virgil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167C68441FADDB7800E6E448 /* Virgil.swift */; };
 		97AF4D83241AEE2000ED9BD7 /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
 		97AF4D85241AEE8800ED9BD7 /* Client+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D84241AEE8800ED9BD7 /* Client+Files.swift */; };
@@ -820,6 +823,7 @@
 		9720EAA52449B8C5004BA39F /* EjabberdError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EjabberdError.swift; sourceTree = "<group>"; };
 		974CC5462417DD1400FC7554 /* VirgilMessenger-v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VirgilMessenger-v2.xcdatamodel"; sourceTree = "<group>"; };
 		974E01A5242D5274008239B8 /* SwipeableNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeableNavigationController.swift; sourceTree = "<group>"; };
+		97698C8424504051005C087D /* PushRegistryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRegistryDelegate.swift; sourceTree = "<group>"; };
 		976E351724323ABD002D1CF2 /* Virgil STG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Virgil STG.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		976E351924323DE6002D1CF2 /* VirgilMessenger-stg.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "VirgilMessenger-stg.entitlements"; sourceTree = "<group>"; };
 		976E353A24323F03002D1CF2 /* Notification Extension-stg.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Notification Extension-stg.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1321,6 +1325,7 @@
 				16961B50203ADFBA0084086E /* Utils */,
 				429228B51F96261000DCECDF /* AppDelegate.swift */,
 				805F59B9242D86FA003421EB /* PushNotificationsDelegate.swift */,
+				97698C8424504051005C087D /* PushRegistryDelegate.swift */,
 				429228B71F96261000DCECDF /* ViewController.swift */,
 			);
 			path = Source;
@@ -1625,7 +1630,6 @@
 				1693678E2248FA2F00EF9A42 /* Copy Frameworks */,
 				16319BE72088E60200B09856 /* Remove unused architectures */,
 				16D4B8B623F5BCA400D17B90 /* Embed App Extensions */,
-				9775CFDA242A3CC1009F1693 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -1647,7 +1651,6 @@
 				976E350F24323ABD002D1CF2 /* Copy Frameworks */,
 				976E351024323ABD002D1CF2 /* Remove unused architectures */,
 				976E354D243290C8002D1CF2 /* Embed App Extensions */,
-				F4241F0524339B4300E839C3 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -1686,7 +1689,6 @@
 				F4241F042433996500E839C3 /* Copy Frameworks */,
 				F4241F0624339B7900E839C3 /* Remove unused architectures */,
 				976E363624329B2C002D1CF2 /* Embed App Extensions */,
-				F4241F0724339B9300E839C3 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -1992,24 +1994,6 @@
 			shellPath = /bin/sh;
 			shellScript = "APP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\ndo\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone\n";
 		};
-		9775CFDA242A3CC1009F1693 /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
-		};
 		F4241F042433996500E839C3 /* Copy Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
@@ -2051,24 +2035,6 @@
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
-		F4241F0524339B4300E839C3 /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
-		};
 		F4241F0624339B7900E839C3 /* Remove unused architectures */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2086,24 +2052,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "APP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\ndo\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone\n";
-		};
-		F4241F0724339B9300E839C3 /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2139,6 +2087,7 @@
 				16FB2DCC204D806E00346FA0 /* UIPhotoMessageViewModel.swift in Sources */,
 				97E437EC24210D120076AA04 /* NetworkDownloadOperation.swift in Sources */,
 				F46EE197241FA09F00BE53AA /* Storage+CallMessage.swift in Sources */,
+				97698C8524504051005C087D /* PushRegistryDelegate.swift in Sources */,
 				16973338229B3E15009E30D0 /* Gradient.swift in Sources */,
 				163C9EB42109FE320096A751 /* UITextViewZeroPaddings.swift in Sources */,
 				429228B81F96261000DCECDF /* ViewController.swift in Sources */,
@@ -2260,6 +2209,7 @@
 				F4241D7C2433854D00E839C3 /* UserFriendlyError.swift in Sources */,
 				F4241E222433865300E839C3 /* SignInCollection.swift in Sources */,
 				F4241E2E2433866100E839C3 /* Start.swift in Sources */,
+				97698C8624504051005C087D /* PushRegistryDelegate.swift in Sources */,
 				F4241E4B243386BB00E839C3 /* Array+IndexPathSubscript.swift in Sources */,
 				F4241E5D243386CE00E839C3 /* Notifications.swift in Sources */,
 				F4241E51243386BB00E839C3 /* Log.swift in Sources */,
@@ -2401,6 +2351,7 @@
 				F4241D7D2433854D00E839C3 /* UserFriendlyError.swift in Sources */,
 				F4241E252433865300E839C3 /* SignInCollection.swift in Sources */,
 				F4241E372433866200E839C3 /* Start.swift in Sources */,
+				97698C8724504051005C087D /* PushRegistryDelegate.swift in Sources */,
 				F4241E54243386BB00E839C3 /* Array+IndexPathSubscript.swift in Sources */,
 				F4241E61243386CF00E839C3 /* Notifications.swift in Sources */,
 				F4241E5A243386BB00E839C3 /* Log.swift in Sources */,
