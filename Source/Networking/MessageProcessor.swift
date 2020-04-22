@@ -62,7 +62,7 @@ class MessageProcessor {
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
 
         let message = try self.migrationSafeContentImport(from: decrypted,
-                                                       version: encryptedMessage.modelVersion)
+                                                          version: encryptedMessage.modelVersion)
 
         switch message {
         case .callOffer(let callOffer):

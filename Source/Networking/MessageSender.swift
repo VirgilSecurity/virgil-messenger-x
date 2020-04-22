@@ -5,7 +5,6 @@ import VirgilSDK
 public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
-    // Returns xmppId
     private func send(message: NetworkMessage,
                       pushType: PushType,
                       additionalData: Data?,
@@ -43,56 +42,6 @@ public class MessageSender {
                 let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
 
                 try Storage.shared.createTextMessage(with: text, baseParams: baseParams)
-
-                completion(nil)
-            }
-            catch {
-                completion(error)
-            }
-        }
-    }
-
-    public func send(photo: NetworkMessage.Photo,
-                     image: Data,
-                     thumbnail: Data,
-                     date: Date,
-                     channel: Storage.Channel,
-                     messageId: String,
-                     completion: @escaping (Error?) -> Void) {
-        self.queue.async {
-            do {
-
-                let message = NetworkMessage.photo(photo)
-
-                try self.send(message: message, pushType: .alert, additionalData: thumbnail, to: channel, date: date, messageId: messageId)
-
-                let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
-
-                try Storage.shared.createPhotoMessage(with: photo, thumbnail: thumbnail, baseParams: baseParams)
-
-                completion(nil)
-            }
-            catch {
-                completion(error)
-            }
-        }
-    }
-
-    public func send(voice: NetworkMessage.Voice,
-                     date: Date,
-                     channel: Storage.Channel,
-                     messageId: String,
-                     completion: @escaping (Error?) -> Void) {
-        self.queue.async {
-            do {
-
-                let message = NetworkMessage.voice(voice)
-
-                try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date, messageId: messageId)
-
-                let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
-
-                try Storage.shared.createVoiceMessage(with: voice, baseParams: baseParams)
 
                 completion(nil)
             }
