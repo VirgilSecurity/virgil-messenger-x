@@ -14,7 +14,7 @@ public class Virgil {
     private(set) static var shared: Virgil!
     private(set) static var ethree: EThree!
 
-    private let verifier: VirgilCardVerifier
+    internal let verifier: VirgilCardVerifier
     internal let client: Client
 
     internal var crypto: VirgilCrypto {
@@ -30,6 +30,10 @@ public class Virgil {
     public static func initialize(identity: String, client: Client) throws {
         let tokenCallback = client.makeTokenCallback(identity: identity)
         let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
+        params.appGroup = Constants.appGroup
+        params.enableRatchet = true
+        params.enableRatchetPqc = true
+        params.keyPairType = Constants.keyPairType
         params.storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.KeychainGroup)
 
         self.ethree = try EThree(params: params)

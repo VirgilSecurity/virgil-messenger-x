@@ -88,6 +88,7 @@ extension Storage {
                         throw FileMediaStorage.Error.outputStreamToPathFailed
                     }
 
+                    // FIXME
                     // TODO: add self card usecase
                     try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: message.channel.getCard())
                 }
@@ -133,6 +134,7 @@ extension Storage {
                         throw FileMediaStorage.Error.outputStreamToPathFailed
                     }
 
+                    // FIXME
                     // TODO: add self card usecase
                     try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: message.channel.getCard())
                 }

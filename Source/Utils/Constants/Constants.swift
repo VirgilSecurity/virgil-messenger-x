@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import VirgilCrypto
 import XMPPFrameworkSwift
 
 enum Constants {
@@ -20,6 +21,7 @@ enum Constants {
     static let alertTopic: String = KeychainGroup
     static let appGroup: String = "group.virgil.notification\(Constants.envPrefix.rawValue)"
     static let pushesNode: String = "node"
+    static let keyPairType: KeyPairType = .curve25519Round5Ed25519Falcon
 
 #if DEBUG
     static let pushMode: String = "dev"

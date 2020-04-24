@@ -15,12 +15,17 @@ public class MessageSender {
         let exported = try message.exportAsJsonData()
 
         let card = try channel.getCard()
-        let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: card)
+        
+        guard let ratchetChannel = try Virgil.ethree.getRatchetChannel(with: card) else {
+            throw NSError() // FIXME
+        }
+        
+        let ciphertext = try ratchetChannel.encrypt(data: exported)
 
         var additionalData = additionalData
 
         if let data = additionalData {
-            additionalData = try Virgil.ethree.authEncrypt(data: data, for: card)
+            additionalData = try ratchetChannel.encrypt(data: data)
         }
 
         let encryptedMessage = EncryptedMessage(pushType: pushType, ciphertext: ciphertext, date: date, additionalData: additionalData)
@@ -205,6 +210,7 @@ public class MessageSender {
 
     private func upload(data: Data, identifier: String, channel: Storage.Channel, loadDelegate: LoadDelegate) throws -> URL {
         // encrypt data
+        // FIXME
         let encryptedData = try Virgil.ethree.authEncrypt(data: data, for: channel.getCard())
 
         // request ejabberd slot

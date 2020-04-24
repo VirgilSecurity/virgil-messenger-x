@@ -11,17 +11,21 @@ import VirgilCrypto
 
 extension Client {
     internal func makeAuthHeader(for identity: String) throws -> [String: String] {
-        let localKeyManager = try LocalKeyManager(identity: identity, crypto: self.crypto)
+        // FIXME: Client class should be independent from ethree existance
+        let keyPair = try Virgil.ethree.localKeyStorage.retrieveKeyPair()
 
-        let user = try localKeyManager.retrieveUserData()
+        // Will be sync ever
+        let card = try Virgil.ethree.findUser(with: identity)
+            .startSync()
+            .get()
 
-        let stringToSign = "\(user.card.identifier).\(Int(Date().timeIntervalSince1970))"
+        let stringToSign = "\(card.identifier).\(Int(Date().timeIntervalSince1970))"
 
         guard let dataToSign = stringToSign.data(using: .utf8) else {
             throw Error.stringToDataFailed
         }
 
-        let signature = try crypto.generateSignature(of: dataToSign, using: user.keyPair.privateKey)
+        let signature = try crypto.generateSignature(of: dataToSign, using: keyPair.privateKey)
 
         let authHeader = "Bearer " + stringToSign + "." + signature.base64EncodedString()
 
@@ -56,16 +60,9 @@ extension Client {
         return try self.parse(response, for: "token")
     }
 
-    public func signUp(identity: String,
-                       keyPair: VirgilKeyPair,
+    public func signUp(_ rawCard: RawSignedModel,
                        verifier: VirgilCardVerifier) throws -> Card {
 
-          let modelSigner = ModelSigner(crypto: self.crypto)
-          let rawCard = try CardManager.generateRawCard(crypto: self.crypto,
-                                                        modelSigner: modelSigner,
-                                                        privateKey: keyPair.privateKey,
-                                                        publicKey: keyPair.publicKey,
-                                                        identity: identity)
           let exportedRawCard = try rawCard.exportAsJson()
 
           let headers = ["Content-Type": "application/json"]

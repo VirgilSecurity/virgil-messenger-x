@@ -48,29 +48,31 @@ class NotificationService: UNNotificationServiceExtension {
         bestAttemptContent.body = "New Message"
 
         self.bestAttemptContent = bestAttemptContent
+        
+        contentHandler(bestAttemptContent)
 
-        self.updateBadge(for: bestAttemptContent)
-
-        do {
-            let notificationInfo = try self.parse(content: bestAttemptContent)
-
-            let decrypted = try self.decrypt(notificationInfo: notificationInfo)
-
-            let message = try self.process(decrypted: decrypted,
-                                           version: notificationInfo.encryptedMessage.modelVersion)
-
-            bestAttemptContent.body = message
-
-            contentHandler(bestAttemptContent)
-
-            // Note: We got body from userInfo, not from bestAttemptContent.body directly in a reason of 1000 symbol restriction
-        }
-        catch {
-            // FIXME: add Logs
-            contentHandler(bestAttemptContent)
-
-            print("Notification was not decrypted with error: \(error.localizedDescription)")
-        }
+//        self.updateBadge(for: bestAttemptContent)
+//
+//        do {
+//            let notificationInfo = try self.parse(content: bestAttemptContent)
+//
+//            let decrypted = try self.decrypt(notificationInfo: notificationInfo)
+//
+//            let message = try self.process(decrypted: decrypted,
+//                                           version: notificationInfo.encryptedMessage.modelVersion)
+//
+//            bestAttemptContent.body = message
+//
+//            contentHandler(bestAttemptContent)
+//
+//            // Note: We got body from userInfo, not from bestAttemptContent.body directly in a reason of 1000 symbol restriction
+//        }
+//        catch {
+//            // FIXME: add Logs
+//            contentHandler(bestAttemptContent)
+//
+//            print("Notification was not decrypted with error: \(error.localizedDescription)")
+//        }
     }
 
     override func serviceExtensionTimeWillExpire() {
@@ -122,6 +124,7 @@ class NotificationService: UNNotificationServiceExtension {
             .startSync()
             .get()
 
+        // FIXME
         return try ethree.authDecrypt(data: notificationInfo.encryptedMessage.ciphertext, from: card)
     }
 

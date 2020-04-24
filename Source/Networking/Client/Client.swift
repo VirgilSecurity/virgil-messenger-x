@@ -40,6 +40,10 @@ public class Client {
             }
         }
     }
+    
+    public func makePublishCardCallback(verifier: VirgilCardVerifier) -> EThree.PublishCardCallback {
+        { rawCard in try self.signUp(rawCard, verifier: verifier) }
+    }
 
     private func handleError(statusCode: Int, body: Data?) -> Swift.Error {
         if let body = body {

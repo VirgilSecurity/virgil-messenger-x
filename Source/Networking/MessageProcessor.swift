@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import VirgilE3Kit
 
 class MessageProcessor {
     enum Error: Swift.Error {
@@ -33,16 +34,26 @@ class MessageProcessor {
             Notifications.post(newState: newState, messageIds: [receiptId])
         }
     }
+    
+    static func getOrJoinRatchetChannel(_ channel: Storage.Channel) throws -> RatchetChannel {
+        if let ratchetChannel = try Virgil.ethree.getRatchetChannel(with: channel.getCard()) {
+            return ratchetChannel
+        }
+        
+        return try Virgil.ethree.joinRatchetChannel(with: channel.getCard()).startSync().get()
+    }
 
     static func process(_ encryptedMessage: EncryptedMessage, from author: String, xmppId: String) throws {
         let channel = try self.setupChannel(name: author)
+        
+        let ratchetChannel = try self.getOrJoinRatchetChannel(channel)
 
-        let decrypted = try self.decrypt(encryptedMessage, from: channel)
+        let decrypted = try self.decrypt(encryptedMessage, from: channel, ratchetChannel: ratchetChannel)
 
         var decryptedAdditional: Data?
 
         if let data = encryptedMessage.additionalData {
-            decryptedAdditional = try Virgil.ethree.authDecrypt(data: data, from: channel.getCard())
+            decryptedAdditional = try ratchetChannel.decrypt(data: data)
         }
 
         let message = try self.migrationSafeContentImport(from: decrypted,
@@ -58,8 +69,10 @@ class MessageProcessor {
 
     static func process(call encryptedMessage: EncryptedMessage, from caller: String) throws {
         let channel = try self.setupChannel(name: caller)
+        
+        let ratchetChannel = try self.getOrJoinRatchetChannel(channel)
 
-        let decrypted = try self.decrypt(encryptedMessage, from: channel)
+        let decrypted = try self.decrypt(encryptedMessage, from: channel, ratchetChannel: ratchetChannel)
 
         let message = try self.migrationSafeContentImport(from: decrypted,
                                                           version: encryptedMessage.modelVersion)
@@ -165,11 +178,11 @@ class MessageProcessor {
         return message
     }
 
-    private static func decrypt(_ message: EncryptedMessage, from channel: Storage.Channel) throws -> Data {
+    private static func decrypt(_ message: EncryptedMessage, from channel: Storage.Channel, ratchetChannel: RatchetChannel) throws -> Data {
         let decrypted: Data
 
         do {
-            decrypted = try Virgil.ethree.authDecrypt(data: message.ciphertext, from: channel.getCard())
+            decrypted = try ratchetChannel.decrypt(data: message.ciphertext)
         }
         catch {
             // TODO: check if needed
