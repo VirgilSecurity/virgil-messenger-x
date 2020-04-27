@@ -16,12 +16,14 @@ extension Storage {
         @NSManaged public var identifier: String
         @NSManaged public var thumbnail: Data
         @NSManaged public var url: URL
+        @NSManaged public var secret: Data
 
         private static let EntityName = "PhotoMessage"
 
         convenience init(identifier: String,
                          thumbnail: Data,
                          url: URL,
+                         secret: Data,
                          baseParams: Message.Params,
                          context: NSManagedObjectContext) throws {
             try self.init(entityName: PhotoMessage.EntityName, context: context, params: baseParams)
@@ -29,6 +31,7 @@ extension Storage {
             self.identifier = identifier
             self.thumbnail = thumbnail
             self.url = url
+            self.secret = secret
         }
 
 

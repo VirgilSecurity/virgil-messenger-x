@@ -80,17 +80,14 @@ extension Storage {
                                                        loadDelegate: uiModel,
                                                        dataHash: message.identifier)
                 { tempFileUrl in
-                    guard let inputStream = InputStream(url: tempFileUrl) else {
+                    guard let input = try? Data(contentsOf: tempFileUrl) else {
                         throw Client.Error.inputStreamFromDownloadedFailed
                     }
 
-                    guard let outputStream = OutputStream(toFileAtPath: path, append: false) else {
-                        throw FileMediaStorage.Error.outputStreamToPathFailed
-                    }
-
-                    // FIXME
                     // TODO: add self card usecase
-                    try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: message.channel.getCard())
+                    let decryptedData = try Virgil.symmetricDecrypt(encryptedData: input, secret: message.secret)
+
+                    try decryptedData.write(to: URL(fileURLWithPath: path))
                 }
             }
 
@@ -126,17 +123,14 @@ extension Storage {
                                                        loadDelegate: uiModel,
                                                        dataHash: message.identifier)
                 { tempFileUrl in
-                    guard let inputStream = InputStream(url: tempFileUrl) else {
+                    guard let input = try? Data(contentsOf: tempFileUrl) else {
                         throw Client.Error.inputStreamFromDownloadedFailed
                     }
 
-                    guard let outputStream = OutputStream(toFileAtPath: audioUrl.path, append: false) else {
-                        throw FileMediaStorage.Error.outputStreamToPathFailed
-                    }
-
-                    // FIXME
                     // TODO: add self card usecase
-                    try Virgil.ethree.authDecrypt(inputStream, to: outputStream, from: message.channel.getCard())
+                    let decryptedData = try Virgil.symmetricDecrypt(encryptedData: input, secret: message.secret)
+
+                    try decryptedData.write(to: audioUrl)
                 }
             }
 

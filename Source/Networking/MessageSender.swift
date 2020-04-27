@@ -1,6 +1,7 @@
 import Chatto
 import ChattoAdditions
 import VirgilSDK
+import VirgilCryptoFoundation
 
 public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
@@ -160,9 +161,9 @@ public class MessageSender {
 
                 try Storage.shared.storeMediaContent(imageData, name: hashString, type: .photo)
 
-                let url = try self.upload(data: imageData, identifier: hashString, channel: channel, loadDelegate: loadDelegate)
+                let uploadResult = try self.upload(data: imageData, identifier: hashString, channel: channel, loadDelegate: loadDelegate)
 
-                let photo = NetworkMessage.Photo(identifier: hashString, url: url)
+                let photo = NetworkMessage.Photo(identifier: hashString, url: uploadResult.url, secret: uploadResult.secret)
                 let message = NetworkMessage.photo(photo)
 
                 try self.send(message: message, pushType: .alert, additionalData: thumbnail, to: channel, date: date, messageId: messageId)
@@ -190,8 +191,8 @@ public class MessageSender {
             do {
                 // TODO: optimize. Do not fetch data to memory, use streams
                 let voiceData: Data = try Data(contentsOf: voiceURL)
-                let url = try self.upload(data: voiceData, identifier: identifier, channel: channel, loadDelegate: loadDelegate)
-                let voice = NetworkMessage.Voice(identifier: identifier, duration: duration, url: url)
+                let uploadResult = try self.upload(data: voiceData, identifier: identifier, channel: channel, loadDelegate: loadDelegate)
+                let voice = NetworkMessage.Voice(identifier: identifier, duration: duration, url: uploadResult.url, secret: uploadResult.secret)
 
                 let message = NetworkMessage.voice(voice)
 
@@ -207,22 +208,25 @@ public class MessageSender {
             }
         }
     }
+    
+    struct UploadResult {
+        let url: URL
+        let secret: Data
+    }
 
-    private func upload(data: Data, identifier: String, channel: Storage.Channel, loadDelegate: LoadDelegate) throws -> URL {
-        // encrypt data
-        // FIXME
-        let encryptedData = try Virgil.ethree.authEncrypt(data: data, for: channel.getCard())
+    private func upload(data: Data, identifier: String, channel: Storage.Channel, loadDelegate: LoadDelegate) throws -> UploadResult {
+        let result = try Virgil.symmetricEncrypt(data: data)
 
         // request ejabberd slot
-        let slot = try Ejabberd.shared.requestMediaSlot(name: identifier, size: encryptedData.count)
+        let slot = try Ejabberd.shared.requestMediaSlot(name: identifier, size: result.encryptedData.count)
             .startSync()
             .get()
 
         // upload data
-        try Virgil.shared.client.upload(data: encryptedData, with: slot.putRequest, loadDelegate: loadDelegate, dataHash: identifier)
+        try Virgil.shared.client.upload(data: result.encryptedData, with: slot.putRequest, loadDelegate: loadDelegate, dataHash: identifier)
             .startSync()
             .get()
 
-        return slot.getURL
+        return UploadResult(url: slot.getURL, secret: result.secret)
     }
 }

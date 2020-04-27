@@ -57,6 +57,7 @@ extension Storage {
         let message = try Storage.PhotoMessage(identifier: photo.identifier,
                                                thumbnail: thumbnail,
                                                url: photo.url,
+                                               secret: photo.secret,
                                                baseParams: baseParams,
                                                context: self.managedContext)
 
@@ -72,6 +73,7 @@ extension Storage {
         let message = try Storage.VoiceMessage(identifier: voice.identifier,
                                                duration: voice.duration,
                                                url: voice.url,
+                                               secret: voice.secret,
                                                baseParams: baseParams,
                                                context: self.managedContext)
 

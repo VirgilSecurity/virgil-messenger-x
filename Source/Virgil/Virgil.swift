@@ -8,6 +8,7 @@
 
 import VirgilSDK
 import VirgilCrypto
+import VirgilCryptoFoundation
 import VirgilE3Kit
 
 public class Virgil {
@@ -41,6 +42,34 @@ public class Virgil {
         let verifier = VirgilCardVerifier(crypto: client.crypto)!
 
         self.shared = Virgil(client: client, verifier: verifier)
+    }
+    
+    struct SymmetricEncryptResult {
+        let encryptedData: Data
+        let secret: Data
+    }
+    
+    static func symmetricDecrypt(encryptedData: Data, secret: Data) throws -> Data {
+        let aes = Aes256Gcm()
+        
+        aes.setKey(key: secret.prefix(aes.keyLen))
+        aes.setNonce(nonce: secret.suffix(aes.nonceLen))
+        
+        return try aes.authDecrypt(data: encryptedData, authData: Data(), tag: Data())
+    }
+    
+    static func symmetricEncrypt(data: Data) throws -> SymmetricEncryptResult {
+        let aes = Aes256Gcm()
+        
+        let key = try Virgil.ethree.crypto.generateRandomData(ofSize: aes.keyLen)
+        let nonce = try Virgil.ethree.crypto.generateRandomData(ofSize: aes.nonceLen)
+        
+        aes.setKey(key: key)
+        aes.setNonce(nonce: nonce)
+        
+        let result = try aes.authEncrypt(data: data, authData: Data())
+        
+        return SymmetricEncryptResult(encryptedData: result.out + result.tag, secret: key + nonce)
     }
 
     func importCard(fromBase64Encoded card: String) throws -> Card {
