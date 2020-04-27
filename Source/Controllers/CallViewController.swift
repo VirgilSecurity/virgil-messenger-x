@@ -15,10 +15,13 @@ class CallViewController: UIViewController {
     @IBOutlet weak var callStatusLabel: UILabel!
     @IBOutlet weak var connectionStatusLabel: UILabel!
 
+    // MARK: Queues
+    let callStatusQueue = DispatchQueue.init(label: "CallTimeUpdateQueue")
+
     // MARK: State
     weak var call: Call?
     var callDuration: TimeInterval = 0.0
-    var callDurationTimer: Timer!
+    var callDurationTimer: Timer?
 
     // MARK: UI handlers
     override func viewDidLoad() {
@@ -32,11 +35,6 @@ class CallViewController: UIViewController {
         self.callStatusLabel.text = call.state.rawValue
         self.connectionStatusLabel.text = call.connectionStatus.rawValue
 
-        self.callDurationTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (_) in
-            self.callDuration += 1.0
-            self.updateCallStatus()
-        }
-
         call.delegate = self
     }
 
@@ -44,7 +42,7 @@ class CallViewController: UIViewController {
         super.viewDidDisappear(animated)
 
         self.call?.delegate = nil
-        self.callDurationTimer.invalidate()
+        self.callDurationTimer?.invalidate()
     }
 
     @IBAction func endCall(_ sender: Any?) {
@@ -71,6 +69,17 @@ extension CallViewController {
             return
         }
 
+        if call.connectionStatus == .connected && self.callDurationTimer == nil {
+            DispatchQueue.main.async {
+                self.callDurationTimer = self.callDurationTimer ?? Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                    self.callStatusQueue.async {
+                        self.callDuration += 1.0
+                        self.updateCallStatus()
+                    }
+                }
+            }
+        }
+
         let callStatusString: String
         if call.connectionStatus == .connected {
             callStatusString = Self.dateFormatter.string(from: self.callDuration)!
@@ -87,12 +96,16 @@ extension CallViewController {
 
 extension CallViewController: CallDelegate {
     func call(_ call: Call, didChangeState newState: CallState) {
-        DispatchQueue.main.async {
-            self.callStatusLabel.text = newState.rawValue
+        self.callStatusQueue.async {
+            self.updateCallStatus()
         }
     }
 
     func call(_ call: Call, didChangeConnectionStatus newConnectionStatus: CallConnectionStatus) {
+        self.callStatusQueue.async {
+            self.updateCallStatus()
+        }
+
         DispatchQueue.main.async {
             self.connectionStatusLabel.text = newConnectionStatus.rawValue
         }
