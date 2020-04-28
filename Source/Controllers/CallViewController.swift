@@ -33,8 +33,8 @@ class CallViewController: ViewController {
             return
         }
 
-        guard let channel = Storage.shared.currentChannel else{
-            Log.error(Storage.Error.nilCurrentChannel, message: "Call View is unable to render")
+        guard let channel = Storage.shared.getChannel(withName: call.otherName) else{
+            Log.error(Storage.Error.channelNotFound, message: "Call View is unable to render")
             return
         }
 
