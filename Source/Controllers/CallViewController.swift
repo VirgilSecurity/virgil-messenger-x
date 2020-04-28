@@ -8,12 +8,14 @@
 
 import UIKit
 
-class CallViewController: UIViewController {
+class CallViewController: ViewController {
 
     // MARK: UI
     @IBOutlet weak var calleeLabel: UILabel!
     @IBOutlet weak var callStatusLabel: UILabel!
     @IBOutlet weak var connectionStatusLabel: UILabel!
+    @IBOutlet weak var avatarLetterLabel: UILabel!
+    @IBOutlet weak var avatarView: GradientView!
 
     // MARK: Queues
     let callStatusQueue = DispatchQueue.init(label: "CallTimeUpdateQueue")
@@ -30,6 +32,14 @@ class CallViewController: UIViewController {
         guard let call = self.call else {
             return
         }
+
+        guard let channel = Storage.shared.currentChannel else{
+            Log.error(Storage.Error.nilCurrentChannel, message: "Call View is unable to render")
+            return
+        }
+
+        self.avatarLetterLabel.text = channel.letter
+        self.avatarView.draw(with: channel.colors)
 
         self.calleeLabel.text = call.otherName
         self.callStatusLabel.text = call.state.rawValue
