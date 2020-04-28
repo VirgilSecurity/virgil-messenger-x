@@ -8,12 +8,6 @@
 
 import WebRTC
 
-fileprivate let kIceServers = ["stun:stun.l.google.com:19302",
-                               "stun:stun1.l.google.com:19302",
-                               "stun:stun2.l.google.com:19302",
-                               "stun:stun3.l.google.com:19302",
-                               "stun:stun4.l.google.com:19302"]
-
 extension RTCIceConnectionState: CustomStringConvertible {
     public var description: String {
         switch self {
@@ -71,12 +65,15 @@ extension RTCDataChannelState: CustomStringConvertible {
 extension Call {
     private static let peerConnectionFactory: RTCPeerConnectionFactory = RTCPeerConnectionFactory()
 
-    static func createPeerConnection(delegate: RTCPeerConnectionDelegate? = nil) throws -> RTCPeerConnection {
+    static func createPeerConnection(username: String, credential: String, delegate: RTCPeerConnectionDelegate? = nil) throws -> RTCPeerConnection {
         // Basic configuration
         let rtcConfig = RTCConfiguration()
 
-        let rtcIceServer = RTCIceServer(urlStrings: kIceServers)
-        rtcConfig.iceServers = [rtcIceServer]
+        let publicStunIceServer = RTCIceServer(urlStrings: URLConstants.publicStunServers)
+
+        let turnIceServer = RTCIceServer(urlStrings: URLConstants.ejabberdTurnServers, username: username, credential: credential)
+
+        rtcConfig.iceServers = [publicStunIceServer, turnIceServer]
         rtcConfig.sdpSemantics = .unifiedPlan
         rtcConfig.continualGatheringPolicy = .gatherContinually
 
