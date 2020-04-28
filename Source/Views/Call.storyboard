@@ -36,13 +36,13 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="A7u-Vo-jlV">
-                                <rect key="frame" x="103.66666666666669" y="143.99999999999997" width="207" height="301.33333333333326"/>
+                                <rect key="frame" x="101" y="143.99999999999997" width="212" height="301.33333333333326"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4hQ-2d-sj9">
-                                        <rect key="frame" x="0.0" y="0.0" width="207" height="175"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="212" height="175"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wcd-Zd-p5e" customClass="GradientView" customModule="VirgilMessenger" customModuleProvider="target">
-                                                <rect key="frame" x="16" y="0.0" width="175" height="175"/>
+                                                <rect key="frame" x="18.666666666666671" y="0.0" width="175" height="175"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="L" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X0P-eh-10z">
                                                         <rect key="frame" x="70.999999999999986" y="51.666666666666664" width="33" height="71.666666666666686"/>
@@ -73,31 +73,31 @@
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Callee" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x49-td-UHB">
-                                        <rect key="frame" x="0.0" y="190" width="207" height="40.666666666666657"/>
+                                        <rect key="frame" x="0.0" y="190" width="212" height="40.666666666666657"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZLj-j1-gnQ">
-                                        <rect key="frame" x="0.0" y="245.66666666666669" width="207" height="20.333333333333314"/>
+                                        <rect key="frame" x="0.0" y="245.66666666666669" width="212" height="20.333333333333314"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="OVf-Hu-lfu">
-                                        <rect key="frame" x="0.0" y="281" width="207" height="20.333333333333314"/>
+                                        <rect key="frame" x="0.0" y="281" width="212" height="20.333333333333314"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connection:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R7m-st-zUf">
-                                                <rect key="frame" x="0.0" y="0.0" width="100" height="20.333333333333332"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="105" height="20.333333333333332"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="100" id="JG8-yx-INL"/>
+                                                    <constraint firstAttribute="width" constant="105" id="JG8-yx-INL"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="disconnected" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hZL-q8-Mit">
-                                                <rect key="frame" x="102" y="0.0" width="105" height="20.333333333333332"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="disconnected" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hZL-q8-Mit">
+                                                <rect key="frame" x="107" y="0.0" width="105" height="20.333333333333332"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="105" id="lHN-SF-Ro2"/>
                                                 </constraints>
