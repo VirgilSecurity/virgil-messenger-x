@@ -46,6 +46,7 @@ class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
             let caller = alert["title"] as? String,
             let body = alert["body"] as? String
         else {
+            Log.error(NSError(), message: "Failed to parse VoIP push message.")
             return
         }
 
