@@ -30,10 +30,6 @@ class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
                       for type: PKPushType,
                       completion: @escaping () -> Void) {
 
-        defer {
-            completion()
-        }
-
         guard type == .voIP else {
             Log.debug("Received non VoIP push notification.")
             return
@@ -47,6 +43,11 @@ class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
             let body = alert["body"] as? String
         else {
             Log.error(NSError(), message: "Failed to parse VoIP push message.")
+
+            CallManager.shared.startDummyIncomingCall {
+                completion()
+            }
+
             return
         }
 
@@ -55,10 +56,18 @@ class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
 
             let encryptedMessage = try EncryptedMessage.import(body)
 
-            try MessageProcessor.process(call: encryptedMessage, from: caller)
+            let callOffer = try MessageProcessor.process(call: encryptedMessage, from: caller)
+
+            CallManager.shared.startIncomingCall(from: callOffer) {
+                completion()
+            }
         }
         catch {
             Log.error(error, message: "Incomming call processing failed")
+
+            CallManager.shared.startDummyIncomingCall {
+                completion()
+            }
         }
     }
 }

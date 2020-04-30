@@ -12,6 +12,7 @@ class MessageProcessor {
     enum Error: Swift.Error {
         case missingThumbnail
         case dataToStrFailed
+        case notCallOffer
     }
 
     static func processGlobalReadState(from author: String) throws {
@@ -56,7 +57,7 @@ class MessageProcessor {
                          date: encryptedMessage.date)
     }
 
-    static func process(call encryptedMessage: EncryptedMessage, from caller: String) throws {
+    static func process(call encryptedMessage: EncryptedMessage, from caller: String) throws -> NetworkMessage.CallOffer {
         let channel = try self.setupChannel(name: caller)
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel)
@@ -66,17 +67,22 @@ class MessageProcessor {
 
         switch message {
         case .callOffer(let callOffer):
+
+            // FIXME: Pass xmppId within VoIP Push message
             let xmppId = callOffer.callUUID.uuidString
 
-            try self.process(message,
-                             additionalData: nil,
-                             xmppId: xmppId,
-                             channel: channel,
-                             author: caller,
-                             date: encryptedMessage.date)
+            let baseParams = Storage.Message.Params(xmppId: xmppId, isIncoming: true, channel: channel, state: .received, date: callOffer.date)
+
+            let storageMessage = try Storage.shared.createCallMessage(with: callOffer,
+                                                                  unread: false,
+                                                                  baseParams: baseParams)
+
+            self.postNotification(about: storageMessage, unread: false)
+
+            return callOffer
 
         default:
-            break
+            throw MessageProcessor.Error.notCallOffer
         }
     }
 
