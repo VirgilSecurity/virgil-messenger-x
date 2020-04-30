@@ -91,7 +91,7 @@ class ChatListViewController: ViewController {
 
             let callDelay = -callOffer.date.timeIntervalSinceNow
 
-            if callDelay < 5.0 {
+            if callDelay < 10.0 {
                 CallManager.shared.startIncomingCall(from: callOffer)
             } else {
                 Log.debug("Detected stale call offer with id: \(callOffer.callUUID)")
