@@ -148,6 +148,18 @@
 		9720EAA62449B8C5004BA39F /* EjabberdError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9720EAA52449B8C5004BA39F /* EjabberdError.swift */; };
 		9720EAA72449B8C5004BA39F /* EjabberdError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9720EAA52449B8C5004BA39F /* EjabberdError.swift */; };
 		9720EAA82449B8C5004BA39F /* EjabberdError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9720EAA52449B8C5004BA39F /* EjabberdError.swift */; };
+		9767500E245AD497000B844E /* EjabberdToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9767500D245AD497000B844E /* EjabberdToken.swift */; };
+		9767500F245AD497000B844E /* EjabberdToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9767500D245AD497000B844E /* EjabberdToken.swift */; };
+		97675010245AD497000B844E /* EjabberdToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9767500D245AD497000B844E /* EjabberdToken.swift */; };
+		97675012245ADBCD000B844E /* EjabberdTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97675011245ADBCD000B844E /* EjabberdTokenProvider.swift */; };
+		97675013245ADBCD000B844E /* EjabberdTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97675011245ADBCD000B844E /* EjabberdTokenProvider.swift */; };
+		97675014245ADBCD000B844E /* EjabberdTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97675011245ADBCD000B844E /* EjabberdTokenProvider.swift */; };
+		97675015245AE3F3000B844E /* EjabberdTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97675011245ADBCD000B844E /* EjabberdTokenProvider.swift */; };
+		97675016245AE3F4000B844E /* EjabberdTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97675011245ADBCD000B844E /* EjabberdTokenProvider.swift */; };
+		97675017245AE3F4000B844E /* EjabberdTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97675011245ADBCD000B844E /* EjabberdTokenProvider.swift */; };
+		97675018245AEC98000B844E /* EjabberdToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9767500D245AD497000B844E /* EjabberdToken.swift */; };
+		97675019245AEC98000B844E /* EjabberdToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9767500D245AD497000B844E /* EjabberdToken.swift */; };
+		9767501A245AEC99000B844E /* EjabberdToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9767500D245AD497000B844E /* EjabberdToken.swift */; };
 		97698C8524504051005C087D /* PushRegistryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97698C8424504051005C087D /* PushRegistryDelegate.swift */; };
 		97698C8624504051005C087D /* PushRegistryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97698C8424504051005C087D /* PushRegistryDelegate.swift */; };
 		97698C8724504051005C087D /* PushRegistryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97698C8424504051005C087D /* PushRegistryDelegate.swift */; };
@@ -830,6 +842,8 @@
 		9720EAA52449B8C5004BA39F /* EjabberdError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EjabberdError.swift; sourceTree = "<group>"; };
 		974CC5462417DD1400FC7554 /* VirgilMessenger-v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VirgilMessenger-v2.xcdatamodel"; sourceTree = "<group>"; };
 		974E01A5242D5274008239B8 /* SwipeableNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeableNavigationController.swift; sourceTree = "<group>"; };
+		9767500D245AD497000B844E /* EjabberdToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EjabberdToken.swift; sourceTree = "<group>"; };
+		97675011245ADBCD000B844E /* EjabberdTokenProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EjabberdTokenProvider.swift; sourceTree = "<group>"; };
 		97698C8424504051005C087D /* PushRegistryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRegistryDelegate.swift; sourceTree = "<group>"; };
 		97698D42245075AD005C087D /* Storage+Accounts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Storage+Accounts.swift"; sourceTree = "<group>"; };
 		97698D44245078D5005C087D /* NetworkMessage+Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkMessage+Types.swift"; sourceTree = "<group>"; };
@@ -1525,6 +1539,7 @@
 				16B4EC2523BF610500E7E4DB /* XMPPMessage.swift */,
 				16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */,
 				9720EAA52449B8C5004BA39F /* EjabberdError.swift */,
+				9767500D245AD497000B844E /* EjabberdToken.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1589,6 +1604,7 @@
 				16D8B0EE223A8FCF00D7FA67 /* Client.swift */,
 				97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */,
 				97AF4D84241AEE8800ED9BD7 /* Client+Files.swift */,
+				97675011245ADBCD000B844E /* EjabberdTokenProvider.swift */,
 			);
 			path = Client;
 			sourceTree = "<group>";
@@ -2098,6 +2114,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				97698D5A24507DEC005C087D /* EncryptedMessage.swift in Sources */,
+				97675015245AE3F3000B844E /* EjabberdTokenProvider.swift in Sources */,
 				F47EF35B243CBFD50002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241D4A24337E9C00E839C3 /* EnvConstantProd.swift in Sources */,
 				9775CFD8242A2D3D009F1693 /* Virgil.swift in Sources */,
@@ -2108,6 +2125,7 @@
 				97698D5024507A33005C087D /* NetworkMessage+Codable.swift in Sources */,
 				F4241D56243380C400E839C3 /* ColorPair.swift in Sources */,
 				97AF4D86241AEED000ED9BD7 /* Client+Backend.swift in Sources */,
+				97675018245AEC98000B844E /* EjabberdToken.swift in Sources */,
 				97698D4B245078E3005C087D /* NetworkMessage+Types.swift in Sources */,
 				16D4B8D923F5CE1700D17B90 /* SharedDefaults.swift in Sources */,
 				16D4B8B123F5BCA400D17B90 /* NotificationService.swift in Sources */,
@@ -2182,6 +2200,7 @@
 				97AF4D83241AEE2000ED9BD7 /* Client+Backend.swift in Sources */,
 				9720EA9F2449B7BA004BA39F /* Ejabberd+Receipts.swift in Sources */,
 				F4EF79152438BAF100F26291 /* Call+WebRTC.swift in Sources */,
+				9767500E245AD497000B844E /* EjabberdToken.swift in Sources */,
 				16F8F3B9226487BE00143FB7 /* UsersListCell.swift in Sources */,
 				805F59BA242D86FA003421EB /* PushNotificationsDelegate.swift in Sources */,
 				9720EA992449B7BA004BA39F /* Ejabberd+Messages.swift in Sources */,
@@ -2207,6 +2226,7 @@
 				1644C07B20B85AC500073D99 /* UIPhotosChatInputItem.swift in Sources */,
 				16B4EC2823BF63BA00E7E4DB /* EncryptedMessage.swift in Sources */,
 				4280C0CD1F97340B00075B3A /* ChatItemsDemoDecorator.swift in Sources */,
+				97675012245ADBCD000B844E /* EjabberdTokenProvider.swift in Sources */,
 				16FB2DD5204D87F200346FA0 /* UIColor+RGB.swift in Sources */,
 				9720EA9C2449B7BA004BA39F /* Ejabberd+Connection.swift in Sources */,
 				16B4EC2623BF610500E7E4DB /* XMPPMessage.swift in Sources */,
@@ -2307,6 +2327,7 @@
 				F4241D992433859600E839C3 /* UITextMessageHandler.swift in Sources */,
 				F4EF79162438BAF100F26291 /* Call+WebRTC.swift in Sources */,
 				F4241D692433851E00E839C3 /* Message.swift in Sources */,
+				9767500F245AD497000B844E /* EjabberdToken.swift in Sources */,
 				F4241DA7243385B700E839C3 /* AudioMessageViewModel.swift in Sources */,
 				9720EAA02449B7BA004BA39F /* Ejabberd+Receipts.swift in Sources */,
 				F492235E24376BD800A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */,
@@ -2332,6 +2353,7 @@
 				F4241DE62433862500E839C3 /* MessageProcessor.swift in Sources */,
 				F4241DC2243385EF00E839C3 /* TimeSeparatorModel.swift in Sources */,
 				F4241DBC243385D900E839C3 /* UIAudioMessageHandler.swift in Sources */,
+				97675013245ADBCD000B844E /* EjabberdTokenProvider.swift in Sources */,
 				F4241D642433851300E839C3 /* Storage.swift in Sources */,
 				97698D4E24507986005C087D /* NetworkMessage+Codable.swift in Sources */,
 				F4DDCC512436350F001E63B1 /* Storage+MessageUI.swift in Sources */,
@@ -2370,6 +2392,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				97698D5924507DEC005C087D /* EncryptedMessage.swift in Sources */,
+				97675016245AE3F4000B844E /* EjabberdTokenProvider.swift in Sources */,
 				F47EF35C243CBFD50002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241E47243386AD00E839C3 /* UIColor+RGB.swift in Sources */,
 				F4241D7E2433855000E839C3 /* UserFriendlyError.swift in Sources */,
@@ -2380,6 +2403,7 @@
 				F4241D8D2433857900E839C3 /* Client.swift in Sources */,
 				F4241DDC243385FE00E839C3 /* Virgil.swift in Sources */,
 				F4241D762433853B00E839C3 /* NetworkMessage.swift in Sources */,
+				97675019245AEC98000B844E /* EjabberdToken.swift in Sources */,
 				97698D49245078E3005C087D /* NetworkMessage+Types.swift in Sources */,
 				F4241D4B24337EA000E839C3 /* EnvConstantStg.swift in Sources */,
 				F4241D5024337ECC00E839C3 /* Constants.swift in Sources */,
@@ -2454,6 +2478,7 @@
 				F4241D9A2433859600E839C3 /* UITextMessageHandler.swift in Sources */,
 				F4EF79172438BAF100F26291 /* Call+WebRTC.swift in Sources */,
 				F4241D6A2433851F00E839C3 /* Message.swift in Sources */,
+				97675010245AD497000B844E /* EjabberdToken.swift in Sources */,
 				F4241DAB243385B800E839C3 /* AudioMessageViewModel.swift in Sources */,
 				9720EAA12449B7BA004BA39F /* Ejabberd+Receipts.swift in Sources */,
 				F492235F24376BD900A07951 /* VirgilMessenger-5.xcdatamodeld in Sources */,
@@ -2479,6 +2504,7 @@
 				F4241DEB2433862500E839C3 /* MessageProcessor.swift in Sources */,
 				F4241DCD243385F000E839C3 /* TimeSeparatorModel.swift in Sources */,
 				F4241DBF243385D900E839C3 /* UIAudioMessageHandler.swift in Sources */,
+				97675014245ADBCD000B844E /* EjabberdTokenProvider.swift in Sources */,
 				F4241D632433851200E839C3 /* Storage.swift in Sources */,
 				97698D4F24507986005C087D /* NetworkMessage+Codable.swift in Sources */,
 				F4DDCC522436350F001E63B1 /* Storage+MessageUI.swift in Sources */,
@@ -2517,6 +2543,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				97698D5B24507DED005C087D /* EncryptedMessage.swift in Sources */,
+				97675017245AE3F4000B844E /* EjabberdTokenProvider.swift in Sources */,
 				F47EF35D243CBFD60002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241E48243386AD00E839C3 /* UIColor+RGB.swift in Sources */,
 				F4241D7F2433855100E839C3 /* UserFriendlyError.swift in Sources */,
@@ -2527,6 +2554,7 @@
 				F4241D8E2433857900E839C3 /* Client.swift in Sources */,
 				F4241DDD243385FE00E839C3 /* Virgil.swift in Sources */,
 				F4241D772433853B00E839C3 /* NetworkMessage.swift in Sources */,
+				9767501A245AEC99000B844E /* EjabberdToken.swift in Sources */,
 				97698D4A245078E3005C087D /* NetworkMessage+Types.swift in Sources */,
 				F4241D4D24337EAD00E839C3 /* EnvConstantDev.swift in Sources */,
 				F4241D5124337ECC00E839C3 /* Constants.swift in Sources */,

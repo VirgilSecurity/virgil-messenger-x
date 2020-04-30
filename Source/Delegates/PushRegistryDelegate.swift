@@ -16,6 +16,8 @@ class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
 
         let deviceToken = pushCredentials.token
 
+        Log.debug("Received device voip token: \(deviceToken.hexEncodedString())")
+
         if Ejabberd.shared.state == .connected {
             Ejabberd.shared.registerForNotifications(voipDeviceToken: deviceToken)
         }

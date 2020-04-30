@@ -20,6 +20,7 @@ public class Client {
         case invalidServerResponse
         case inputStreamFromDownloadedFailed
         case inconsistencyState
+        case invalidEjabberdToken
     }
 
     private let serviceErrorDomain: String = "ClientErrorDomain"

@@ -48,6 +48,9 @@ extension Ejabberd {
             self.stream.myJID = try Ejabberd.setupJid(with: identity)
             self.retryConfig = RetryConfig()
 
+            // FIXME: remove dependency on Virgil here
+            self.tokenProvider = EjabberdTokenProvider(identity: identity, client: Virgil.shared.client)
+
             self.initialize()
         }
         catch {
@@ -93,6 +96,8 @@ extension Ejabberd {
 
         self.stream.disconnect()
 
+        self.tokenProvider = nil
+
         self.messageQueue.cancelAllOperations()
     }
 }
@@ -110,12 +115,7 @@ extension Ejabberd {
                 return
             }
 
-            guard let identity = self.stream.myJID?.user else {
-                throw EjabberdError.missingStreamJID
-            }
-
-            let token = try Virgil.shared.client.getEjabberdToken(identity: identity)
-            try self.stream.authenticate(withPassword: token)
+            try self.stream.authenticate(withPassword: self.getToken())
         }
         catch {
             Log.error(error, message: "Authenticating stream failed")

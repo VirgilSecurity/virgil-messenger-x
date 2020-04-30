@@ -96,10 +96,9 @@ public class Call: NSObject {
         precondition(self.peerConnection == nil, "Peer connection has been already setup")
 
         do {
-            // TODO: Use cached one if possible
-            let ejabberdtoken = try Virgil.shared.client.getEjabberdToken(identity: self.myName)
+            let ejabberdToken = try Ejabberd.shared.getToken()
 
-            self.peerConnection = try Self.createPeerConnection(username: self.myName, credential: ejabberdtoken, delegate: self)
+            self.peerConnection = try Self.createPeerConnection(username: self.myName, credential: ejabberdToken, delegate: self)
         }
         catch {
             self.didFail(CallError.configurationFailed)
