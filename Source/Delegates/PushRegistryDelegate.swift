@@ -50,10 +50,9 @@ class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
             return
         }
 
-        // FIXME: Replace with appropriate call that awakes ejabberd connection
-        Ejabberd.shared.startInitializing(identity: Virgil.ethree.identity)
-
         do {
+            try UserAuthorizer().signIn()
+
             let encryptedMessage = try EncryptedMessage.import(body)
 
             try MessageProcessor.process(call: encryptedMessage, from: caller)

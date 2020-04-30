@@ -29,8 +29,6 @@ class ChatListViewController: ViewController {
         self.updateTitleView()
         self.setupTableView()
         self.setupObservers()
-
-        Ejabberd.shared.startInitializing(identity: Virgil.ethree.identity)
     }
 
     override func viewWillAppear(_ animated: Bool) {
