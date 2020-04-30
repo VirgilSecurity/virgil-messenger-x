@@ -19,7 +19,7 @@ public class Notifications {
         case currentChannelDeleted = "Notifications.CurrentChannelDeleted"
 
         case startOugoingCall = "Notifications.StartOugoingCall"
-        case startIncommingCall = "Notifications.StartIncommingCall"
+        case startIncomingCall = "Notifications.StartIncomingCall"
         case acceptCall = "Notifications.AcceptCall"
         case rejectCall = "Notifications.RejectCall"
     }
@@ -28,7 +28,7 @@ public class Notifications {
         case errored = "Notifications.Errored"
         case messageAddedToCurrentChannel = "Notifications.MessageAddedToCurrentChannel"
         case messageStatusUpdated = "Notifications.MessageStatusUpdated"
-        case callOfferReceived = "Notifications.IncommingCall"
+        case callOfferReceived = "Notifications.IncomingCall"
         case callAnswerReceived = "Notifications.CallAnswerReceived"
         case callUpdateReceived = "Notifications.CallUpdateReceived"
         case iceCandidateReceived = "Notifications.IceCandidateReceived"
