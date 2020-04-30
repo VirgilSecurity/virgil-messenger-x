@@ -21,7 +21,7 @@ class CallViewController: ViewController {
     let callStatusQueue = DispatchQueue.init(label: "CallTimeUpdateQueue")
 
     // MARK: State
-    weak var call: Call?
+    var call: Call?
     var callDuration: TimeInterval = 0.0
     var callDurationTimer: Timer?
 
@@ -30,6 +30,8 @@ class CallViewController: ViewController {
         super.viewDidLoad()
 
         guard let call = self.call else {
+            Log.debug("No call to display")
+            close()
             return
         }
 
@@ -52,6 +54,7 @@ class CallViewController: ViewController {
         super.viewDidDisappear(animated)
 
         self.call?.delegate = nil
+        self.call = nil
         self.callDurationTimer?.invalidate()
     }
 
@@ -59,9 +62,7 @@ class CallViewController: ViewController {
         if let call = self.call {
             CallManager.shared.endCall(call)
         }
-        else {
-            self.close()
-        }
+        self.close()
     }}
 
 // MARK: - UI helpers
@@ -118,6 +119,13 @@ extension CallViewController: CallDelegate {
 
         DispatchQueue.main.async {
             self.connectionStatusLabel.text = newConnectionStatus.rawValue
+        }
+
+        switch newConnectionStatus {
+        case .closed, .disconnected, .failed:
+            CallManager.shared.endCall(call)
+        default:
+            break
         }
     }
 

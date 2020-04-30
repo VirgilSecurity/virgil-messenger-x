@@ -8,6 +8,7 @@
 
 import Foundation
 import CallKit
+import WebRTC
 
 // MARK: - Configuration
 extension CallManager {
@@ -93,13 +94,27 @@ extension CallManager: CXProviderDelegate {
 
         let call = OutgoingCall(withId: callUUID, from: account.identity, to: callee, signalingTo: self)
 
-        self.addCall(call)
-        call.start()
+        call.start { error in
+            guard let error = error else {
+                self.addCall(call)
+                action.fulfill()
+                return
+            }
 
-        action.fulfill()
+            self.didFail(error)
+            action.fail()
+        }
+
     }
 
     public func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
+        if #available(iOS 10, *) {
+            // Workaround for webrtc on ios 10, because first incoming call does not have audio
+            // due to incorrect category: AVAudioSessionCategorySoloAmbient
+            // webrtc need AVAudioSessionCategoryPlayAndRecord
+            try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
+        }
+
         let callUUID = action.callUUID
 
         Log.debug("Answering for incomming call with id \(callUUID.uuidString)")
@@ -130,12 +145,21 @@ extension CallManager: CXProviderDelegate {
             return
         }
 
+        self.restoreAudioSessionConfig()
         self.updateRemoteCall(call, withAction: .end)
 
         call.end()
 
         self.removeCall(call)
 
-        action.fulfill()
+        action.fulfill(withDateEnded: Date())
+    }
+
+    public func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
+        self.activateAudioSession(audioSession);
+    }
+
+    public func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {
+        self.deactivateAudioSession(audioSession);
     }
 }

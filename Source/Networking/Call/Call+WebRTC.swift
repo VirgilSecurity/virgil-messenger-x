@@ -65,36 +65,40 @@ extension RTCDataChannelState: CustomStringConvertible {
 extension Call {
     private static let peerConnectionFactory: RTCPeerConnectionFactory = RTCPeerConnectionFactory()
 
-    static func createPeerConnection(username: String, credential: String, delegate: RTCPeerConnectionDelegate? = nil) throws -> RTCPeerConnection {
-        // Basic configuration
-        let rtcConfig = RTCConfiguration()
+    func setupPeerConnection() {
+        assert(self.peerConnection == nil)
 
-        let publicStunIceServer = RTCIceServer(urlStrings: URLConstants.publicStunServers)
+        do {
+            // Basic configuration
+            let rtcConfig = RTCConfiguration()
 
-        let turnIceServer = RTCIceServer(urlStrings: URLConstants.ejabberdTurnServers, username: username, credential: credential)
+            let publicStunIceServer = RTCIceServer(urlStrings: URLConstants.publicStunServers)
 
-        rtcConfig.iceServers = [publicStunIceServer, turnIceServer]
-        rtcConfig.sdpSemantics = .unifiedPlan
-        rtcConfig.continualGatheringPolicy = .gatherContinually
+            let ejabberdToken = try Ejabberd.shared.getToken()
 
-        let rtcConstraints = RTCMediaConstraints(mandatoryConstraints: nil,
-                                                 optionalConstraints: ["DtlsSrtpKeyAgreement": kRTCMediaConstraintsValueTrue])
+            let turnIceServer = RTCIceServer(urlStrings: URLConstants.ejabberdTurnServers, username: self.myName, credential: ejabberdToken)
 
-        let peerConnection = self.peerConnectionFactory.peerConnection(with: rtcConfig, constraints: rtcConstraints, delegate: delegate)
+            rtcConfig.iceServers = [publicStunIceServer, turnIceServer]
+            rtcConfig.sdpSemantics = .unifiedPlan
+            rtcConfig.continualGatheringPolicy = .gatherContinually
 
-        // Audio
-        let audioConstrains = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
-        let audioSource = Self.peerConnectionFactory.audioSource(with: audioConstrains)
-        let audioTrack = Self.peerConnectionFactory.audioTrack(with: audioSource, trackId: "audio0")
-        peerConnection.add(audioTrack, streamIds: ["stream"])
+            let rtcConstraints = RTCMediaConstraints(mandatoryConstraints: nil,
+                                                     optionalConstraints: ["DtlsSrtpKeyAgreement": kRTCMediaConstraintsValueTrue])
 
-        // Audio session
-        RTCAudioSession.sharedInstance().lockForConfiguration()
-        try RTCAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playAndRecord.rawValue)
-        try RTCAudioSession.sharedInstance().setMode(AVAudioSession.Mode.voiceChat.rawValue)
-        RTCAudioSession.sharedInstance().unlockForConfiguration()
+            let peerConnection = Self.peerConnectionFactory.peerConnection(with: rtcConfig, constraints: rtcConstraints, delegate: nil)
 
-        return peerConnection
+            // Audio
+            let audioConstrains = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
+            let audioSource = Self.peerConnectionFactory.audioSource(with: audioConstrains)
+            let audioTrack = Self.peerConnectionFactory.audioTrack(with: audioSource, trackId: "audio0")
+            peerConnection.add(audioTrack, streamIds: ["stream"])
+
+            peerConnection.delegate = self
+
+            self.peerConnection = peerConnection
+        } catch {
+            Log.error(error, message: "Failed to create and configure peer connection.")
+        }
     }
 }
 
@@ -164,5 +168,59 @@ extension Call: RTCPeerConnectionDelegate {
 
     public func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
         Log.debug("WebRTC: did open data channel (not supported yet)")
+    }
+}
+
+extension Call : RTCAudioSessionDelegate {
+    public func audioSessionDidBeginInterruption(_ session: RTCAudioSession) {
+        Log.debug("WebRTC Audio Session: did begin interruption.")
+    }
+
+    public func audioSessionDidEndInterruption(_ session: RTCAudioSession, shouldResumeSession: Bool) {
+        Log.debug("WebRTC Audio Session: did end interruption, should resume session: \(shouldResumeSession).")
+    }
+
+    public func audioSessionDidChangeRoute(_ session: RTCAudioSession, reason: AVAudioSession.RouteChangeReason, previousRoute: AVAudioSessionRouteDescription) {
+        Log.debug("WebRTC Audio Session: did change route with reason \(reason.rawValue), previous route: \(previousRoute)")
+    }
+
+    public func audioSessionMediaServerTerminated(_ session: RTCAudioSession) {
+        Log.debug("WebRTC Audio Session: media server terminated.")
+    }
+
+    public func audioSessionMediaServerReset(_ session: RTCAudioSession) {
+        Log.debug("WebRTC Audio Session: media server reset.")
+    }
+
+    public func audioSession(_ session: RTCAudioSession, didChangeCanPlayOrRecord canPlayOrRecord: Bool) {
+        Log.debug("WebRTC Audio Session: did change can play or record: \(canPlayOrRecord).")
+    }
+
+    public func audioSessionDidStartPlayOrRecord(_ session: RTCAudioSession) {
+        Log.debug("WebRTC Audio Session: did start play or record.")
+    }
+
+    public func audioSessionDidStopPlayOrRecord(_ session: RTCAudioSession) {
+        Log.debug("WebRTC Audio Session: did stop play or record.")
+    }
+
+    public func audioSession(_ audioSession: RTCAudioSession, didChangeOutputVolume outputVolume: Float) {
+        Log.debug("WebRTC Audio Session: did change output volume: \(outputVolume).")
+    }
+
+    public func audioSession(_ audioSession: RTCAudioSession, didDetectPlayoutGlitch totalNumberOfGlitches: Int64) {
+        Log.debug("WebRTC Audio Session: did detect playout glitch: \(totalNumberOfGlitches).")
+    }
+
+    public func audioSession(_ audioSession: RTCAudioSession, willSetActive active: Bool) {
+        Log.debug("WebRTC Audio Session: will set active: \(active).")
+    }
+
+    public func audioSession(_ audioSession: RTCAudioSession, didSetActive active: Bool) {
+        Log.debug("WebRTC Audio Session: did set active: \(active).")
+    }
+
+    public func audioSession(_ audioSession: RTCAudioSession, failedToSetActive active: Bool, error: Error) {
+        Log.debug("WebRTC Audio Session: failed to set active: \(active).")
     }
 }
