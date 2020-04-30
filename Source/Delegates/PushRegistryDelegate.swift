@@ -30,7 +30,12 @@ class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
                       for type: PKPushType,
                       completion: @escaping () -> Void) {
 
+        defer {
+            completion()
+        }
+
         guard type == .voIP else {
+            Log.debug("Received non VoIP push notification.")
             return
         }
 
@@ -55,7 +60,5 @@ class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
         catch {
             Log.error(error, message: "Incomming call processing failed")
         }
-
-        completion()
     }
 }
