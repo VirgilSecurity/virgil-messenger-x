@@ -10,7 +10,7 @@ import Foundation
 import CallKit
 import WebRTC
 
-fileprivate let kFailedCallUUID = UUID(uuidString: "failedCallUUID")!
+fileprivate let kFailedCallUUID = UUID(uuid: uuid_t(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
 
 // MARK: - Configuration
 extension CallManager {
