@@ -9,6 +9,11 @@
 import PushKit
 
 class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
+
+    enum Error: LocalizedError {
+        case parsingFailed
+    }
+
     func pushRegistry(_ registry: PKPushRegistry, didUpdate pushCredentials: PKPushCredentials, for type: PKPushType) {
         guard type == .voIP else {
             return
@@ -35,39 +40,29 @@ class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
             return
         }
 
-        // FIXME: Minimize payload
-        guard
-            let aps = payload.dictionaryPayload["aps"] as? NSDictionary,
-            let alert = aps["alert"] as? NSDictionary,
-            let caller = alert["title"] as? String,
-            let body = alert["body"] as? String
-        else {
-            Log.error(NSError(), message: "Failed to parse VoIP push message.")
-
-            CallManager.shared.startDummyIncomingCall {
-                completion()
+        do {
+            // FIXME: Minimize payload
+            guard
+                let aps = payload.dictionaryPayload["aps"] as? NSDictionary,
+                let alert = aps["alert"] as? NSDictionary,
+                let caller = alert["title"] as? String,
+                let body = alert["body"] as? String
+            else {
+                throw Error.parsingFailed
             }
 
-            return
-        }
-
-        do {
             try UserAuthorizer().signIn()
 
             let encryptedMessage = try EncryptedMessage.import(body)
 
             let callOffer = try MessageProcessor.process(call: encryptedMessage, from: caller)
 
-            CallManager.shared.startIncomingCall(from: callOffer) {
-                completion()
-            }
+            CallManager.shared.startIncomingCall(from: callOffer, pushKitCompletion: completion)
         }
         catch {
             Log.error(error, message: "Incomming call processing failed")
 
-            CallManager.shared.startDummyIncomingCall {
-                completion()
-            }
+            CallManager.shared.startDummyIncomingCall(pushKitCompletion: completion)
         }
     }
 }

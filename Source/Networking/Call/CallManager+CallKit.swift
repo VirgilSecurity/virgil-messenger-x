@@ -10,7 +10,7 @@ import Foundation
 import CallKit
 import WebRTC
 
-fileprivate let kFailedCallUUID = UUID.init(uuid: uuid_t(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+fileprivate let kFailedCallUUID = UUID(uuidString: "failedCallUUID")!
 
 // MARK: - Configuration
 extension CallManager {
@@ -88,9 +88,7 @@ extension CallManager {
     }
 
     private func requestTransaction(_ transaction: CXTransaction, completion: @escaping (Error?) -> Void) {
-        self.callController.request(transaction) { error in
-            completion(error)
-        }
+        self.callController.request(transaction, completion: completion)
     }
 }
 
@@ -155,7 +153,7 @@ extension CallManager: CXProviderDelegate {
     public func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
         let callUUID = action.callUUID
 
-        if callUUID == kFailedCallUUID {
+        guard callUUID != kFailedCallUUID else {
             Log.debug("Ending failed call that was not initiated due to errors.")
             action.fulfill()
             return
@@ -163,9 +161,7 @@ extension CallManager: CXProviderDelegate {
 
         Log.debug("Ending call with id \(callUUID.uuidString)")
 
-        guard
-            let call = self.findCall(with: callUUID)
-        else {
+        guard let call = self.findCall(with: callUUID) else {
             Log.error(CallManagerError.noActiveCall, message: "Can not end call with id \(callUUID.uuidString)")
             action.fulfill()
             return

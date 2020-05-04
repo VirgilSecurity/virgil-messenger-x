@@ -102,7 +102,7 @@ public class CallManager: NSObject {
             }
 
             if let error = error {
-                Log.error(error, message: "Incomming call with id \(callUUID.uuidString) was not started.")
+                Log.debug("Incomming call with id \(callUUID.uuidString) was not started.")
                 self.didFail(error)
             }
 
@@ -216,8 +216,7 @@ public class CallManager: NSObject {
     }
 
     func findCall(with uuid: UUID) -> Call? {
-        let call = self.calls.first { $0.uuid == uuid }
-        return call
+        self.calls.first { $0.uuid == uuid }
     }
 
     // MARK: Events
