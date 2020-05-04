@@ -73,11 +73,7 @@ class MessageProcessor {
 
             let baseParams = Storage.Message.Params(xmppId: xmppId, isIncoming: true, channel: channel, state: .received, date: callOffer.date)
 
-            let storageMessage = try Storage.shared.createCallMessage(with: callOffer,
-                                                                  unread: false,
-                                                                  baseParams: baseParams)
-
-            self.postNotification(about: storageMessage, unread: false)
+            try Storage.shared.createCallMessage(with: callOffer, unread: false, baseParams: baseParams)
 
             return callOffer
 
@@ -132,7 +128,7 @@ class MessageProcessor {
             Notifications.post(message: message)
 
             storageMessage = try Storage.shared.createCallMessage(with: callOffer,
-                                                                  unread: unread,
+                                                                  unread: false,
                                                                   baseParams: baseParams)
 
         case .callAnswer, .callUpdate, .iceCandidate:

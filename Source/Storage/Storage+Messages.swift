@@ -80,7 +80,10 @@ extension Storage {
         return message
     }
 
-    func createCallMessage(with callOffer: NetworkMessage.CallOffer, unread: Bool = false, baseParams: Message.Params) throws -> Message {
+    @discardableResult
+    func createCallMessage(with callOffer: NetworkMessage.CallOffer,
+                           unread: Bool = false,
+                           baseParams: Message.Params) throws -> Message {
 
         let message = try Storage.CallMessage(callUUID: callOffer.callUUID,
                                               baseParams: baseParams,
