@@ -17,6 +17,11 @@ enum Constants {
         case prod = ""
     }
 
+    enum PushBodyType: String {
+        case base64Encoded = "BASE64"
+        case plaintext = "PLAIN"
+    }
+
     static let KeychainGroup: String = "com.virgil.VirgilMessenger\(Constants.envPrefix.rawValue.replacingOccurrences(of: "-", with: "."))"
     static let alertTopic: String = KeychainGroup
     static let appGroup: String = "group.virgil.notification\(Constants.envPrefix.rawValue)"
@@ -28,6 +33,8 @@ enum Constants {
 #else
     static let pushMode: String = "prod"
 #endif
+
+    static let pushBodyType: PushBodyType = .plaintext
 }
 
 enum URLConstants {
