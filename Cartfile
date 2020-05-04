@@ -1,4 +1,4 @@
-github "VirgilSecurity/virgil-e3kit-x" "develop"
+github "VirgilSecurity/virgil-e3kit-x" "develop-offline-init"
 github "Ogerets/XMPPFramework" ~> 4.0.1
 github "Ogerets/Chatto" ~> 3.3.3
 github "Ogerets/PKHUD" ~> 5.3.1

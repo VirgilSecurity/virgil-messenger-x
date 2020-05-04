@@ -2,13 +2,14 @@ import Chatto
 import ChattoAdditions
 import VirgilSDK
 import VirgilCryptoFoundation
+import VirgilCryptoRatchet
 
 public class MessageSender {
     private let queue = DispatchQueue(label: "MessageSender")
 
     private func send(message: NetworkMessage,
                       pushType: PushType,
-                      additionalData: Data?,
+                      thumbnail: Data?,
                       to channel: Storage.Channel,
                       date: Date,
                       messageId: String) throws {
@@ -21,12 +22,24 @@ public class MessageSender {
             throw NSError() // FIXME
         }
         
-        let ciphertext = try ratchetChannel.encrypt(data: exported)
+        var additionalData = AdditionalData()
+        
+        let ratchetCipherText = try ratchetChannel.encrypt(data: exported)
+        var ciphertext: Data?
+        
+        // FIXME: Optimize.
+        let message = try! RatchetMessage.deserialize(input: ratchetCipherText)
+        if message.getType() == .prekey {
+            // Send empty push message
+            additionalData.prekeyMessage = ratchetCipherText
+            ciphertext = nil
+        }
+        else {
+            ciphertext = ratchetCipherText
+        }
 
-        var additionalData = additionalData
-
-        if let data = additionalData {
-            additionalData = try ratchetChannel.encrypt(data: data)
+        if let thumbnail = thumbnail {
+            additionalData.thumbnail = try ratchetChannel.encrypt(data: thumbnail)
         }
 
         let encryptedMessage = EncryptedMessage(pushType: pushType, ciphertext: ciphertext, date: date, additionalData: additionalData)
@@ -43,7 +56,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.text(text)
 
-                try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .alert, thumbnail: nil, to: channel, date: date, messageId: messageId)
 
                 let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
 
@@ -66,7 +79,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callOffer(callOffer)
 
-                try self.send(message: message, pushType: .voip, additionalData: nil, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .voip, thumbnail: nil, to: channel, date: date, messageId: messageId)
 
                 let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
 
@@ -91,7 +104,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callAnswer(callAnswer)
 
-                try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .none, thumbnail: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
             }
@@ -110,7 +123,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.callUpdate(callUpdate)
 
-                try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .none, thumbnail: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
             }
@@ -129,7 +142,7 @@ public class MessageSender {
             do {
                 let message = NetworkMessage.iceCandidate(iceCandidate)
 
-                try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .none, thumbnail: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
             }
@@ -166,7 +179,7 @@ public class MessageSender {
                 let photo = NetworkMessage.Photo(identifier: hashString, url: uploadResult.url, secret: uploadResult.secret)
                 let message = NetworkMessage.photo(photo)
 
-                try self.send(message: message, pushType: .alert, additionalData: thumbnail, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .alert, thumbnail: thumbnail, to: channel, date: date, messageId: messageId)
 
                 let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
                 try Storage.shared.createPhotoMessage(with: photo, thumbnail: thumbnail, baseParams: baseParams)
@@ -196,7 +209,7 @@ public class MessageSender {
 
                 let message = NetworkMessage.voice(voice)
 
-                try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .alert, thumbnail: nil, to: channel, date: date, messageId: messageId)
 
                 let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
                 try Storage.shared.createVoiceMessage(with: voice, baseParams: baseParams)

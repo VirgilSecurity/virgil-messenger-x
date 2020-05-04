@@ -25,8 +25,8 @@ public enum EncryptedMessageError: Int, Error {
 }
 
 public class EncryptedMessage: Codable {
-    let ciphertext: Data
-    let additionalData: Data?
+    let ciphertext: Data?
+    let additionalData: AdditionalData?
     let date: Date
 
     var modelVersion: EncryptedMessageVersion {
@@ -40,7 +40,7 @@ public class EncryptedMessage: Codable {
     private let version: EncryptedMessageVersion?
     private let pushType: PushType?
 
-    public init(pushType: PushType, ciphertext: Data, date: Date, additionalData: Data?) {
+    public init(pushType: PushType, ciphertext: Data?, date: Date, additionalData: AdditionalData) {
         self.ciphertext = ciphertext
         self.date = date
         self.additionalData = additionalData

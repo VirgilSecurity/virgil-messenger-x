@@ -125,6 +125,12 @@
 		429228BD1F96261000DCECDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 429228BC1F96261000DCECDF /* Assets.xcassets */; };
 		429228DE1F9637A200DCECDF /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
 		429228EB1F96405800DCECDF /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* Chat.storyboard */; };
+		42E8FF662459876E00B6C686 /* AdditionalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E8FF652459876E00B6C686 /* AdditionalData.swift */; };
+		42E8FF672459877000B6C686 /* AdditionalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E8FF652459876E00B6C686 /* AdditionalData.swift */; };
+		42E8FF682459877100B6C686 /* AdditionalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E8FF652459876E00B6C686 /* AdditionalData.swift */; };
+		42E8FF692459877100B6C686 /* AdditionalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E8FF652459876E00B6C686 /* AdditionalData.swift */; };
+		42E8FF6A2459877200B6C686 /* AdditionalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E8FF652459876E00B6C686 /* AdditionalData.swift */; };
+		42E8FF6B2459877200B6C686 /* AdditionalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E8FF652459876E00B6C686 /* AdditionalData.swift */; };
 		805F59B8242D8552003421EB /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805F59B7242D8552003421EB /* PushNotifications.swift */; };
 		805F59BA242D86FA003421EB /* PushNotificationsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805F59B9242D86FA003421EB /* PushNotificationsDelegate.swift */; };
 		805F59BC242E690B003421EB /* UIViewController+Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805F59BB242E690B003421EB /* UIViewController+Navigation.swift */; };
@@ -809,6 +815,7 @@
 		429228DD1F9637A200DCECDF /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		429228EA1F96405800DCECDF /* Chat.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Chat.storyboard; sourceTree = "<group>"; };
 		42E8F8731F978A51007CB39F /* PKHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PKHUD.framework; path = Carthage/Build/iOS/PKHUD.framework; sourceTree = "<group>"; };
+		42E8FF652459876E00B6C686 /* AdditionalData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalData.swift; sourceTree = "<group>"; };
 		805F59B7242D8552003421EB /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
 		805F59B9242D86FA003421EB /* PushNotificationsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsDelegate.swift; sourceTree = "<group>"; };
 		805F59BB242E690B003421EB /* UIViewController+Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Navigation.swift"; sourceTree = "<group>"; };
@@ -1517,6 +1524,7 @@
 				16B4EC2523BF610500E7E4DB /* XMPPMessage.swift */,
 				16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */,
 				9720EAA52449B8C5004BA39F /* EjabberdError.swift */,
+				42E8FF652459876E00B6C686 /* AdditionalData.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -2103,6 +2111,7 @@
 				16D4B8D923F5CE1700D17B90 /* SharedDefaults.swift in Sources */,
 				16D4B8B123F5BCA400D17B90 /* NotificationService.swift in Sources */,
 				16D4B8D223F5C2F500D17B90 /* Constants.swift in Sources */,
+				42E8FF6A2459877200B6C686 /* AdditionalData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2126,6 +2135,7 @@
 				16FA91051FFC55A400FE98C7 /* UIViewController+Reachability.swift in Sources */,
 				97E437EA24210CF00076AA04 /* NetworkUploadOperation.swift in Sources */,
 				97CE26F52418231300903116 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
+				42E8FF662459876E00B6C686 /* AdditionalData.swift in Sources */,
 				F40BC401243B1E23009AB5DF /* CallManager+CallKit.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
@@ -2250,6 +2260,7 @@
 				F4241D942433858300E839C3 /* Client+Files.swift in Sources */,
 				F4241D612433850F00E839C3 /* Storage+Messages.swift in Sources */,
 				F40BC402243B1E39009AB5DF /* CallManager+CallKit.swift in Sources */,
+				42E8FF672459877000B6C686 /* AdditionalData.swift in Sources */,
 				F4241E4F243386BB00E839C3 /* Collection+SafeSubscript.swift in Sources */,
 				F4241DE32433862500E839C3 /* UserAuthorizer.swift in Sources */,
 				F4241E202433865300E839C3 /* Authentication.swift in Sources */,
@@ -2372,6 +2383,7 @@
 				F4241D4B24337EA000E839C3 /* EnvConstantStg.swift in Sources */,
 				F4241D5024337ECC00E839C3 /* Constants.swift in Sources */,
 				F4241DEE2433862E00E839C3 /* SharedDefaults.swift in Sources */,
+				42E8FF692459877100B6C686 /* AdditionalData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2395,6 +2407,7 @@
 				F4241D932433858200E839C3 /* Client+Files.swift in Sources */,
 				F4241D622433850F00E839C3 /* Storage+Messages.swift in Sources */,
 				F40BC403243B1E39009AB5DF /* CallManager+CallKit.swift in Sources */,
+				42E8FF682459877100B6C686 /* AdditionalData.swift in Sources */,
 				F4241E58243386BB00E839C3 /* Collection+SafeSubscript.swift in Sources */,
 				F4241DE82433862500E839C3 /* UserAuthorizer.swift in Sources */,
 				F4241E232433865300E839C3 /* Authentication.swift in Sources */,
@@ -2517,6 +2530,7 @@
 				F4241D4D24337EAD00E839C3 /* EnvConstantDev.swift in Sources */,
 				F4241D5124337ECC00E839C3 /* Constants.swift in Sources */,
 				F4241DEF2433862E00E839C3 /* SharedDefaults.swift in Sources */,
+				42E8FF6B2459877200B6C686 /* AdditionalData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

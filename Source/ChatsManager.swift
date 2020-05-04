@@ -10,38 +10,6 @@ import Foundation
 import VirgilE3Kit
 
 public enum ChatsManager {
-//    public static func startSingle(with identity: String,
-//                                   startProgressBar: @escaping (() -> Void),
-//                                   completion: @escaping (Error?) -> Void) {
-//        DispatchQueue(label: "ChatsManager").async {
-//            do {
-//                let identity = identity.lowercased()
-//
-//                guard identity != Virgil.ethree.identity else {
-//                    throw UserFriendlyError.createSelfChatForbidded
-//                }
-//
-//                guard !Storage.shared.existsSingleChannel(with: identity) else {
-//                    throw UserFriendlyError.doubleChannelForbidded
-//                }
-//
-//                startProgressBar()
-//
-//                let card = try Virgil.ethree.findUser(with: identity).startSync().get()
-//
-//                try Storage.shared.createSingleChannel(initiator: Virgil.ethree.identity, card: card)
-//
-//                completion(nil)
-//            }
-//            catch FindUsersError.cardWasNotFound {
-//                completion(UserFriendlyError.userNotFound)
-//            }
-//            catch {
-//                completion(error)
-//            }
-//        }
-//    }
-    
     public static func startDrSession(with identity: String,
                                       startProgressBar: @escaping (() -> Void),
                                       completion: @escaping (Error?) -> Void) {

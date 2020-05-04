@@ -45,34 +45,31 @@ class NotificationService: UNNotificationServiceExtension {
             return
         }
 
-        bestAttemptContent.body = "New Message"
-
         self.bestAttemptContent = bestAttemptContent
-        
-        contentHandler(bestAttemptContent)
 
-//        self.updateBadge(for: bestAttemptContent)
-//
-//        do {
-//            let notificationInfo = try self.parse(content: bestAttemptContent)
-//
-//            let decrypted = try self.decrypt(notificationInfo: notificationInfo)
-//
-//            let message = try self.process(decrypted: decrypted,
-//                                           version: notificationInfo.encryptedMessage.modelVersion)
-//
-//            bestAttemptContent.body = message
-//
-//            contentHandler(bestAttemptContent)
-//
-//            // Note: We got body from userInfo, not from bestAttemptContent.body directly in a reason of 1000 symbol restriction
-//        }
-//        catch {
-//            // FIXME: add Logs
-//            contentHandler(bestAttemptContent)
-//
-//            print("Notification was not decrypted with error: \(error.localizedDescription)")
-//        }
+        self.updateBadge(for: bestAttemptContent)
+
+        do {
+            let notificationInfo = try self.parse(content: bestAttemptContent)
+
+            let decryptedData = try self.decrypt(notificationInfo: notificationInfo)
+
+            let message = try self.process(notificationInfo: notificationInfo,
+                                           decryptedData: decryptedData,
+                                           version: notificationInfo.encryptedMessage.modelVersion)
+
+            bestAttemptContent.body = message
+
+            contentHandler(bestAttemptContent)
+
+            // Note: We got body from userInfo, not from bestAttemptContent.body directly in a reason of 1000 symbol restriction
+        }
+        catch {
+            // FIXME: add Logs
+            contentHandler(bestAttemptContent)
+
+            print("Notification was not decrypted with error: \(error.localizedDescription)")
+        }
     }
 
     override func serviceExtensionTimeWillExpire() {
@@ -104,42 +101,61 @@ class NotificationService: UNNotificationServiceExtension {
         return NotificationInfo(sender: title, encryptedMessage: encryptedMessage)
     }
 
-    private func decrypt(notificationInfo: NotificationInfo) throws -> Data {
+    private func decrypt(notificationInfo: NotificationInfo) throws -> Data? {
         guard let identity: String = SharedDefaults.shared.get(.identity) else {
             throw NotificationServiceError.missingIdentityInDefaults
+        }
+        
+        guard let ciphertext = notificationInfo.encryptedMessage.ciphertext else {
+            return nil
         }
 
         // Initializing KeyStorage with root application name. We need it to fetch shared key from root app
         let storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.KeychainGroup)
 
-        let client = Client(crypto: self.crypto)
-
-        let tokenCallback = client.makeTokenCallback(identity: identity)
-
+        let tokenCallback: EThree.RenewJwtCallback = { callback in
+            callback(nil, NSError() /* FIXME */)
+        }
+        
         let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
+        // FIXME: Remove copy&paste
+        // FIXME: No need to schedule E3Kit cache update or key rotation
         params.storageParams = storageParams
+        params.appGroup = Constants.appGroup
+        params.enableRatchet = true
+        params.enableRatchetPqc = true
+        params.offlineInit = true
         let ethree = try EThree(params: params)
 
-        let card = try ethree.findUser(with: notificationInfo.sender)
-            .startSync()
-            .get()
-
-        // FIXME
-        return try ethree.authDecrypt(data: notificationInfo.encryptedMessage.ciphertext, from: card)
+        guard let card = ethree.findCachedUser(with: notificationInfo.sender) else {
+            return nil
+        }
+        
+        guard let ratchetChannel = try ethree.getRatchetChannel(with: card) else {
+            // FIXME
+            throw NSError()
+        }
+        
+        return try ratchetChannel.decrypt(data: ciphertext)
     }
 
-    private func process(decrypted: Data, version: EncryptedMessageVersion) throws -> String {
+    private func process(notificationInfo: NotificationInfo, decryptedData: Data?, version: EncryptedMessageVersion) throws -> String {
         let messageString: String
 
         switch version {
         case .v1:
-            guard let string = String(data: decrypted, encoding: .utf8) else {
+            guard let decryptedData = decryptedData, let string = String(data: decryptedData, encoding: .utf8) else {
+                // FIXME
                 throw NotificationServiceError.dataToStrFailed
             }
 
             messageString = string
         case .v2:
-            let message = try NetworkMessage.import(from: decrypted)
+            guard let decryptedData = decryptedData else {
+                return "Sent you new message" // FIXME: Localize
+            }
+            
+            let message = try NetworkMessage.import(from: decryptedData)
 
             messageString = message.notificationBody
         }

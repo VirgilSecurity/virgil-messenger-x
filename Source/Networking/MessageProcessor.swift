@@ -50,17 +50,17 @@ class MessageProcessor {
 
         let decrypted = try self.decrypt(encryptedMessage, from: channel, ratchetChannel: ratchetChannel)
 
-        var decryptedAdditional: Data?
+        var thumbnail: Data?
 
-        if let data = encryptedMessage.additionalData {
-            decryptedAdditional = try ratchetChannel.decrypt(data: data)
+        if let data = encryptedMessage.additionalData?.thumbnail {
+            thumbnail = try ratchetChannel.decrypt(data: data)
         }
 
         let message = try self.migrationSafeContentImport(from: decrypted,
                                                           version: encryptedMessage.modelVersion)
 
         try self.process(message,
-                         additionalData: decryptedAdditional,
+                         thumbnail: thumbnail,
                          xmppId: xmppId,
                          channel: channel,
                          author: author,
@@ -82,7 +82,7 @@ class MessageProcessor {
             let xmppId = callOffer.callUUID.uuidString
 
             try self.process(message,
-                             additionalData: nil,
+                             thumbnail: nil,
                              xmppId: xmppId,
                              channel: channel,
                              author: caller,
@@ -94,7 +94,7 @@ class MessageProcessor {
     }
 
     private static func process(_ message: NetworkMessage,
-                                additionalData: Data?,
+                                thumbnail: Data?,
                                 xmppId: String,
                                 channel: Storage.Channel,
                                 author: String,
@@ -116,7 +116,7 @@ class MessageProcessor {
                                                                   baseParams: baseParams)
 
         case .photo(let photo):
-            guard let thumbnail = additionalData else {
+            guard let thumbnail = thumbnail else {
                 throw Error.missingThumbnail
             }
 
@@ -179,10 +179,12 @@ class MessageProcessor {
     }
 
     private static func decrypt(_ message: EncryptedMessage, from channel: Storage.Channel, ratchetChannel: RatchetChannel) throws -> Data {
-        let decrypted: Data
-
+        guard let ciphertext = message.ciphertext ?? message.additionalData?.prekeyMessage else {
+            throw NSError() // Invalid message
+        }
+        
         do {
-            decrypted = try ratchetChannel.decrypt(data: message.ciphertext)
+            return try ratchetChannel.decrypt(data: ciphertext)
         }
         catch {
             // TODO: check if needed
@@ -190,8 +192,6 @@ class MessageProcessor {
 
             throw error
         }
-
-        return decrypted
     }
 
     private static func postNotification(about message: Storage.Message, unread: Bool) {
