@@ -10,6 +10,8 @@ import Foundation
 import CallKit
 import WebRTC
 
+fileprivate let kFailedCallUUID = UUID(uuidString: "failedCallUUID")!
+
 // MARK: - Configuration
 extension CallManager {
     static var providerConfiguration: CXProviderConfiguration = {
@@ -58,19 +60,35 @@ extension CallManager {
         }
     }
 
-    public func requestSystemEndCall(_ call: Call, completion: @escaping (Error?) -> Void) {
-        Log.debug("Request end call with id \(call.uuid.uuidString)")
+    public func requestSystemEndCall(uuid callUUID: UUID, completion: @escaping (Error?) -> Void) {
+        Log.debug("Request end call with id \(callUUID.uuidString)")
 
-        let endCallAction = CXEndCallAction(call: call.uuid)
+        let endCallAction = CXEndCallAction(call: callUUID)
         let transaction = CXTransaction(action: endCallAction)
 
         self.requestTransaction(transaction, completion: completion)
     }
 
-    private func requestTransaction(_ transaction: CXTransaction, completion: @escaping (Error?) -> Void) {
-        self.callController.request(transaction) { error in
-            completion(error)
+    public func requestSystemEndCall(_ call: Call, completion: @escaping (Error?) -> Void) {
+        self.requestSystemEndCall(uuid: call.uuid, completion: completion)
+    }
+
+    public func requestSystemDummyIncomingCall(pushKitCompletion: @escaping () -> Void) {
+        self.requestSystemStartIncomingCall(from: "Failed Call...", withId: kFailedCallUUID) { error in
+
+            if error == nil {
+                pushKitCompletion()
+                return
+            }
+
+            self.requestSystemEndCall(uuid: kFailedCallUUID) { _ in
+                pushKitCompletion()
+            }
         }
+    }
+
+    private func requestTransaction(_ transaction: CXTransaction, completion: @escaping (Error?) -> Void) {
+        self.callController.request(transaction, completion: completion)
     }
 }
 
@@ -135,13 +153,17 @@ extension CallManager: CXProviderDelegate {
     public func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
         let callUUID = action.callUUID
 
+        guard callUUID != kFailedCallUUID else {
+            Log.debug("Ending failed call that was not initiated due to errors.")
+            action.fulfill()
+            return
+        }
+
         Log.debug("Ending call with id \(callUUID.uuidString)")
 
-        guard
-            let call = self.findCall(with: callUUID)
-        else {
+        guard let call = self.findCall(with: callUUID) else {
             Log.error(CallManagerError.noActiveCall, message: "Can not end call with id \(callUUID.uuidString)")
-            action.fail()
+            action.fulfill()
             return
         }
 
