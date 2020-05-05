@@ -137,7 +137,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        Log.debug("Received device token: \(deviceToken.hexEncodedString())")
+        Log.debug("Received device push token: \(deviceToken.hexEncodedString())")
 
         if Ejabberd.shared.state == .connected {
             Ejabberd.shared.registerForNotifications(deviceToken: deviceToken)

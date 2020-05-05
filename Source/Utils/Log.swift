@@ -56,11 +56,19 @@ public enum Log {
                             functionName: String = #function,
                             file: String = #file,
                             line: UInt = #line) {
+        #if DEBUG
+        let str = "--> \(functionName) : \(closure())"
+        #else
         let str = "VIRGILMESSENGER_LOG: \(functionName) : \(closure())"
+        #endif
         Log.writeInLog(str)
     }
 
     private static func writeInLog(_ message: String) {
+        #if DEBUG
+        print(message)
+        #else
         NSLogv("%@", getVaList([message]))
+        #endif
     }
 }

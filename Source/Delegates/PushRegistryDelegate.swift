@@ -9,12 +9,19 @@
 import PushKit
 
 class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
+
+    enum Error: LocalizedError {
+        case parsingFailed
+    }
+
     func pushRegistry(_ registry: PKPushRegistry, didUpdate pushCredentials: PKPushCredentials, for type: PKPushType) {
         guard type == .voIP else {
             return
         }
 
         let deviceToken = pushCredentials.token
+
+        Log.debug("Received device voip token: \(deviceToken.hexEncodedString())")
 
         if Ejabberd.shared.state == .connected {
             Ejabberd.shared.registerForNotifications(voipDeviceToken: deviceToken)
@@ -29,31 +36,30 @@ class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
                       completion: @escaping () -> Void) {
 
         guard type == .voIP else {
+            Log.debug("Received non VoIP push notification.")
             return
         }
-
-        // FIXME: Minimize payload
-        guard
-            let aps = payload.dictionaryPayload["aps"] as? NSDictionary,
-            let alert = aps["alert"] as? NSDictionary,
-            let caller = alert["title"] as? String,
-            let body = alert["body"] as? String
-        else {
-            return
-        }
-
-        // FIXME: Replace with appropriate call that awakes ejabberd connection
-        Ejabberd.shared.startInitializing(identity: Virgil.ethree.identity)
 
         do {
+            guard
+                let caller = payload.dictionaryPayload["from"] as? String,
+                let body = payload.dictionaryPayload["body"] as? String
+            else {
+                throw Error.parsingFailed
+            }
+
+            try UserAuthorizer().signIn()
+
             let encryptedMessage = try EncryptedMessage.import(body)
 
-            try MessageProcessor.process(call: encryptedMessage, from: caller)
+            let callOffer = try MessageProcessor.process(call: encryptedMessage, from: caller)
+
+            CallManager.shared.startIncomingCall(from: callOffer, pushKitCompletion: completion)
         }
         catch {
             Log.error(error, message: "Incomming call processing failed")
-        }
 
-        completion()
+            CallManager.shared.startDummyIncomingCall(pushKitCompletion: completion)
+        }
     }
 }

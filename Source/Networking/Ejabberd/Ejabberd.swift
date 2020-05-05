@@ -19,6 +19,7 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
     internal var retryConfig: RetryConfig = RetryConfig()
 
     internal var messageQueue = OperationQueue()
+    internal var tokenProvider: EjabberdTokenProvider?
 
     private let upload = XMPPHTTPFileUpload()
     private let deliveryReceipts = XMPPMessageDeliveryReceipts()
@@ -74,5 +75,16 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
                 completion(slot, error)
             }
         }
+    }
+
+    internal func getToken() throws -> String {
+        guard let provider = self.tokenProvider else {
+            throw NSError()
+        }
+
+        return try provider.getToken()
+            .startSync()
+            .get()
+            .stringRepresentation
     }
 }

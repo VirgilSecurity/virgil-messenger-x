@@ -8,53 +8,70 @@
 
 import UIKit
 
-class CallViewController: UIViewController {
+class CallViewController: ViewController {
 
     // MARK: UI
     @IBOutlet weak var calleeLabel: UILabel!
     @IBOutlet weak var callStatusLabel: UILabel!
     @IBOutlet weak var connectionStatusLabel: UILabel!
+    @IBOutlet weak var avatarLetterLabel: UILabel!
+    @IBOutlet weak var avatarView: GradientView!
+
+    // MARK: Queues
+    let callStatusQueue = DispatchQueue.init(label: "CallTimeUpdateQueue")
 
     // MARK: State
-    weak var call: Call?
-    var callDuration: TimeInterval = 0.0
-    var callDurationTimer: Timer!
+    private var calls: [Call] = []
+    private var callDurationTimer: Timer?
 
     // MARK: UI handlers
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        guard let call = self.call else {
-            return
+        self.callDurationTimer = self.callDurationTimer ?? Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            self.callStatusQueue.async {
+                self.updateCallView()
+            }
         }
 
-        self.calleeLabel.text = call.otherName
-        self.callStatusLabel.text = call.state.rawValue
-        self.connectionStatusLabel.text = call.connectionStatus.rawValue
-
-        self.callDurationTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (_) in
-            self.callDuration += 1.0
-            self.updateCallStatus()
-        }
-
-        call.delegate = self
+        self.updateCallView()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        self.call?.delegate = nil
-        self.callDurationTimer.invalidate()
+        self.calls.forEach { (call) in
+            call.delegate = nil
+        }
+
+        self.calls.removeAll()
+        self.callDurationTimer?.invalidate()
     }
 
     @IBAction func endCall(_ sender: Any?) {
-        if let call = self.call {
+        if let call = self.calls.first {
             CallManager.shared.endCall(call)
+        }
+    }
+
+    public func addCall(call: Call) {
+        call.delegate = self
+        self.calls.append(call)
+        self.updateCallView()
+    }
+
+    public func removeCall(call: Call) {
+        call.delegate = nil
+        self.calls.removeAll { $0.uuid == call.uuid }
+
+        if !self.calls.isEmpty {
+            self.updateCallView()
         }
         else {
             self.close()
         }
-    }}
+    }
+}
 
 // MARK: - UI helpers
 extension CallViewController {
@@ -66,46 +83,61 @@ extension CallViewController {
         return formatter
     }
 
-    private func updateCallStatus() {
-        guard let call = self.call else {
-            return
-        }
+    private static func formatCallDurationThat(connectedAt: Date) -> String {
+        let callDuration = -connectedAt.timeIntervalSinceNow
+        let callDurationString = Self.dateFormatter.string(from: callDuration)!
+        return callDurationString
+    }
 
-        let callStatusString: String
-        if call.connectionStatus == .connected {
-            callStatusString = Self.dateFormatter.string(from: self.callDuration)!
-        }
-        else {
-            callStatusString = call.state.rawValue
-        }
-
+    private func updateCallView() {
         DispatchQueue.main.async {
-            self.callStatusLabel.text = callStatusString
+            guard
+                self.isViewLoaded,
+                let call = self.calls.first
+            else {
+                Log.debug("No call to display")
+                return
+            }
+
+            guard let channel = Storage.shared.getChannel(withName: call.otherName) else{
+                Log.error(Storage.Error.channelNotFound, message: "Call View is unable to render")
+                return
+            }
+
+            self.avatarLetterLabel.text = channel.letter
+            self.avatarView.draw(with: channel.colors)
+
+            self.calleeLabel.text = call.otherName
+            self.connectionStatusLabel.text = call.connectionStatus.rawValue
+
+            if let connectedAt = call.connectedAt {
+                self.callStatusLabel.text = Self.formatCallDurationThat(connectedAt: connectedAt)
+            }
+            else {
+                self.callStatusLabel.text = call.state.rawValue
+            }
         }
     }
 }
 
 extension CallViewController: CallDelegate {
     func call(_ call: Call, didChangeState newState: CallState) {
-        DispatchQueue.main.async {
-            self.callStatusLabel.text = newState.rawValue
-        }
     }
 
     func call(_ call: Call, didChangeConnectionStatus newConnectionStatus: CallConnectionStatus) {
-        DispatchQueue.main.async {
-            self.connectionStatusLabel.text = newConnectionStatus.rawValue
+        switch newConnectionStatus {
+        case .closed, .disconnected, .failed:
+            CallManager.shared.endCall(call)
+        default:
+            break
         }
     }
 
     func call(_ call: Call, didEnd error: Error?) {
         if let error = error {
-            self.alert(error) { _ in
-                self.close()
+            DispatchQueue.main.async {
+                self.alert(error)
             }
-        }
-        else {
-            self.close()
         }
     }
 

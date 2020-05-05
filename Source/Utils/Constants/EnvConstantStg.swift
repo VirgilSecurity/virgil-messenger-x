@@ -10,4 +10,9 @@ import Foundation
 
 extension Constants {
     static let envPrefix: EnvPrefix = .stg
+
+}
+
+extension URLConstants {
+    static let ejabberdTurnServers: [String] = ["turn:turn1-stg.virgilsecurity.com"]
 }
