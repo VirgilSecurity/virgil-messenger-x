@@ -15,7 +15,7 @@ enum NotificationServiceError: Int, LocalizedError {
     case missingIdentityInDefaults = 1
     case parsingNotificationFailed = 2
     case dataToStrFailed = 3
-    case ratchetChanngelNotFound = 4
+    case ratchetChannelNotFound = 4
 }
 
 class NotificationService: UNNotificationServiceExtension {
@@ -127,7 +127,7 @@ class NotificationService: UNNotificationServiceExtension {
         }
         
         guard let ratchetChannel = try ethree.getRatchetChannel(with: card) else {
-            throw NotificationServiceError.ratchetChanngelNotFound
+            throw NotificationServiceError.ratchetChannelNotFound
         }
         
         return try ratchetChannel.decrypt(data: ciphertext)
