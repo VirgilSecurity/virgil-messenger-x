@@ -29,9 +29,6 @@ import AVFoundation
 import PKHUD
 
 class ChatViewController: BaseChatViewController {
-    @IBOutlet weak var avatarView: GradientView!
-    @IBOutlet weak var letterLabel: UILabel!
-
     private let indicator = UIActivityIndicatorView()
     private let indicatorLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
 
@@ -57,7 +54,7 @@ class ChatViewController: BaseChatViewController {
     }()
 
     lazy private var baseMessageHandler: BaseMessageHandler = {
-        return BaseMessageHandler(messageSender: self.dataSource.messageSender)
+         return BaseMessageHandler(messageSender: self.dataSource.messageSender)
     }()
 
     override func viewDidLoad() {
@@ -68,10 +65,6 @@ class ChatViewController: BaseChatViewController {
         super.inputContainer.backgroundColor = .appThemeBackgroundColor
         super.bottomSpaceView.backgroundColor = .appThemeBackgroundColor
         super.collectionView?.backgroundColor = .appThemeForegroundColor
-
-        self.letterLabel.text = self.channel.letter
-        self.avatarView.gradientLayer.colors = self.channel.colors
-        self.avatarView.gradientLayer.gradient = GradientPoint.bottomLeftTopRight.draw()
 
         self.setupIndicator()
         self.updateTitle()
@@ -141,9 +134,6 @@ class ChatViewController: BaseChatViewController {
             titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
             titleButton.setTitle(self.channel.name, for: .normal)
 
-            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(showChatDetails(_:)))
-            titleButton.addGestureRecognizer(tapRecognizer)
-
             self.navigationItem.titleView = titleButton
 
         case .connecting, .disconnected:
@@ -160,8 +150,7 @@ class ChatViewController: BaseChatViewController {
         }
     }
 
-    @IBAction func showChatDetails(_ sender: Any) {
-        // FIXME
+    @IBAction func callTapped(_ sender: Any) {
         CallManager.shared.startOutgoingCall(to: self.channel.name)
     }
 

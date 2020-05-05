@@ -22,12 +22,13 @@ public class OutgoingCall: Call {
     }
 
     // MARK: Call management
-    public func start() {
+    public func start(_ completion: @escaping (Error?) -> Void) {
         self.state = .new
 
         self.setupPeerConnection()
 
         guard let peerConnection = self.peerConnection else {
+            completion(CallError.configurationFailed)
             return
         }
 
@@ -38,7 +39,7 @@ public class OutgoingCall: Call {
 
         peerConnection.offer(for: constrains) { sdp, error in
             guard let sdp = sdp else {
-                self.didFail(CallError.configurationFailed)
+                completion(CallError.configurationFailed)
                 return
             }
 
@@ -47,20 +48,26 @@ public class OutgoingCall: Call {
                     let callOffer = NetworkMessage.CallOffer(callUUID: self.uuid, date: Date(), caller: self.myName, sdp: sdp.sdp)
 
                     self.didCreateOffer(callOffer)
+                    completion(nil)
                     return
                 }
 
                 Log.error(error, message: "Failed to set local session description")
 
-                self.didFail(CallError.configurationFailed)
+                completion(CallError.configurationFailed)
             }
         }
     }
 
     public func accept(_ callAnswer: NetworkMessage.CallAnswer) {
-        precondition(callAnswer.callUUID == self.uuid, "Call answer is not mine")
+
+        if (callAnswer.callUUID != self.uuid) {
+            self.didFail(CallInternalError.uuidMismatch)
+            return
+        }
 
         guard let peerConnection = self.peerConnection else {
+            self.didFail(CallInternalError.noPeerConnection)
             return
         }
 

@@ -24,6 +24,12 @@ public class UserAuthorizer {
             throw UserAuthorizerError.noIdentityAtDefaults
         }
 
+        // FIXME
+        guard Storage.shared.currentAccount == nil else {
+            Log.debug("Skipping signing in. User is already signed in")
+            return
+        }
+
         let account = try Storage.shared.loadAccount(withIdentity: identity)
 
         try self.virgilAuthorizer.signIn(identity: identity)
@@ -31,6 +37,8 @@ public class UserAuthorizer {
         UnreadManager.shared.update()
 
         CallManager.shared.set(account: account)
+
+        Ejabberd.shared.startInitializing(identity: identity)
     }
 
     public func signIn(identity: String) throws {
@@ -43,6 +51,8 @@ public class UserAuthorizer {
         UnreadManager.shared.update()
 
         CallManager.shared.set(account: account)
+
+        Ejabberd.shared.startInitializing(identity: identity)
     }
 
    public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
@@ -55,6 +65,8 @@ public class UserAuthorizer {
                 SharedDefaults.shared.set(identity: identity)
 
                 CallManager.shared.set(account: account)
+
+                Ejabberd.shared.startInitializing(identity: identity)
 
                 completion(nil)
             }

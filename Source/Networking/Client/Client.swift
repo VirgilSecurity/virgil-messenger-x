@@ -21,6 +21,7 @@ public class Client {
         case inputStreamFromDownloadedFailed
         case inconsistencyState
         case selfCardNotFound
+        case invalidEjabberdToken
     }
 
     private let serviceErrorDomain: String = "ClientErrorDomain"

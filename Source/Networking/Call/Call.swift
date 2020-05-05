@@ -15,6 +15,11 @@ public enum CallError: String, Error {
     case connectionFailed
 }
 
+public enum CallInternalError: String, Error {
+    case uuidMismatch
+    case noPeerConnection
+}
+
 public enum CallState: String {
     case new // the call was initiated
     case calling // the call was initiated, but the caller is not available for now
@@ -38,6 +43,7 @@ public enum CallConnectionStatus: String {
 public protocol CallDelegate: class {
     func call(_ call: Call, didChangeState newState: CallState)
     func call(_ call: Call, didChangeConnectionStatus newConnectionStatus: CallConnectionStatus)
+    func call(_ call: Call, didEnd error: Error?)
 }
 
 public protocol CallSignalingDelegate: class {
@@ -60,7 +66,9 @@ public class Call: NSObject {
     private(set) weak var signalingDelegate: CallSignalingDelegate?
 
     // MARK: Connection properties
-    private(set) var peerConnection: RTCPeerConnection?
+    var peerConnection: RTCPeerConnection?
+    let audioSession = RTCAudioSession.sharedInstance()
+    private(set) var connectedAt: Date?
 
     // MARK: Init / Reset
     init(withId uuid: UUID, myName: String, otherName: String, signalingTo signalingDelegate: CallSignalingDelegate? = nil) {
@@ -72,17 +80,29 @@ public class Call: NSObject {
         self.connectionStatus = .none
 
         super.init()
+
+        self.audioSession.add(self)
+    }
+
+    private func releaseResources() {
+        self.peerConnection?.close()
+        self.peerConnection?.delegate = nil
+        self.peerConnection = nil
+        self.delegate = nil
+        self.signalingDelegate = nil
     }
 
     // MARK: Info / State
     var state: CallState {
         didSet {
+            Log.debug("Call with id \(self.uuid.uuidString) changed state to '\(state)'")
             self.delegate?.call(self, didChangeState: state)
         }
     }
 
     var connectionStatus: CallConnectionStatus {
         didSet {
+            Log.debug("Call with id \(self.uuid.uuidString) changed connection status to '\(connectionStatus)'")
             self.delegate?.call(self, didChangeConnectionStatus: connectionStatus)
         }
     }
@@ -91,23 +111,11 @@ public class Call: NSObject {
         preconditionFailure("This property must be overridden")
     }
 
-    // MARK: Configuration
-    func setupPeerConnection() {
-        precondition(self.peerConnection == nil, "Peer connection has been already setup")
-
-        do {
-            self.peerConnection = try Self.createPeerConnection(delegate: self)
-        }
-        catch {
-            self.didFail(CallError.configurationFailed)
-        }
-    }
-
     // MARK: Call Management
     func end() {
-        self.peerConnection?.close()
-        self.peerConnection = nil
         self.state = .ended
+        self.delegate?.call(self, didEnd: nil)
+        self.releaseResources()
     }
 
     func addRemoteIceCandidate(_ iceCandidate: NetworkMessage.IceCandidate) {
@@ -119,6 +127,10 @@ public class Call: NSObject {
     }
 
     // MARK: Events
+    func didConnect() {
+        self.connectedAt = Date()
+    }
+
     func didCreateOffer(_ callOffer: NetworkMessage.CallOffer) {
         self.signalingDelegate?.call(self, didCreateOffer: callOffer)
     }
@@ -133,6 +145,8 @@ public class Call: NSObject {
 
     func didFail(_ error: Error) {
         self.state = .failed
+        self.delegate?.call(self, didEnd: error)
         self.signalingDelegate?.call(self, didFail: error)
+        self.releaseResources()
     }
 }

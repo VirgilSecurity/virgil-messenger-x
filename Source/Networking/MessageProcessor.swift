@@ -14,6 +14,7 @@ class MessageProcessor {
         case missingThumbnail
         case dataToStrFailed
         case invalidMessage
+        case notCallOffer
     }
 
     static func processGlobalReadState(from author: String) throws {
@@ -68,7 +69,7 @@ class MessageProcessor {
                          date: encryptedMessage.date)
     }
 
-    static func process(call encryptedMessage: EncryptedMessage, from caller: String) throws {
+    static func process(call encryptedMessage: EncryptedMessage, from caller: String) throws -> NetworkMessage.CallOffer {
         let channel = try self.setupChannel(name: caller)
         
         let ratchetChannel = try self.getOrJoinRatchetChannel(channel)
@@ -82,15 +83,14 @@ class MessageProcessor {
         case .callOffer(let callOffer):
             let xmppId = callOffer.callUUID.uuidString
 
-            try self.process(message,
-                             thumbnail: nil,
-                             xmppId: xmppId,
-                             channel: channel,
-                             author: caller,
-                             date: encryptedMessage.date)
+            let baseParams = Storage.Message.Params(xmppId: xmppId, isIncoming: true, channel: channel, state: .received, date: callOffer.date)
+
+            try Storage.shared.createCallMessage(with: callOffer, unread: false, baseParams: baseParams)
+
+            return callOffer
 
         default:
-            break
+            throw MessageProcessor.Error.notCallOffer
         }
     }
 
@@ -140,7 +140,7 @@ class MessageProcessor {
             Notifications.post(message: message)
 
             storageMessage = try Storage.shared.createCallMessage(with: callOffer,
-                                                                  unread: unread,
+                                                                  unread: false,
                                                                   baseParams: baseParams)
 
         case .callAnswer, .callUpdate, .iceCandidate:
