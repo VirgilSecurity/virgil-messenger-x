@@ -11,3 +11,7 @@ import Foundation
 extension Constants {
     static let envPrefix: EnvPrefix = .dev
 }
+
+extension URLConstants {
+    static let ejabberdTurnServers: [String] = ["turn:turn-dev.virgilsecurity.com"]
+}

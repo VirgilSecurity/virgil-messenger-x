@@ -23,12 +23,13 @@ public class IncomingCall: Call {
         return false
     }
 
-    public func start() {
+    public func start(_ completion: @escaping (Error?) -> Void) {
         self.state = .new
 
         self.setupPeerConnection()
 
         guard let peerConnection = self.peerConnection else {
+            completion(CallError.configurationFailed)
             return
         }
 
@@ -36,17 +37,21 @@ public class IncomingCall: Call {
 
         peerConnection.setRemoteDescription(self.sessionDescription) { error in
             guard let error = error else {
+                completion (nil)
                 return
             }
 
             Log.error(error, message: "Failed to set an offer session description as remote session description")
 
-            self.didFail(CallError.configurationFailed)
+            completion(CallError.configurationFailed)
         }
     }
 
     public func answer() {
+
+
         guard let peerConnection = self.peerConnection else {
+            self.didFail(CallInternalError.noPeerConnection)
             return
         }
 

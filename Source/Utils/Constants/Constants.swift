@@ -44,6 +44,13 @@ enum URLConstants {
     // Other links
     static let termsAndConditionsURL = "https://virgilsecurity.com/terms-of-service"
     static let privacyURL = "https://virgilsecurity.com/privacy-policy"
+
+    // Public
+    static let publicStunServers = ["stun:stun.l.google.com:19302",
+                                    "stun:stun1.l.google.com:19302",
+                                    "stun:stun2.l.google.com:19302",
+                                    "stun:stun3.l.google.com:19302",
+                                    "stun:stun4.l.google.com:19302"]
 }
 
 enum ChatConstants {

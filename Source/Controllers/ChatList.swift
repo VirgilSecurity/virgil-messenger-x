@@ -29,8 +29,6 @@ class ChatListViewController: ViewController {
         self.updateTitleView()
         self.setupTableView()
         self.setupObservers()
-
-        Ejabberd.shared.startInitializing(identity: Virgil.ethree.identity)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -91,8 +89,8 @@ class ChatListViewController: ViewController {
 
             let callDelay = -callOffer.date.timeIntervalSinceNow
 
-            if callDelay < 5.0 {
-                CallManager.shared.startIncommingCall(from: callOffer)
+            if callDelay < 10.0 {
+                CallManager.shared.startIncomingCall(from: callOffer) {}
             } else {
                 Log.debug("Detected stale call offer with id: \(callOffer.callUUID)")
             }
@@ -318,12 +316,18 @@ extension ChatListViewController {
 
 extension ChatListViewController: CallManagerDelegate {
     func callManager(_ callManager: CallManager, didAddCall call: Call) {
-        if self.callViewController != nil {
-            Log.debug("Group calls are not supported yet.")
-            return
-        }
-
         DispatchQueue.main.async {
+            // Use existing.
+            if let callViewController = self.callViewController {
+                callViewController.addCall(call: call)
+
+                if callViewController.viewIfLoaded?.window == nil {
+                    self.present(callViewController, animated: true, completion: nil)
+                }
+                return
+            }
+
+            // Create new.
             let storyboard = UIStoryboard(name: "Call", bundle: nil)
             let viewController = storyboard.instantiateViewController(withIdentifier: "Call")
 
@@ -334,16 +338,16 @@ extension ChatListViewController: CallManagerDelegate {
                 fatalError("ViewController with identifier 'Call' is not of type CallViewController")
             }
 
+            callViewController.addCall(call: call)
+
             self.callViewController = callViewController
-            self.callViewController?.call = call
 
             self.present(callViewController, animated: true, completion: nil)
         }
     }
 
     func callManager(_ callManager: CallManager, didRemoveCall call: Call) {
-        self.callViewController?.close()
-        self.callViewController = nil
+        self.callViewController?.removeCall(call: call)
     }
 
     func callManager(_ callManager: CallManager, didFail error: Error) {

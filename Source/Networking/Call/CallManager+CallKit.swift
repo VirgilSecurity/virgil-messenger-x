@@ -8,6 +8,9 @@
 
 import Foundation
 import CallKit
+import WebRTC
+
+fileprivate let kFailedCallUUID = UUID(uuid: uuid_t(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
 
 // MARK: - Configuration
 extension CallManager {
@@ -57,19 +60,35 @@ extension CallManager {
         }
     }
 
-    public func requestSystemEndCall(_ call: Call, completion: @escaping (Error?) -> Void) {
-        Log.debug("Request end call with id \(call.uuid.uuidString)")
+    public func requestSystemEndCall(uuid callUUID: UUID, completion: @escaping (Error?) -> Void) {
+        Log.debug("Request end call with id \(callUUID.uuidString)")
 
-        let endCallAction = CXEndCallAction(call: call.uuid)
+        let endCallAction = CXEndCallAction(call: callUUID)
         let transaction = CXTransaction(action: endCallAction)
 
         self.requestTransaction(transaction, completion: completion)
     }
 
-    private func requestTransaction(_ transaction: CXTransaction, completion: @escaping (Error?) -> Void) {
-        self.callController.request(transaction) { error in
-            completion(error)
+    public func requestSystemEndCall(_ call: Call, completion: @escaping (Error?) -> Void) {
+        self.requestSystemEndCall(uuid: call.uuid, completion: completion)
+    }
+
+    public func requestSystemDummyIncomingCall(pushKitCompletion: @escaping () -> Void) {
+        self.requestSystemStartIncomingCall(from: "Failed Call...", withId: kFailedCallUUID) { error in
+
+            if error == nil {
+                pushKitCompletion()
+                return
+            }
+
+            self.requestSystemEndCall(uuid: kFailedCallUUID) { _ in
+                pushKitCompletion()
+            }
         }
+    }
+
+    private func requestTransaction(_ transaction: CXTransaction, completion: @escaping (Error?) -> Void) {
+        self.callController.request(transaction, completion: completion)
     }
 }
 
@@ -93,13 +112,27 @@ extension CallManager: CXProviderDelegate {
 
         let call = OutgoingCall(withId: callUUID, from: account.identity, to: callee, signalingTo: self)
 
-        self.addCall(call)
-        call.start()
+        call.start { error in
+            guard let error = error else {
+                self.addCall(call)
+                action.fulfill()
+                return
+            }
 
-        action.fulfill()
+            self.didFail(error)
+            action.fail()
+        }
+
     }
 
     public func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
+        if #available(iOS 10, *) {
+            // Workaround for webrtc on ios 10, because first incoming call does not have audio
+            // due to incorrect category: AVAudioSessionCategorySoloAmbient
+            // webrtc need AVAudioSessionCategoryPlayAndRecord
+            try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
+        }
+
         let callUUID = action.callUUID
 
         Log.debug("Answering for incomming call with id \(callUUID.uuidString)")
@@ -120,22 +153,35 @@ extension CallManager: CXProviderDelegate {
     public func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
         let callUUID = action.callUUID
 
-        Log.debug("Ending call with id \(callUUID.uuidString)")
-
-        guard
-            let call = self.findCall(with: callUUID)
-        else {
-            Log.error(CallManagerError.noActiveCall, message: "Can not end call with id \(callUUID.uuidString)")
-            action.fail()
+        guard callUUID != kFailedCallUUID else {
+            Log.debug("Ending failed call that was not initiated due to errors.")
+            action.fulfill()
             return
         }
 
+        Log.debug("Ending call with id \(callUUID.uuidString)")
+
+        guard let call = self.findCall(with: callUUID) else {
+            Log.error(CallManagerError.noActiveCall, message: "Can not end call with id \(callUUID.uuidString)")
+            action.fulfill()
+            return
+        }
+
+        self.restoreAudioSessionConfig()
         self.updateRemoteCall(call, withAction: .end)
 
         call.end()
 
         self.removeCall(call)
 
-        action.fulfill()
+        action.fulfill(withDateEnded: Date())
+    }
+
+    public func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
+        self.activateAudioSession(audioSession);
+    }
+
+    public func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {
+        self.deactivateAudioSession(audioSession);
     }
 }

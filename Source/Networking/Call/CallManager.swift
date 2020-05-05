@@ -14,6 +14,7 @@ public enum CallManagerError: String, Error {
     case signalingFailed
     case noActiveCall
     case callKitFailed
+    case configureFailed
 }
 
 public enum CallManagerContractError: String, Error {
@@ -36,6 +37,7 @@ public class CallManager: NSObject {
     // MARK: Helper properties
     let callProvider: CXProvider = CallManager.createCallKitProvider()
     let callController = CXCallController()
+    let audioSession = RTCAudioSession.sharedInstance()
     let messageSender: MessageSender = MessageSender()
 
     private let callProviderQueue = DispatchQueue(label: "CallManager.CallProviderQueue")
@@ -53,6 +55,7 @@ public class CallManager: NSObject {
         super.init()
 
         self.callProvider.setDelegate(self, queue: callProviderQueue)
+        
     }
 
     public func set(account: Storage.Account) {
@@ -67,6 +70,14 @@ public class CallManager: NSObject {
 
     // MARK: Calls Management
     public func startOutgoingCall(to callee: String) {
+        do {
+            try self.configureAudioSession()
+        } catch {
+            Log.error(error, message: "Failed to configure audio session.")
+            self.didFail(CallManagerError.configureFailed)
+            return
+        }
+
         self.requestSystemStartOutgoingCall(to: callee) { error in
             if let error = error {
                 self.delegate?.callManager(self, didFail: error)
@@ -74,38 +85,65 @@ public class CallManager: NSObject {
         }
     }
 
-    public func startIncommingCall(from callOffer: NetworkMessage.CallOffer) {
-        guard let account = self.account else {
-            self.didFail(CallManagerContractError.noAccount)
-            return
-        }
+    public func startIncomingCall(from callOffer: NetworkMessage.CallOffer, pushKitCompletion: @escaping () -> Void) {
 
         let callUUID = callOffer.callUUID
         let caller = callOffer.caller
 
         if self.findCall(with: callUUID) != nil {
-            Log.debug("Call with id \(callUUID.uuidString) was already added")
+            Log.debug("Call with id \(callUUID.uuidString) was already added.")
+            self.requestSystemDummyIncomingCall(pushKitCompletion: pushKitCompletion)
             return
         }
 
         self.requestSystemStartIncomingCall(from: caller, withId: callUUID) { error in
-            guard let error = error else {
-                let call = IncomingCall(from: callOffer, to: account.identity, signalingTo: self)
-
-                self.addCall(call)
-
-                call.start()
-
-                self.updateRemoteCall(call, withAction: .received)
-
-                return
+            defer {
+                pushKitCompletion()
             }
 
-            Log.error(error, message: "Incomming call was not started with id \(callUUID.uuidString)")
+            if let error = error {
+                Log.debug("Incomming call with id \(callUUID.uuidString) was not started.")
+                self.didFail(error)
+            }
+
+            self.callProviderQueue.async {
+                do {
+                    guard let account = self.account else {
+                        throw CallManagerContractError.noAccount
+                    }
+
+                    try self.configureAudioSession()
+
+                    let call = IncomingCall(from: callOffer, to: account.identity, signalingTo: self)
+
+                    call.start { error in
+                        guard let error = error else {
+                            self.addCall(call)
+                            self.updateRemoteCall(call, withAction: .received)
+                            return
+                        }
+
+                        self.requestSystemEndCall(uuid: callUUID) { _ in }
+                        self.didFail(error)
+                    }
+                }
+                catch {
+                    self.requestSystemEndCall(uuid: callUUID) { _ in }
+                    self.didFail(error)
+                }
+            }
         }
     }
 
+    public func startDummyIncomingCall(pushKitCompletion: @escaping () -> Void) {
+        self.requestSystemDummyIncomingCall(pushKitCompletion: pushKitCompletion)
+    }
+
     public func endCall(_ call: Call) {
+        if self.findCall(with: call.uuid) == nil {
+            return
+        }
+
         self.requestSystemEndCall(call) { error in
             if let error = error {
                 self.didFailCall(call, error)
@@ -178,8 +216,7 @@ public class CallManager: NSObject {
     }
 
     func findCall(with uuid: UUID) -> Call? {
-        let call = self.calls.first { $0.uuid == uuid }
-        return call
+        self.calls.first { $0.uuid == uuid }
     }
 
     // MARK: Events
@@ -199,5 +236,52 @@ public class CallManager: NSObject {
     func updateRemoteCall(_ call: Call, withAction action: CallUpdateAction) {
         let callUpdate = NetworkMessage.CallUpdate(callUUID: call.uuid, action: action)
         self.call(call, didCreateUpdate: callUpdate)
+    }
+
+    // MARK: Voice Configuration
+    func configureAudioSession() throws {
+        Log.debug("CallManager: will configure audio session.")
+        self.audioSession.lockForConfiguration()
+
+        try self.audioSession.setCategory(AVAudioSession.Category.playAndRecord.rawValue)
+        try self.audioSession.setMode(AVAudioSession.Mode.voiceChat.rawValue)
+        self.audioSession.useManualAudio = true
+        self.audioSession.isAudioEnabled = false
+
+        Log.debug("CallManager: did configure audio session.")
+        self.audioSession.unlockForConfiguration()
+    }
+
+    func restoreAudioSessionConfig() {
+        Log.debug("CallManager: will restore initial configuration.")
+        self.audioSession.lockForConfiguration()
+
+        do {
+            try self.audioSession.setCategory(AVAudioSession.Category.playAndRecord.rawValue)
+            try self.audioSession.setMode(AVAudioSession.Mode.voiceChat.rawValue)
+            self.audioSession.useManualAudio = false
+            self.audioSession.isAudioEnabled = false
+        }
+        catch {
+            Log.error(error, message: "Failed to restore audio session configuration.")
+        }
+
+        Log.debug("CallManager: did restore audio session.")
+        self.audioSession.unlockForConfiguration()
+    }
+
+    func activateAudioSession(_ session: AVAudioSession) {
+        Log.debug("CallManager: will activate audio session.")
+
+        self.audioSession.audioSessionDidActivate(session)
+        self.audioSession.isAudioEnabled = true
+
+        Log.debug("CallManager: did activate audio session.")
+    }
+
+    func deactivateAudioSession(_ session: AVAudioSession) {
+        Log.debug("CallManager: will deactivate audio session.")
+        self.audioSession.audioSessionDidDeactivate(session)
+        Log.debug("CallManager: did deactivate audio session.")
     }
 }
