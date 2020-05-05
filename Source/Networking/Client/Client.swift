@@ -20,6 +20,7 @@ public class Client {
         case invalidServerResponse
         case inputStreamFromDownloadedFailed
         case inconsistencyState
+        case selfCardNotFound
     }
 
     private let serviceErrorDomain: String = "ClientErrorDomain"

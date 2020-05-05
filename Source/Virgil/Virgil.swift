@@ -27,15 +27,22 @@ public class Virgil {
         self.client = client
         self.verifier = verifier
     }
-
-    public static func initialize(identity: String, client: Client) throws {
-        let tokenCallback = client.makeTokenCallback(identity: identity)
+    
+    public static func getDefaultE3KitParams(identity: String,
+                                             tokenCallback: @escaping EThree.RenewJwtCallback) throws -> EThreeParams {
         let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
         params.appGroup = Constants.appGroup
         params.enableRatchet = true
         params.enableRatchetPqc = true
         params.keyPairType = Constants.keyPairType
         params.storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.KeychainGroup)
+        
+        return params
+    }
+
+    public static func initialize(identity: String, client: Client) throws {
+        let tokenCallback = client.makeTokenCallback(identity: identity)
+        let params = try self.getDefaultE3KitParams(identity: identity, tokenCallback: tokenCallback)
 
         self.ethree = try EThree(params: params)
 

@@ -13,6 +13,7 @@ class MessageProcessor {
     enum Error: Swift.Error {
         case missingThumbnail
         case dataToStrFailed
+        case invalidMessage
     }
 
     static func processGlobalReadState(from author: String) throws {
@@ -180,7 +181,7 @@ class MessageProcessor {
 
     private static func decrypt(_ message: EncryptedMessage, from channel: Storage.Channel, ratchetChannel: RatchetChannel) throws -> Data {
         guard let ciphertext = message.ciphertext ?? message.additionalData?.prekeyMessage else {
-            throw NSError() // Invalid message
+            throw Error.invalidMessage
         }
         
         do {

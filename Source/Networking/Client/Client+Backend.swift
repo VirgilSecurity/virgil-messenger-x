@@ -14,10 +14,9 @@ extension Client {
         // FIXME: Client class should be independent from ethree existance
         let keyPair = try Virgil.ethree.localKeyStorage.retrieveKeyPair()
 
-        // Will be sync ever
-        let card = try Virgil.ethree.findUser(with: identity)
-            .startSync()
-            .get()
+        guard let card = Virgil.ethree.findCachedUser(with: identity) else {
+            throw Error.selfCardNotFound
+        }
 
         let stringToSign = "\(card.identifier).\(Int(Date().timeIntervalSince1970))"
 

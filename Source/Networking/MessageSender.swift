@@ -5,6 +5,10 @@ import VirgilCryptoFoundation
 import VirgilCryptoRatchet
 
 public class MessageSender {
+    public enum Error: Swift.Error {
+        case ratchetChannelNotFound
+    }
+    
     private let queue = DispatchQueue(label: "MessageSender")
 
     private func send(message: NetworkMessage,
@@ -19,7 +23,7 @@ public class MessageSender {
         let card = try channel.getCard()
         
         guard let ratchetChannel = try Virgil.ethree.getRatchetChannel(with: card) else {
-            throw NSError() // FIXME
+            throw Error.ratchetChannelNotFound
         }
         
         var additionalData = AdditionalData()
@@ -27,7 +31,7 @@ public class MessageSender {
         let ratchetCipherText = try ratchetChannel.encrypt(data: exported)
         var ciphertext: Data?
         
-        // FIXME: Optimize.
+        // TODO: Optimize. E3Kit doesn't return message, only its serialized version
         let message = try! RatchetMessage.deserialize(input: ratchetCipherText)
         if message.getType() == .prekey {
             // Send empty push message
@@ -51,7 +55,7 @@ public class MessageSender {
                      date: Date,
                      channel: Storage.Channel,
                      messageId: String,
-                     completion: @escaping (Error?) -> Void) {
+                     completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.text(text)
@@ -74,7 +78,7 @@ public class MessageSender {
                      date: Date,
                      channel: Storage.Channel,
                      messageId: String,
-                     completion: @escaping (Error?) -> Void) {
+                     completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.callOffer(callOffer)
@@ -99,7 +103,7 @@ public class MessageSender {
                      date: Date,
                      channel: Storage.Channel,
                      messageId: String,
-                     completion: @escaping (Error?) -> Void) {
+                     completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.callAnswer(callAnswer)
@@ -118,7 +122,7 @@ public class MessageSender {
                      date: Date,
                      channel: Storage.Channel,
                      messageId: String,
-                     completion: @escaping (Error?) -> Void) {
+                     completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.callUpdate(callUpdate)
@@ -137,7 +141,7 @@ public class MessageSender {
                      date: Date,
                      channel: Storage.Channel,
                      messageId: String,
-                     completion: @escaping (Error?) -> Void) {
+                     completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.iceCandidate(iceCandidate)
@@ -157,7 +161,7 @@ public class MessageSender {
                               channel: Storage.Channel,
                               messageId: String,
                               loadDelegate: LoadDelegate,
-                              completion: @escaping (Error?) -> Void) {
+                              completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 guard
@@ -199,7 +203,7 @@ public class MessageSender {
                               channel: Storage.Channel,
                               messageId: String,
                               loadDelegate: LoadDelegate,
-                              completion: @escaping (Error?) -> Void) {
+                              completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 // TODO: optimize. Do not fetch data to memory, use streams

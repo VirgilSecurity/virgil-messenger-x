@@ -15,6 +15,7 @@ enum NotificationServiceError: Int, LocalizedError {
     case missingIdentityInDefaults = 1
     case parsingNotificationFailed = 2
     case dataToStrFailed = 3
+    case ratchetChanngelNotFound = 4
 }
 
 class NotificationService: UNNotificationServiceExtension {
@@ -44,6 +45,8 @@ class NotificationService: UNNotificationServiceExtension {
             // FIXME: add Logs
             return
         }
+        
+        bestAttemptContent.body = "New Message"
 
         self.bestAttemptContent = bestAttemptContent
 
@@ -110,20 +113,12 @@ class NotificationService: UNNotificationServiceExtension {
             return nil
         }
 
-        // Initializing KeyStorage with root application name. We need it to fetch shared key from root app
-        let storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.KeychainGroup)
-
         let tokenCallback: EThree.RenewJwtCallback = { callback in
-            callback(nil, NSError() /* FIXME */)
+            // Should not happen
+            fatalError("Callback called from notification")
         }
         
-        let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
-        // FIXME: Remove copy&paste
-        // FIXME: No need to schedule E3Kit cache update or key rotation
-        params.storageParams = storageParams
-        params.appGroup = Constants.appGroup
-        params.enableRatchet = true
-        params.enableRatchetPqc = true
+        let params = try Virgil.getDefaultE3KitParams(identity: identity, tokenCallback: tokenCallback)
         params.offlineInit = true
         let ethree = try EThree(params: params)
 
@@ -132,8 +127,7 @@ class NotificationService: UNNotificationServiceExtension {
         }
         
         guard let ratchetChannel = try ethree.getRatchetChannel(with: card) else {
-            // FIXME
-            throw NSError()
+            throw NotificationServiceError.ratchetChanngelNotFound
         }
         
         return try ratchetChannel.decrypt(data: ciphertext)
@@ -145,7 +139,6 @@ class NotificationService: UNNotificationServiceExtension {
         switch version {
         case .v1:
             guard let decryptedData = decryptedData, let string = String(data: decryptedData, encoding: .utf8) else {
-                // FIXME
                 throw NotificationServiceError.dataToStrFailed
             }
 
