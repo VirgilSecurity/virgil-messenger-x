@@ -68,6 +68,7 @@ public class Call: NSObject {
     // MARK: Connection properties
     var peerConnection: RTCPeerConnection?
     let audioSession = RTCAudioSession.sharedInstance()
+    private(set) var connectedAt: Date?
 
     // MARK: Init / Reset
     init(withId uuid: UUID, myName: String, otherName: String, signalingTo signalingDelegate: CallSignalingDelegate? = nil) {
@@ -126,6 +127,10 @@ public class Call: NSObject {
     }
 
     // MARK: Events
+    func didConnect() {
+        self.connectedAt = Date()
+    }
+
     func didCreateOffer(_ callOffer: NetworkMessage.CallOffer) {
         self.signalingDelegate?.call(self, didCreateOffer: callOffer)
     }

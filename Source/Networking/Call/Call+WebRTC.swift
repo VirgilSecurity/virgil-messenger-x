@@ -130,7 +130,11 @@ extension Call: RTCPeerConnectionDelegate {
         case .checking:
             self.connectionStatus = .negotiating
 
-        case .connected, .completed:
+        case .connected:
+            self.didConnect()
+            self.connectionStatus = .connected
+
+        case .completed:
             self.connectionStatus = .connected
 
         case .disconnected:

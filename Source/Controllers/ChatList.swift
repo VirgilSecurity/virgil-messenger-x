@@ -316,12 +316,18 @@ extension ChatListViewController {
 
 extension ChatListViewController: CallManagerDelegate {
     func callManager(_ callManager: CallManager, didAddCall call: Call) {
-        if self.callViewController != nil {
-            Log.debug("Group calls are not supported yet.")
-            return
-        }
-
         DispatchQueue.main.async {
+            // Use existing.
+            if let callViewController = self.callViewController {
+                callViewController.addCall(call: call)
+
+                if callViewController.viewIfLoaded?.window == nil {
+                    self.present(callViewController, animated: true, completion: nil)
+                }
+                return
+            }
+
+            // Create new.
             let storyboard = UIStoryboard(name: "Call", bundle: nil)
             let viewController = storyboard.instantiateViewController(withIdentifier: "Call")
 
@@ -332,16 +338,16 @@ extension ChatListViewController: CallManagerDelegate {
                 fatalError("ViewController with identifier 'Call' is not of type CallViewController")
             }
 
+            callViewController.addCall(call: call)
+
             self.callViewController = callViewController
-            self.callViewController?.call = call
 
             self.present(callViewController, animated: true, completion: nil)
         }
     }
 
     func callManager(_ callManager: CallManager, didRemoveCall call: Call) {
-        self.callViewController?.close()
-        self.callViewController = nil
+        self.callViewController?.removeCall(call: call)
     }
 
     func callManager(_ callManager: CallManager, didFail error: Error) {
