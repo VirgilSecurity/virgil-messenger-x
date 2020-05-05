@@ -41,12 +41,9 @@ class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
         }
 
         do {
-            // FIXME: Minimize payload
             guard
-                let aps = payload.dictionaryPayload["aps"] as? NSDictionary,
-                let alert = aps["alert"] as? NSDictionary,
-                let caller = alert["title"] as? String,
-                let body = alert["body"] as? String
+                let caller = payload.dictionaryPayload["from"] as? String,
+                let body = payload.dictionaryPayload["body"] as? String
             else {
                 throw Error.parsingFailed
             }
