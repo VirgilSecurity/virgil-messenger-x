@@ -135,7 +135,9 @@ extension CallViewController: CallDelegate {
 
     func call(_ call: Call, didEnd error: Error?) {
         if let error = error {
-            self.alert(error)
+            DispatchQueue.main.async {
+                self.alert(error)
+            }
         }
     }
 
