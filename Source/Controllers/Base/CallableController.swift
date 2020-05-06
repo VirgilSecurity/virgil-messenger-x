@@ -29,6 +29,8 @@ class CallableController: ViewController {
                 fatalError("ViewController with identifier 'Call' is not of type CallViewController")
             }
 
+            self.callViewController = callViewController
+
             result = callViewController
         }
 
@@ -40,6 +42,7 @@ class CallableController: ViewController {
 
         CallManager.shared.delegate = self
 
+        // TODO: Fix check on multi calls
         if let call = CallManager.shared.calls.first {
             self.setupCallViewController(with: call)
         }
