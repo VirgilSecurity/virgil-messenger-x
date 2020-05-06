@@ -9,11 +9,9 @@
 import UIKit
 import PKHUD
 
-class ChatListViewController: ViewController {
+class ChatListViewController: CallableController {
     @IBOutlet weak var noChatsView: UIView!
     @IBOutlet weak var tableView: UITableView!
-
-    weak var callViewController: CallViewController?
 
     private let indicator = UIActivityIndicatorView()
     private let indicatorLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
@@ -29,9 +27,6 @@ class ChatListViewController: ViewController {
         self.updateTitleView()
         self.setupTableView()
         self.setupObservers()
-        self.setupCallViewController()
-
-        CallManager.shared.delegate = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -79,7 +74,10 @@ class ChatListViewController: ViewController {
         Notifications.observe(for: .connectionStateChanged, block: connectionStateChanged)
         Notifications.observe(for: [.chatListUpdated], block: reloadTableView)
     }
+}
 
+// MARK: - UI
+extension ChatListViewController {
     private func setupTableView() {
         let chatListCellNib = UINib(nibName: ChatListCell.name, bundle: Bundle.main)
         self.tableView.register(chatListCellNib, forCellReuseIdentifier: ChatListCell.name)
@@ -133,7 +131,10 @@ class ChatListViewController: ViewController {
             self.tableView.reloadData()
         }
     }
+}
 
+// MARK: - Actions
+extension ChatListViewController {
     @IBAction func didTapAdd(_ sender: Any) {
         let alert = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
 
@@ -179,14 +180,32 @@ class ChatListViewController: ViewController {
 
         self.present(alert, animated: true)
     }
+}
+
+// MARK: - Navigation
+extension ChatListViewController {
+    func moveToChannel(_ channel: Storage.Channel) {
+        Storage.shared.setCurrent(channel: channel)
+        self.performSegue(withIdentifier: "goToChat", sender: self)
+    }
 
     private func goToLogin() {
         DispatchQueue.main.async {
             self.switchNavigationStack(to: .authentication)
         }
     }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let chatController = segue.destination as? ChatViewController,
+            let channel = Storage.shared.currentChannel {
+                chatController.channel = channel
+        }
+
+        super.prepare(for: segue, sender: sender)
+    }
 }
 
+// MARK: - Table View
 extension ChatListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
@@ -217,75 +236,5 @@ extension ChatListViewController: CellTapDelegate {
         }
 
         self.moveToChannel(selectedChannel)
-    }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let chatController = segue.destination as? ChatViewController,
-            let channel = Storage.shared.currentChannel {
-                chatController.channel = channel
-        }
-
-        super.prepare(for: segue, sender: sender)
-    }
-}
-
-extension ChatListViewController {
-    func moveToChannel(_ channel: Storage.Channel) {
-        Storage.shared.setCurrent(channel: channel)
-        self.performSegue(withIdentifier: "goToChat", sender: self)
-    }
-}
-
-extension ChatListViewController: CallManagerDelegate {
-    private func setupCallViewController(with call: Call? = nil) {
-        if let call = call ?? CallManager.shared.calls.first(where: { $0.state == .accepted }) {
-            DispatchQueue.main.async {
-                if let callViewController = self.callViewController {
-                    // Use existing.
-
-                    callViewController.addCall(call: call)
-
-                    if callViewController.viewIfLoaded?.window == nil {
-                        self.present(callViewController, animated: true, completion: nil)
-                    }
-                }
-                else {
-                    // Create new.
-
-                    let storyboard = UIStoryboard(name: "Call", bundle: nil)
-                    let viewController = storyboard.instantiateViewController(withIdentifier: "Call")
-
-                    viewController.modalPresentationStyle = .fullScreen
-                    viewController.modalTransitionStyle = .crossDissolve
-
-                    guard let callViewController = viewController as? CallViewController else {
-                        fatalError("ViewController with identifier 'Call' is not of type CallViewController")
-                    }
-
-                    callViewController.addCall(call: call)
-
-                    self.callViewController = callViewController
-
-                    self.present(callViewController, animated: true, completion: nil)
-                }
-            }
-        }
-    }
-
-    func callManager(_ callManager: CallManager, didAddCall call: Call) {
-        self.setupCallViewController(with: call)
-    }
-
-    func callManager(_ callManager: CallManager, didRemoveCall call: Call) {
-        self.callViewController?.removeCall(call: call)
-    }
-
-    func callManager(_ callManager: CallManager, didFail error: Error) {
-        DispatchQueue.main.async {
-            self.alert(error)
-        }
-    }
-
-    func callManager(_ callManager: CallManager, didFailCall call: Call, error: Error) {
     }
 }
