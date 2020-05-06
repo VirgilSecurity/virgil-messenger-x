@@ -72,90 +72,11 @@ class ChatListViewController: ViewController {
             }
         }
 
-        // TODO: Move to separate class
-        let callOfferReceived: Notifications.Block = { [weak self] notification in
-            if self == nil {
-                return
-            }
-
-            let callOffer: NetworkMessage.CallOffer
-            do {
-                callOffer = try Notifications.parse(notification, for: .message)
-            }
-            catch {
-                Log.error(error, message: "Invalid call offer notification")
-                return
-            }
-
-            let callDelay = -callOffer.date.timeIntervalSinceNow
-
-            if callDelay < 10.0 {
-                CallManager.shared.startIncomingCall(from: callOffer) {}
-            } else {
-                Log.debug("Detected stale call offer with id: \(callOffer.callUUID)")
-            }
-        }
-
-        let iceCandidateReceived: Notifications.Block = { [weak self] notification in
-            if self == nil {
-                return
-            }
-
-            let iceCandidate: NetworkMessage.IceCandidate
-            do {
-                iceCandidate = try Notifications.parse(notification, for: .message)
-            }
-            catch {
-                Log.error(error, message: "Invalid ice cadidate notification")
-                return
-            }
-
-            CallManager.shared.processIceCandidate(iceCandidate)
-        }
-
-        let callAnswerReceived: Notifications.Block = { [weak self] notification in
-            if self == nil {
-                return
-            }
-
-            let callAnswer: NetworkMessage.CallAnswer
-            do {
-                callAnswer = try Notifications.parse(notification, for: .message)
-            }
-            catch {
-                Log.error(error, message: "Invalid call accepted answer notification")
-                return
-            }
-
-            CallManager.shared.processCallAnswer(callAnswer)
-        }
-
-        let callUpdateReceived: Notifications.Block = { [weak self] notification in
-            if self == nil {
-                return
-            }
-
-            let callUpdate: NetworkMessage.CallUpdate
-            do {
-                callUpdate = try Notifications.parse(notification, for: .message)
-            }
-            catch {
-                Log.error(error, message: "Invalid call update notification")
-                return
-            }
-
-            CallManager.shared.processCallUpdate(callUpdate)
-        }
-
         CallManager.shared.delegate = self
 
         Notifications.observe(for: .errored, block: errored)
         Notifications.observe(for: .connectionStateChanged, block: connectionStateChanged)
         Notifications.observe(for: [.chatListUpdated], block: reloadTableView)
-        Notifications.observe(for: .callOfferReceived, block: callOfferReceived)
-        Notifications.observe(for: .iceCandidateReceived, block: iceCandidateReceived)
-        Notifications.observe(for: .callAnswerReceived, block: callAnswerReceived)
-        Notifications.observe(for: .callUpdateReceived, block: callUpdateReceived)
     }
 
     private func setupTableView() {

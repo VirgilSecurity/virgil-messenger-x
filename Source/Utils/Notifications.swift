@@ -28,10 +28,6 @@ public class Notifications {
         case errored = "Notifications.Errored"
         case messageAddedToCurrentChannel = "Notifications.MessageAddedToCurrentChannel"
         case messageStatusUpdated = "Notifications.MessageStatusUpdated"
-        case callOfferReceived = "Notifications.IncomingCall"
-        case callAnswerReceived = "Notifications.CallAnswerReceived"
-        case callUpdateReceived = "Notifications.CallUpdateReceived"
-        case iceCandidateReceived = "Notifications.IceCandidateReceived"
     }
 
     public enum NotificationKeys: String {
@@ -89,35 +85,6 @@ extension Notifications {
                                        NotificationKeys.messageIds.rawValue: messageIds]
 
         self.center.post(name: notification, object: self, userInfo: userInfo)
-    }
-
-    public static func post(message: NetworkMessage) {
-        switch message {
-        case .text, .photo, .voice:
-            // Is handled via post(message)
-            // FIXME: Merge message processing aproach
-            break
-
-        case .callOffer(let callOffer):
-            let notification = self.notification(Notifications.callOfferReceived)
-            let userInfo = [NotificationKeys.message.rawValue: callOffer]
-            self.center.post(name: notification, object: self, userInfo: userInfo)
-
-        case .callAnswer(let callAnswer):
-            let notification = self.notification(Notifications.callAnswerReceived)
-            let userInfo = [NotificationKeys.message.rawValue: callAnswer]
-            self.center.post(name: notification, object: self, userInfo: userInfo)
-
-        case .callUpdate(let callUpdate):
-            let notification = self.notification(Notifications.callUpdateReceived)
-            let userInfo = [NotificationKeys.message.rawValue: callUpdate]
-            self.center.post(name: notification, object: self, userInfo: userInfo)
-
-        case .iceCandidate(let iceCandidate):
-            let notification = self.notification(Notifications.iceCandidateReceived)
-            let userInfo = [NotificationKeys.message.rawValue: iceCandidate]
-            self.center.post(name: notification, object: self, userInfo: userInfo)
-        }
     }
 
     public static func post(_ notification: EmptyNotification) {
