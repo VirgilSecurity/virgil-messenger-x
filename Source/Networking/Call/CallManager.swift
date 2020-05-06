@@ -48,7 +48,7 @@ public class CallManager: NSObject {
     // MARK: Calls properties
     private(set) var account: Storage.Account?
 
-    private var calls = Set<Call>()
+    private(set) var calls = Set<Call>()
 
     // MARK: - Init / Reset
     public override init() {

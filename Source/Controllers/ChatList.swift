@@ -29,6 +29,9 @@ class ChatListViewController: ViewController {
         self.updateTitleView()
         self.setupTableView()
         self.setupObservers()
+        self.setupCallViewController()
+
+        CallManager.shared.delegate = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -71,8 +74,6 @@ class ChatListViewController: ViewController {
                 Log.error(error, message: "Parsing Error notification failed")
             }
         }
-
-        CallManager.shared.delegate = self
 
         Notifications.observe(for: .errored, block: errored)
         Notifications.observe(for: .connectionStateChanged, block: connectionStateChanged)
@@ -236,35 +237,43 @@ extension ChatListViewController {
 }
 
 extension ChatListViewController: CallManagerDelegate {
-    func callManager(_ callManager: CallManager, didAddCall call: Call) {
-        DispatchQueue.main.async {
-            // Use existing.
-            if let callViewController = self.callViewController {
-                callViewController.addCall(call: call)
+    private func setupCallViewController(with call: Call? = nil) {
+        if let call = call ?? CallManager.shared.calls.first(where: { $0.state == .accepted }) {
+            DispatchQueue.main.async {
+                if let callViewController = self.callViewController {
+                    // Use existing.
 
-                if callViewController.viewIfLoaded?.window == nil {
+                    callViewController.addCall(call: call)
+
+                    if callViewController.viewIfLoaded?.window == nil {
+                        self.present(callViewController, animated: true, completion: nil)
+                    }
+                }
+                else {
+                    // Create new.
+
+                    let storyboard = UIStoryboard(name: "Call", bundle: nil)
+                    let viewController = storyboard.instantiateViewController(withIdentifier: "Call")
+
+                    viewController.modalPresentationStyle = .fullScreen
+                    viewController.modalTransitionStyle = .crossDissolve
+
+                    guard let callViewController = viewController as? CallViewController else {
+                        fatalError("ViewController with identifier 'Call' is not of type CallViewController")
+                    }
+
+                    callViewController.addCall(call: call)
+
+                    self.callViewController = callViewController
+
                     self.present(callViewController, animated: true, completion: nil)
                 }
-                return
             }
-
-            // Create new.
-            let storyboard = UIStoryboard(name: "Call", bundle: nil)
-            let viewController = storyboard.instantiateViewController(withIdentifier: "Call")
-
-            viewController.modalPresentationStyle = .fullScreen
-            viewController.modalTransitionStyle = .crossDissolve
-
-            guard let callViewController = viewController as? CallViewController else {
-                fatalError("ViewController with identifier 'Call' is not of type CallViewController")
-            }
-
-            callViewController.addCall(call: call)
-
-            self.callViewController = callViewController
-
-            self.present(callViewController, animated: true, completion: nil)
         }
+    }
+
+    func callManager(_ callManager: CallManager, didAddCall call: Call) {
+        self.setupCallViewController(with: call)
     }
 
     func callManager(_ callManager: CallManager, didRemoveCall call: Call) {
