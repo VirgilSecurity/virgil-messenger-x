@@ -205,6 +205,10 @@ public class CallManager: NSObject {
         }
     }
 
+    func hold(on isOnHold: Bool) {
+        self.calls.forEach { $0.hold(on: isOnHold) }
+    }
+
     func addCall(_ call: Call) {
         self.calls.insert(call)
         self.delegate?.callManager(self, didAddCall: call)

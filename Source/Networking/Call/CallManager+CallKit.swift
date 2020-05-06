@@ -177,11 +177,19 @@ extension CallManager: CXProviderDelegate {
         action.fulfill(withDateEnded: Date())
     }
 
+    public func provider(_ provider: CXProvider, perform action: CXSetHeldCallAction) {
+        Log.debug("CallManager+CallKit: did set held call to '\(action.isOnHold)'.")
+        self.hold(on: action.isOnHold)
+        action.fulfill()
+    }
+
     public func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
+        Log.debug("CallManager+CallKit: did activate audio session.")
         self.activateAudioSession(audioSession);
     }
 
     public func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {
+        Log.debug("CallManager+CallKit: did deactivate audio session.")
         self.deactivateAudioSession(audioSession);
     }
 }
