@@ -15,14 +15,14 @@ fileprivate let kFailedCallUUID = UUID(uuid: uuid_t(0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 // MARK: - Configuration
 extension CallManager {
     static var providerConfiguration: CXProviderConfiguration = {
-      let config = CXProviderConfiguration(localizedName: "Virgil")
-      config.supportsVideo = false
-      config.supportedHandleTypes = [.generic]
-      config.maximumCallsPerCallGroup = 1
-      config.maximumCallGroups = 1
-      config.includesCallsInRecents = false
+        let config = CXProviderConfiguration(localizedName: "Virgil")
+        config.supportsVideo = false
+        config.supportedHandleTypes = [.generic]
+        config.maximumCallsPerCallGroup = 1
+        config.maximumCallGroups = 1
+        config.includesCallsInRecents = false
 
-      return config
+        return config
     }()
 
     static func createCallKitProvider() -> CXProvider {
