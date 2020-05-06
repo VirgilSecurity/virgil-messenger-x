@@ -76,7 +76,7 @@ extension CallManager {
     public func requestSystemDummyIncomingCall(pushKitCompletion: @escaping () -> Void) {
         self.requestSystemStartIncomingCall(from: "Failed Call...", withId: kFailedCallUUID) { error in
 
-            if error == nil {
+            if error != nil {
                 pushKitCompletion()
                 return
             }
