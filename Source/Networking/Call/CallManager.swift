@@ -48,7 +48,7 @@ public class CallManager: NSObject {
     // MARK: Calls properties
     private(set) var account: Storage.Account?
 
-    private var calls = Set<Call>()
+    private(set) var calls = Set<Call>()
 
     // MARK: - Init / Reset
     public override init() {
@@ -203,6 +203,10 @@ public class CallManager: NSObject {
                 outgoingCall.remoteDidAcceptCall()
             }
         }
+    }
+
+    func hold(on isOnHold: Bool) {
+        self.calls.forEach { $0.hold(on: isOnHold) }
     }
 
     func addCall(_ call: Call) {
