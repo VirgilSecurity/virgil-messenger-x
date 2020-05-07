@@ -16,10 +16,8 @@ enum Constants {
         case prod = ""
     }
 
-    static let KeychainGroup: String = "com.virgil.VirgilMessenger\(Constants.envPrefix.rawValue.replacingOccurrences(of: "-", with: "."))"
-    static let alertTopic: String = KeychainGroup
-    static let appGroup: String = "group.virgil.notification\(Constants.envPrefix.rawValue)"
     static let pushesNode: String = "node"
+    static let alertTopic: String = KeychainGroup
 
 #if DEBUG
     static let pushMode: String = "dev"
@@ -30,13 +28,10 @@ enum Constants {
 
 enum URLConstants {
     // Ejabberd
-    static let ejabberdHost: String = "xmpp\(Constants.envPrefix.rawValue).virgilsecurity.com"
     static let ejabberdHostPort: UInt16 = 5222
     static let ejabberdPushHost: String = "push-notifications-proxy"
 
     // Backend
-    static let serviceBaseURL: String = "https://messenger\(Constants.envPrefix.rawValue).virgilsecurity.com"
-
     static let virgilJwtEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/virgil-jwt/")!
     static let ejabberdJwtEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/ejabberd-jwt/")!
     static let signUpEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/signup/")!

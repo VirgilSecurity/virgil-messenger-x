@@ -10,8 +10,6 @@ import UIKit
 import PKHUD
 
 class StartViewController: ViewController {
-    static let name = "Start"
-
     private let userAuthorizer: UserAuthorizer = UserAuthorizer()
 
     override func viewDidAppear(_ animated: Bool) {
