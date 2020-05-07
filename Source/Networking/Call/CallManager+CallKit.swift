@@ -15,14 +15,14 @@ fileprivate let kFailedCallUUID = UUID(uuid: uuid_t(0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 // MARK: - Configuration
 extension CallManager {
     static var providerConfiguration: CXProviderConfiguration = {
-      let config = CXProviderConfiguration(localizedName: "Virgil")
-      config.supportsVideo = false
-      config.supportedHandleTypes = [.generic]
-      config.maximumCallsPerCallGroup = 1
-      config.maximumCallGroups = 1
-      config.includesCallsInRecents = false
+        let config = CXProviderConfiguration(localizedName: "Virgil")
+        config.supportsVideo = false
+        config.supportedHandleTypes = [.generic]
+        config.maximumCallsPerCallGroup = 1
+        config.maximumCallGroups = 1
+        config.includesCallsInRecents = false
 
-      return config
+        return config
     }()
 
     static func createCallKitProvider() -> CXProvider {
@@ -76,7 +76,7 @@ extension CallManager {
     public func requestSystemDummyIncomingCall(pushKitCompletion: @escaping () -> Void) {
         self.requestSystemStartIncomingCall(from: "Failed Call...", withId: kFailedCallUUID) { error in
 
-            if error == nil {
+            if error != nil {
                 pushKitCompletion()
                 return
             }
@@ -177,11 +177,19 @@ extension CallManager: CXProviderDelegate {
         action.fulfill(withDateEnded: Date())
     }
 
+    public func provider(_ provider: CXProvider, perform action: CXSetHeldCallAction) {
+        Log.debug("CallManager+CallKit: did set held call to '\(action.isOnHold)'.")
+        self.hold(on: action.isOnHold)
+        action.fulfill()
+    }
+
     public func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
+        Log.debug("CallManager+CallKit: did activate audio session.")
         self.activateAudioSession(audioSession);
     }
 
     public func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {
+        Log.debug("CallManager+CallKit: did deactivate audio session.")
         self.deactivateAudioSession(audioSession);
     }
 }

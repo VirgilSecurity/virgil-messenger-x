@@ -126,6 +126,10 @@ public class Call: NSObject {
         Log.debug("WebRTC: did add remote candidate:\n    sdp = \(candidate.sdp)")
     }
 
+    func hold(on isOnHold: Bool) {
+        self.peerConnection?.transceivers.forEach { $0.sender.track?.isEnabled = !isOnHold}
+    }
+
     // MARK: Events
     func didConnect() {
         self.connectedAt = Date()

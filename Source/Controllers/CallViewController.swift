@@ -9,22 +9,21 @@
 import UIKit
 
 class CallViewController: ViewController {
-
-    // MARK: UI
+    // MARK: - UI
     @IBOutlet weak var calleeLabel: UILabel!
     @IBOutlet weak var callStatusLabel: UILabel!
     @IBOutlet weak var connectionStatusLabel: UILabel!
     @IBOutlet weak var avatarLetterLabel: UILabel!
     @IBOutlet weak var avatarView: GradientView!
 
-    // MARK: Queues
+    // MARK: - Queues
     let callStatusQueue = DispatchQueue.init(label: "CallTimeUpdateQueue")
 
-    // MARK: State
+    // MARK: - State
     private var calls: [Call] = []
     private var callDurationTimer: Timer?
 
-    // MARK: UI handlers
+    // MARK: - UI handlers
     override func viewDidLoad() {
         super.viewDidLoad()
 
