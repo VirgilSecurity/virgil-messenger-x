@@ -130,7 +130,7 @@ class NotificationService: UNNotificationServiceExtension {
             throw NotificationServiceError.ratchetChannelNotFound
         }
         
-        return try ratchetChannel.decrypt(data: ciphertext)
+        return try ratchetChannel.decrypt(data: ciphertext, updateSession: false)
     }
 
     private func process(notificationInfo: NotificationInfo, decryptedData: Data?, version: EncryptedMessageVersion) throws -> String {
