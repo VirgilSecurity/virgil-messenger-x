@@ -188,6 +188,9 @@
 		97698D5A24507DEC005C087D /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
 		97698D5B24507DED005C087D /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
 		9775CFD8242A2D3D009F1693 /* Virgil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167C68441FADDB7800E6E448 /* Virgil.swift */; };
+		9791B630246308CD00910D38 /* CallableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9791B62F246308CD00910D38 /* CallableController.swift */; };
+		9791B631246308CD00910D38 /* CallableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9791B62F246308CD00910D38 /* CallableController.swift */; };
+		9791B632246308CD00910D38 /* CallableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9791B62F246308CD00910D38 /* CallableController.swift */; };
 		97AF4D83241AEE2000ED9BD7 /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
 		97AF4D85241AEE8800ED9BD7 /* Client+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D84241AEE8800ED9BD7 /* Client+Files.swift */; };
 		97AF4D86241AEED000ED9BD7 /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
@@ -860,6 +863,7 @@
 		976E360B2432992F002D1CF2 /* VirgilMessenger-dev.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "VirgilMessenger-dev.entitlements"; sourceTree = "<group>"; };
 		976E362E24329A02002D1CF2 /* Notification Extension-dev.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Notification Extension-dev.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		976E363024329A4D002D1CF2 /* Notification Extension-dev.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "Notification Extension-dev.entitlements"; sourceTree = "<group>"; };
+		9791B62F246308CD00910D38 /* CallableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallableController.swift; sourceTree = "<group>"; };
 		97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Client+Backend.swift"; sourceTree = "<group>"; };
 		97AF4D84241AEE8800ED9BD7 /* Client+Files.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Client+Files.swift"; sourceTree = "<group>"; };
 		97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = "Mapping-v1-to-v2.xcmappingmodel"; sourceTree = "<group>"; };
@@ -1274,6 +1278,7 @@
 		16D8B0E7223A6E7500D7FA67 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				9791B633246309EF00910D38 /* Base */,
 				16D8B0F1223AACBB00D7FA67 /* Cells */,
 				16B69E061FA9D2CA00FE8A8D /* Authentication */,
 				16FC67992260A3CF0044CC70 /* NewMessage */,
@@ -1286,7 +1291,6 @@
 				16CA51121FC5DA3B0042AF9D /* Settings.swift */,
 				16F8F3B62264875F00143FB7 /* UsersList.swift */,
 				F478ABD7243FA95300802051 /* CallViewController.swift */,
-				429228B71F96261000DCECDF /* ViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1594,6 +1598,15 @@
 				976E363024329A4D002D1CF2 /* Notification Extension-dev.entitlements */,
 			);
 			path = Entitlements;
+			sourceTree = "<group>";
+		};
+		9791B633246309EF00910D38 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				429228B71F96261000DCECDF /* ViewController.swift */,
+				9791B62F246308CD00910D38 /* CallableController.swift */,
+			);
+			path = Base;
 			sourceTree = "<group>";
 		};
 		97AF4D81241AEE0C00ED9BD7 /* Client */ = {
@@ -2167,6 +2180,7 @@
 				16F30D4F1FDAE91D006C3DEB /* SignInCollectionCell.swift in Sources */,
 				16CA51061FC468370042AF9D /* Constants.swift in Sources */,
 				423BDA7C1F97601700C3EE9B /* ChatList.swift in Sources */,
+				9791B630246308CD00910D38 /* CallableController.swift in Sources */,
 				167C68451FADDB7800E6E448 /* Virgil.swift in Sources */,
 				16D8B0EA223A6FD200D7FA67 /* UserAuthorizer.swift in Sources */,
 				F4814554244F38C100735F4B /* EjabberdOperation.swift in Sources */,
@@ -2294,6 +2308,7 @@
 				F4241D792433854600E839C3 /* NetworkMessage+WebRTC.swift in Sources */,
 				F4241DDE2433860600E839C3 /* Ejabberd.swift in Sources */,
 				F4241DD8243385FA00E839C3 /* VirgilAuthorizer.swift in Sources */,
+				9791B631246308CD00910D38 /* CallableController.swift in Sources */,
 				F4241E49243386BB00E839C3 /* UIColor+Constants.swift in Sources */,
 				F4241D4824337E3C00E839C3 /* EnvConstantStg.swift in Sources */,
 				97698D5324507A4C005C087D /* Storage+Accounts.swift in Sources */,
@@ -2445,6 +2460,7 @@
 				F4241D782433854500E839C3 /* NetworkMessage+WebRTC.swift in Sources */,
 				F4241DE02433860700E839C3 /* Ejabberd.swift in Sources */,
 				F4241DD9243385FA00E839C3 /* VirgilAuthorizer.swift in Sources */,
+				9791B632246308CD00910D38 /* CallableController.swift in Sources */,
 				F4241E52243386BB00E839C3 /* UIColor+Constants.swift in Sources */,
 				F4241D4924337E3F00E839C3 /* EnvConstantDev.swift in Sources */,
 				97698D5424507A4D005C087D /* Storage+Accounts.swift in Sources */,

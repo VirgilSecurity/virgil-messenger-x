@@ -137,15 +137,28 @@ class MessageProcessor {
                 return
             }
 
-            Notifications.post(message: message)
+            let callDelay = -callOffer.date.timeIntervalSinceNow
+
+            if callDelay < 10.0 {
+                CallManager.shared.startIncomingCall(from: callOffer) {}
+            }
+            else {
+                Log.debug("Detected stale call offer with id: \(callOffer.callUUID)")
+            }
+
 
             storageMessage = try Storage.shared.createCallMessage(with: callOffer,
                                                                   unread: false,
                                                                   baseParams: baseParams)
 
-        case .callAnswer, .callUpdate, .iceCandidate:
-            //  TODO: Unify the handling approach for '.text' as well.
-            Notifications.post(message: message)
+        case .callAnswer(let callAnswer):
+            CallManager.shared.processCallAnswer(callAnswer)
+
+        case .callUpdate(let callUpdate):
+            CallManager.shared.processCallUpdate(callUpdate)
+
+        case .iceCandidate(let iceCandidate):
+            CallManager.shared.processIceCandidate(iceCandidate)
         }
 
         guard let channel = Storage.shared.currentChannel,
