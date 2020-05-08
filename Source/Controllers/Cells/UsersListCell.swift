@@ -40,7 +40,7 @@ class UsersListCell: UITableViewCell {
         self.usernameLabel.text = name
         self.adminLabel.isHidden = name != admin
 
-        if let channel = CoreData.shared.getSingleChannel(with: name) {
+        if let channel = Storage.shared.getSingleChannel(with: name) {
             self.letterLabel.text = channel.letter
             self.avatarView.draw(with: channel.colors)
         }

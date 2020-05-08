@@ -9,7 +9,7 @@
 import UIKit
 import PKHUD
 
-class ChatListViewController: ViewController {
+class ChatListViewController: CallableController {
     @IBOutlet weak var noChatsView: UIView!
     @IBOutlet weak var tableView: UITableView!
 
@@ -18,7 +18,7 @@ class ChatListViewController: ViewController {
 
     static let name = "ChatList"
 
-    var channels: [Channel] = []
+    var channels: [Storage.Channel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,8 +27,6 @@ class ChatListViewController: ViewController {
         self.updateTitleView()
         self.setupTableView()
         self.setupObservers()
-
-        Ejabberd.shared.startInitializing(identity: Virgil.ethree.identity)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -76,7 +74,10 @@ class ChatListViewController: ViewController {
         Notifications.observe(for: .connectionStateChanged, block: connectionStateChanged)
         Notifications.observe(for: [.chatListUpdated], block: reloadTableView)
     }
+}
 
+// MARK: - UI
+extension ChatListViewController {
     private func setupTableView() {
         let chatListCellNib = UINib(nibName: ChatListCell.name, bundle: Bundle.main)
         self.tableView.register(chatListCellNib, forCellReuseIdentifier: ChatListCell.name)
@@ -103,7 +104,7 @@ class ChatListViewController: ViewController {
             guard !self.indicator.isAnimating else {
                 return
             }
-            
+
             self.indicator.startAnimating()
 
             let titleView = UIStackView(arrangedSubviews: [self.indicator, self.indicatorLabel])
@@ -114,7 +115,7 @@ class ChatListViewController: ViewController {
     }
 
     @objc private func reloadTableView() {
-        self.channels = CoreData.shared.getChannels()
+        self.channels = Storage.shared.getChannels()
 
         self.channels.sort { first, second in
             let firstDate = first.lastMessagesDate ?? first.createdAt
@@ -130,7 +131,10 @@ class ChatListViewController: ViewController {
             self.tableView.reloadData()
         }
     }
+}
 
+// MARK: - Actions
+extension ChatListViewController {
     @IBAction func didTapAdd(_ sender: Any) {
         let alert = UIAlertController(title: "Add", message: "Enter username", preferredStyle: .alert)
 
@@ -176,14 +180,32 @@ class ChatListViewController: ViewController {
 
         self.present(alert, animated: true)
     }
+}
+
+// MARK: - Navigation
+extension ChatListViewController {
+    func moveToChannel(_ channel: Storage.Channel) {
+        Storage.shared.setCurrent(channel: channel)
+        self.performSegue(withIdentifier: "goToChat", sender: self)
+    }
 
     private func goToLogin() {
         DispatchQueue.main.async {
             self.switchNavigationStack(to: .authentication)
         }
     }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let chatController = segue.destination as? ChatViewController,
+            let channel = Storage.shared.currentChannel {
+                chatController.channel = channel
+        }
+
+        super.prepare(for: segue, sender: sender)
+    }
 }
 
+// MARK: - Table View
 extension ChatListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChatListCell.name) as! ChatListCell
@@ -214,21 +236,5 @@ extension ChatListViewController: CellTapDelegate {
         }
 
         self.moveToChannel(selectedChannel)
-    }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let chatController = segue.destination as? ChatViewController,
-            let channel = CoreData.shared.currentChannel {
-                chatController.channel = channel
-        }
-
-        super.prepare(for: segue, sender: sender)
-    }
-}
-
-extension ChatListViewController {
-    func moveToChannel(_ channel: Channel) {
-        CoreData.shared.setCurrent(channel: channel)
-        self.performSegue(withIdentifier: "goToChat", sender: self)
     }
 }

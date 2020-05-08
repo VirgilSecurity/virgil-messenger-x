@@ -131,7 +131,7 @@ Add new one!</string>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="re4-ce-Aav" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1360" y="-1090"/>
+            <point key="canvasLocation" x="1366" y="-1047"/>
         </scene>
         <!--Authentication-->
         <scene sceneID="dV1-zg-E74">
@@ -139,7 +139,7 @@ Add new one!</string>
                 <viewControllerPlaceholder storyboardName="Authentication" id="cdC-mY-49V" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nmc-ZR-b88" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1419" y="-874"/>
+            <point key="canvasLocation" x="1409" y="-1140"/>
         </scene>
     </scenes>
     <resources>

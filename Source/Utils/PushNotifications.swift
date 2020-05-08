@@ -13,11 +13,11 @@ public class PushNotifications {
 }
 
 extension PushNotifications {
-    static func post(messageContent: MessageContent, author: String) {
+    static func post(message: NetworkMessage, author: String) {
         // create the content for the notification
         let content = UNMutableNotificationContent()
         content.title = author
-        content.body = messageContent.notificationBody
+        content.body = message.notificationBody
         content.sound = .default
 
         // notification trigger can be based on time, calendar or location

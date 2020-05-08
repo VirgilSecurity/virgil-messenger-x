@@ -17,14 +17,14 @@ class CollectionViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return CoreData.shared.accounts.count
+        return Storage.shared.accounts.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionCell",
                                                       for: indexPath) as! CollectionViewCell
 
-        let account = CoreData.shared.accounts[indexPath.row] as Account
+        let account = Storage.shared.accounts[indexPath.row] as Storage.Account
 
         cell.usernameLabel.text = account.identity
 
@@ -36,7 +36,7 @@ class CollectionViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let username = CoreData.shared.accounts[indexPath.row].identity
+        let username = Storage.shared.accounts[indexPath.row].identity
 
         self.signIn(username: username)
     }
