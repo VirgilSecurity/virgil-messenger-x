@@ -70,12 +70,6 @@ class EjabberdToken {
     }
 
     public func isExpired() -> Bool {
-        let currentDate = Date().addingTimeInterval(5)
-        let expiresAt = self.bodyContent.expiresAt
-
-        print("--------> currentDate = \(currentDate)")
-        print("--------> expiresAt   = \(expiresAt)")
-
-        return currentDate >= expiresAt
+        return Date().addingTimeInterval(5) >= self.bodyContent.expiresAt
     }
 }
