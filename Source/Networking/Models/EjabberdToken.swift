@@ -40,7 +40,10 @@ class EjabberdToken {
                 throw Client.Error.invalidEjabberdToken
             }
 
-            self = try JSONDecoder().decode(BodyContent.self, from: data)
+            let jsonDecoder = JSONDecoder()
+            jsonDecoder.dateDecodingStrategy = .secondsSince1970
+
+            self = try jsonDecoder.decode(BodyContent.self, from: data)
         }
     }
 
@@ -67,6 +70,12 @@ class EjabberdToken {
     }
 
     public func isExpired() -> Bool {
-        return Date().addingTimeInterval(5) >= self.bodyContent.expiresAt
+        let currentDate = Date().addingTimeInterval(5)
+        let expiresAt = self.bodyContent.expiresAt
+
+        print("--------> currentDate = \(currentDate)")
+        print("--------> expiresAt   = \(expiresAt)")
+
+        return currentDate >= expiresAt
     }
 }
