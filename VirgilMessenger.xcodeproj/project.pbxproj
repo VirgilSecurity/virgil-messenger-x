@@ -148,6 +148,9 @@
 		9720EAA62449B8C5004BA39F /* EjabberdError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9720EAA52449B8C5004BA39F /* EjabberdError.swift */; };
 		9720EAA72449B8C5004BA39F /* EjabberdError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9720EAA52449B8C5004BA39F /* EjabberdError.swift */; };
 		9720EAA82449B8C5004BA39F /* EjabberdError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9720EAA52449B8C5004BA39F /* EjabberdError.swift */; };
+		97507E74246AC9FE00FC61CF /* Ejabberd+BlackList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97507E73246AC9FE00FC61CF /* Ejabberd+BlackList.swift */; };
+		97507E75246AC9FE00FC61CF /* Ejabberd+BlackList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97507E73246AC9FE00FC61CF /* Ejabberd+BlackList.swift */; };
+		97507E76246AC9FE00FC61CF /* Ejabberd+BlackList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97507E73246AC9FE00FC61CF /* Ejabberd+BlackList.swift */; };
 		9767500E245AD497000B844E /* EjabberdToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9767500D245AD497000B844E /* EjabberdToken.swift */; };
 		9767500F245AD497000B844E /* EjabberdToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9767500D245AD497000B844E /* EjabberdToken.swift */; };
 		97675010245AD497000B844E /* EjabberdToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9767500D245AD497000B844E /* EjabberdToken.swift */; };
@@ -845,6 +848,7 @@
 		9720EAA52449B8C5004BA39F /* EjabberdError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EjabberdError.swift; sourceTree = "<group>"; };
 		974CC5462417DD1400FC7554 /* VirgilMessenger-v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VirgilMessenger-v2.xcdatamodel"; sourceTree = "<group>"; };
 		974E01A5242D5274008239B8 /* SwipeableNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeableNavigationController.swift; sourceTree = "<group>"; };
+		97507E73246AC9FE00FC61CF /* Ejabberd+BlackList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ejabberd+BlackList.swift"; sourceTree = "<group>"; };
 		9767500D245AD497000B844E /* EjabberdToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EjabberdToken.swift; sourceTree = "<group>"; };
 		97675011245ADBCD000B844E /* EjabberdTokenProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EjabberdTokenProvider.swift; sourceTree = "<group>"; };
 		97698C8424504051005C087D /* PushRegistryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRegistryDelegate.swift; sourceTree = "<group>"; };
@@ -1146,6 +1150,7 @@
 				9720EA952449B7BA004BA39F /* Ejabberd+Messages.swift */,
 				9720EA982449B7BA004BA39F /* Ejabberd+Pushes.swift */,
 				9720EA972449B7BA004BA39F /* Ejabberd+Receipts.swift */,
+				97507E73246AC9FE00FC61CF /* Ejabberd+BlackList.swift */,
 				F4814553244F38C100735F4B /* EjabberdOperation.swift */,
 			);
 			path = Ejabberd;
@@ -2164,6 +2169,7 @@
 				16013C7B20B2C18B0043EA29 /* AudioMessageCollectionViewCellDefaultStyle.swift in Sources */,
 				164E173020AAEECD00AB1AAD /* UIAudioMessageModel.swift in Sources */,
 				16FA91051FFC55A400FE98C7 /* UIViewController+Reachability.swift in Sources */,
+				97507E74246AC9FE00FC61CF /* Ejabberd+BlackList.swift in Sources */,
 				97E437EA24210CF00076AA04 /* NetworkUploadOperation.swift in Sources */,
 				97CE26F52418231300903116 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
 				F40BC401243B1E23009AB5DF /* CallManager+CallKit.swift in Sources */,
@@ -2292,6 +2298,7 @@
 				F4241D8F2433857D00E839C3 /* Client+Backend.swift in Sources */,
 				F4241DDA243385FD00E839C3 /* Virgil.swift in Sources */,
 				F4241D942433858300E839C3 /* Client+Files.swift in Sources */,
+				97507E75246AC9FE00FC61CF /* Ejabberd+BlackList.swift in Sources */,
 				F4241D612433850F00E839C3 /* Storage+Messages.swift in Sources */,
 				F40BC402243B1E39009AB5DF /* CallManager+CallKit.swift in Sources */,
 				F4241E4F243386BB00E839C3 /* Collection+SafeSubscript.swift in Sources */,
@@ -2444,6 +2451,7 @@
 				F4241D902433857D00E839C3 /* Client+Backend.swift in Sources */,
 				F4241DDB243385FE00E839C3 /* Virgil.swift in Sources */,
 				F4241D932433858200E839C3 /* Client+Files.swift in Sources */,
+				97507E76246AC9FE00FC61CF /* Ejabberd+BlackList.swift in Sources */,
 				F4241D622433850F00E839C3 /* Storage+Messages.swift in Sources */,
 				F40BC403243B1E39009AB5DF /* CallManager+CallKit.swift in Sources */,
 				F4241E58243386BB00E839C3 /* Collection+SafeSubscript.swift in Sources */,
