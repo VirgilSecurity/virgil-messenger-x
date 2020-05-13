@@ -15,18 +15,22 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
     internal let initQueue = DispatchQueue(label: "Ejabberd")
     private let delegateQueue = DispatchQueue(label: "EjabberdDelegate")
 
-    internal let stream: XMPPStream = XMPPStream()
     internal var retryConfig: RetryConfig = RetryConfig()
 
     internal var messageQueue = OperationQueue()
     internal var tokenProvider: EjabberdTokenProvider?
 
+    // Ejabberd features
+    internal let stream: XMPPStream = XMPPStream()
+    internal let blocking = XMPPBlocking()
     private let upload = XMPPHTTPFileUpload()
     private let deliveryReceipts = XMPPMessageDeliveryReceipts()
     private let readReceipts = XMPPMessageReadReceipts()
 
+
     private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
+    // Notification tokens
     static var updatedPushToken: Data?
     static var updatedVoipPushToken: Data?
 
@@ -53,6 +57,12 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
         self.readReceipts.activate(self.stream)
         self.readReceipts.autoSendMessageReadRequests = true
         self.readReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
+
+        // Blacklist
+        self.blocking.activate(self.stream)
+        self.blocking.autoRetrieveBlockingListItems = true
+        self.blocking.autoClearBlockingListInfo = true
+        self.blocking.addDelegate(self, delegateQueue: self.delegateQueue)
     }
 
     public static func setupJid(with username: String) throws -> XMPPJID {
