@@ -1245,9 +1245,9 @@
 				162E22E8225F7E4E00AAE7C4 /* NewGroup.storyboard */,
 				429228EA1F96405800DCECDF /* Chat.storyboard */,
 				166BFAA122676C7D00EF72AD /* GroupInfo.storyboard */,
+				97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */,
 				16CA510F1FC5D9960042AF9D /* Settings.storyboard */,
 				F478ABDB243FA99800802051 /* Call.storyboard */,
-				97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */,
 			);
 			path = Views;
 			sourceTree = "<group>";
