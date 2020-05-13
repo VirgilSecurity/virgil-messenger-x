@@ -14,6 +14,10 @@ extension UIViewController {
         case tabBar = "TabBar"
     }
 
+    enum Segues: String {
+        case toChatInfo = "toChatInfo"
+    }
+
     @discardableResult
     func switchNavigationStack(to name: NavigationStackName) -> UIViewController {
         let storyboard = UIStoryboard(name: name.rawValue, bundle: Bundle.main)

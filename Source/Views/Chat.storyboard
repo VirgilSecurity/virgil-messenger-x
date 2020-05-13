@@ -8,6 +8,22 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="943-sU-0f0">
+            <objects>
+                <navigationController id="sUq-zh-pR8" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="FMn-4d-d1J">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="XsE-hb-Si4" kind="relationship" relationship="rootViewController" id="NMN-sC-M1c"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0bN-DX-c2a" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-601" y="-171"/>
+        </scene>
         <!--Chat View Controller-->
         <scene sceneID="FVg-D0-4Ys">
             <objects>
@@ -16,50 +32,62 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
                         <viewLayoutGuide key="safeArea" id="bmW-g9-FNa"/>
                     </view>
                     <navigationItem key="navigationItem" id="DvG-84-EM5">
                         <barButtonItem key="backBarButtonItem" title="Back" id="sik-Qm-usl"/>
-                        <barButtonItem key="rightBarButtonItem" id="9Qk-ZR-Mlp">
-                            <view key="customView" contentMode="scaleToFill" id="2E2-oh-xv4">
+                        <barButtonItem key="rightBarButtonItem" id="o3C-nZ-ZhF">
+                            <view key="customView" contentMode="scaleToFill" id="C0a-mU-Ahr" customClass="GradientView" customModule="VirgilMessenger" customModuleProvider="target">
                                 <rect key="frame" x="324" y="4.6666666666666679" width="35" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-make-call" translatesAutoresizingMaskIntoConstraints="NO" id="Aeb-t9-gtL">
-                                        <rect key="frame" x="5" y="5.3333333333333339" width="25" height="24.666666666666664"/>
-                                        <gestureRecognizers/>
-                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="L" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6St-95-UmA">
+                                        <rect key="frame" x="11.666666666666668" y="5.6666666666666679" width="11.666666666666668" height="24"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
+                                <color key="backgroundColor" red="0.41568627450000001" green="0.78039215689999997" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <gestureRecognizers/>
                                 <constraints>
-                                    <constraint firstItem="Aeb-t9-gtL" firstAttribute="centerY" secondItem="2E2-oh-xv4" secondAttribute="centerY" id="DSR-xb-gkf"/>
-                                    <constraint firstAttribute="height" constant="35" id="YUg-H1-ifh"/>
-                                    <constraint firstAttribute="width" constant="35" id="a2Z-4q-VlE"/>
-                                    <constraint firstItem="Aeb-t9-gtL" firstAttribute="centerX" secondItem="2E2-oh-xv4" secondAttribute="centerX" id="qKE-5h-Lig"/>
+                                    <constraint firstItem="6St-95-UmA" firstAttribute="centerY" secondItem="C0a-mU-Ahr" secondAttribute="centerY" id="2xe-5J-UjD"/>
+                                    <constraint firstItem="6St-95-UmA" firstAttribute="centerX" secondItem="C0a-mU-Ahr" secondAttribute="centerX" id="E0R-oH-bwu"/>
+                                    <constraint firstAttribute="width" constant="35" id="IS6-1f-jJs"/>
+                                    <constraint firstAttribute="height" constant="35" id="oDj-jc-nVE"/>
                                 </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="17"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <outletCollection property="gestureRecognizers" destination="osw-29-x6d" appends="YES" id="ZOB-xs-MZT"/>
+                                    <outletCollection property="gestureRecognizers" destination="vbu-ge-4DR" appends="YES" id="WgR-vp-zhc"/>
                                 </connections>
                             </view>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <segue destination="ZQo-cO-mEW" kind="show" identifier="goToGroupInfo" id="ENG-Sa-gZu"/>
+                        <outlet property="avatarLetterLabel" destination="6St-95-UmA" id="3DB-fn-LvH"/>
+                        <outlet property="avatarView" destination="C0a-mU-Ahr" id="eOa-Z7-3Xq"/>
+                        <segue destination="ZQo-cO-mEW" kind="show" identifier="toChatInfo" id="ENG-Sa-gZu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7G7-HX-4MO" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="osw-29-x6d">
+                <tapGestureRecognizer id="vbu-ge-4DR">
                     <connections>
-                        <action selector="callTapped:" destination="XsE-hb-Si4" id="E3F-qa-3hJ"/>
+                        <action selector="showChatInfo:" destination="XsE-hb-Si4" id="gOe-Mk-TpK"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="397.60000000000002" y="-170.68965517241381"/>
         </scene>
-        <!--GroupInfo-->
+        <!--ChatInfo-->
         <scene sceneID="Zut-pC-nz1">
             <objects>
-                <viewControllerPlaceholder storyboardName="GroupInfo" id="ZQo-cO-mEW" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="ChatInfo" id="ZQo-cO-mEW" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="6q5-vl-cnr"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DkF-Yl-o6t" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -67,7 +95,4 @@
             <point key="canvasLocation" x="1049" y="-171"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="icon-make-call" width="24.666666030883789" height="24.666666030883789"/>
-    </resources>
 </document>

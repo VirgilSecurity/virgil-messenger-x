@@ -191,6 +191,12 @@
 		97AF4D83241AEE2000ED9BD7 /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
 		97AF4D85241AEE8800ED9BD7 /* Client+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D84241AEE8800ED9BD7 /* Client+Files.swift */; };
 		97AF4D86241AEED000ED9BD7 /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
+		97B73BE6246C04F600E7B3DB /* ChatInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */; };
+		97B73BE7246C04F600E7B3DB /* ChatInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */; };
+		97B73BE8246C04F600E7B3DB /* ChatInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */; };
+		97B73BEA246C093D00E7B3DB /* ChatInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B73BE9246C093D00E7B3DB /* ChatInfo.swift */; };
+		97B73BEB246C093D00E7B3DB /* ChatInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B73BE9246C093D00E7B3DB /* ChatInfo.swift */; };
+		97B73BEC246C093D00E7B3DB /* ChatInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B73BE9246C093D00E7B3DB /* ChatInfo.swift */; };
 		97CE26F52418231300903116 /* Mapping-v1-to-v2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */; };
 		97E437E624210C6E0076AA04 /* HttpConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E437E524210C6E0076AA04 /* HttpConnection.swift */; };
 		97E437EA24210CF00076AA04 /* NetworkUploadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E437E924210CF00076AA04 /* NetworkUploadOperation.swift */; };
@@ -869,6 +875,8 @@
 		9791B62F246308CD00910D38 /* CallableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallableController.swift; sourceTree = "<group>"; };
 		97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Client+Backend.swift"; sourceTree = "<group>"; };
 		97AF4D84241AEE8800ED9BD7 /* Client+Files.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Client+Files.swift"; sourceTree = "<group>"; };
+		97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChatInfo.storyboard; sourceTree = "<group>"; };
+		97B73BE9246C093D00E7B3DB /* ChatInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInfo.swift; sourceTree = "<group>"; };
 		97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = "Mapping-v1-to-v2.xcmappingmodel"; sourceTree = "<group>"; };
 		97E437E524210C6E0076AA04 /* HttpConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpConnection.swift; sourceTree = "<group>"; };
 		97E437E924210CF00076AA04 /* NetworkUploadOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUploadOperation.swift; sourceTree = "<group>"; };
@@ -1239,6 +1247,7 @@
 				166BFAA122676C7D00EF72AD /* GroupInfo.storyboard */,
 				16CA510F1FC5D9960042AF9D /* Settings.storyboard */,
 				F478ABDB243FA99800802051 /* Call.storyboard */,
+				97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1296,6 +1305,7 @@
 				16CA51121FC5DA3B0042AF9D /* Settings.swift */,
 				16F8F3B62264875F00143FB7 /* UsersList.swift */,
 				F478ABD7243FA95300802051 /* CallViewController.swift */,
+				97B73BE9246C093D00E7B3DB /* ChatInfo.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1881,6 +1891,7 @@
 				16F8F3B5226484C500143FB7 /* UsersList.storyboard in Resources */,
 				164E173A20AB1C6400AB1AAD /* Audio.xcassets in Resources */,
 				1658BA211FD9B08F005EF9C1 /* InputBar.xib in Resources */,
+				97B73BE6246C04F600E7B3DB /* ChatInfo.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1908,6 +1919,7 @@
 				F4241DF62433864100E839C3 /* ChooseMembersCell.xib in Resources */,
 				F4241F162433A01D00E839C3 /* GoogleService-Info.plist in Resources */,
 				F4241DB2243385CD00E839C3 /* View.xcassets in Resources */,
+				97B73BE7246C04F600E7B3DB /* ChatInfo.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1942,6 +1954,7 @@
 				F4241F172433A01E00E839C3 /* GoogleService-Info.plist in Resources */,
 				F4241E062433864200E839C3 /* ChooseMembersCell.xib in Resources */,
 				F4241DB3243385CD00E839C3 /* View.xcassets in Resources */,
+				97B73BE8246C04F600E7B3DB /* ChatInfo.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2210,6 +2223,7 @@
 				16FB2DD3204D875400346FA0 /* UIView.swift in Sources */,
 				427D1E541F965569002F2CF3 /* DataSource.swift in Sources */,
 				F46EE193241FA09F00BE53AA /* Account.swift in Sources */,
+				97B73BEA246C093D00E7B3DB /* ChatInfo.swift in Sources */,
 				16013C7920B214460043EA29 /* AudioBubleView.swift in Sources */,
 				F46EE198241FA09F00BE53AA /* Storage.swift in Sources */,
 				16F6FC721FAA235400158615 /* Registration.swift in Sources */,
@@ -2339,6 +2353,7 @@
 				F4241D6E2433852700E839C3 /* VoiceMessage.swift in Sources */,
 				9720EAA32449B7BA004BA39F /* Ejabberd+Pushes.swift in Sources */,
 				F4241D652433851600E839C3 /* Account.swift in Sources */,
+				97B73BEB246C093D00E7B3DB /* ChatInfo.swift in Sources */,
 				F4241D58243383AB00E839C3 /* SwipeableNavigationController.swift in Sources */,
 				F4241E192433864F00E839C3 /* DetailTableViewCell.swift in Sources */,
 				F4241DB4243385D400E839C3 /* AudioChatInputItem.swift in Sources */,
@@ -2492,6 +2507,7 @@
 				F4241D6F2433852700E839C3 /* VoiceMessage.swift in Sources */,
 				9720EAA42449B7BA004BA39F /* Ejabberd+Pushes.swift in Sources */,
 				F4241D662433851700E839C3 /* Account.swift in Sources */,
+				97B73BEC246C093D00E7B3DB /* ChatInfo.swift in Sources */,
 				F4241D59243383AB00E839C3 /* SwipeableNavigationController.swift in Sources */,
 				F4241E1F2433864F00E839C3 /* DetailTableViewCell.swift in Sources */,
 				F4241DB7243385D400E839C3 /* AudioChatInputItem.swift in Sources */,
