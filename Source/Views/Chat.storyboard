@@ -72,7 +72,7 @@
                     <connections>
                         <outlet property="avatarLetterLabel" destination="6St-95-UmA" id="3DB-fn-LvH"/>
                         <outlet property="avatarView" destination="C0a-mU-Ahr" id="eOa-Z7-3Xq"/>
-                        <segue destination="ZQo-cO-mEW" kind="show" identifier="toChatInfo" id="ENG-Sa-gZu"/>
+                        <segue destination="ZQo-cO-mEW" kind="showDetail" identifier="toChatInfo" id="ENG-Sa-gZu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7G7-HX-4MO" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uP5-uR-6Tl">
-                                <rect key="frame" x="0.0" y="74" width="414" height="100"/>
+                                <rect key="frame" x="0.0" y="128" width="414" height="100"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Les-d1-hGr" customClass="GradientView" customModule="VirgilMessenger" customModuleProvider="target">
                                         <rect key="frame" x="167" y="10" width="80" height="80"/>
@@ -119,8 +119,20 @@
                                     <constraint firstItem="rUX-BY-kSA" firstAttribute="centerY" secondItem="uP5-uR-6Tl" secondAttribute="centerY" id="zcg-GI-Eig"/>
                                 </constraints>
                             </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Si8-7s-35Z">
+                                <rect key="frame" x="0.0" y="355" width="414" height="467"/>
+                                <color key="backgroundColor" red="0.16862745100000001" green="0.18823529410000001" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </tableView>
+                            <navigationBar contentMode="scaleToFill" barStyle="black" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YxP-l0-Rvs">
+                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                                <color key="backgroundColor" red="0.12549019610000001" green="0.13725490200000001" blue="0.16862745100000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="barTintColor" red="0.12549019610000001" green="0.13725490200000001" blue="0.16862745100000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <items>
+                                    <navigationItem title="Chat Info" id="isa-3J-18w"/>
+                                </items>
+                            </navigationBar>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Eu9-y3-5kI">
-                                <rect key="frame" x="58.5" y="174" width="297" height="27"/>
+                                <rect key="frame" x="58.5" y="228" width="297" height="27"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -128,12 +140,19 @@
                         </subviews>
                         <color key="backgroundColor" red="0.16862745100000001" green="0.18823529410000001" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="Si8-7s-35Z" firstAttribute="trailing" secondItem="VNK-jY-UCk" secondAttribute="trailing" id="3Z4-Lr-PSw"/>
+                            <constraint firstItem="VNK-jY-UCk" firstAttribute="bottom" secondItem="Si8-7s-35Z" secondAttribute="bottom" constant="40" id="8DD-eJ-g2A"/>
                             <constraint firstItem="uP5-uR-6Tl" firstAttribute="leading" secondItem="VNK-jY-UCk" secondAttribute="leading" id="8mP-YA-1Aq"/>
                             <constraint firstItem="Eu9-y3-5kI" firstAttribute="top" secondItem="uP5-uR-6Tl" secondAttribute="bottom" id="DkH-eF-9LO"/>
-                            <constraint firstItem="uP5-uR-6Tl" firstAttribute="top" secondItem="VNK-jY-UCk" secondAttribute="top" constant="30" id="TU9-fT-x5T"/>
+                            <constraint firstItem="Si8-7s-35Z" firstAttribute="top" secondItem="Eu9-y3-5kI" secondAttribute="bottom" constant="100" id="Hlz-RI-bRV"/>
+                            <constraint firstItem="YxP-l0-Rvs" firstAttribute="leading" secondItem="VNK-jY-UCk" secondAttribute="leading" id="SER-v3-SRE"/>
+                            <constraint firstItem="YxP-l0-Rvs" firstAttribute="trailing" secondItem="VNK-jY-UCk" secondAttribute="trailing" id="UfR-xv-27I"/>
                             <constraint firstItem="Eu9-y3-5kI" firstAttribute="trailing" secondItem="rUX-BY-kSA" secondAttribute="trailing" id="Xr3-8V-EsL"/>
                             <constraint firstItem="Eu9-y3-5kI" firstAttribute="leading" secondItem="kAh-GZ-Qb8" secondAttribute="leading" id="aZW-XZ-uuC"/>
+                            <constraint firstItem="uP5-uR-6Tl" firstAttribute="top" secondItem="YxP-l0-Rvs" secondAttribute="bottom" constant="40" id="bGe-zD-aQW"/>
+                            <constraint firstItem="Si8-7s-35Z" firstAttribute="leading" secondItem="VNK-jY-UCk" secondAttribute="leading" id="qmg-Jk-cwf"/>
                             <constraint firstItem="uP5-uR-6Tl" firstAttribute="trailing" secondItem="VNK-jY-UCk" secondAttribute="trailing" id="tGa-D7-ccw"/>
+                            <constraint firstItem="YxP-l0-Rvs" firstAttribute="top" secondItem="VNK-jY-UCk" secondAttribute="top" id="wF7-1g-iJf"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="VNK-jY-UCk"/>
                     </view>
@@ -141,6 +160,7 @@
                     <connections>
                         <outlet property="avatarLabel" destination="O4Z-gX-pke" id="r6o-RI-TNI"/>
                         <outlet property="avatarView" destination="Les-d1-hGr" id="IfW-Ui-cES"/>
+                        <outlet property="tableView" destination="Si8-7s-35Z" id="Rvx-7b-Sar"/>
                         <outlet property="usernameLabel" destination="Eu9-y3-5kI" id="fde-Oj-ZiU"/>
                     </connections>
                 </viewController>

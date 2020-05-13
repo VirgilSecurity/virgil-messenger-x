@@ -743,7 +743,7 @@
 		1658BA1C1FD9A8BC005EF9C1 /* InputBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBar.swift; sourceTree = "<group>"; };
 		1658BA201FD9B08F005EF9C1 /* InputBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputBar.xib; sourceTree = "<group>"; };
 		165900212280382E00063EC9 /* AddMembers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMembers.swift; sourceTree = "<group>"; };
-		166BFAA122676C7D00EF72AD /* GroupInfo.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = GroupInfo.storyboard; path = Source/GroupInfo.storyboard; sourceTree = SOURCE_ROOT; };
+		166BFAA122676C7D00EF72AD /* GroupInfo.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = GroupInfo.storyboard; path = Source/Views/Unused/GroupInfo.storyboard; sourceTree = SOURCE_ROOT; };
 		166BFAA322687D4F00EF72AD /* GroupInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfo.swift; sourceTree = "<group>"; };
 		167C68441FADDB7800E6E448 /* Virgil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Virgil.swift; sourceTree = "<group>"; };
 		168E54CB22395DDC00B6E822 /* ColorPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPair.swift; sourceTree = "<group>"; };
@@ -1234,17 +1234,14 @@
 		16CC9B7C21553C6100935AEC /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				97B73BED246C4A9A00E7B3DB /* Unused */,
 				16CC9B7F21553D0400935AEC /* Items */,
 				16CA51031FC45EA40042AF9D /* Start.storyboard */,
 				16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */,
 				16D6CB391FDFEECC00302A05 /* Registration.storyboard */,
 				16CC9B7A21552D5800935AEC /* TabBar.storyboard */,
-				16F8F3B4226484C500143FB7 /* UsersList.storyboard */,
 				423BDA781F97600A00C3EE9B /* ChatList.storyboard */,
-				16EF7145225E2E3C00854DBF /* NewMessage.storyboard */,
-				162E22E8225F7E4E00AAE7C4 /* NewGroup.storyboard */,
 				429228EA1F96405800DCECDF /* Chat.storyboard */,
-				166BFAA122676C7D00EF72AD /* GroupInfo.storyboard */,
 				97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */,
 				16CA510F1FC5D9960042AF9D /* Settings.storyboard */,
 				F478ABDB243FA99800802051 /* Call.storyboard */,
@@ -1292,20 +1289,18 @@
 		16D8B0E7223A6E7500D7FA67 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				97B73BEE246C4B0500E7B3DB /* Unused */,
 				9791B633246309EF00910D38 /* Base */,
 				16D8B0F1223AACBB00D7FA67 /* Cells */,
 				16B69E061FA9D2CA00FE8A8D /* Authentication */,
-				16FC67992260A3CF0044CC70 /* NewMessage */,
 				16D8B0F0223AAC7200D7FA67 /* Chat */,
 				16CA51011FC45E9A0042AF9D /* Start.swift */,
 				423BDA7B1F97601700C3EE9B /* ChatList.swift */,
 				4280C0E21F97364F00075B3A /* Chat.swift */,
-				165900212280382E00063EC9 /* AddMembers.swift */,
-				166BFAA322687D4F00EF72AD /* GroupInfo.swift */,
+				97B73BE9246C093D00E7B3DB /* ChatInfo.swift */,
 				16CA51121FC5DA3B0042AF9D /* Settings.swift */,
 				16F8F3B62264875F00143FB7 /* UsersList.swift */,
 				F478ABD7243FA95300802051 /* CallViewController.swift */,
-				97B73BE9246C093D00E7B3DB /* ChatInfo.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1635,6 +1630,27 @@
 				97675011245ADBCD000B844E /* EjabberdTokenProvider.swift */,
 			);
 			path = Client;
+			sourceTree = "<group>";
+		};
+		97B73BED246C4A9A00E7B3DB /* Unused */ = {
+			isa = PBXGroup;
+			children = (
+				162E22E8225F7E4E00AAE7C4 /* NewGroup.storyboard */,
+				16F8F3B4226484C500143FB7 /* UsersList.storyboard */,
+				16EF7145225E2E3C00854DBF /* NewMessage.storyboard */,
+				166BFAA122676C7D00EF72AD /* GroupInfo.storyboard */,
+			);
+			path = Unused;
+			sourceTree = "<group>";
+		};
+		97B73BEE246C4B0500E7B3DB /* Unused */ = {
+			isa = PBXGroup;
+			children = (
+				16FC67992260A3CF0044CC70 /* NewMessage */,
+				165900212280382E00063EC9 /* AddMembers.swift */,
+				166BFAA322687D4F00EF72AD /* GroupInfo.swift */,
+			);
+			path = Unused;
 			sourceTree = "<group>";
 		};
 		97E437E824210CDA0076AA04 /* Operations */ = {

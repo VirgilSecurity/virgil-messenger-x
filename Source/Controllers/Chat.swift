@@ -168,6 +168,8 @@ class ChatViewController: BaseChatViewController {
             chatInfo.channel = self.channel
         }
 
+        self.view.endEditing(true)
+
         super.prepare(for: segue, sender: sender)
     }
 
