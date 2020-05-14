@@ -20,10 +20,16 @@ class ChatInfoViewController: ViewController {
         [
             Cell(
                 identifier: .regular,
-                action: self.blockUser,
+                action: self.blockingCellTapped,
                 configure: {
-                    $0.textLabel?.text = "Block User"
-                    $0.textLabel?.textColor = .dangerTextColor
+                    if self.channel.blocked {
+                        $0.textLabel?.text = "Unblock User"
+                        $0.textLabel?.textColor = .textColor
+                    }
+                    else {
+                        $0.textLabel?.text = "Block User"
+                        $0.textLabel?.textColor = .dangerTextColor
+                    }
                 }
             )
         ]
@@ -52,11 +58,18 @@ class ChatInfoViewController: ViewController {
         self.dismiss(animated: true, completion: nil)
     }
 
-    func blockUser() {
+    func blockingCellTapped() {
+        self.channel.blocked ? self.unblockTapped() : self.blockTapped()
+    }
+
+    func blockTapped() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         let blockAction = UIAlertAction(title: "Block user", style: .destructive) { _ in
+            // FIXME
+            try! Storage.shared.block(channel: self.channel)
 
+            self.tableView.reloadData()
         }
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -65,6 +78,12 @@ class ChatInfoViewController: ViewController {
         alert.addAction(cancelAction)
 
         self.present(alert, animated: true)
+    }
+
+    func unblockTapped() {
+        try! Storage.shared.unblock(channel: self.channel)
+
+        self.tableView.reloadData()
     }
 }
 

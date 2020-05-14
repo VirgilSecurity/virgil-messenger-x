@@ -6,7 +6,12 @@
         <attribute name="sendReadReceipts" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <relationship name="orderedChannels" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Channel" inverseName="account" inverseEntity="Channel"/>
     </entity>
+    <entity name="CallMessage" representedClassName="CallMessage" parentEntity="Message" syncable="YES">
+        <attribute name="callUUID" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="duration" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
     <entity name="Channel" representedClassName="Channel" syncable="YES">
+        <attribute name="blocked" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="initiator" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String" minValueString="1"/>
@@ -39,13 +44,9 @@
         <attribute name="identifier" attributeType="String"/>
         <attribute name="url" attributeType="URI"/>
     </entity>
-    <entity name="CallMessage" representedClassName="CallMessage" parentEntity="Message" syncable="YES">
-        <attribute name="callUUID" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="duration" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
-    </entity>
     <elements>
         <element name="Account" positionX="-450" positionY="45" width="128" height="103"/>
-        <element name="Channel" positionX="-407" positionY="243" width="128" height="193"/>
+        <element name="Channel" positionX="-407" positionY="243" width="128" height="208"/>
         <element name="Message" positionX="-128" positionY="198" width="128" height="133"/>
         <element name="PhotoMessage" positionX="-288" positionY="198" width="128" height="88"/>
         <element name="TextMessage" positionX="-128.25" positionY="86.609375" width="128" height="58"/>
