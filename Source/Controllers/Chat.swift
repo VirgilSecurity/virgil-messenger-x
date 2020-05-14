@@ -160,7 +160,7 @@ class ChatViewController: BaseChatViewController {
     }
 
     @IBAction func showChatInfo(_ sender: Any) {
-        self.performSegue(withIdentifier: Segues.toChatInfo.rawValue, sender: self)
+        self.perform(segue: .toChatInfo)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

@@ -14,8 +14,13 @@ extension UIViewController {
         case tabBar = "TabBar"
     }
 
-    enum Segues: String {
+    enum Segue: String {
         case toChatInfo = "toChatInfo"
+        case toChat = "toChat"
+    }
+
+    func perform(segue: Segue) {
+        self.performSegue(withIdentifier: segue.rawValue, sender: self)
     }
 
     @discardableResult
