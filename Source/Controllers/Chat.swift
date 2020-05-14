@@ -267,7 +267,8 @@ extension ChatViewController {
 
         let textMessagePresenter = TextMessagePresenterBuilder(
             viewModelBuilder: UITextMessageViewModelBuilder(),
-            interactionHandler: UITextMessageHandler(baseHandler: self.baseMessageHandler)
+            interactionHandler: UITextMessageHandler(baseHandler: self.baseMessageHandler,
+                                                     textTappableController: self)
         )
 
         textMessagePresenter.baseMessageStyle = baseMessageStyle
@@ -442,13 +443,13 @@ extension ChatViewController: PhotoObserverProtocol {
     func longPressOnImage(_ image: UIImage, id: String, isIncoming: Bool) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-        let saveAction = UIAlertAction(title: "Save to Camera Roll", style: .default) { _ in
-            UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
-        }
-
         if isIncoming {
             let reportAction = self.makeReportAction(messageId: id)
             alert.addAction(reportAction)
+        }
+
+        let saveAction = UIAlertAction(title: "Save to Camera Roll", style: .default) { _ in
+            UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
         }
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -471,5 +472,27 @@ extension ChatViewController: PhotoObserverProtocol {
         else {
             HUD.flash(.success)
         }
+    }
+}
+
+extension ChatViewController: TextTappableProtocol {
+    func longPressOnText(_ text: String, id: String, isIncoming: Bool) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        if isIncoming {
+            let reportAction = self.makeReportAction(messageId: id)
+            alert.addAction(reportAction)
+        }
+
+        let copyAction = UIAlertAction(title: "Copy", style: .default) { _ in
+            UIPasteboard.general.string = text
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+        alert.addAction(copyAction)
+        alert.addAction(cancelAction)
+
+        self.present(alert, animated: true)
     }
 }
