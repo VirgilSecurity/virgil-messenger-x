@@ -81,6 +81,7 @@ class ChatInfoViewController: ViewController {
     }
 
     func unblockTapped() {
+        // FIXME
         try! Storage.shared.unblock(channel: self.channel)
 
         self.tableView.reloadData()

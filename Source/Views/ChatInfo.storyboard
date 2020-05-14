@@ -120,7 +120,7 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Si8-7s-35Z">
-                                <rect key="frame" x="0.0" y="295" width="414" height="527"/>
+                                <rect key="frame" x="0.0" y="305" width="414" height="517"/>
                                 <color key="backgroundColor" red="0.16862745100000001" green="0.18823529410000001" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </tableView>
                             <navigationBar contentMode="scaleToFill" barStyle="black" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YxP-l0-Rvs">
@@ -151,7 +151,7 @@
                             <constraint firstItem="VNK-jY-UCk" firstAttribute="bottom" secondItem="Si8-7s-35Z" secondAttribute="bottom" constant="40" id="8DD-eJ-g2A"/>
                             <constraint firstItem="uP5-uR-6Tl" firstAttribute="leading" secondItem="VNK-jY-UCk" secondAttribute="leading" id="8mP-YA-1Aq"/>
                             <constraint firstItem="Eu9-y3-5kI" firstAttribute="top" secondItem="uP5-uR-6Tl" secondAttribute="bottom" id="DkH-eF-9LO"/>
-                            <constraint firstItem="Si8-7s-35Z" firstAttribute="top" secondItem="Eu9-y3-5kI" secondAttribute="bottom" constant="40" id="Hlz-RI-bRV"/>
+                            <constraint firstItem="Si8-7s-35Z" firstAttribute="top" secondItem="Eu9-y3-5kI" secondAttribute="bottom" constant="50" id="Hlz-RI-bRV"/>
                             <constraint firstItem="YxP-l0-Rvs" firstAttribute="leading" secondItem="VNK-jY-UCk" secondAttribute="leading" id="SER-v3-SRE"/>
                             <constraint firstItem="YxP-l0-Rvs" firstAttribute="trailing" secondItem="VNK-jY-UCk" secondAttribute="trailing" id="UfR-xv-27I"/>
                             <constraint firstItem="Eu9-y3-5kI" firstAttribute="trailing" secondItem="rUX-BY-kSA" secondAttribute="trailing" id="Xr3-8V-EsL"/>
