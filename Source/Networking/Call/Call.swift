@@ -46,6 +46,12 @@ public protocol CallDelegate: class {
     func call(_ call: Call, didEnd error: Error?)
 }
 
+extension CallDelegate {
+    public func call(_ call: Call, didChangeState newState: CallState) {}
+    public func call(_ call: Call, didChangeConnectionStatus newConnectionStatus: CallConnectionStatus) {}
+    public func call(_ call: Call, didEnd error: Error?) {}
+}
+
 public protocol CallSignalingDelegate: class {
     func call(_ call: Call, didCreateOffer offer: NetworkMessage.CallOffer)
     func call(_ call: Call, didCreateAnswer answer: NetworkMessage.CallAnswer)
@@ -61,8 +67,38 @@ public class Call: NSObject {
     public let myName: String
     public let otherName: String
 
-    // MARK: Delegates
-    public weak var delegate: CallDelegate?
+    // MARK: Delegates / Observers
+    private struct Observation {
+        weak var observer: CallDelegate?
+    }
+
+    private var observations = [ObjectIdentifier : Observation]()
+
+    public func addObserver(_ observer: CallDelegate) {
+        let id = ObjectIdentifier(observer)
+        self.observations[id] = Observation(observer: observer)
+    }
+
+    public func removeObserver(_ observer: CallDelegate) {
+        let id = ObjectIdentifier(observer)
+        self.observations.removeValue(forKey: id)
+    }
+
+    public func removeAllObservers() {
+        self.observations.removeAll()
+    }
+
+    private func notifyObservers(notify: (CallDelegate) -> ()) {
+        for (id, observation) in self.observations {
+            // Cleanup
+            guard let observer = observation.observer else {
+                observations.removeValue(forKey: id)
+                continue
+            }
+            notify(observer)
+        }
+    }
+
     private(set) weak var signalingDelegate: CallSignalingDelegate?
 
     // MARK: Connection properties
@@ -88,7 +124,7 @@ public class Call: NSObject {
         self.peerConnection?.close()
         self.peerConnection?.delegate = nil
         self.peerConnection = nil
-        self.delegate = nil
+        self.removeAllObservers()
         self.signalingDelegate = nil
     }
 
@@ -96,14 +132,18 @@ public class Call: NSObject {
     var state: CallState {
         didSet {
             Log.debug("Call with id \(self.uuid.uuidString) changed state to '\(state)'")
-            self.delegate?.call(self, didChangeState: state)
+            self.notifyObservers { (observer) in
+                observer.call(self, didChangeState: state)
+            }
         }
     }
 
     var connectionStatus: CallConnectionStatus {
         didSet {
             Log.debug("Call with id \(self.uuid.uuidString) changed connection status to '\(connectionStatus)'")
-            self.delegate?.call(self, didChangeConnectionStatus: connectionStatus)
+            self.notifyObservers { (observer) in
+                observer.call(self, didChangeConnectionStatus: connectionStatus)
+            }
         }
     }
 
@@ -114,7 +154,9 @@ public class Call: NSObject {
     // MARK: Call Management
     func end() {
         self.state = .ended
-        self.delegate?.call(self, didEnd: nil)
+        self.notifyObservers { (observer) in
+            observer.call(self, didEnd: nil)
+        }
         self.releaseResources()
     }
 
@@ -131,7 +173,7 @@ public class Call: NSObject {
     }
 
     // MARK: Events
-    func didConnect() {
+    func createConnectedAt() {
         self.connectedAt = Date()
     }
 
@@ -149,7 +191,9 @@ public class Call: NSObject {
 
     func didFail(_ error: Error) {
         self.state = .failed
-        self.delegate?.call(self, didEnd: error)
+        self.notifyObservers { (observer) in
+            observer.call(self, didEnd: error)
+        }
         self.signalingDelegate?.call(self, didFail: error)
         self.releaseResources()
     }
