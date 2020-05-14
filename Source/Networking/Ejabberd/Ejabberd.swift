@@ -19,6 +19,7 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
 
     internal var messageQueue = OperationQueue()
     internal var tokenProvider: EjabberdTokenProvider?
+    internal var completionQueue: [CompletionQueueItem] = []
 
     // Ejabberd features
     internal let stream: XMPPStream = XMPPStream()
@@ -96,5 +97,13 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
             .startSync()
             .get()
             .stringRepresentation
+    }
+
+    func queryCompleted(type: CompletionQueueItem.ActionType, error: Error?) {
+        let completionItem = self.completionQueue.first { $0.type == type }
+        completionItem?.completion(error)
+        try? completionItem?.mutex.unlock()
+
+        self.completionQueue = self.completionQueue.filter { $0.type != type }
     }
 }

@@ -49,6 +49,12 @@ class ChatInfoViewController: ViewController {
         self.tableView.dataSource = self
     }
 
+    private func reloadTableView() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+
     @IBAction func startCallTapped(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
         CallManager.shared.startOutgoingCall(to: self.channel.name)
@@ -66,10 +72,21 @@ class ChatInfoViewController: ViewController {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         let blockAction = UIAlertAction(title: "Block user", style: .destructive) { _ in
-            // FIXME
-            try! Storage.shared.block(channel: self.channel)
-
-            self.tableView.reloadData()
+            Ejabberd.shared.block(user: self.channel.name) { error in
+                do {
+                    if let error = error {
+                        throw error
+                    }
+                    else {
+                        try Storage.shared.block(channel: self.channel)
+                        self.reloadTableView()
+                    }
+                }
+                catch {
+                    Log.error(error, message: "Blocking user failed")
+                    self.alert(error)
+                }
+            }
         }
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -81,10 +98,21 @@ class ChatInfoViewController: ViewController {
     }
 
     func unblockTapped() {
-        // FIXME
-        try! Storage.shared.unblock(channel: self.channel)
-
-        self.tableView.reloadData()
+        Ejabberd.shared.unblock(user: self.channel.name) { error in
+            do {
+                if let error = error {
+                    throw error
+                }
+                else {
+                    try Storage.shared.unblock(channel: self.channel)
+                    self.reloadTableView()
+                }
+            }
+            catch {
+                Log.error(error, message: "Blocking user failed")
+                self.alert(error)
+            }
+        }
     }
 }
 

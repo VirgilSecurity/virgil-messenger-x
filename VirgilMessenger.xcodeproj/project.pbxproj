@@ -184,6 +184,9 @@
 		97698D5924507DEC005C087D /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
 		97698D5A24507DEC005C087D /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
 		97698D5B24507DED005C087D /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
+		976B3362246D5C9200DF1CBF /* CompletionQueueItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B3361246D5C9200DF1CBF /* CompletionQueueItem.swift */; };
+		976B3363246D5C9200DF1CBF /* CompletionQueueItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B3361246D5C9200DF1CBF /* CompletionQueueItem.swift */; };
+		976B3364246D5C9200DF1CBF /* CompletionQueueItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B3361246D5C9200DF1CBF /* CompletionQueueItem.swift */; };
 		9775CFD8242A2D3D009F1693 /* Virgil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167C68441FADDB7800E6E448 /* Virgil.swift */; };
 		9791B630246308CD00910D38 /* CallableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9791B62F246308CD00910D38 /* CallableController.swift */; };
 		9791B631246308CD00910D38 /* CallableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9791B62F246308CD00910D38 /* CallableController.swift */; };
@@ -861,6 +864,7 @@
 		97698D42245075AD005C087D /* Storage+Accounts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Storage+Accounts.swift"; sourceTree = "<group>"; };
 		97698D44245078D5005C087D /* NetworkMessage+Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkMessage+Types.swift"; sourceTree = "<group>"; };
 		97698D4C24507986005C087D /* NetworkMessage+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkMessage+Codable.swift"; sourceTree = "<group>"; };
+		976B3361246D5C9200DF1CBF /* CompletionQueueItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionQueueItem.swift; sourceTree = "<group>"; };
 		976E351724323ABD002D1CF2 /* Virgil STG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Virgil STG.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		976E351924323DE6002D1CF2 /* VirgilMessenger-stg.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "VirgilMessenger-stg.entitlements"; sourceTree = "<group>"; };
 		976E353A24323F03002D1CF2 /* Notification Extension-stg.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Notification Extension-stg.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1554,6 +1558,7 @@
 				16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */,
 				9720EAA52449B8C5004BA39F /* EjabberdError.swift */,
 				9767500D245AD497000B844E /* EjabberdToken.swift */,
+				976B3361246D5C9200DF1CBF /* CompletionQueueItem.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -2190,6 +2195,7 @@
 				80AC600E240023EA00F6A73C /* UIColor+Constants.swift in Sources */,
 				16FB2DCC204D806E00346FA0 /* UIPhotoMessageViewModel.swift in Sources */,
 				97E437EC24210D120076AA04 /* NetworkDownloadOperation.swift in Sources */,
+				976B3362246D5C9200DF1CBF /* CompletionQueueItem.swift in Sources */,
 				F46EE197241FA09F00BE53AA /* CallMessage.swift in Sources */,
 				97698C8524504051005C087D /* PushRegistryDelegate.swift in Sources */,
 				16973338229B3E15009E30D0 /* Gradient.swift in Sources */,
@@ -2320,6 +2326,7 @@
 				F4241DC6243385EF00E839C3 /* SendingStatusCollectionViewCell.swift in Sources */,
 				F4241D7C2433854D00E839C3 /* UserFriendlyError.swift in Sources */,
 				F4241E222433865300E839C3 /* SignInCollection.swift in Sources */,
+				976B3363246D5C9200DF1CBF /* CompletionQueueItem.swift in Sources */,
 				F4241E2E2433866100E839C3 /* Start.swift in Sources */,
 				97698C8624504051005C087D /* PushRegistryDelegate.swift in Sources */,
 				F4241E4B243386BB00E839C3 /* Array+IndexPathSubscript.swift in Sources */,
@@ -2474,6 +2481,7 @@
 				F4241DD1243385F000E839C3 /* SendingStatusCollectionViewCell.swift in Sources */,
 				F4241D7D2433854D00E839C3 /* UserFriendlyError.swift in Sources */,
 				F4241E252433865300E839C3 /* SignInCollection.swift in Sources */,
+				976B3364246D5C9200DF1CBF /* CompletionQueueItem.swift in Sources */,
 				F4241E372433866200E839C3 /* Start.swift in Sources */,
 				97698C8724504051005C087D /* PushRegistryDelegate.swift in Sources */,
 				F4241E54243386BB00E839C3 /* Array+IndexPathSubscript.swift in Sources */,
