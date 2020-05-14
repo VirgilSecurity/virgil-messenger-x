@@ -94,6 +94,18 @@ extension Storage {
         return channel
     }
 
+    func block(channel: Channel) throws {
+        channel.blocked = true
+
+        try self.saveContext()
+    }
+
+    func unblock(channel: Channel) throws {
+        channel.blocked = false
+
+        try self.saveContext()
+    }
+
     func updateCards(with cards: [Card], for channel: Channel) throws {
         let cards = cards.filter { $0.identity != self.currentAccount?.identity }
 
@@ -114,15 +126,12 @@ extension Storage {
         return self.getSingleChannels().contains { $0.name == identity }
     }
 
-    func existsChannel(sid: String) -> Bool {
-        return self.getChannels().contains { $0.sid == sid }
-    }
-
     func getChannel(withName name: String) -> Channel? {
         return self.getChannels().first { $0.name == name }
     }
 
     func getChannels() -> [Channel] {
+        // FIXME
         return self.currentAccount!.channels
     }
 
@@ -132,10 +141,6 @@ extension Storage {
 
     func getSingleChannels() -> [Channel] {
         return self.getChannels().filter { $0.type == .single }
-    }
-
-    func getGroupChannels() -> [Channel] {
-        return self.getChannels().filter { $0.type == .group }
     }
 
     func getCurrentChannel() throws -> Channel {
