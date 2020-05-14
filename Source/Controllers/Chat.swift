@@ -173,6 +173,31 @@ class ChatViewController: BaseChatViewController {
         super.prepare(for: segue, sender: sender)
     }
 
+    private func makeReportAction(messageId: String) -> UIAlertAction {
+        UIAlertAction(title: "Report", style: .destructive) { _ in
+            do {
+                try Virgil.shared.client.sendReport(about: self.channel.name, messageId: messageId)
+
+                DispatchQueue.main.async {
+                    let alert: UIAlertController = UIAlertController(title: "Thanks! Your report has been submitted.",
+                                                                     message: nil,
+                                                                     preferredStyle: .alert)
+
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alert.addAction(okAction)
+
+                    self.present(alert, animated: true)
+                }
+            }
+            catch {
+                Log.error(error, message: "Sending report content failed")
+                DispatchQueue.main.async {
+                    self.alert(error)
+                }
+            }
+        }
+    }
+
     var chatInputPresenter: BasicChatInputBarPresenter!
 
     override func createChatInputView() -> UIView {
@@ -373,6 +398,20 @@ extension ChatViewController: AudioPlayableProtocol {
         self.cachedAudioModel?.state.value = .stopped
         self.cachedAudioModel = nil
     }
+
+    func longPressOnAudio(id: String, isIncoming: Bool) {
+        if isIncoming {
+            let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+            let reportAction = self.makeReportAction(messageId: id)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+            alert.addAction(reportAction)
+            alert.addAction(cancelAction)
+
+            self.present(alert, animated: true)
+        }
+    }
 }
 
 extension ChatViewController: PhotoObserverProtocol {
@@ -400,11 +439,16 @@ extension ChatViewController: PhotoObserverProtocol {
         self.statusBarHidden = false
     }
 
-    func showSaveImageAlert(_ image: UIImage) {
+    func longPressOnImage(_ image: UIImage, id: String, isIncoming: Bool) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         let saveAction = UIAlertAction(title: "Save to Camera Roll", style: .default) { _ in
             UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
+        }
+
+        if isIncoming {
+            let reportAction = self.makeReportAction(messageId: id)
+            alert.addAction(reportAction)
         }
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)

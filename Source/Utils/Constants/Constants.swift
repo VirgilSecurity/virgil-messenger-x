@@ -40,6 +40,7 @@ enum URLConstants {
     static let virgilJwtEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/virgil-jwt/")!
     static let ejabberdJwtEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/ejabberd-jwt/")!
     static let signUpEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/signup/")!
+    static let reportEndpoint = URL(string: "\(URLConstants.serviceBaseURL)/report-content/")!
 
     // Other links
     static let termsAndConditionsURL = "https://virgilsecurity.com/terms-of-service"
