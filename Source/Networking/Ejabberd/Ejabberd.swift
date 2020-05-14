@@ -15,18 +15,23 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
     internal let initQueue = DispatchQueue(label: "Ejabberd")
     private let delegateQueue = DispatchQueue(label: "EjabberdDelegate")
 
-    internal let stream: XMPPStream = XMPPStream()
     internal var retryConfig: RetryConfig = RetryConfig()
 
     internal var messageQueue = OperationQueue()
     internal var tokenProvider: EjabberdTokenProvider?
+    internal var completionQueue: [CompletionQueueItem] = []
 
+    // Ejabberd features
+    internal let stream: XMPPStream = XMPPStream()
+    internal let blocking = XMPPBlocking()
     private let upload = XMPPHTTPFileUpload()
     private let deliveryReceipts = XMPPMessageDeliveryReceipts()
     private let readReceipts = XMPPMessageReadReceipts()
 
+
     private let uploadJid: XMPPJID = XMPPJID(string: "upload.\(URLConstants.ejabberdHost)")!
 
+    // Notification tokens
     static var updatedPushToken: Data?
     static var updatedVoipPushToken: Data?
 
@@ -53,6 +58,12 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
         self.readReceipts.activate(self.stream)
         self.readReceipts.autoSendMessageReadRequests = true
         self.readReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
+
+        // Blacklist
+        self.blocking.activate(self.stream)
+        self.blocking.autoRetrieveBlockingListItems = true
+        self.blocking.autoClearBlockingListInfo = true
+        self.blocking.addDelegate(self, delegateQueue: self.delegateQueue)
     }
 
     public static func setupJid(with username: String) throws -> XMPPJID {
@@ -86,5 +97,13 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
             .startSync()
             .get()
             .stringRepresentation
+    }
+
+    func queryCompleted(type: CompletionQueueItem.ActionType, error: Error?) {
+        let completionItem = self.completionQueue.first { $0.type == type }
+        completionItem?.completion(error)
+        try? completionItem?.mutex.unlock()
+
+        self.completionQueue = self.completionQueue.filter { $0.type != type }
     }
 }
