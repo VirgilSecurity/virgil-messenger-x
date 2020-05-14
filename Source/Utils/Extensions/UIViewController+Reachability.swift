@@ -55,7 +55,6 @@ extension UIViewController {
         }
     }
 
-    @discardableResult
     internal func checkReachability() -> Bool {
         let reachable = self.reachabilityStatus != .notReachable
 

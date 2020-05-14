@@ -65,7 +65,9 @@ class ChatInfoViewController: ViewController {
     }
 
     func blockingCellTapped() {
-        self.checkReachability()
+        guard self.checkReachability() else {
+            return
+        }
         
         guard Ejabberd.shared.state == .connected else {
             self.alert(UserFriendlyError.noConnection)
