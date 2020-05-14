@@ -65,6 +65,13 @@ class ChatInfoViewController: ViewController {
     }
 
     func blockingCellTapped() {
+        self.checkReachability()
+        
+        guard Ejabberd.shared.state == .connected else {
+            self.alert(UserFriendlyError.noConnection)
+            return
+        }
+
         self.channel.blocked ? self.unblockTapped() : self.blockTapped()
     }
 
@@ -84,7 +91,9 @@ class ChatInfoViewController: ViewController {
                 }
                 catch {
                     Log.error(error, message: "Blocking user failed")
-                    self.alert(error)
+                    DispatchQueue.main.async {
+                        self.alert(error)
+                    }
                 }
             }
         }
@@ -110,7 +119,9 @@ class ChatInfoViewController: ViewController {
             }
             catch {
                 Log.error(error, message: "Blocking user failed")
-                self.alert(error)
+                DispatchQueue.main.async {
+                    self.alert(error)
+                }
             }
         }
     }

@@ -11,11 +11,6 @@ import XMPPFrameworkSwift
 extension Ejabberd {
     func block(user: String, completion: @escaping (Error?) -> Void) {
         do {
-            guard self.state == .connected else {
-                completion()
-                return
-            }
-
             let userJID = try Ejabberd.setupJid(with: user)
 
             try self.completionQueue.first { $0.type == .blockUnblock }?.mutex.lock()
