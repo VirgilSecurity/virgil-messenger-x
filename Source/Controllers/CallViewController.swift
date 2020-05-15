@@ -40,7 +40,7 @@ class CallViewController: ViewController {
         super.viewDidDisappear(animated)
 
         self.calls.forEach { (call) in
-            call.delegate = nil
+            call.removeObserver(self)
         }
 
         self.calls.removeAll()
@@ -54,13 +54,13 @@ class CallViewController: ViewController {
     }
 
     public func addCall(call: Call) {
-        call.delegate = self
+        call.addObserver(self)
         self.calls.append(call)
         self.updateCallView()
     }
 
     public func removeCall(call: Call) {
-        call.delegate = nil
+        call.removeObserver(self)
         self.calls.removeAll { $0.uuid == call.uuid }
 
         if !self.calls.isEmpty {
@@ -125,8 +125,14 @@ extension CallViewController: CallDelegate {
 
     func call(_ call: Call, didChangeConnectionStatus newConnectionStatus: CallConnectionStatus) {
         switch newConnectionStatus {
-        case .closed, .disconnected, .failed:
+        case .closed, .failed:
             CallManager.shared.endCall(call)
+
+        case .disconnected:
+            self.callStatusQueue.asyncAfter(deadline: .now() + 5.0) {
+                CallManager.shared.endCall(call)
+            }
+
         default:
             break
         }
