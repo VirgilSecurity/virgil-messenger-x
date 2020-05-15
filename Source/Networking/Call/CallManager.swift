@@ -87,7 +87,7 @@ public class CallManager: NSObject {
 
     private func configureAudioResources() {
         do {
-            if let beepAudio = NSDataAsset(name:"audio-short-dial") {
+            if let beepAudio = NSDataAsset(name: "audio-short-dial") {
                 self.beepAudioPlayer = try AVAudioPlayer(data:beepAudio.data, fileTypeHint: AVFileType.wav.rawValue)
                 self.beepAudioPlayer?.delegate = self
                 self.beepAudioPlayer?.numberOfLoops = -1
@@ -97,7 +97,7 @@ public class CallManager: NSObject {
                 Log.debug("CallManager: Unable load 'audio-short-dial' audio file.")
             }
 
-            if let initiatingSecureCallAudio = NSDataAsset(name:"audio-initiating-secure-call") {
+            if let initiatingSecureCallAudio = NSDataAsset(name: "audio-initiating-secure-call") {
                 self.callInitiateAudioPlayer = try AVAudioPlayer(data:initiatingSecureCallAudio.data, fileTypeHint: AVFileType.wav.rawValue)
                 self.callInitiateAudioPlayer?.delegate = self
                 self.callInitiateAudioPlayer?.prepareToPlay()
@@ -106,7 +106,7 @@ public class CallManager: NSObject {
                 Log.debug("CallManager: Unable load 'audio-initiating-secure-call' audio file.")
             }
 
-            if let secureCallEndedAudio = NSDataAsset(name:"audio-secure-call-ended") {
+            if let secureCallEndedAudio = NSDataAsset(name: "audio-secure-call-ended") {
                 self.callEndAudioPlayer = try AVAudioPlayer(data:secureCallEndedAudio.data, fileTypeHint: AVFileType.wav.rawValue)
                 self.callEndAudioPlayer?.delegate = self
                 self.callEndAudioPlayer?.prepareToPlay()
@@ -115,7 +115,7 @@ public class CallManager: NSObject {
                 Log.debug("CallManager: Unable load 'audio-secure-call-ended' audio file.")
             }
 
-            if let connectionLostAudio = NSDataAsset(name:"audio-connection-lost") {
+            if let connectionLostAudio = NSDataAsset(name: "audio-connection-lost") {
                 self.connectionLostPlayer = try AVAudioPlayer(data:connectionLostAudio.data, fileTypeHint: AVFileType.wav.rawValue)
                 self.connectionLostPlayer?.delegate = self
                 self.connectionLostPlayer?.prepareToPlay()
@@ -133,18 +133,18 @@ public class CallManager: NSObject {
     public func startOutgoingCall(to callee: String) {
         do {
             try self.configureAudioSession()
-        } catch {
+
+            self.requestCallStatusPlayback(.initiateCall)
+
+            self.requestSystemStartOutgoingCall(to: callee) { error in
+                if let error = error {
+                    self.delegate?.callManager(self, didFail: error)
+                }
+            }
+        }
+        catch {
             Log.error(error, message: "Failed to configure audio session.")
             self.didFail(CallManagerError.configureFailed)
-            return
-        }
-
-        self.requestCallStatusPlayback(.initiateCall)
-
-        self.requestSystemStartOutgoingCall(to: callee) { error in
-            if let error = error {
-                self.delegate?.callManager(self, didFail: error)
-            }
         }
     }
 
