@@ -173,6 +173,27 @@ class ChatViewController: BaseChatViewController {
         super.prepare(for: segue, sender: sender)
     }
 
+    private func showActionslist(_ actions: [UIAlertAction], showReport: Bool, messageId: String) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        if showReport {
+            let reportAction = self.makeReportAction(messageId: messageId)
+            alert.addAction(reportAction)
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+        actions.forEach {
+            alert.addAction($0)
+        }
+        
+        alert.addAction(cancelAction)
+
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
+    }
+
     private func makeReportAction(messageId: String) -> UIAlertAction {
         UIAlertAction(title: "Report", style: .destructive) { _ in
             do {
@@ -402,15 +423,7 @@ extension ChatViewController: AudioPlayableProtocol {
 
     func longPressOnAudio(id: String, isIncoming: Bool) {
         if isIncoming {
-            let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
-            let reportAction = self.makeReportAction(messageId: id)
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-
-            alert.addAction(reportAction)
-            alert.addAction(cancelAction)
-
-            self.present(alert, animated: true)
+            self.showActionslist([], showReport: true, messageId: id)
         }
     }
 }
@@ -441,23 +454,11 @@ extension ChatViewController: PhotoObserverProtocol {
     }
 
     func longPressOnImage(_ image: UIImage, id: String, isIncoming: Bool) {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
-        if isIncoming {
-            let reportAction = self.makeReportAction(messageId: id)
-            alert.addAction(reportAction)
-        }
-
         let saveAction = UIAlertAction(title: "Save to Camera Roll", style: .default) { _ in
             UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
         }
 
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-
-        alert.addAction(saveAction)
-        alert.addAction(cancelAction)
-
-        self.present(alert, animated: true)
+        self.showActionslist([saveAction], showReport: isIncoming, messageId: id)
     }
 
     @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
@@ -477,22 +478,10 @@ extension ChatViewController: PhotoObserverProtocol {
 
 extension ChatViewController: TextTappableProtocol {
     func longPressOnText(_ text: String, id: String, isIncoming: Bool) {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
-        if isIncoming {
-            let reportAction = self.makeReportAction(messageId: id)
-            alert.addAction(reportAction)
-        }
-
         let copyAction = UIAlertAction(title: "Copy", style: .default) { _ in
             UIPasteboard.general.string = text
         }
 
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-
-        alert.addAction(copyAction)
-        alert.addAction(cancelAction)
-
-        self.present(alert, animated: true)
+        self.showActionslist([copyAction], showReport: isIncoming, messageId: id)
     }
 }
