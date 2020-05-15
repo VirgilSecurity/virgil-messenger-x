@@ -15,6 +15,7 @@ public enum CallManagerError: String, Error {
     case noActiveCall
     case callKitFailed
     case configureFailed
+    case loadAudioAssetFailed
 }
 
 public enum CallManagerContractError: String, Error {
@@ -85,48 +86,32 @@ public class CallManager: NSObject {
         self.endAllCalls()
     }
 
-    private func configureAudioResources() {
+    private func setupPlayer(assetName: String) -> AVAudioPlayer? {
+        var player: AVAudioPlayer?
+
         do {
-            if let beepAudio = NSDataAsset(name: "audio-short-dial") {
-                self.beepAudioPlayer = try AVAudioPlayer(data:beepAudio.data, fileTypeHint: AVFileType.wav.rawValue)
-                self.beepAudioPlayer?.delegate = self
-                self.beepAudioPlayer?.numberOfLoops = -1
-                self.beepAudioPlayer?.prepareToPlay()
-            }
-            else {
-                Log.debug("CallManager: Unable load 'audio-short-dial' audio file.")
+            guard let dataAsset = NSDataAsset(name: assetName) else {
+                throw CallManagerError.loadAudioAssetFailed
             }
 
-            if let initiatingSecureCallAudio = NSDataAsset(name: "audio-initiating-secure-call") {
-                self.callInitiateAudioPlayer = try AVAudioPlayer(data:initiatingSecureCallAudio.data, fileTypeHint: AVFileType.wav.rawValue)
-                self.callInitiateAudioPlayer?.delegate = self
-                self.callInitiateAudioPlayer?.prepareToPlay()
-            }
-            else {
-                Log.debug("CallManager: Unable load 'audio-initiating-secure-call' audio file.")
-            }
-
-            if let secureCallEndedAudio = NSDataAsset(name: "audio-secure-call-ended") {
-                self.callEndAudioPlayer = try AVAudioPlayer(data:secureCallEndedAudio.data, fileTypeHint: AVFileType.wav.rawValue)
-                self.callEndAudioPlayer?.delegate = self
-                self.callEndAudioPlayer?.prepareToPlay()
-            }
-            else {
-                Log.debug("CallManager: Unable load 'audio-secure-call-ended' audio file.")
-            }
-
-            if let connectionLostAudio = NSDataAsset(name: "audio-connection-lost") {
-                self.connectionLostPlayer = try AVAudioPlayer(data:connectionLostAudio.data, fileTypeHint: AVFileType.wav.rawValue)
-                self.connectionLostPlayer?.delegate = self
-                self.connectionLostPlayer?.prepareToPlay()
-            }
-            else {
-                Log.debug("CallManager: Unable load 'audio-connection-lost' audio file.")
-            }
+            player = try AVAudioPlayer(data: dataAsset.data, fileTypeHint: AVFileType.wav.rawValue)
+            player?.delegate = self
+            player?.prepareToPlay()
         }
         catch {
-            Log.error(error, message: "Unable to initialize audio player for additional call sounds.")
+            Log.error(error, message: "Setting up player for \(assetName) call sound failed")
         }
+
+        return player
+    }
+
+    private func configureAudioResources() {
+        self.beepAudioPlayer = self.setupPlayer(assetName: "audio-short-dial")
+        self.beepAudioPlayer?.numberOfLoops = -1
+
+        self.callInitiateAudioPlayer = self.setupPlayer(assetName: "audio-initiating-secure-call")
+        self.callEndAudioPlayer = self.setupPlayer(assetName: "audio-secure-call-ended")
+        self.connectionLostPlayer = self.setupPlayer(assetName: "audio-connection-lost")
     }
 
     // MARK: Calls Management
