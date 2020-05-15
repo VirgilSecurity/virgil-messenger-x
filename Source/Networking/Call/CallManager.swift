@@ -34,6 +34,8 @@ private enum CallStatusPlayback: String {
     case none
     case initiateCall
     case calling
+    case connecting
+    case connected
     case connectionLost
     case endCall
 }
@@ -59,6 +61,7 @@ public class CallManager: NSObject {
     private var connectionLostPlayer: AVAudioPlayer?
     private var requestedCallStatusPlayback: CallStatusPlayback = .none
     private var currentCallStatusPlayback: CallStatusPlayback = .none
+    private var isCallStatusPlaybackPlaying = false
 
     // MARK: Delegate
     weak var delegate: CallManagerDelegate?
@@ -194,9 +197,13 @@ public class CallManager: NSObject {
 
         self.requestCallStatusPlayback(.endCall)
 
-        self.requestSystemEndCall(call) { error in
-            if let error = error {
-                self.didFailCall(call, error)
+        // Wait until "Secure Call Ended" playback will finish.
+        // TODO: Make it more clear.
+        self.audioControlQueue.asyncAfter(deadline: .now() + 1.4) {
+            self.requestSystemEndCall(call) { error in
+                if let error = error {
+                    self.didFailCall(call, error)
+                }
             }
         }
     }
@@ -244,9 +251,13 @@ public class CallManager: NSObject {
         case .end:
             self.requestCallStatusPlayback(.endCall)
 
-            self.requestSystemEndCall(call) { error in
-                if let error = error {
-                    self.didFailCall(call, error)
+            // Wait until "Secure Call Ended" playback will finish.
+            // TODO: Make it more clear.
+            self.audioControlQueue.asyncAfter(deadline: .now() + 1.4) {
+                self.requestSystemEndCall(call) { error in
+                    if let error = error {
+                        self.didFailCall(call, error)
+                    }
                 }
             }
 
@@ -354,44 +365,64 @@ public class CallManager: NSObject {
     // MARK: Playback control
     private func requestCallStatusPlayback(_ status: CallStatusPlayback) {
         self.audioControlQueue.async {
+            if (self.currentCallStatusPlayback == status) ||
+                (self.currentCallStatusPlayback == .connecting && status == .calling) ||
+                (self.currentCallStatusPlayback == .connected && status == .calling) ||
+                (self.currentCallStatusPlayback == .endCall && status == .connectionLost) {
+
+                return
+            }
+
             self.requestedCallStatusPlayback = status
+            self.processRequestedCallStatusPlayback()
         }
 
-        self.processRequestedCallStatusPlayback()
     }
 
     private func processRequestedCallStatusPlayback() {
         self.audioControlQueue.async {
             guard self.audioSession.isAudioEnabled else {
+                Log.debug("CallManager: Delay starting playback \(self.requestedCallStatusPlayback) - audio module is didable.")
                 return
             }
 
-            switch self.currentCallStatusPlayback {
-            case .calling:
-                self.beepAudioPlayer?.stop()
-
-            case .connectionLost, .endCall, .initiateCall:
-                return
-
-            case .none:
-                break
+            if self.isCallStatusPlaybackPlaying {
+                if self.currentCallStatusPlayback == .calling {
+                    self.beepAudioPlayer?.stop()
+                    self.isCallStatusPlaybackPlaying = false
+                }
+                else {
+                    Log.debug("CallManager: Delay starting playback \(self.requestedCallStatusPlayback) - wait until \(self.currentCallStatusPlayback) ends.")
+                    return
+                }
             }
 
             switch self.requestedCallStatusPlayback {
-            case .none:
+            case .none, .connecting, .connected:
                 break
 
             case .initiateCall:
+                self.isCallStatusPlaybackPlaying = true
                 self.callInitiateAudioPlayer?.play()
 
             case .calling:
+                self.isCallStatusPlaybackPlaying = true
                 self.beepAudioPlayer?.play()
 
             case .connectionLost:
+                self.isCallStatusPlaybackPlaying = true
                 self.connectionLostPlayer?.play()
 
             case .endCall:
+                self.isCallStatusPlaybackPlaying = true
                 self.callEndAudioPlayer?.play()
+            }
+
+            if self.isCallStatusPlaybackPlaying {
+                Log.debug("CallManager: Start playback \(self.requestedCallStatusPlayback).")
+            }
+            else {
+                Log.debug("CallManager: Start fake playback \(self.requestedCallStatusPlayback).")
             }
 
             self.currentCallStatusPlayback = self.requestedCallStatusPlayback
@@ -403,14 +434,14 @@ public class CallManager: NSObject {
         self.audioControlQueue.async {
             self.beepAudioPlayer?.stop()
 
-            self.currentCallStatusPlayback = .none
+            self.isCallStatusPlaybackPlaying = false
         }
     }
 }
 
 extension CallManager: AVAudioPlayerDelegate {
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        self.currentCallStatusPlayback = .none
+        self.isCallStatusPlaybackPlaying = false
         self.processRequestedCallStatusPlayback()
     }
 }
@@ -418,8 +449,11 @@ extension CallManager: AVAudioPlayerDelegate {
 extension CallManager: CallDelegate {
     public func call(_ call: Call, didChangeConnectionStatus newConnectionStatus: CallConnectionStatus) {
         switch newConnectionStatus {
+        case .negotiating:
+            self.requestCallStatusPlayback(.connecting)
+
         case .connected:
-            self.stopBeepCallStatusPlayback()
+            self.requestCallStatusPlayback(.connected)
 
         case .disconnected:
             self.requestCallStatusPlayback(.connectionLost)
