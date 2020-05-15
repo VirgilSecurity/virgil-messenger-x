@@ -128,6 +128,7 @@ extension Call: RTCPeerConnectionDelegate {
             self.connectionStatus = .new
 
         case .checking:
+            (self as? OutgoingCall)?.remoteDidAcceptCall()
             self.connectionStatus = .negotiating
 
         case .connected:
