@@ -72,7 +72,7 @@ public class Call: NSObject {
         weak var observer: CallDelegate?
     }
 
-    private var observations = [ObjectIdentifier : Observation]()
+    private var observations: [ObjectIdentifier: Observation] = [:]
 
     public func addObserver(_ observer: CallDelegate) {
         let id = ObjectIdentifier(observer)
@@ -92,9 +92,10 @@ public class Call: NSObject {
         for (id, observation) in self.observations {
             // Cleanup
             guard let observer = observation.observer else {
-                observations.removeValue(forKey: id)
+                self.observations.removeValue(forKey: id)
                 continue
             }
+
             notify(observer)
         }
     }
