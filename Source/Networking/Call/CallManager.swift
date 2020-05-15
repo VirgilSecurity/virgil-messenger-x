@@ -199,7 +199,7 @@ public class CallManager: NSObject {
 
         // Wait until "Secure Call Ended" playback will finish.
         // TODO: Make it more clear.
-        self.audioControlQueue.asyncAfter(deadline: .now() + 1.2) {
+        self.audioControlQueue.asyncAfter(deadline: .now() + 1.4) {
             self.requestSystemEndCall(call) { error in
                 if let error = error {
                     self.didFailCall(call, error)
@@ -253,7 +253,7 @@ public class CallManager: NSObject {
 
             // Wait until "Secure Call Ended" playback will finish.
             // TODO: Make it more clear.
-            self.audioControlQueue.asyncAfter(deadline: .now() + 1.2) {
+            self.audioControlQueue.asyncAfter(deadline: .now() + 1.4) {
                 self.requestSystemEndCall(call) { error in
                     if let error = error {
                         self.didFailCall(call, error)
@@ -365,7 +365,8 @@ public class CallManager: NSObject {
     // MARK: Playback control
     private func requestCallStatusPlayback(_ status: CallStatusPlayback) {
         self.audioControlQueue.async {
-            if (self.currentCallStatusPlayback == .connecting && status == .calling) ||
+            if (self.currentCallStatusPlayback == status) ||
+                (self.currentCallStatusPlayback == .connecting && status == .calling) ||
                 (self.currentCallStatusPlayback == .connected && status == .calling) ||
                 (self.currentCallStatusPlayback == .endCall && status == .connectionLost) {
 
@@ -388,6 +389,7 @@ public class CallManager: NSObject {
             if self.isCallStatusPlaybackPlaying {
                 if self.currentCallStatusPlayback == .calling {
                     self.beepAudioPlayer?.stop()
+                    self.isCallStatusPlaybackPlaying = false
                 }
                 else {
                     Log.debug("CallManager: Delay starting playback \(self.requestedCallStatusPlayback) - wait until \(self.currentCallStatusPlayback) ends.")
@@ -416,7 +418,12 @@ public class CallManager: NSObject {
                 self.callEndAudioPlayer?.play()
             }
 
-            Log.debug("CallManager: Start playback \(self.requestedCallStatusPlayback).")
+            if self.isCallStatusPlaybackPlaying {
+                Log.debug("CallManager: Start playback \(self.requestedCallStatusPlayback).")
+            }
+            else {
+                Log.debug("CallManager: Start fake playback \(self.requestedCallStatusPlayback).")
+            }
 
             self.currentCallStatusPlayback = self.requestedCallStatusPlayback
             self.requestedCallStatusPlayback = .none
