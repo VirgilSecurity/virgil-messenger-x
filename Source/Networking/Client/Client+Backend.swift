@@ -89,7 +89,10 @@ extension Client {
       }
 
     public func sendReport(about identity: String, messageId: String) throws {
-        let headers = ["Content-Type": "application/json"]
+        // TODO: Remove Virgil dependency
+        var headers = try self.makeAuthHeader(for: Virgil.ethree.identity)
+        headers["Content-Type"] = "application/json"
+        
         let params = ["identity": identity,
                       "message_id": messageId]
 
