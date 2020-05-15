@@ -26,7 +26,7 @@ import ChattoAdditions
 
 protocol PhotoObserverProtocol: class {
     func showImage(_ : UIImage)
-    func showSaveImageAlert(_ : UIImage)
+    func longPressOnImage(_ : UIImage, id: String, isIncoming: Bool)
 }
 
 class UIPhotoMessageHandler: NSObject, BaseMessageInteractionHandlerProtocol {
@@ -36,6 +36,7 @@ class UIPhotoMessageHandler: NSObject, BaseMessageInteractionHandlerProtocol {
 
     private let baseHandler: BaseMessageHandler
     weak private var photoObserverController: PhotoObserverProtocol!
+    
     init (baseHandler: BaseMessageHandler, photoObserverController: PhotoObserverProtocol) {
         self.baseHandler = baseHandler
         self.photoObserverController = photoObserverController
@@ -63,7 +64,9 @@ class UIPhotoMessageHandler: NSObject, BaseMessageInteractionHandlerProtocol {
         self.baseHandler.userDidBeginLongPressOnBubble(viewModel: viewModel)
 
         if let image = viewModel.image.value {
-            self.photoObserverController.showSaveImageAlert(image)
+            self.photoObserverController.longPressOnImage(image,
+                                                          id: viewModel.messageModel.uid,
+                                                          isIncoming: viewModel.isIncoming)
         }
     }
 
