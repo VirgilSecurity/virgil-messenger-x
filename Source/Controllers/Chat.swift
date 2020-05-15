@@ -173,6 +173,52 @@ class ChatViewController: BaseChatViewController {
         super.prepare(for: segue, sender: sender)
     }
 
+    private func showActionslist(_ actions: [UIAlertAction], showReport: Bool, messageId: String) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        if showReport {
+            let reportAction = self.makeReportAction(messageId: messageId)
+            alert.addAction(reportAction)
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+        actions.forEach {
+            alert.addAction($0)
+        }
+        
+        alert.addAction(cancelAction)
+
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
+    }
+
+    private func makeReportAction(messageId: String) -> UIAlertAction {
+        UIAlertAction(title: "Report", style: .destructive) { _ in
+            do {
+                try Virgil.shared.client.sendReport(about: self.channel.name, messageId: messageId)
+
+                DispatchQueue.main.async {
+                    let alert: UIAlertController = UIAlertController(title: "Thanks! Your report has been submitted.",
+                                                                     message: nil,
+                                                                     preferredStyle: .alert)
+
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alert.addAction(okAction)
+
+                    self.present(alert, animated: true)
+                }
+            }
+            catch {
+                Log.error(error, message: "Sending report content failed")
+                DispatchQueue.main.async {
+                    self.alert(error)
+                }
+            }
+        }
+    }
+
     var chatInputPresenter: BasicChatInputBarPresenter!
 
     override func createChatInputView() -> UIView {
@@ -242,7 +288,8 @@ extension ChatViewController {
 
         let textMessagePresenter = TextMessagePresenterBuilder(
             viewModelBuilder: UITextMessageViewModelBuilder(),
-            interactionHandler: UITextMessageHandler(baseHandler: self.baseMessageHandler)
+            interactionHandler: UITextMessageHandler(baseHandler: self.baseMessageHandler,
+                                                     textTappableController: self)
         )
 
         textMessagePresenter.baseMessageStyle = baseMessageStyle
@@ -373,6 +420,12 @@ extension ChatViewController: AudioPlayableProtocol {
         self.cachedAudioModel?.state.value = .stopped
         self.cachedAudioModel = nil
     }
+
+    func longPressOnAudio(id: String, isIncoming: Bool) {
+        if isIncoming {
+            self.showActionslist([], showReport: true, messageId: id)
+        }
+    }
 }
 
 extension ChatViewController: PhotoObserverProtocol {
@@ -400,19 +453,12 @@ extension ChatViewController: PhotoObserverProtocol {
         self.statusBarHidden = false
     }
 
-    func showSaveImageAlert(_ image: UIImage) {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
+    func longPressOnImage(_ image: UIImage, id: String, isIncoming: Bool) {
         let saveAction = UIAlertAction(title: "Save to Camera Roll", style: .default) { _ in
             UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
         }
 
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-
-        alert.addAction(saveAction)
-        alert.addAction(cancelAction)
-
-        self.present(alert, animated: true)
+        self.showActionslist([saveAction], showReport: isIncoming, messageId: id)
     }
 
     @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
@@ -427,5 +473,15 @@ extension ChatViewController: PhotoObserverProtocol {
         else {
             HUD.flash(.success)
         }
+    }
+}
+
+extension ChatViewController: TextTappableProtocol {
+    func longPressOnText(_ text: String, id: String, isIncoming: Bool) {
+        let copyAction = UIAlertAction(title: "Copy", style: .default) { _ in
+            UIPasteboard.general.string = text
+        }
+
+        self.showActionslist([copyAction], showReport: isIncoming, messageId: id)
     }
 }
