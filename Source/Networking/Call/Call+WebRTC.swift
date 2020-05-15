@@ -131,7 +131,7 @@ extension Call: RTCPeerConnectionDelegate {
             self.connectionStatus = .negotiating
 
         case .connected:
-            self.didConnect()
+            self.createConnectedAt()
             self.connectionStatus = .connected
 
         case .completed:
@@ -175,6 +175,7 @@ extension Call: RTCPeerConnectionDelegate {
     }
 }
 
+// TODO: Move to the CallManager
 extension Call : RTCAudioSessionDelegate {
     public func audioSessionDidBeginInterruption(_ session: RTCAudioSession) {
         Log.debug("WebRTC Audio Session: did begin interruption.")

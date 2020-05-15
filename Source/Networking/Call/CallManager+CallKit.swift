@@ -167,12 +167,13 @@ extension CallManager: CXProviderDelegate {
             return
         }
 
-        self.restoreAudioSessionConfig()
         self.updateRemoteCall(call, withAction: .end)
 
         call.end()
 
         self.removeCall(call)
+
+        self.restoreAudioSessionConfig()
 
         action.fulfill(withDateEnded: Date())
     }

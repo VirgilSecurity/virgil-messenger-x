@@ -15,6 +15,7 @@ public enum CallManagerError: String, Error {
     case noActiveCall
     case callKitFailed
     case configureFailed
+    case loadAudioAssetFailed
 }
 
 public enum CallManagerContractError: String, Error {
@@ -29,6 +30,16 @@ public protocol CallManagerDelegate: class {
     func callManager(_ callManager: CallManager, didFailCall call: Call, error: Error)
 }
 
+private enum CallStatusPlayback: String {
+    case none
+    case initiateCall
+    case calling
+    case connecting
+    case connected
+    case connectionLost
+    case endCall
+}
+
 public class CallManager: NSObject {
 
     // MARK: Singleton
@@ -41,6 +52,16 @@ public class CallManager: NSObject {
     let messageSender: MessageSender = MessageSender()
 
     private let callProviderQueue = DispatchQueue(label: "CallManager.CallProviderQueue")
+    private let audioControlQueue = DispatchQueue(label: "CallManager.AudioControlQueue")
+
+    // MARK: Playback properties
+    private var beepAudioPlayer: AVAudioPlayer?
+    private var callInitiateAudioPlayer: AVAudioPlayer?
+    private var callEndAudioPlayer: AVAudioPlayer?
+    private var connectionLostPlayer: AVAudioPlayer?
+    private var requestedCallStatusPlayback: CallStatusPlayback = .none
+    private var currentCallStatusPlayback: CallStatusPlayback = .none
+    private var isCallStatusPlaybackPlaying = false
 
     // MARK: Delegate
     weak var delegate: CallManagerDelegate?
@@ -55,7 +76,7 @@ public class CallManager: NSObject {
         super.init()
 
         self.callProvider.setDelegate(self, queue: callProviderQueue)
-        
+        self.configureAudioResources()
     }
 
     public func set(account: Storage.Account) {
@@ -68,20 +89,50 @@ public class CallManager: NSObject {
         self.endAllCalls()
     }
 
+    private func setupPlayer(assetName: String) -> AVAudioPlayer? {
+        var player: AVAudioPlayer?
+
+        do {
+            guard let dataAsset = NSDataAsset(name: assetName) else {
+                throw CallManagerError.loadAudioAssetFailed
+            }
+
+            player = try AVAudioPlayer(data: dataAsset.data, fileTypeHint: AVFileType.wav.rawValue)
+            player?.delegate = self
+            player?.prepareToPlay()
+        }
+        catch {
+            Log.error(error, message: "Setting up player for \(assetName) call sound failed")
+        }
+
+        return player
+    }
+
+    private func configureAudioResources() {
+        self.beepAudioPlayer = self.setupPlayer(assetName: "audio-short-dial")
+        self.beepAudioPlayer?.numberOfLoops = -1
+
+        self.callInitiateAudioPlayer = self.setupPlayer(assetName: "audio-initiating-secure-call")
+        self.callEndAudioPlayer = self.setupPlayer(assetName: "audio-secure-call-ended")
+        self.connectionLostPlayer = self.setupPlayer(assetName: "audio-connection-lost")
+    }
+
     // MARK: Calls Management
     public func startOutgoingCall(to callee: String) {
         do {
             try self.configureAudioSession()
-        } catch {
+
+            self.requestCallStatusPlayback(.initiateCall)
+
+            self.requestSystemStartOutgoingCall(to: callee) { error in
+                if let error = error {
+                    self.delegate?.callManager(self, didFail: error)
+                }
+            }
+        }
+        catch {
             Log.error(error, message: "Failed to configure audio session.")
             self.didFail(CallManagerError.configureFailed)
-            return
-        }
-
-        self.requestSystemStartOutgoingCall(to: callee) { error in
-            if let error = error {
-                self.delegate?.callManager(self, didFail: error)
-            }
         }
     }
 
@@ -144,9 +195,15 @@ public class CallManager: NSObject {
             return
         }
 
-        self.requestSystemEndCall(call) { error in
-            if let error = error {
-                self.didFailCall(call, error)
+        self.requestCallStatusPlayback(.endCall)
+
+        // Wait until "Secure Call Ended" playback will finish.
+        // TODO: Make it more clear.
+        self.audioControlQueue.asyncAfter(deadline: .now() + 1.4) {
+            self.requestSystemEndCall(call) { error in
+                if let error = error {
+                    self.didFailCall(call, error)
+                }
             }
         }
     }
@@ -192,13 +249,21 @@ public class CallManager: NSObject {
         let action = callUpdate.action
         switch action {
         case .end:
-            self.requestSystemEndCall(call) { error in
-                if let error = error {
-                    self.didFailCall(call, error)
+            self.requestCallStatusPlayback(.endCall)
+
+            // Wait until "Secure Call Ended" playback will finish.
+            // TODO: Make it more clear.
+            self.audioControlQueue.asyncAfter(deadline: .now() + 1.4) {
+                self.requestSystemEndCall(call) { error in
+                    if let error = error {
+                        self.didFailCall(call, error)
+                    }
                 }
             }
 
         case .received:
+            self.requestCallStatusPlayback(.calling)
+
             if let outgoingCall = call as? OutgoingCall {
                 outgoingCall.remoteDidAcceptCall()
             }
@@ -210,11 +275,13 @@ public class CallManager: NSObject {
     }
 
     func addCall(_ call: Call) {
+        call.addObserver(self)
         self.calls.insert(call)
         self.delegate?.callManager(self, didAddCall: call)
     }
 
     func removeCall(_ call: Call) {
+        call.removeObserver(self)
         self.calls.remove(call)
         self.delegate?.callManager(self, didRemoveCall: call)
     }
@@ -280,12 +347,119 @@ public class CallManager: NSObject {
         self.audioSession.audioSessionDidActivate(session)
         self.audioSession.isAudioEnabled = true
 
+        self.processRequestedCallStatusPlayback()
+
         Log.debug("CallManager: did activate audio session.")
     }
 
     func deactivateAudioSession(_ session: AVAudioSession) {
         Log.debug("CallManager: will deactivate audio session.")
+
+        self.stopBeepCallStatusPlayback()
+
         self.audioSession.audioSessionDidDeactivate(session)
+
         Log.debug("CallManager: did deactivate audio session.")
+    }
+
+    // MARK: Playback control
+    private func requestCallStatusPlayback(_ status: CallStatusPlayback) {
+        self.audioControlQueue.async {
+            if (self.currentCallStatusPlayback == status) ||
+                (self.currentCallStatusPlayback == .connecting && status == .calling) ||
+                (self.currentCallStatusPlayback == .connected && status == .calling) ||
+                (self.currentCallStatusPlayback == .endCall && status == .connectionLost) {
+
+                return
+            }
+
+            self.requestedCallStatusPlayback = status
+            self.processRequestedCallStatusPlayback()
+        }
+
+    }
+
+    private func processRequestedCallStatusPlayback() {
+        self.audioControlQueue.async {
+            guard self.audioSession.isAudioEnabled else {
+                Log.debug("CallManager: Delay starting playback \(self.requestedCallStatusPlayback) - audio module is didable.")
+                return
+            }
+
+            if self.isCallStatusPlaybackPlaying {
+                if self.currentCallStatusPlayback == .calling {
+                    self.beepAudioPlayer?.stop()
+                    self.isCallStatusPlaybackPlaying = false
+                }
+                else {
+                    Log.debug("CallManager: Delay starting playback \(self.requestedCallStatusPlayback) - wait until \(self.currentCallStatusPlayback) ends.")
+                    return
+                }
+            }
+
+            switch self.requestedCallStatusPlayback {
+            case .none, .connecting, .connected:
+                break
+
+            case .initiateCall:
+                self.isCallStatusPlaybackPlaying = true
+                self.callInitiateAudioPlayer?.play()
+
+            case .calling:
+                self.isCallStatusPlaybackPlaying = true
+                self.beepAudioPlayer?.play()
+
+            case .connectionLost:
+                self.isCallStatusPlaybackPlaying = true
+                self.connectionLostPlayer?.play()
+
+            case .endCall:
+                self.isCallStatusPlaybackPlaying = true
+                self.callEndAudioPlayer?.play()
+            }
+
+            if self.isCallStatusPlaybackPlaying {
+                Log.debug("CallManager: Start playback \(self.requestedCallStatusPlayback).")
+            }
+            else {
+                Log.debug("CallManager: Start fake playback \(self.requestedCallStatusPlayback).")
+            }
+
+            self.currentCallStatusPlayback = self.requestedCallStatusPlayback
+            self.requestedCallStatusPlayback = .none
+        }
+    }
+
+    private func stopBeepCallStatusPlayback() {
+        self.audioControlQueue.async {
+            self.beepAudioPlayer?.stop()
+
+            self.isCallStatusPlaybackPlaying = false
+        }
+    }
+}
+
+extension CallManager: AVAudioPlayerDelegate {
+    public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        self.isCallStatusPlaybackPlaying = false
+        self.processRequestedCallStatusPlayback()
+    }
+}
+
+extension CallManager: CallDelegate {
+    public func call(_ call: Call, didChangeConnectionStatus newConnectionStatus: CallConnectionStatus) {
+        switch newConnectionStatus {
+        case .negotiating:
+            self.requestCallStatusPlayback(.connecting)
+
+        case .connected:
+            self.requestCallStatusPlayback(.connected)
+
+        case .disconnected:
+            self.requestCallStatusPlayback(.connectionLost)
+
+        default:
+            break;
+        }
     }
 }
