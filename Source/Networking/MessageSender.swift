@@ -3,7 +3,7 @@ import ChattoAdditions
 import VirgilSDK
 
 public class MessageSender {
-    private let queue = DispatchQueue(label: "MessageSender")
+    private let queue = DispatchQueue(label: "MessageSender", qos: .userInitiated)
 
     private func send(message: NetworkMessage,
                       pushType: PushType,

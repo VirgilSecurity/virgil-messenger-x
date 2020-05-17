@@ -56,7 +56,7 @@ public class UserAuthorizer {
     }
 
    public func signUp(identity: String, completion: @escaping (Error?) -> Void) {
-        DispatchQueue(label: "UserAuthorizer").async {
+        DispatchQueue.global(qos: .userInitiated).async {
             do {
                 try self.virgilAuthorizer.signUp(identity: identity)
 
@@ -77,7 +77,7 @@ public class UserAuthorizer {
     }
 
     public func logOut(completion: @escaping (Error?) -> Void) {
-        DispatchQueue(label: "UserAuthorizer").async {
+        DispatchQueue.global(qos: .userInitiated).async {
             do {
                 try Ejabberd.shared.deregisterFromNotifications()
                 try Ejabberd.shared.disconect()

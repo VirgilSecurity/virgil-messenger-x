@@ -12,7 +12,6 @@ import XMPPFrameworkSwift
 class Ejabberd: NSObject, XMPPStreamDelegate {
     private(set) static var shared: Ejabberd = Ejabberd()
 
-    internal let initQueue = DispatchQueue(label: "Ejabberd")
     private let delegateQueue = DispatchQueue(label: "EjabberdDelegate")
 
     internal var retryConfig: RetryConfig = RetryConfig()
