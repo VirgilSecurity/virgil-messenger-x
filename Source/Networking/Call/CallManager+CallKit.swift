@@ -26,9 +26,7 @@ extension CallManager {
     }()
 
     static func createCallKitProvider() -> CXProvider {
-        let provider = CXProvider(configuration: Self.providerConfiguration)
-
-        return provider
+        CXProvider(configuration: Self.providerConfiguration)
     }
 }
 

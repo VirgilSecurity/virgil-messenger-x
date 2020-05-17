@@ -3,6 +3,7 @@ import ChattoAdditions
 import VirgilSDK
 
 public class MessageSender {
+    // TODO: Think of using global concurrent queue
     private let queue = DispatchQueue(label: "MessageSender", qos: .userInitiated)
 
     private func send(message: NetworkMessage,
