@@ -22,7 +22,7 @@ extension Ejabberd {
     }
 
     internal func send(message: XMPPMessage) throws {
-        let messageOperation = EjabberdOperation(message: message, stream: self.stream, delegateQueue: self.delegateQueue)
+        let messageOperation = EjabberdOperation(message: message, stream: self.stream, delegateQueue: self.queue)
 
         self.messageQueue.addOperation(messageOperation)
     }

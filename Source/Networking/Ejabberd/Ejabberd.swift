@@ -12,7 +12,7 @@ import XMPPFrameworkSwift
 class Ejabberd: NSObject, XMPPStreamDelegate {
     private(set) static var shared: Ejabberd = Ejabberd()
 
-    internal let delegateQueue = DispatchQueue(label: "EjabberdDelegate")
+    internal let queue = DispatchQueue(label: "EjabberdDelegate")
 
     internal var retryConfig: RetryConfig = RetryConfig()
 
@@ -43,7 +43,7 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
         self.stream.hostName = URLConstants.ejabberdHost
         self.stream.hostPort = URLConstants.ejabberdHostPort
         self.stream.startTLSPolicy = .allowed
-        self.stream.addDelegate(self, delegateQueue: self.delegateQueue)
+        self.stream.addDelegate(self, delegateQueue: self.queue)
 
         // Upload
         self.upload.activate(self.stream)
@@ -51,18 +51,18 @@ class Ejabberd: NSObject, XMPPStreamDelegate {
         // Delivery Receipts
         self.deliveryReceipts.activate(self.stream)
         self.deliveryReceipts.autoSendMessageDeliveryRequests = true
-        self.deliveryReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
+        self.deliveryReceipts.addDelegate(self, delegateQueue: self.queue)
 
         // Read Receipts
         self.readReceipts.activate(self.stream)
         self.readReceipts.autoSendMessageReadRequests = true
-        self.readReceipts.addDelegate(self, delegateQueue: self.delegateQueue)
+        self.readReceipts.addDelegate(self, delegateQueue: self.queue)
 
         // Blacklist
         self.blocking.activate(self.stream)
         self.blocking.autoRetrieveBlockingListItems = true
         self.blocking.autoClearBlockingListInfo = true
-        self.blocking.addDelegate(self, delegateQueue: self.delegateQueue)
+        self.blocking.addDelegate(self, delegateQueue: self.queue)
     }
 
     public static func setupJid(with username: String) throws -> XMPPJID {

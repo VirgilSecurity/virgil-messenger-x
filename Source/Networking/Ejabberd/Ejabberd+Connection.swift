@@ -60,7 +60,7 @@ extension Ejabberd {
     }
 
     private func initialize(after: TimeInterval = RetryConfig.ReconnectDelay.noDelay.rawValue) {
-        self.delegateQueue.asyncAfter(deadline: .now() + after) {
+        self.queue.asyncAfter(deadline: .now() + after) {
             do {
                 guard self.state != .connecting else {
                     return
