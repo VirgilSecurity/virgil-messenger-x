@@ -98,7 +98,6 @@ public class CallManager: NSObject {
 
             player = try AVAudioPlayer(data: dataAsset.data, fileTypeHint: AVFileType.wav.rawValue)
             player?.delegate = self
-            player?.prepareToPlay()
         }
         catch {
             Log.error(error, message: "Setting up player for \(assetName) call sound failed")
