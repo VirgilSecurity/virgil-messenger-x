@@ -51,8 +51,7 @@ public class CallManager: NSObject {
     let audioSession = RTCAudioSession.sharedInstance()
     let messageSender: MessageSender = MessageSender()
 
-    private let callProviderQueue = DispatchQueue(label: "CallManager.CallProviderQueue")
-    private let audioControlQueue = DispatchQueue(label: "CallManager.AudioControlQueue")
+    private let queue = DispatchQueue(label: "CallManager.CallProviderQueue", qos: .userInitiated)
 
     // MARK: Playback properties
     private var beepAudioPlayer: AVAudioPlayer?
@@ -75,7 +74,7 @@ public class CallManager: NSObject {
     public override init() {
         super.init()
 
-        self.callProvider.setDelegate(self, queue: callProviderQueue)
+        self.callProvider.setDelegate(self, queue: self.queue)
         self.configureAudioResources()
     }
 
@@ -141,7 +140,7 @@ public class CallManager: NSObject {
         let callUUID = callOffer.callUUID
         let caller = callOffer.caller
 
-        if self.findCall(with: callUUID) != nil {
+        guard self.findCall(with: callUUID) == nil else {
             Log.debug("Call with id \(callUUID.uuidString) was already added.")
             self.requestSystemDummyIncomingCall(pushKitCompletion: pushKitCompletion)
             return
@@ -157,7 +156,7 @@ public class CallManager: NSObject {
                 self.didFail(error)
             }
 
-            self.callProviderQueue.async {
+            self.queue.async {
                 do {
                     guard let account = self.account else {
                         throw CallManagerContractError.noAccount
@@ -199,7 +198,7 @@ public class CallManager: NSObject {
 
         // Wait until "Secure Call Ended" playback will finish.
         // TODO: Make it more clear.
-        self.audioControlQueue.asyncAfter(deadline: .now() + 1.4) {
+        self.queue.asyncAfter(deadline: .now() + 1.4) {
             self.requestSystemEndCall(call) { error in
                 if let error = error {
                     self.didFailCall(call, error)
@@ -253,7 +252,7 @@ public class CallManager: NSObject {
 
             // Wait until "Secure Call Ended" playback will finish.
             // TODO: Make it more clear.
-            self.audioControlQueue.asyncAfter(deadline: .now() + 1.4) {
+            self.queue.asyncAfter(deadline: .now() + 1.4) {
                 self.requestSystemEndCall(call) { error in
                     if let error = error {
                         self.didFailCall(call, error)
@@ -364,7 +363,7 @@ public class CallManager: NSObject {
 
     // MARK: Playback control
     private func requestCallStatusPlayback(_ status: CallStatusPlayback) {
-        self.audioControlQueue.async {
+        self.queue.async {
             if (self.currentCallStatusPlayback == status) ||
                 (self.currentCallStatusPlayback == .connecting && status == .calling) ||
                 (self.currentCallStatusPlayback == .connected && status == .calling) ||
@@ -380,7 +379,7 @@ public class CallManager: NSObject {
     }
 
     private func processRequestedCallStatusPlayback() {
-        self.audioControlQueue.async {
+        self.queue.async {
             guard self.audioSession.isAudioEnabled else {
                 Log.debug("CallManager: Delay starting playback \(self.requestedCallStatusPlayback) - audio module is didable.")
                 return
@@ -431,7 +430,7 @@ public class CallManager: NSObject {
     }
 
     private func stopBeepCallStatusPlayback() {
-        self.audioControlQueue.async {
+        self.queue.async {
             self.beepAudioPlayer?.stop()
 
             self.isCallStatusPlaybackPlaying = false
