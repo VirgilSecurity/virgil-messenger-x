@@ -14,6 +14,15 @@ extension UIViewController {
         case tabBar = "TabBar"
     }
 
+    enum Segue: String {
+        case toChatInfo = "toChatInfo"
+        case toChat = "toChat"
+    }
+
+    func perform(segue: Segue) {
+        self.performSegue(withIdentifier: segue.rawValue, sender: self)
+    }
+
     @discardableResult
     func switchNavigationStack(to name: NavigationStackName) -> UIViewController {
         let storyboard = UIStoryboard(name: name.rawValue, bundle: Bundle.main)

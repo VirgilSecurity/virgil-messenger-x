@@ -17,4 +17,5 @@ public enum EjabberdError: Int, Error {
     case missingElementId = 6
     case generatingReadResponseFailed = 7
     case generatingDeliveryResponseFailed = 8
+    case blockingActionFailed = 9
 }

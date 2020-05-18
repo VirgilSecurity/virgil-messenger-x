@@ -50,6 +50,8 @@ class CallableController: ViewController {
 
     private func setupCallViewController(with call: Call) {
         DispatchQueue.main.async {
+            UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: true, completion: nil)
+
             let callViewController = self.lazyCallViewController
 
             callViewController.addCall(call: call)

@@ -13,6 +13,8 @@ protocol AudioPlayableProtocol: class, AVAudioPlayerDelegate {
     func play(model: UIAudioMessageViewModel)
     func pause()
     func resume()
+
+    func longPressOnAudio(id: String, isIncoming: Bool)
 }
 
 class UIAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
@@ -53,6 +55,8 @@ class UIAudioMessageHandler: BaseMessageInteractionHandlerProtocol {
 
     func userDidBeginLongPressOnBubble(viewModel: UIAudioMessageViewModel) {
         self.baseHandler.userDidBeginLongPressOnBubble(viewModel: viewModel)
+
+        self.playableController.longPressOnAudio(id: viewModel.messageModel.uid, isIncoming: viewModel.isIncoming)
     }
 
     func userDidEndLongPressOnBubble(viewModel: UIAudioMessageViewModel) {

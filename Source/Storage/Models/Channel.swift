@@ -24,6 +24,7 @@ extension Storage {
         @NSManaged public var createdAt: Date
         @NSManaged public var initiator: String
         @NSManaged public var unreadCount: Int16
+        @NSManaged public var blocked: Bool
 
         @NSManaged private var rawType: String
         @NSManaged private var numColorPair: Int32
@@ -132,6 +133,7 @@ extension Storage {
             self.account = account
             self.type = type
             self.cards = cards
+            self.blocked = false
             self.createdAt = Date()
             self.unreadCount = 0
             self.numColorPair = Int32(arc4random_uniform(UInt32(UIConstants.colorPairs.count)))

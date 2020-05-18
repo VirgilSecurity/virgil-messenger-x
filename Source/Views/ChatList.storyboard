@@ -84,8 +84,7 @@ Add new one!</string>
                     <connections>
                         <outlet property="noChatsView" destination="jgc-zh-Nmg" id="hQo-fV-ckK"/>
                         <outlet property="tableView" destination="OLu-Yi-HTK" id="p1B-2j-laF"/>
-                        <segue destination="tSb-ds-G5u" kind="show" identifier="goToChat" id="28z-YN-Bk9"/>
-                        <segue destination="cdC-mY-49V" kind="show" identifier="goToAuth" animates="NO" id="TfX-du-Bf4"/>
+                        <segue destination="tSb-ds-G5u" kind="show" identifier="toChat" id="28z-YN-Bk9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DDd-4J-wX9" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -132,14 +131,6 @@ Add new one!</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="re4-ce-Aav" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1366" y="-1047"/>
-        </scene>
-        <!--Authentication-->
-        <scene sceneID="dV1-zg-E74">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Authentication" id="cdC-mY-49V" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Nmc-ZR-b88" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1409" y="-1140"/>
         </scene>
     </scenes>
     <resources>

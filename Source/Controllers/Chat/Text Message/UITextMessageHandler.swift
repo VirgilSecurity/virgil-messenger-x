@@ -24,14 +24,22 @@
 
 import ChattoAdditions
 
+protocol TextTappableProtocol: class {
+    func longPressOnText(_ : String, id: String, isIncoming: Bool)
+}
+
 class UITextMessageHandler: BaseMessageInteractionHandlerProtocol {
     func userDidSelectMessage(viewModel: UITextMessageViewModel) {}
 
     func userDidDeselectMessage(viewModel: UITextMessageViewModel) {}
 
     private let baseHandler: BaseMessageHandler
-    init (baseHandler: BaseMessageHandler) {
+
+    weak private var textTappableController: TextTappableProtocol!
+
+    init (baseHandler: BaseMessageHandler, textTappableController: TextTappableProtocol) {
         self.baseHandler = baseHandler
+        self.textTappableController = textTappableController
     }
 
     func userDidTapOnFailIcon(viewModel: UITextMessageViewModel, failIconView: UIView) {
@@ -48,6 +56,10 @@ class UITextMessageHandler: BaseMessageInteractionHandlerProtocol {
 
     func userDidBeginLongPressOnBubble(viewModel: UITextMessageViewModel) {
         self.baseHandler.userDidBeginLongPressOnBubble(viewModel: viewModel)
+
+        self.textTappableController.longPressOnText(viewModel.text,
+                                                    id: viewModel.messageModel.uid,
+                                                    isIncoming: viewModel.isIncoming)
     }
 
     func userDidEndLongPressOnBubble(viewModel: UITextMessageViewModel) {
