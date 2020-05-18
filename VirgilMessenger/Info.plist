@@ -53,9 +53,9 @@
 		<string>voip</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
-	<string>Start</string>
+	<string>$(LAUNCH_SCREEN)</string>
 	<key>UIMainStoryboardFile</key>
-	<string>Start</string>
+	<string>$(LAUNCH_SCREEN)</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

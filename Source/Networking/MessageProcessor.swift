@@ -149,16 +149,18 @@ class MessageProcessor {
             CallManager.shared.processIceCandidate(iceCandidate)
         }
 
-        guard let channel = Storage.shared.currentChannel,
-            channel.name == author else {
-                return Notifications.post(.chatListUpdated)
+        self.postLocalPushNotification(message: message, author: author)
+
+        guard
+            let channel = Storage.shared.currentChannel,
+            channel.name == author
+        else {
+            return Notifications.post(.chatListUpdated)
         }
 
         if let storageMessage = storageMessage {
             self.postNotification(about: storageMessage, unread: unread)
         }
-
-        self.postLocalPushNotification(message: message, author: author)
     }
 
     private static func migrationSafeContentImport(from data: Data,
