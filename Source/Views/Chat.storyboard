@@ -21,48 +21,37 @@
                     </view>
                     <navigationItem key="navigationItem" id="DvG-84-EM5">
                         <barButtonItem key="backBarButtonItem" title="Back" id="sik-Qm-usl"/>
-                        <barButtonItem key="rightBarButtonItem" id="o3C-nZ-ZhF">
-                            <view key="customView" contentMode="scaleToFill" id="C0a-mU-Ahr" customClass="GradientView" customModule="VirgilMessenger" customModuleProvider="target">
+                        <barButtonItem key="rightBarButtonItem" id="yex-o8-Ivr">
+                            <view key="customView" contentMode="scaleToFill" id="loC-Hp-FtR">
                                 <rect key="frame" x="324" y="4.6666666666666679" width="35" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="L" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6St-95-UmA">
-                                        <rect key="frame" x="11.666666666666668" y="5.6666666666666679" width="11.666666666666668" height="24"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-make-call-1" translatesAutoresizingMaskIntoConstraints="NO" id="0Im-kb-s93">
+                                        <rect key="frame" x="5.3333333333333339" y="5.3333333333333339" width="24.666666666666664" height="24.666666666666664"/>
+                                        <gestureRecognizers/>
+                                    </imageView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.41568627450000001" green="0.78039215689999997" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <gestureRecognizers/>
                                 <constraints>
-                                    <constraint firstItem="6St-95-UmA" firstAttribute="centerY" secondItem="C0a-mU-Ahr" secondAttribute="centerY" id="2xe-5J-UjD"/>
-                                    <constraint firstItem="6St-95-UmA" firstAttribute="centerX" secondItem="C0a-mU-Ahr" secondAttribute="centerX" id="E0R-oH-bwu"/>
-                                    <constraint firstAttribute="width" constant="35" id="IS6-1f-jJs"/>
-                                    <constraint firstAttribute="height" constant="35" id="oDj-jc-nVE"/>
+                                    <constraint firstItem="0Im-kb-s93" firstAttribute="centerY" secondItem="loC-Hp-FtR" secondAttribute="centerY" id="4B5-Qt-RCS"/>
+                                    <constraint firstItem="0Im-kb-s93" firstAttribute="centerX" secondItem="loC-Hp-FtR" secondAttribute="centerX" id="APT-me-gj8"/>
+                                    <constraint firstAttribute="width" constant="35" id="F5w-3x-9A2"/>
+                                    <constraint firstAttribute="height" constant="35" id="cDP-vE-cRh"/>
                                 </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="17"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <outletCollection property="gestureRecognizers" destination="vbu-ge-4DR" appends="YES" id="WgR-vp-zhc"/>
+                                    <outletCollection property="gestureRecognizers" destination="vbu-ge-4DR" appends="YES" id="CIZ-Hp-6iT"/>
                                 </connections>
                             </view>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="avatarLetterLabel" destination="6St-95-UmA" id="3DB-fn-LvH"/>
-                        <outlet property="avatarView" destination="C0a-mU-Ahr" id="eOa-Z7-3Xq"/>
                         <segue destination="ZQo-cO-mEW" kind="showDetail" identifier="toChatInfo" id="ENG-Sa-gZu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7G7-HX-4MO" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tapGestureRecognizer id="vbu-ge-4DR">
                     <connections>
-                        <action selector="showChatInfo:" destination="XsE-hb-Si4" id="gOe-Mk-TpK"/>
+                        <action selector="callTapped:" destination="XsE-hb-Si4" id="t0h-OO-3Sk"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
@@ -79,4 +68,7 @@
             <point key="canvasLocation" x="1049" y="-171"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="icon-make-call-1" width="24.666666030883789" height="24.666666030883789"/>
+    </resources>
 </document>
