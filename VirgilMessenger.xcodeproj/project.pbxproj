@@ -65,7 +65,7 @@
 		16B69E0E1FA9D70C00FE8A8D /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
 		16BD40CB2147FCE700CE19AC /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */; };
 		16CA51021FC45E9A0042AF9D /* Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51011FC45E9A0042AF9D /* Start.swift */; };
-		16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA51031FC45EA40042AF9D /* Start.storyboard */; };
+		16CA51041FC45EA40042AF9D /* VirgilStart.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA51031FC45EA40042AF9D /* VirgilStart.storyboard */; };
 		16CA51061FC468370042AF9D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51051FC468370042AF9D /* Constants.swift */; };
 		16CA51101FC5D9960042AF9D /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA510F1FC5D9960042AF9D /* Settings.storyboard */; };
 		16CA51131FC5DA3B0042AF9D /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CA51121FC5DA3B0042AF9D /* Settings.swift */; };
@@ -194,6 +194,12 @@
 		97AF4D83241AEE2000ED9BD7 /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
 		97AF4D85241AEE8800ED9BD7 /* Client+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D84241AEE8800ED9BD7 /* Client+Files.swift */; };
 		97AF4D86241AEED000ED9BD7 /* Client+Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */; };
+		97B41A2D2472AFB200D968AB /* VirgilConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B41A2C2472AFB200D968AB /* VirgilConstants.swift */; };
+		97B41A2E2472AFB200D968AB /* VirgilConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B41A2C2472AFB200D968AB /* VirgilConstants.swift */; };
+		97B41A2F2472AFB200D968AB /* VirgilConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B41A2C2472AFB200D968AB /* VirgilConstants.swift */; };
+		97B41A302472AFBB00D968AB /* VirgilConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B41A2C2472AFB200D968AB /* VirgilConstants.swift */; };
+		97B41A312472AFBC00D968AB /* VirgilConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B41A2C2472AFB200D968AB /* VirgilConstants.swift */; };
+		97B41A322472AFBC00D968AB /* VirgilConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B41A2C2472AFB200D968AB /* VirgilConstants.swift */; };
 		97B73BE6246C04F600E7B3DB /* ChatInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */; };
 		97B73BE7246C04F600E7B3DB /* ChatInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */; };
 		97B73BE8246C04F600E7B3DB /* ChatInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */; };
@@ -382,7 +388,7 @@
 		F4241DF42433864100E839C3 /* InputBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1658BA201FD9B08F005EF9C1 /* InputBar.xib */; };
 		F4241DF52433864100E839C3 /* ChatListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 423BDA771F97600A00C3EE9B /* ChatListCell.xib */; };
 		F4241DF62433864100E839C3 /* ChooseMembersCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 16FC6797226090860044CC70 /* ChooseMembersCell.xib */; };
-		F4241DF72433864100E839C3 /* Start.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA51031FC45EA40042AF9D /* Start.storyboard */; };
+		F4241DF72433864100E839C3 /* VirgilStart.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA51031FC45EA40042AF9D /* VirgilStart.storyboard */; };
 		F4241DF82433864100E839C3 /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
 		F4241DF92433864100E839C3 /* Registration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16D6CB391FDFEECC00302A05 /* Registration.storyboard */; };
 		F4241DFA2433864100E839C3 /* TabBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CC9B7A21552D5800935AEC /* TabBar.storyboard */; };
@@ -396,7 +402,7 @@
 		F4241E042433864200E839C3 /* InputBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1658BA201FD9B08F005EF9C1 /* InputBar.xib */; };
 		F4241E052433864200E839C3 /* ChatListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 423BDA771F97600A00C3EE9B /* ChatListCell.xib */; };
 		F4241E062433864200E839C3 /* ChooseMembersCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 16FC6797226090860044CC70 /* ChooseMembersCell.xib */; };
-		F4241E072433864200E839C3 /* Start.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA51031FC45EA40042AF9D /* Start.storyboard */; };
+		F4241E072433864200E839C3 /* VirgilStart.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA51031FC45EA40042AF9D /* VirgilStart.storyboard */; };
 		F4241E082433864200E839C3 /* Authentication.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */; };
 		F4241E092433864200E839C3 /* Registration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16D6CB391FDFEECC00302A05 /* Registration.storyboard */; };
 		F4241E0A2433864200E839C3 /* TabBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CC9B7A21552D5800935AEC /* TabBar.storyboard */; };
@@ -774,7 +780,7 @@
 		16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authentication.storyboard; sourceTree = "<group>"; };
 		16BD40CA2147FCE700CE19AC /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
 		16CA51011FC45E9A0042AF9D /* Start.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Start.swift; sourceTree = "<group>"; };
-		16CA51031FC45EA40042AF9D /* Start.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Start.storyboard; sourceTree = "<group>"; };
+		16CA51031FC45EA40042AF9D /* VirgilStart.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = VirgilStart.storyboard; sourceTree = "<group>"; };
 		16CA51051FC468370042AF9D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		16CA510F1FC5D9960042AF9D /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		16CA51121FC5DA3B0042AF9D /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
@@ -879,6 +885,7 @@
 		9791B62F246308CD00910D38 /* CallableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallableController.swift; sourceTree = "<group>"; };
 		97AF4D82241AEE2000ED9BD7 /* Client+Backend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Client+Backend.swift"; sourceTree = "<group>"; };
 		97AF4D84241AEE8800ED9BD7 /* Client+Files.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Client+Files.swift"; sourceTree = "<group>"; };
+		97B41A2C2472AFB200D968AB /* VirgilConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirgilConstants.swift; sourceTree = "<group>"; };
 		97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChatInfo.storyboard; sourceTree = "<group>"; };
 		97B73BE9246C093D00E7B3DB /* ChatInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInfo.swift; sourceTree = "<group>"; };
 		97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = "Mapping-v1-to-v2.xcmappingmodel"; sourceTree = "<group>"; };
@@ -1238,9 +1245,9 @@
 		16CC9B7C21553C6100935AEC /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				97B41A332472B03100D968AB /* Splash */,
 				97B73BED246C4A9A00E7B3DB /* Unused */,
 				16CC9B7F21553D0400935AEC /* Items */,
-				16CA51031FC45EA40042AF9D /* Start.storyboard */,
 				16B69E0D1FA9D70C00FE8A8D /* Authentication.storyboard */,
 				16D6CB391FDFEECC00302A05 /* Registration.storyboard */,
 				16CC9B7A21552D5800935AEC /* TabBar.storyboard */,
@@ -1587,10 +1594,9 @@
 		976E353F24324047002D1CF2 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
+				97B41A2B2472AF7F00D968AB /* Environments */,
 				16CA51051FC468370042AF9D /* Constants.swift */,
-				976E35432432566F002D1CF2 /* EnvConstantProd.swift */,
-				976E354024324062002D1CF2 /* EnvConstantStg.swift */,
-				976E3609243298D9002D1CF2 /* EnvConstantDev.swift */,
+				97B41A2C2472AFB200D968AB /* VirgilConstants.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -1635,6 +1641,24 @@
 				97675011245ADBCD000B844E /* EjabberdTokenProvider.swift */,
 			);
 			path = Client;
+			sourceTree = "<group>";
+		};
+		97B41A2B2472AF7F00D968AB /* Environments */ = {
+			isa = PBXGroup;
+			children = (
+				976E35432432566F002D1CF2 /* EnvConstantProd.swift */,
+				976E354024324062002D1CF2 /* EnvConstantStg.swift */,
+				976E3609243298D9002D1CF2 /* EnvConstantDev.swift */,
+			);
+			path = Environments;
+			sourceTree = "<group>";
+		};
+		97B41A332472B03100D968AB /* Splash */ = {
+			isa = PBXGroup;
+			children = (
+				16CA51031FC45EA40042AF9D /* VirgilStart.storyboard */,
+			);
+			path = Splash;
 			sourceTree = "<group>";
 		};
 		97B73BED246C4A9A00E7B3DB /* Unused */ = {
@@ -1902,7 +1926,7 @@
 				423BDA7A1F97600A00C3EE9B /* ChatList.storyboard in Resources */,
 				166BFAA222676C7D00EF72AD /* GroupInfo.storyboard in Resources */,
 				16EF7146225E2E3C00854DBF /* NewMessage.storyboard in Resources */,
-				16CA51041FC45EA40042AF9D /* Start.storyboard in Resources */,
+				16CA51041FC45EA40042AF9D /* VirgilStart.storyboard in Resources */,
 				1644C07920B720F000073D99 /* View.xcassets in Resources */,
 				97E7C49724030C0B00D9CAAA /* GoogleService-Info.plist in Resources */,
 				429228BD1F96261000DCECDF /* Assets.xcassets in Resources */,
@@ -1935,7 +1959,7 @@
 				F4241DFC2433864100E839C3 /* ChatList.storyboard in Resources */,
 				F4241DFB2433864100E839C3 /* UsersList.storyboard in Resources */,
 				F4241DF42433864100E839C3 /* InputBar.xib in Resources */,
-				F4241DF72433864100E839C3 /* Start.storyboard in Resources */,
+				F4241DF72433864100E839C3 /* VirgilStart.storyboard in Resources */,
 				F4241DFE2433864100E839C3 /* NewGroup.storyboard in Resources */,
 				F4241DF62433864100E839C3 /* ChooseMembersCell.xib in Resources */,
 				F4241F162433A01D00E839C3 /* GoogleService-Info.plist in Resources */,
@@ -1970,7 +1994,7 @@
 				F4241E0C2433864200E839C3 /* ChatList.storyboard in Resources */,
 				F4241E0B2433864200E839C3 /* UsersList.storyboard in Resources */,
 				F4241E042433864200E839C3 /* InputBar.xib in Resources */,
-				F4241E072433864200E839C3 /* Start.storyboard in Resources */,
+				F4241E072433864200E839C3 /* VirgilStart.storyboard in Resources */,
 				F4241E0E2433864200E839C3 /* NewGroup.storyboard in Resources */,
 				F4241F172433A01E00E839C3 /* GoogleService-Info.plist in Resources */,
 				F4241E062433864200E839C3 /* ChooseMembersCell.xib in Resources */,
@@ -2167,6 +2191,7 @@
 			files = (
 				97698D5A24507DEC005C087D /* EncryptedMessage.swift in Sources */,
 				97675015245AE3F3000B844E /* EjabberdTokenProvider.swift in Sources */,
+				97B41A302472AFBB00D968AB /* VirgilConstants.swift in Sources */,
 				F47EF35B243CBFD50002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241D4A24337E9C00E839C3 /* EnvConstantProd.swift in Sources */,
 				9775CFD8242A2D3D009F1693 /* Virgil.swift in Sources */,
@@ -2277,6 +2302,7 @@
 				1693679022490BA000EF9A42 /* VirgilAuthorizer.swift in Sources */,
 				F478ABD8243FA95300802051 /* CallViewController.swift in Sources */,
 				162E22EF225F958100AAE7C4 /* CellTapDelegate.swift in Sources */,
+				97B41A2D2472AFB200D968AB /* VirgilConstants.swift in Sources */,
 				164E173820AB1BED00AB1AAD /* AudioChatInputItem.swift in Sources */,
 				F4DDCC5024363479001E63B1 /* Storage+MessageUI.swift in Sources */,
 				1644C07B20B85AC500073D99 /* UIPhotosChatInputItem.swift in Sources */,
@@ -2408,6 +2434,7 @@
 				9720EAA72449B8C5004BA39F /* EjabberdError.swift in Sources */,
 				F4241D892433856800E839C3 /* HttpConnection.swift in Sources */,
 				F4241DAE243385C600E839C3 /* AudioMessageCollectionViewCellDefaultStyle.swift in Sources */,
+				97B41A2E2472AFB200D968AB /* VirgilConstants.swift in Sources */,
 				F478ABD9243FA95300802051 /* CallViewController.swift in Sources */,
 				F4241DAD243385C600E839C3 /* AudioMessageCollectionViewCell.swift in Sources */,
 				F4241DE62433862500E839C3 /* MessageProcessor.swift in Sources */,
@@ -2453,6 +2480,7 @@
 			files = (
 				97698D5924507DEC005C087D /* EncryptedMessage.swift in Sources */,
 				97675016245AE3F4000B844E /* EjabberdTokenProvider.swift in Sources */,
+				97B41A312472AFBC00D968AB /* VirgilConstants.swift in Sources */,
 				F47EF35C243CBFD50002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241E47243386AD00E839C3 /* UIColor+RGB.swift in Sources */,
 				F4241D7E2433855000E839C3 /* UserFriendlyError.swift in Sources */,
@@ -2563,6 +2591,7 @@
 				9720EAA82449B8C5004BA39F /* EjabberdError.swift in Sources */,
 				F4241D8A2433856800E839C3 /* HttpConnection.swift in Sources */,
 				F4241DB1243385C700E839C3 /* AudioMessageCollectionViewCellDefaultStyle.swift in Sources */,
+				97B41A2F2472AFB200D968AB /* VirgilConstants.swift in Sources */,
 				F478ABDA243FA95300802051 /* CallViewController.swift in Sources */,
 				F4241DB0243385C700E839C3 /* AudioMessageCollectionViewCell.swift in Sources */,
 				F4241DEB2433862500E839C3 /* MessageProcessor.swift in Sources */,
@@ -2608,6 +2637,7 @@
 			files = (
 				97698D5B24507DED005C087D /* EncryptedMessage.swift in Sources */,
 				97675017245AE3F4000B844E /* EjabberdTokenProvider.swift in Sources */,
+				97B41A322472AFBC00D968AB /* VirgilConstants.swift in Sources */,
 				F47EF35D243CBFD60002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241E48243386AD00E839C3 /* UIColor+RGB.swift in Sources */,
 				F4241D7F2433855100E839C3 /* UserFriendlyError.swift in Sources */,
@@ -2834,6 +2864,7 @@
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LAUNCH_SCREEN = VirgilStart;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 3.1.0;
 				OTHER_LDFLAGS = (
@@ -2867,6 +2898,7 @@
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LAUNCH_SCREEN = VirgilStart;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 3.1.0;
 				OTHER_LDFLAGS = (
@@ -2900,6 +2932,7 @@
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LAUNCH_SCREEN = VirgilStart;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 3.1.0;
 				OTHER_LDFLAGS = (
@@ -2932,6 +2965,7 @@
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LAUNCH_SCREEN = VirgilStart;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 3.1.0;
 				OTHER_LDFLAGS = (
@@ -3022,6 +3056,7 @@
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LAUNCH_SCREEN = VirgilStart;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 3.1.0;
 				OTHER_LDFLAGS = (
@@ -3054,6 +3089,7 @@
 				);
 				INFOPLIST_FILE = VirgilMessenger/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LAUNCH_SCREEN = VirgilStart;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 3.1.0;
 				OTHER_LDFLAGS = (
