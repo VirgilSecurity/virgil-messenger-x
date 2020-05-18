@@ -202,7 +202,6 @@
 		97B41A322472AFBC00D968AB /* VirgilConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B41A2C2472AFB200D968AB /* VirgilConstants.swift */; };
 		97B41A362472B47F00D968AB /* EncryptedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */; };
 		97B41A372472B47F00D968AB /* EjabberdTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97675011245ADBCD000B844E /* EjabberdTokenProvider.swift */; };
-		97B41A382472B47F00D968AB /* VirgilConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B41A2C2472AFB200D968AB /* VirgilConstants.swift */; };
 		97B41A392472B47F00D968AB /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
 		97B41A3A2472B47F00D968AB /* EnvConstantProd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976E35432432566F002D1CF2 /* EnvConstantProd.swift */; };
 		97B41A3B2472B47F00D968AB /* Virgil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167C68441FADDB7800E6E448 /* Virgil.swift */; };
@@ -316,7 +315,6 @@
 		97B41AB32472B57C00D968AB /* VirgilAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1693678F22490BA000EF9A42 /* VirgilAuthorizer.swift */; };
 		97B41AB42472B57C00D968AB /* CallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F478ABD7243FA95300802051 /* CallViewController.swift */; };
 		97B41AB52472B57C00D968AB /* CellTapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162E22EE225F958100AAE7C4 /* CellTapDelegate.swift */; };
-		97B41AB62472B57C00D968AB /* VirgilConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B41A2C2472AFB200D968AB /* VirgilConstants.swift */; };
 		97B41AB72472B57C00D968AB /* AudioChatInputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E173720AB1BED00AB1AAD /* AudioChatInputItem.swift */; };
 		97B41AB82472B57C00D968AB /* Storage+MessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DDCC4F24363479001E63B1 /* Storage+MessageUI.swift */; };
 		97B41AB92472B57C00D968AB /* UIPhotosChatInputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1644C07A20B85AC500073D99 /* UIPhotosChatInputItem.swift */; };
@@ -405,7 +403,6 @@
 		97B41B0E2472B57C00D968AB /* ChatList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 423BDA781F97600A00C3EE9B /* ChatList.storyboard */; };
 		97B41B0F2472B57C00D968AB /* GroupInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 166BFAA122676C7D00EF72AD /* GroupInfo.storyboard */; };
 		97B41B102472B57C00D968AB /* NewMessage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16EF7145225E2E3C00854DBF /* NewMessage.storyboard */; };
-		97B41B112472B57C00D968AB /* VirgilStart.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CA51031FC45EA40042AF9D /* VirgilStart.storyboard */; };
 		97B41B122472B57C00D968AB /* View.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1644C07820B720F000073D99 /* View.xcassets */; };
 		97B41B132472B57C00D968AB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97E7C49624030C0B00D9CAAA /* GoogleService-Info.plist */; };
 		97B41B142472B57C00D968AB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 429228BC1F96261000DCECDF /* Assets.xcassets */; };
@@ -418,6 +415,8 @@
 		97B41B1B2472B57C00D968AB /* ChatInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */; };
 		97B41B262472B5B000D968AB /* Area52 Notification Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 97B41A572472B47F00D968AB /* Area52 Notification Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		97B41B2B2472B5E700D968AB /* Area52Start.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B41B2A2472B5E700D968AB /* Area52Start.storyboard */; };
+		97B41B2D2472B70D00D968AB /* Area52Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B41B2C2472B70D00D968AB /* Area52Constants.swift */; };
+		97B41B2E2472B70D00D968AB /* Area52Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B41B2C2472B70D00D968AB /* Area52Constants.swift */; };
 		97B73BE6246C04F600E7B3DB /* ChatInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */; };
 		97B73BE7246C04F600E7B3DB /* ChatInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */; };
 		97B73BE8246C04F600E7B3DB /* ChatInfo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */; };
@@ -1128,6 +1127,7 @@
 		97B41B242472B57D00D968AB /* VirgilMessenger copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "VirgilMessenger copy-Info.plist"; path = "/Users/evgenypyvovarov/Documents/Projects/messenger-x/VirgilMessenger copy-Info.plist"; sourceTree = "<absolute>"; };
 		97B41B252472B59100D968AB /* Area52Messenger.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Area52Messenger.entitlements; sourceTree = "<group>"; };
 		97B41B2A2472B5E700D968AB /* Area52Start.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Area52Start.storyboard; sourceTree = "<group>"; };
+		97B41B2C2472B70D00D968AB /* Area52Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Area52Constants.swift; sourceTree = "<group>"; };
 		97B73BE5246C04F600E7B3DB /* ChatInfo.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChatInfo.storyboard; sourceTree = "<group>"; };
 		97B73BE9246C093D00E7B3DB /* ChatInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInfo.swift; sourceTree = "<group>"; };
 		97CE26F42418231300903116 /* Mapping-v1-to-v2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = "Mapping-v1-to-v2.xcmappingmodel"; sourceTree = "<group>"; };
@@ -1908,6 +1908,7 @@
 				97B41A2B2472AF7F00D968AB /* Environments */,
 				16CA51051FC468370042AF9D /* Constants.swift */,
 				97B41A2C2472AFB200D968AB /* VirgilConstants.swift */,
+				97B41B2C2472B70D00D968AB /* Area52Constants.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -2391,7 +2392,6 @@
 				97B41B0E2472B57C00D968AB /* ChatList.storyboard in Resources */,
 				97B41B0F2472B57C00D968AB /* GroupInfo.storyboard in Resources */,
 				97B41B102472B57C00D968AB /* NewMessage.storyboard in Resources */,
-				97B41B112472B57C00D968AB /* VirgilStart.storyboard in Resources */,
 				97B41B2B2472B5E700D968AB /* Area52Start.storyboard in Resources */,
 				97B41B122472B57C00D968AB /* View.xcassets in Resources */,
 				97B41B132472B57C00D968AB /* GoogleService-Info.plist in Resources */,
@@ -3113,7 +3113,6 @@
 			files = (
 				97B41A362472B47F00D968AB /* EncryptedMessage.swift in Sources */,
 				97B41A372472B47F00D968AB /* EjabberdTokenProvider.swift in Sources */,
-				97B41A382472B47F00D968AB /* VirgilConstants.swift in Sources */,
 				97B41A392472B47F00D968AB /* LocalKeyManager.swift in Sources */,
 				97B41A3A2472B47F00D968AB /* EnvConstantProd.swift in Sources */,
 				97B41A3B2472B47F00D968AB /* Virgil.swift in Sources */,
@@ -3128,6 +3127,7 @@
 				97B41A442472B47F00D968AB /* NetworkMessage+Types.swift in Sources */,
 				97B41A452472B47F00D968AB /* SharedDefaults.swift in Sources */,
 				97B41A462472B47F00D968AB /* NotificationService.swift in Sources */,
+				97B41B2E2472B70D00D968AB /* Area52Constants.swift in Sources */,
 				97B41A472472B47F00D968AB /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3215,6 +3215,7 @@
 				97B41AAA2472B57C00D968AB /* CallManager+CallSignalingDelegate.swift in Sources */,
 				97B41AAB2472B57C00D968AB /* ColorPair.swift in Sources */,
 				97B41AAC2472B57C00D968AB /* OutgoingCall.swift in Sources */,
+				97B41B2D2472B70D00D968AB /* Area52Constants.swift in Sources */,
 				97B41AAD2472B57C00D968AB /* Client+Files.swift in Sources */,
 				97B41AAE2472B57C00D968AB /* NewMessageTable.swift in Sources */,
 				97B41AAF2472B57C00D968AB /* UIImage+Resize.swift in Sources */,
@@ -3224,7 +3225,6 @@
 				97B41AB32472B57C00D968AB /* VirgilAuthorizer.swift in Sources */,
 				97B41AB42472B57C00D968AB /* CallViewController.swift in Sources */,
 				97B41AB52472B57C00D968AB /* CellTapDelegate.swift in Sources */,
-				97B41AB62472B57C00D968AB /* VirgilConstants.swift in Sources */,
 				97B41AB72472B57C00D968AB /* AudioChatInputItem.swift in Sources */,
 				97B41AB82472B57C00D968AB /* Storage+MessageUI.swift in Sources */,
 				97B41AB92472B57C00D968AB /* UIPhotosChatInputItem.swift in Sources */,
@@ -3484,7 +3484,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.Area52Messenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3518,7 +3518,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.Area52Messenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3857,7 +3857,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.Area52Messenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3890,7 +3890,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.VirgilMessenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.virgil.Area52Messenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
