@@ -135,18 +135,18 @@ extension CallManager: CXProviderDelegate {
 
         let callUUID = action.callUUID
 
-        Log.debug("Answering for incomming call with id \(callUUID.uuidString)")
+        Log.debug("Answering for incoming call with id \(callUUID.uuidString)")
 
         guard
             let call = self.findCall(with: callUUID),
-            let incommingCall = call as? IncomingCall
+            let incomingCall = call as? IncomingCall
         else {
             Log.error(CallManagerError.noActiveCall, message: "Can not answer to the call with id \(callUUID.uuidString)")
             action.fail()
             return
         }
 
-        incommingCall.answer()
+        incomingCall.answer()
         action.fulfill()
     }
 
