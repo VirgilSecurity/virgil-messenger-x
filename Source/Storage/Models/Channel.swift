@@ -93,7 +93,7 @@ extension Storage {
                 return "Voice Message"
 
             case let callMessage as CallMessage:
-                return callMessage.isIncoming ? "Incomming call" : "Outgoing call"
+                return callMessage.isIncoming ? "Incoming call" : "Outgoing call"
 
             default:
                 return ""

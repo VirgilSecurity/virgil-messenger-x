@@ -57,7 +57,7 @@ class PushRegistryDelegate: NSObject, PKPushRegistryDelegate {
             CallManager.shared.startIncomingCall(from: callOffer, pushKitCompletion: completion)
         }
         catch {
-            Log.error(error, message: "Incomming call processing failed")
+            Log.error(error, message: "Incoming call processing failed")
 
             CallManager.shared.startDummyIncomingCall(pushKitCompletion: completion)
         }

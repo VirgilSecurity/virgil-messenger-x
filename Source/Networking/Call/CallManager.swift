@@ -153,7 +153,7 @@ public class CallManager: NSObject {
             }
 
             if let error = error {
-                Log.debug("Incomming call with id \(callUUID.uuidString) was not started.")
+                Log.debug("Incoming call with id \(callUUID.uuidString) was not started.")
                 self.didFail(error)
             }
 
