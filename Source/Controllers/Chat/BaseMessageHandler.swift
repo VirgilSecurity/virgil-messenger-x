@@ -35,6 +35,7 @@ class BaseMessageHandler {
     init (messageSender: MessageSender) {
         self.messageSender = messageSender
     }
+    
     func userDidTapOnFailIcon(viewModel: UIMessageViewModelProtocol) {
         print("userDidTapOnFailIcon")
     }

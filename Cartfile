@@ -1,6 +1,6 @@
 github "VirgilSecurity/virgil-e3kit-x" "develop"
 github "Ogerets/XMPPFramework" ~> 4.0.1
-github "Ogerets/Chatto" ~> 3.3.3
+github "Ogerets/Chatto" ~> 3.3.4
 github "Ogerets/PKHUD" ~> 5.3.1
 github "sendbird/sendbird-webrtc-ios" ~> 1.1.1
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json"

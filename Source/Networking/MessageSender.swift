@@ -8,8 +8,9 @@ public class MessageSender {
     public enum Error: Swift.Error {
         case ratchetChannelNotFound
     }
-    
-    private let queue = DispatchQueue(label: "MessageSender")
+
+    // TODO: Think of using global concurrent queue
+    private let queue = DispatchQueue(label: "MessageSender", qos: .userInitiated)
 
     private func send(message: NetworkMessage,
                       pushType: PushType,

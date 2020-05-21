@@ -83,4 +83,26 @@ extension Client {
                                             crypto: self.crypto,
                                             cardVerifier: verifier)
       }
+
+    public func sendReport(about identity: String, messageId: String) throws {
+        // TODO: Remove Virgil dependency
+        var headers = try self.makeAuthHeader(for: Virgil.ethree.identity)
+        headers["Content-Type"] = "application/json"
+        
+        let params = ["identity": identity,
+                      "message_id": messageId]
+
+        let body = try JSONSerialization.data(withJSONObject: params, options: [])
+
+        let request = Request(url: URLConstants.reportEndpoint,
+                              method: .post,
+                              headers: headers,
+                              body: body)
+
+        let response = try self.connection.send(request)
+            .startSync()
+            .get()
+
+        try self.validateResponse(response)
+    }
 }

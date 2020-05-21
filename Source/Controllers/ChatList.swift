@@ -186,7 +186,7 @@ extension ChatListViewController {
 extension ChatListViewController {
     func moveToChannel(_ channel: Storage.Channel) {
         Storage.shared.setCurrent(channel: channel)
-        self.performSegue(withIdentifier: "goToChat", sender: self)
+        self.perform(segue: .toChat)
     }
 
     private func goToLogin() {

@@ -13,7 +13,7 @@ public enum ChatsManager {
     public static func startDrSession(with identity: String,
                                       startProgressBar: @escaping (() -> Void),
                                       completion: @escaping (Error?) -> Void) {
-        DispatchQueue(label: "ChatsManager").async {
+        DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let identity = identity.lowercased()
 
