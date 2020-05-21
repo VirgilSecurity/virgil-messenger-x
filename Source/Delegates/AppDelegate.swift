@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         RTCInitializeSSL()
 
         // Defining start controller
-        let startStoryboard = UIStoryboard(name: StartViewController.name, bundle: Bundle.main)
+        let startStoryboard = UIStoryboard(name: Constants.launchScreenName, bundle: Bundle.main)
         let startController = startStoryboard.instantiateInitialViewController()!
 
         let logger = DDOSLogger.sharedInstance

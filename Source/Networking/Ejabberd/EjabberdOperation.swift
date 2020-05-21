@@ -19,12 +19,13 @@ enum EjabberdOperationState {
 class EjabberdOperation: Operation {
     let message: XMPPMessage
     let stream: XMPPStream
-    let delegateQueue = DispatchQueue(label: "EjabberdOperation")
+    let delegateQueue: DispatchQueue
     var state: EjabberdOperationState = .new
 
-    init(message: XMPPMessage, stream: XMPPStream) {
+    init(message: XMPPMessage, stream: XMPPStream, delegateQueue: DispatchQueue) {
         self.message = message
         self.stream = stream
+        self.delegateQueue = delegateQueue
     }
 
     override func main() {
