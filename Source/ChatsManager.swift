@@ -10,9 +10,9 @@ import Foundation
 import VirgilE3Kit
 
 public enum ChatsManager {
-    public static func startSingle(with identity: String,
-                                   startProgressBar: @escaping (() -> Void),
-                                   completion: @escaping (Error?) -> Void) {
+    public static func startDrSession(with identity: String,
+                                      startProgressBar: @escaping (() -> Void),
+                                      completion: @escaping (Error?) -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let identity = identity.lowercased()
@@ -28,6 +28,8 @@ public enum ChatsManager {
                 startProgressBar()
 
                 let card = try Virgil.ethree.findUser(with: identity).startSync().get()
+                
+                _ = try Virgil.ethree.createRatchetChannel(with: card).startSync().get()
 
                 try Storage.shared.createSingleChannel(initiator: Virgil.ethree.identity, card: card)
 

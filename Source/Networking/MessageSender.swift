@@ -1,14 +1,20 @@
 import Chatto
 import ChattoAdditions
 import VirgilSDK
+import VirgilCryptoFoundation
+import VirgilCryptoRatchet
 
 public class MessageSender {
+    public enum Error: Swift.Error {
+        case ratchetChannelNotFound
+    }
+
     // TODO: Think of using global concurrent queue
     private let queue = DispatchQueue(label: "MessageSender", qos: .userInitiated)
 
     private func send(message: NetworkMessage,
                       pushType: PushType,
-                      additionalData: Data?,
+                      thumbnail: Data?,
                       to channel: Storage.Channel,
                       date: Date,
                       messageId: String) throws {
@@ -16,12 +22,29 @@ public class MessageSender {
         let exported = try message.exportAsJsonData()
 
         let card = try channel.getCard()
-        let ciphertext = try Virgil.ethree.authEncrypt(data: exported, for: card)
+        
+        guard let ratchetChannel = try Virgil.ethree.getRatchetChannel(with: card) else {
+            throw Error.ratchetChannelNotFound
+        }
+        
+        var additionalData = AdditionalData()
+        
+        let ratchetCipherText = try ratchetChannel.encrypt(data: exported)
+        var ciphertext: Data?
+        
+        // TODO: Optimize. E3Kit doesn't return message, only its serialized version
+        let message = try! RatchetMessage.deserialize(input: ratchetCipherText)
+        if message.getType() == .prekey {
+            // Send empty push message
+            additionalData.prekeyMessage = ratchetCipherText
+            ciphertext = nil
+        }
+        else {
+            ciphertext = ratchetCipherText
+        }
 
-        var additionalData = additionalData
-
-        if let data = additionalData {
-            additionalData = try Virgil.ethree.authEncrypt(data: data, for: card)
+        if let thumbnail = thumbnail {
+            additionalData.thumbnail = try ratchetChannel.encrypt(data: thumbnail)
         }
 
         let encryptedMessage = EncryptedMessage(pushType: pushType, ciphertext: ciphertext, date: date, additionalData: additionalData)
@@ -33,12 +56,12 @@ public class MessageSender {
                      date: Date,
                      channel: Storage.Channel,
                      messageId: String,
-                     completion: @escaping (Error?) -> Void) {
+                     completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.text(text)
 
-                try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .alert, thumbnail: nil, to: channel, date: date, messageId: messageId)
 
                 let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
 
@@ -56,12 +79,12 @@ public class MessageSender {
                      date: Date,
                      channel: Storage.Channel,
                      messageId: String,
-                     completion: @escaping (Error?) -> Void) {
+                     completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.callOffer(callOffer)
 
-                try self.send(message: message, pushType: .voip, additionalData: nil, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .voip, thumbnail: nil, to: channel, date: date, messageId: messageId)
 
                 let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
 
@@ -81,12 +104,12 @@ public class MessageSender {
                      date: Date,
                      channel: Storage.Channel,
                      messageId: String,
-                     completion: @escaping (Error?) -> Void) {
+                     completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.callAnswer(callAnswer)
 
-                try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .none, thumbnail: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
             }
@@ -100,12 +123,12 @@ public class MessageSender {
                      date: Date,
                      channel: Storage.Channel,
                      messageId: String,
-                     completion: @escaping (Error?) -> Void) {
+                     completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.callUpdate(callUpdate)
 
-                try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .none, thumbnail: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
             }
@@ -119,12 +142,12 @@ public class MessageSender {
                      date: Date,
                      channel: Storage.Channel,
                      messageId: String,
-                     completion: @escaping (Error?) -> Void) {
+                     completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 let message = NetworkMessage.iceCandidate(iceCandidate)
 
-                try self.send(message: message, pushType: .none, additionalData: nil, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .none, thumbnail: nil, to: channel, date: date, messageId: messageId)
 
                 completion(nil)
             }
@@ -139,7 +162,7 @@ public class MessageSender {
                               channel: Storage.Channel,
                               messageId: String,
                               loadDelegate: LoadDelegate,
-                              completion: @escaping (Error?) -> Void) {
+                              completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 guard
@@ -156,12 +179,12 @@ public class MessageSender {
 
                 try Storage.shared.storeMediaContent(imageData, name: hashString, type: .photo)
 
-                let url = try self.upload(data: imageData, identifier: hashString, channel: channel, loadDelegate: loadDelegate)
+                let uploadResult = try self.upload(data: imageData, identifier: hashString, channel: channel, loadDelegate: loadDelegate)
 
-                let photo = NetworkMessage.Photo(identifier: hashString, url: url)
+                let photo = NetworkMessage.Photo(identifier: hashString, url: uploadResult.url, secret: uploadResult.secret)
                 let message = NetworkMessage.photo(photo)
 
-                try self.send(message: message, pushType: .alert, additionalData: thumbnail, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .alert, thumbnail: thumbnail, to: channel, date: date, messageId: messageId)
 
                 let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
                 try Storage.shared.createPhotoMessage(with: photo, thumbnail: thumbnail, baseParams: baseParams)
@@ -181,17 +204,17 @@ public class MessageSender {
                               channel: Storage.Channel,
                               messageId: String,
                               loadDelegate: LoadDelegate,
-                              completion: @escaping (Error?) -> Void) {
+                              completion: @escaping (Swift.Error?) -> Void) {
         self.queue.async {
             do {
                 // TODO: optimize. Do not fetch data to memory, use streams
                 let voiceData: Data = try Data(contentsOf: voiceURL)
-                let url = try self.upload(data: voiceData, identifier: identifier, channel: channel, loadDelegate: loadDelegate)
-                let voice = NetworkMessage.Voice(identifier: identifier, duration: duration, url: url)
+                let uploadResult = try self.upload(data: voiceData, identifier: identifier, channel: channel, loadDelegate: loadDelegate)
+                let voice = NetworkMessage.Voice(identifier: identifier, duration: duration, url: uploadResult.url, secret: uploadResult.secret)
 
                 let message = NetworkMessage.voice(voice)
 
-                try self.send(message: message, pushType: .alert, additionalData: nil, to: channel, date: date, messageId: messageId)
+                try self.send(message: message, pushType: .alert, thumbnail: nil, to: channel, date: date, messageId: messageId)
 
                 let baseParams = Storage.Message.Params(xmppId: messageId, isIncoming: false, channel: channel, state: .sent)
                 try Storage.shared.createVoiceMessage(with: voice, baseParams: baseParams)
@@ -203,21 +226,25 @@ public class MessageSender {
             }
         }
     }
+    
+    struct UploadResult {
+        let url: URL
+        let secret: Data
+    }
 
-    private func upload(data: Data, identifier: String, channel: Storage.Channel, loadDelegate: LoadDelegate) throws -> URL {
-        // encrypt data
-        let encryptedData = try Virgil.ethree.authEncrypt(data: data, for: channel.getCard())
+    private func upload(data: Data, identifier: String, channel: Storage.Channel, loadDelegate: LoadDelegate) throws -> UploadResult {
+        let result = try Virgil.symmetricEncrypt(data: data)
 
         // request ejabberd slot
-        let slot = try Ejabberd.shared.requestMediaSlot(name: identifier, size: encryptedData.count)
+        let slot = try Ejabberd.shared.requestMediaSlot(name: identifier, size: result.encryptedData.count)
             .startSync()
             .get()
 
         // upload data
-        try Virgil.shared.client.upload(data: encryptedData, with: slot.putRequest, loadDelegate: loadDelegate, dataHash: identifier)
+        try Virgil.shared.client.upload(data: result.encryptedData, with: slot.putRequest, loadDelegate: loadDelegate, dataHash: identifier)
             .startSync()
             .get()
 
-        return slot.getURL
+        return UploadResult(url: slot.getURL, secret: result.secret)
     }
 }

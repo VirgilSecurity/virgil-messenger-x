@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import VirgilCrypto
 import XMPPFrameworkSwift
 
 enum Constants {
@@ -16,14 +17,22 @@ enum Constants {
         case prod = ""
     }
 
+    enum PushBodyType: String {
+        case base64Encoded = "BASE64"
+        case plaintext = "PLAIN"
+    }
+
     static let alertTopic: String = KeychainGroup
     static let pushesNode: String = "node"
+    static let keyPairType: KeyPairType = .curve25519Round5Ed25519Falcon
 
 #if DEBUG
     static let pushMode: String = "dev"
 #else
     static let pushMode: String = "prod"
 #endif
+
+    static let pushBodyType: PushBodyType = .plaintext
 }
 
 enum URLConstants {
@@ -52,7 +61,7 @@ enum URLConstants {
 enum ChatConstants {
     static let limitLength = 32
     static let characterSet = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-()/='+:?!%&*<>;{}#_")
-    static let chatMaxCharectersCount: UInt = 1000
+    static let chatMaxCharactersCount: UInt = 1000
     static let chatPageSize = 20
 }
 

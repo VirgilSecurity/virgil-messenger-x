@@ -8,13 +8,14 @@
 
 import VirgilSDK
 import VirgilCrypto
+import VirgilCryptoFoundation
 import VirgilE3Kit
 
 public class Virgil {
     private(set) static var shared: Virgil!
     private(set) static var ethree: EThree!
 
-    private let verifier: VirgilCardVerifier
+    internal let verifier: VirgilCardVerifier
     internal let client: Client
 
     internal var crypto: VirgilCrypto {
@@ -26,17 +27,56 @@ public class Virgil {
         self.client = client
         self.verifier = verifier
     }
+    
+    public static func getDefaultE3KitParams(identity: String,
+                                             tokenCallback: @escaping EThree.RenewJwtCallback) throws -> EThreeParams {
+        let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
+        params.appGroup = Constants.appGroup
+        params.enableRatchet = true
+        params.enableRatchetPqc = true
+        params.keyPairType = Constants.keyPairType
+        params.storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.KeychainGroup)
+        
+        return params
+    }
 
     public static func initialize(identity: String, client: Client) throws {
         let tokenCallback = client.makeTokenCallback(identity: identity)
-        let params = EThreeParams(identity: identity, tokenCallback: tokenCallback)
-        params.storageParams = try KeychainStorageParams.makeKeychainStorageParams(appName: Constants.KeychainGroup)
+        let params = try self.getDefaultE3KitParams(identity: identity, tokenCallback: tokenCallback)
 
         self.ethree = try EThree(params: params)
 
         let verifier = VirgilCardVerifier(crypto: client.crypto)!
 
         self.shared = Virgil(client: client, verifier: verifier)
+    }
+    
+    struct SymmetricEncryptResult {
+        let encryptedData: Data
+        let secret: Data
+    }
+    
+    static func symmetricDecrypt(encryptedData: Data, secret: Data) throws -> Data {
+        let aes = Aes256Gcm()
+        
+        aes.setKey(key: secret.prefix(aes.keyLen))
+        aes.setNonce(nonce: secret.suffix(aes.nonceLen))
+        
+        return try aes.authDecrypt(data: encryptedData, authData: Data(), tag: Data())
+    }
+    
+    static func symmetricEncrypt(data: Data) throws -> SymmetricEncryptResult {
+        let aes = Aes256Gcm()
+        
+        let key = try Virgil.ethree.crypto.generateRandomData(ofSize: aes.keyLen)
+        let nonce = try Virgil.ethree.crypto.generateRandomData(ofSize: aes.nonceLen)
+        
+        aes.setKey(key: key)
+        aes.setNonce(nonce: nonce)
+        
+        let result = try aes.authEncrypt(data: data, authData: Data())
+        
+        return SymmetricEncryptResult(encryptedData: result.out + result.tag, secret: key + nonce)
     }
 
     func importCard(fromBase64Encoded card: String) throws -> Card {

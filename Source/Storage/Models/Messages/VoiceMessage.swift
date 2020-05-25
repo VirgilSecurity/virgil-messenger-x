@@ -15,12 +15,14 @@ extension Storage {
         @NSManaged public var identifier: String
         @NSManaged public var url: URL
         @NSManaged public var duration: Double
+        @NSManaged public var secret: Data
 
         private static let EntityName = "VoiceMessage"
 
         convenience init(identifier: String,
                          duration: Double,
                          url: URL,
+                         secret: Data,
                          baseParams: Message.Params,
                          context: NSManagedObjectContext) throws {
             try self.init(entityName: VoiceMessage.EntityName, context: context, params: baseParams)
@@ -28,6 +30,7 @@ extension Storage {
             self.identifier = identifier
             self.duration = duration
             self.url = url
+            self.secret = secret
         }
     }
 }

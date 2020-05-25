@@ -20,12 +20,13 @@ public enum PushType: String, Codable {
 }
 
 public enum EncryptedMessageError: Int, Error {
-    case bodyIsNotBase64Encoded = 1
+    case stringToDataFailed = 1
+    case dataToStringFailed = 2
 }
 
 public class EncryptedMessage: Codable {
-    let ciphertext: Data
-    let additionalData: Data?
+    let ciphertext: Data?
+    let additionalData: AdditionalData?
     let date: Date
 
     var modelVersion: EncryptedMessageVersion {
@@ -39,7 +40,7 @@ public class EncryptedMessage: Codable {
     private let version: EncryptedMessageVersion?
     private let pushType: PushType?
 
-    public init(pushType: PushType, ciphertext: Data, date: Date, additionalData: Data?) {
+    public init(pushType: PushType, ciphertext: Data?, date: Date, additionalData: AdditionalData) {
         self.ciphertext = ciphertext
         self.date = date
         self.additionalData = additionalData
@@ -48,8 +49,8 @@ public class EncryptedMessage: Codable {
     }
 
     static func `import`(_ string: String) throws -> EncryptedMessage {
-        guard let data = Data(base64Encoded: string) else {
-            throw EncryptedMessageError.bodyIsNotBase64Encoded
+        guard let data = string.data(using: .utf8) else {
+            throw EncryptedMessageError.stringToDataFailed
         }
 
         return try JSONDecoder().decode(EncryptedMessage.self, from: data)
@@ -58,6 +59,10 @@ public class EncryptedMessage: Codable {
     func export() throws -> String {
         let data = try JSONEncoder().encode(self)
 
-        return data.base64EncodedString()
+        guard let result = String(data: data, encoding: .utf8) else {
+            throw EncryptedMessageError.dataToStringFailed
+        }
+
+        return result
     }
 }

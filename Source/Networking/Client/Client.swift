@@ -20,6 +20,7 @@ public class Client {
         case invalidServerResponse
         case inputStreamFromDownloadedFailed
         case inconsistencyState
+        case selfCardNotFound
         case invalidEjabberdToken
     }
 
@@ -40,6 +41,10 @@ public class Client {
                 completion(nil, error)
             }
         }
+    }
+    
+    public func makePublishCardCallback(verifier: VirgilCardVerifier) -> EThree.PublishCardCallback {
+        { rawCard in try self.signUp(rawCard, verifier: verifier) }
     }
 
     private func handleError(statusCode: Int, body: Data?) -> Swift.Error {

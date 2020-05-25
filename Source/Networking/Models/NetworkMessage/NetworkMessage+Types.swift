@@ -22,12 +22,14 @@ extension NetworkMessage {
     public struct Photo: Codable {
         let identifier: String
         let url: URL
+        let secret: Data
     }
 
     public struct Voice: Codable {
         let identifier: String
         let duration: TimeInterval
         let url: URL
+        let secret: Data
     }
 
     public struct CallOffer: Codable {

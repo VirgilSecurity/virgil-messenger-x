@@ -7,11 +7,13 @@
 //
 
 import Foundation
+import VirgilE3Kit
 
 class MessageProcessor {
     enum Error: Swift.Error {
         case missingThumbnail
         case dataToStrFailed
+        case invalidMessage
         case notCallOffer
     }
 
@@ -34,23 +36,33 @@ class MessageProcessor {
             Notifications.post(newState: newState, messageIds: [receiptId])
         }
     }
+    
+    static func getOrJoinRatchetChannel(_ channel: Storage.Channel) throws -> RatchetChannel {
+        if let ratchetChannel = try Virgil.ethree.getRatchetChannel(with: channel.getCard()) {
+            return ratchetChannel
+        }
+        
+        return try Virgil.ethree.joinRatchetChannel(with: channel.getCard()).startSync().get()
+    }
 
     static func process(_ encryptedMessage: EncryptedMessage, from author: String, xmppId: String) throws {
         let channel = try self.setupChannel(name: author)
+        
+        let ratchetChannel = try self.getOrJoinRatchetChannel(channel)
 
-        let decrypted = try self.decrypt(encryptedMessage, from: channel)
+        let decrypted = try self.decrypt(encryptedMessage, from: channel, ratchetChannel: ratchetChannel)
 
-        var decryptedAdditional: Data?
+        var thumbnail: Data?
 
-        if let data = encryptedMessage.additionalData {
-            decryptedAdditional = try Virgil.ethree.authDecrypt(data: data, from: channel.getCard())
+        if let data = encryptedMessage.additionalData?.thumbnail {
+            thumbnail = try ratchetChannel.decrypt(data: data)
         }
 
         let message = try self.migrationSafeContentImport(from: decrypted,
                                                           version: encryptedMessage.modelVersion)
 
         try self.process(message,
-                         additionalData: decryptedAdditional,
+                         thumbnail: thumbnail,
                          xmppId: xmppId,
                          channel: channel,
                          author: author,
@@ -59,16 +71,16 @@ class MessageProcessor {
 
     static func process(call encryptedMessage: EncryptedMessage, from caller: String) throws -> NetworkMessage.CallOffer {
         let channel = try self.setupChannel(name: caller)
+        
+        let ratchetChannel = try self.getOrJoinRatchetChannel(channel)
 
-        let decrypted = try self.decrypt(encryptedMessage, from: channel)
+        let decrypted = try self.decrypt(encryptedMessage, from: channel, ratchetChannel: ratchetChannel)
 
         let message = try self.migrationSafeContentImport(from: decrypted,
                                                           version: encryptedMessage.modelVersion)
 
         switch message {
         case .callOffer(let callOffer):
-
-            // FIXME: Pass xmppId within VoIP Push message
             let xmppId = callOffer.callUUID.uuidString
 
             let baseParams = Storage.Message.Params(xmppId: xmppId, isIncoming: true, channel: channel, state: .received, date: callOffer.date)
@@ -83,7 +95,7 @@ class MessageProcessor {
     }
 
     private static func process(_ message: NetworkMessage,
-                                additionalData: Data?,
+                                thumbnail: Data?,
                                 xmppId: String,
                                 channel: Storage.Channel,
                                 author: String,
@@ -105,7 +117,7 @@ class MessageProcessor {
                                                                   baseParams: baseParams)
 
         case .photo(let photo):
-            guard let thumbnail = additionalData else {
+            guard let thumbnail = thumbnail else {
                 throw Error.missingThumbnail
             }
 
@@ -182,11 +194,13 @@ class MessageProcessor {
         return message
     }
 
-    private static func decrypt(_ message: EncryptedMessage, from channel: Storage.Channel) throws -> Data {
-        let decrypted: Data
-
+    private static func decrypt(_ message: EncryptedMessage, from channel: Storage.Channel, ratchetChannel: RatchetChannel) throws -> Data {
+        guard let ciphertext = message.ciphertext ?? message.additionalData?.prekeyMessage else {
+            throw Error.invalidMessage
+        }
+        
         do {
-            decrypted = try Virgil.ethree.authDecrypt(data: message.ciphertext, from: channel.getCard())
+            return try ratchetChannel.decrypt(data: ciphertext)
         }
         catch {
             // TODO: check if needed
@@ -194,8 +208,6 @@ class MessageProcessor {
 
             throw error
         }
-
-        return decrypted
     }
 
     private static func postNotification(about message: Storage.Message, unread: Bool) {

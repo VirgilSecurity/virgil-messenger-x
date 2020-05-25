@@ -56,6 +56,7 @@ extension Ejabberd {
             options["sound"] = "default"
             options["topic"] = Constants.alertTopic
             options["push_mode"] = Constants.pushMode
+            options["body_type"] = Constants.pushBodyType.rawValue
 
             guard let pushServerJID = XMPPJID(string: URLConstants.ejabberdPushHost) else {
                 throw EjabberdError.jidFormingFailed

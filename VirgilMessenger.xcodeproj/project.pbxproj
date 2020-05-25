@@ -125,6 +125,12 @@
 		429228BD1F96261000DCECDF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 429228BC1F96261000DCECDF /* Assets.xcassets */; };
 		429228DE1F9637A200DCECDF /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429228DD1F9637A200DCECDF /* Log.swift */; };
 		429228EB1F96405800DCECDF /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 429228EA1F96405800DCECDF /* Chat.storyboard */; };
+		42E8FF662459876E00B6C686 /* AdditionalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E8FF652459876E00B6C686 /* AdditionalData.swift */; };
+		42E8FF672459877000B6C686 /* AdditionalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E8FF652459876E00B6C686 /* AdditionalData.swift */; };
+		42E8FF682459877100B6C686 /* AdditionalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E8FF652459876E00B6C686 /* AdditionalData.swift */; };
+		42E8FF692459877100B6C686 /* AdditionalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E8FF652459876E00B6C686 /* AdditionalData.swift */; };
+		42E8FF6A2459877200B6C686 /* AdditionalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E8FF652459876E00B6C686 /* AdditionalData.swift */; };
+		42E8FF6B2459877200B6C686 /* AdditionalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E8FF652459876E00B6C686 /* AdditionalData.swift */; };
 		805F59B8242D8552003421EB /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805F59B7242D8552003421EB /* PushNotifications.swift */; };
 		805F59BA242D86FA003421EB /* PushNotificationsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805F59B9242D86FA003421EB /* PushNotificationsDelegate.swift */; };
 		805F59BC242E690B003421EB /* UIViewController+Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805F59BB242E690B003421EB /* UIViewController+Navigation.swift */; };
@@ -620,12 +626,6 @@
 		F47EF354243CA7950002AC9E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47EF353243CA7950002AC9E /* CallKit.framework */; };
 		F47EF355243CA7A70002AC9E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47EF353243CA7950002AC9E /* CallKit.framework */; };
 		F47EF356243CA7AE0002AC9E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47EF353243CA7950002AC9E /* CallKit.framework */; };
-		F47EF358243CBFCA0002AC9E /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
-		F47EF359243CBFCA0002AC9E /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
-		F47EF35A243CBFCA0002AC9E /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
-		F47EF35B243CBFD50002AC9E /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
-		F47EF35C243CBFD50002AC9E /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
-		F47EF35D243CBFD60002AC9E /* LocalKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */; };
 		F481222A2425CBF60003DD78 /* NetworkMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122282425CBF60003DD78 /* NetworkMessage.swift */; };
 		F48122372425CC180003DD78 /* VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122322425CC180003DD78 /* VoiceMessage.swift */; };
 		F48122382425CC180003DD78 /* PhotoMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48122332425CC180003DD78 /* PhotoMessage.swift */; };
@@ -848,6 +848,7 @@
 		429228DD1F9637A200DCECDF /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		429228EA1F96405800DCECDF /* Chat.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Chat.storyboard; sourceTree = "<group>"; };
 		42E8F8731F978A51007CB39F /* PKHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PKHUD.framework; path = Carthage/Build/iOS/PKHUD.framework; sourceTree = "<group>"; };
+		42E8FF652459876E00B6C686 /* AdditionalData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalData.swift; sourceTree = "<group>"; };
 		805F59B7242D8552003421EB /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
 		805F59B9242D86FA003421EB /* PushNotificationsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsDelegate.swift; sourceTree = "<group>"; };
 		805F59BB242E690B003421EB /* UIViewController+Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Navigation.swift"; sourceTree = "<group>"; };
@@ -921,7 +922,6 @@
 		F478ABDB243FA99800802051 /* Call.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Call.storyboard; sourceTree = "<group>"; };
 		F47DD295240E9546006A0341 /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = Carthage/Build/iOS/WebRTC.framework; sourceTree = "<group>"; };
 		F47EF353243CA7950002AC9E /* CallKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CallKit.framework; path = System/Library/Frameworks/CallKit.framework; sourceTree = SDKROOT; };
-		F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalKeyManager.swift; sourceTree = "<group>"; };
 		F48122282425CBF60003DD78 /* NetworkMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkMessage.swift; sourceTree = "<group>"; };
 		F48122322425CC180003DD78 /* VoiceMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceMessage.swift; sourceTree = "<group>"; };
 		F48122332425CC180003DD78 /* PhotoMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoMessage.swift; sourceTree = "<group>"; };
@@ -1386,7 +1386,6 @@
 		16FE75F1224A436C00B545AF /* Virgil */ = {
 			isa = PBXGroup;
 			children = (
-				F47EF357243CBFCA0002AC9E /* LocalKeyManager.swift */,
 				1693678F22490BA000EF9A42 /* VirgilAuthorizer.swift */,
 				167C68441FADDB7800E6E448 /* Virgil.swift */,
 			);
@@ -1564,6 +1563,7 @@
 				16B4EC2523BF610500E7E4DB /* XMPPMessage.swift */,
 				16B4EC2723BF63BA00E7E4DB /* EncryptedMessage.swift */,
 				9720EAA52449B8C5004BA39F /* EjabberdError.swift */,
+				42E8FF652459876E00B6C686 /* AdditionalData.swift */,
 				9767500D245AD497000B844E /* EjabberdToken.swift */,
 				976B3361246D5C9200DF1CBF /* CompletionQueueItem.swift */,
 			);
@@ -2192,7 +2192,6 @@
 				97698D5A24507DEC005C087D /* EncryptedMessage.swift in Sources */,
 				97675015245AE3F3000B844E /* EjabberdTokenProvider.swift in Sources */,
 				97B41A302472AFBB00D968AB /* VirgilConstants.swift in Sources */,
-				F47EF35B243CBFD50002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241D4A24337E9C00E839C3 /* EnvConstantProd.swift in Sources */,
 				9775CFD8242A2D3D009F1693 /* Virgil.swift in Sources */,
 				F4241E46243386AC00E839C3 /* UIColor+RGB.swift in Sources */,
@@ -2207,6 +2206,7 @@
 				16D4B8D923F5CE1700D17B90 /* SharedDefaults.swift in Sources */,
 				16D4B8B123F5BCA400D17B90 /* NotificationService.swift in Sources */,
 				16D4B8D223F5C2F500D17B90 /* Constants.swift in Sources */,
+				42E8FF6A2459877200B6C686 /* AdditionalData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2232,6 +2232,7 @@
 				97507E74246AC9FE00FC61CF /* Ejabberd+BlackList.swift in Sources */,
 				97E437EA24210CF00076AA04 /* NetworkUploadOperation.swift in Sources */,
 				97CE26F52418231300903116 /* Mapping-v1-to-v2.xcmappingmodel in Sources */,
+				42E8FF662459876E00B6C686 /* AdditionalData.swift in Sources */,
 				F40BC401243B1E23009AB5DF /* CallManager+CallKit.swift in Sources */,
 				429228B61F96261000DCECDF /* AppDelegate.swift in Sources */,
 				4280C0CF1F97340B00075B3A /* MessageSender.swift in Sources */,
@@ -2254,7 +2255,6 @@
 				427D1E551F965569002F2CF3 /* SlidingDatasSource.swift in Sources */,
 				F48122382425CC180003DD78 /* PhotoMessage.swift in Sources */,
 				4280C0E11F9734DD00075B3A /* TimeSeparatorCollectionViewCell.swift in Sources */,
-				F47EF358243CBFCA0002AC9E /* LocalKeyManager.swift in Sources */,
 				F481222A2425CBF60003DD78 /* NetworkMessage.swift in Sources */,
 				4280C0CE1F97340B00075B3A /* BaseMessageHandler.swift in Sources */,
 				F401CDCE241B944800C59572 /* NetworkMessage+WebRTC.swift in Sources */,
@@ -2364,6 +2364,7 @@
 				97507E75246AC9FE00FC61CF /* Ejabberd+BlackList.swift in Sources */,
 				F4241D612433850F00E839C3 /* Storage+Messages.swift in Sources */,
 				F40BC402243B1E39009AB5DF /* CallManager+CallKit.swift in Sources */,
+				42E8FF672459877000B6C686 /* AdditionalData.swift in Sources */,
 				F4241E4F243386BB00E839C3 /* Collection+SafeSubscript.swift in Sources */,
 				F4241DE32433862500E839C3 /* UserAuthorizer.swift in Sources */,
 				F4241E202433865300E839C3 /* Authentication.swift in Sources */,
@@ -2387,7 +2388,6 @@
 				F4241D842433856000E839C3 /* NetworkUploadOperation.swift in Sources */,
 				F4241D6B2433852100E839C3 /* TextMessage.swift in Sources */,
 				F4241E4C243386BB00E839C3 /* UIViewController.swift in Sources */,
-				F47EF359243CBFCA0002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241DF02433863400E839C3 /* FileMediaStorage.swift in Sources */,
 				F4241E182433864F00E839C3 /* UsersListCell.swift in Sources */,
 				F4241D952433858D00E839C3 /* UITextMessageModel.swift in Sources */,
@@ -2481,7 +2481,6 @@
 				97698D5924507DEC005C087D /* EncryptedMessage.swift in Sources */,
 				97675016245AE3F4000B844E /* EjabberdTokenProvider.swift in Sources */,
 				97B41A312472AFBC00D968AB /* VirgilConstants.swift in Sources */,
-				F47EF35C243CBFD50002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241E47243386AD00E839C3 /* UIColor+RGB.swift in Sources */,
 				F4241D7E2433855000E839C3 /* UserFriendlyError.swift in Sources */,
 				F4241D912433857D00E839C3 /* Client+Backend.swift in Sources */,
@@ -2496,6 +2495,7 @@
 				F4241D4B24337EA000E839C3 /* EnvConstantStg.swift in Sources */,
 				F4241D5024337ECC00E839C3 /* Constants.swift in Sources */,
 				F4241DEE2433862E00E839C3 /* SharedDefaults.swift in Sources */,
+				42E8FF692459877100B6C686 /* AdditionalData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2521,6 +2521,7 @@
 				97507E76246AC9FE00FC61CF /* Ejabberd+BlackList.swift in Sources */,
 				F4241D622433850F00E839C3 /* Storage+Messages.swift in Sources */,
 				F40BC403243B1E39009AB5DF /* CallManager+CallKit.swift in Sources */,
+				42E8FF682459877100B6C686 /* AdditionalData.swift in Sources */,
 				F4241E58243386BB00E839C3 /* Collection+SafeSubscript.swift in Sources */,
 				F4241DE82433862500E839C3 /* UserAuthorizer.swift in Sources */,
 				F4241E232433865300E839C3 /* Authentication.swift in Sources */,
@@ -2544,7 +2545,6 @@
 				F4241D852433856100E839C3 /* NetworkUploadOperation.swift in Sources */,
 				F4241D6D2433852400E839C3 /* TextMessage.swift in Sources */,
 				F4241E55243386BB00E839C3 /* UIViewController.swift in Sources */,
-				F47EF35A243CBFCA0002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241DF22433863400E839C3 /* FileMediaStorage.swift in Sources */,
 				F4241E1E2433864F00E839C3 /* UsersListCell.swift in Sources */,
 				F4241D962433858E00E839C3 /* UITextMessageModel.swift in Sources */,
@@ -2638,7 +2638,6 @@
 				97698D5B24507DED005C087D /* EncryptedMessage.swift in Sources */,
 				97675017245AE3F4000B844E /* EjabberdTokenProvider.swift in Sources */,
 				97B41A322472AFBC00D968AB /* VirgilConstants.swift in Sources */,
-				F47EF35D243CBFD60002AC9E /* LocalKeyManager.swift in Sources */,
 				F4241E48243386AD00E839C3 /* UIColor+RGB.swift in Sources */,
 				F4241D7F2433855100E839C3 /* UserFriendlyError.swift in Sources */,
 				F4241D922433857E00E839C3 /* Client+Backend.swift in Sources */,
@@ -2653,6 +2652,7 @@
 				F4241D4D24337EAD00E839C3 /* EnvConstantDev.swift in Sources */,
 				F4241D5124337ECC00E839C3 /* Constants.swift in Sources */,
 				F4241DEF2433862E00E839C3 /* SharedDefaults.swift in Sources */,
+				42E8FF6B2459877200B6C686 /* AdditionalData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

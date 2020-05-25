@@ -159,7 +159,7 @@ extension ChatListViewController {
                 }
             }
 
-            ChatsManager.startSingle(with: username, startProgressBar: hudShow) { error in
+            ChatsManager.startDrSession(with: username, startProgressBar: hudShow) { error in
                 DispatchQueue.main.async {
                     if let error = error {
                         HUD.hide()
